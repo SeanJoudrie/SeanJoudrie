@@ -12,7 +12,7 @@ export function Work() {
       <div className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
         <Reveal>
           <div className="flex items-center gap-4">
-            <span className="annotation whitespace-nowrap">Fig. 03 — Selected work</span>
+            <span className="annotation whitespace-nowrap">Selected work</span>
             <span className="dim-line flex-1" />
           </div>
           <h2 className="mt-6 max-w-3xl font-display text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl">

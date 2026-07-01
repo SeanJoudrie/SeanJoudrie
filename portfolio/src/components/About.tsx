@@ -6,7 +6,7 @@ export function About() {
     <section id="about" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
       <div className="grid gap-12 md:grid-cols-[0.8fr_1.2fr] md:gap-16">
         <Reveal>
-          <span className="annotation">Fig. 05 — About</span>
+          <span className="annotation">About</span>
           <h2 className="mt-4 font-display text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl">
             People first. <br className="hidden sm:block" />
             Systems that survive them.
@@ -24,7 +24,7 @@ export function About() {
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <div className="blueprint-grid absolute inset-0 grid place-items-center">
+                <div className="absolute inset-0 grid place-items-center">
                   <span className="font-display text-5xl font-bold text-navy-600">SJ</span>
                 </div>
               )}

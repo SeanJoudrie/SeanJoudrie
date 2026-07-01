@@ -19,9 +19,9 @@
   --color-steel: #7fa6d9;       /* friendly blue, used sparingly */
   --color-cream: #f3ecdd;
 
-  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+  --font-mono: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
@@ -156,11 +156,12 @@ body {
   opacity: 0.06;
 }
 
-/* Mono annotation label — the signature texture (dimension ticks, fig. refs). */
+/* Section micro-label — clean uppercase sans, quiet and professional. */
 .annotation {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-faint);
 }

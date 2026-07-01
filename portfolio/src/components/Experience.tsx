@@ -14,7 +14,7 @@ export function Experience() {
     <section id="experience" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
       <Reveal>
         <div className="flex items-center gap-4">
-          <span className="annotation whitespace-nowrap">Fig. 04 — Service record</span>
+          <span className="annotation whitespace-nowrap">Experience &amp; credentials</span>
           <span className="dim-line flex-1" />
         </div>
         <h2 className="mt-6 max-w-3xl font-display text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl">

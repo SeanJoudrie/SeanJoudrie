@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from 'react'
 import { site } from '../data/site'
 import { CountUp } from './CountUp'
 
@@ -10,43 +9,12 @@ const metrics = [
 ]
 
 export function Hero() {
-  // subtle parallax on the drafting grid
-  const gridRef = useRef<HTMLDivElement | null>(null)
-  const [y, setY] = useState(0)
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    let raf = 0
-    const update = () => {
-      raf = 0
-      setY(window.scrollY * 0.15)
-    }
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update)
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      if (raf) cancelAnimationFrame(raf)
-    }
-  }, [])
-
   return (
-    <section id="top" className="relative overflow-hidden border-b border-navy-800/70">
-      <div
-        ref={gridRef}
-        aria-hidden
-        className="blueprint-grid pointer-events-none absolute inset-x-0 -top-20 bottom-0"
-        style={{ transform: `translateY(${y}px)` }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -left-24 -top-24 h-[32rem] w-[32rem] rounded-full bg-accent/10 blur-3xl"
-      />
-
+    <section id="top" className="relative border-b border-navy-800/70">
       <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-32 sm:px-8 sm:pb-28 sm:pt-40">
-        <div className="flex items-center gap-4">
-          <span className="annotation whitespace-nowrap">Fig. 01 — {site.location}</span>
-          <span className="intro-line h-px flex-1 bg-accent/50" />
+        <div className="flex items-center gap-4 text-mute">
+          <span className="annotation whitespace-nowrap">{site.location}</span>
+          <span className="h-px flex-1 bg-navy-700" />
           <span className="annotation whitespace-nowrap">Open to Boston · Remote</span>
         </div>
 

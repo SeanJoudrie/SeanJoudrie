@@ -4,7 +4,7 @@ import type { Project } from '../data/projects'
 export function ProjectCard({ project, index }: { project: Project; index: number }) {
   const [open, setOpen] = useState(false)
   const detailId = `case-${project.name.replace(/\s+/g, '-').toLowerCase()}`
-  const fig = `Fig. ${String(index + 1).padStart(2, '0')}`
+  const fig = String(index + 1).padStart(2, '0')
 
   return (
     <article className="card-lift group relative overflow-hidden rounded-2xl border border-navy-800 bg-navy-900/60 hover:border-accent/40">
