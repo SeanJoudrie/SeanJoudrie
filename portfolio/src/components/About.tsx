@@ -16,18 +16,16 @@ export function About() {
           <div className="space-y-5 text-lg leading-relaxed text-mute">
             <p>
               I work at the seam between people and the systems they use. A
-              psychology degree with a business-analytics minor taught me to
-              start from how humans actually behave — not how a process diagram
-              wishes they would — and to measure whether a system is really
-              working.
+              psychology degree taught me to start from how humans actually
+              behave — not how a process diagram wishes they would — and to
+              measure whether a system is really working.
             </p>
             <p>
               The military taught me the other half: leadership under pressure.
-              As an Army National Guard officer candidate I completed Basic
-              Combat Training and led at the squad level, where plans meet
-              friction and someone has to keep a team accountable, calm, and
-              moving. Operational rigor isn&apos;t a buzzword to me — it&apos;s a
-              standard I&apos;ve been held to.
+              As a U.S. Army National Guard officer candidate I lead peers as a
+              platoon guide, where plans meet friction and someone has to keep a
+              team accountable, calm, and moving. Operational rigor isn&apos;t a
+              buzzword to me — it&apos;s a standard I&apos;ve been held to.
             </p>
             <p>
               And I build. Across fitness, social, games, and entertainment
