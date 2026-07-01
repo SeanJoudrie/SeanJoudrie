@@ -9,6 +9,10 @@ export const site = {
   linkedin: 'https://www.linkedin.com/in/seanjoudrie' as string | null,
   location: 'Wakefield, MA',
 
+  // Portrait for the About section. Drop the file in public/ (e.g. a uniform
+  // portrait at public/sean.jpg) and set the path here; null shows a monogram.
+  photo: null as string | null,
+
   // Résumé lives at public/resume.pdf.
   hasResume: true,
   resumeUrl: 'resume.pdf',

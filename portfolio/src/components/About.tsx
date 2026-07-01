@@ -1,15 +1,43 @@
 import { Reveal } from './Reveal'
+import { site } from '../data/site'
 
 export function About() {
   return (
     <section id="about" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
       <div className="grid gap-12 md:grid-cols-[0.8fr_1.2fr] md:gap-16">
         <Reveal>
-          <p className="eyebrow mb-4">About</p>
-          <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl">
+          <span className="annotation">Fig. 05 — About</span>
+          <h2 className="mt-4 font-display text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl">
             People first. <br className="hidden sm:block" />
             Systems that survive them.
           </h2>
+
+          {/* portrait frame — blueprint plate; monogram until a photo lands */}
+          <figure className="relative mt-8 max-w-[280px]">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-navy-700 bg-navy-900">
+              {site.photo ? (
+                <img
+                  src={site.photo}
+                  alt="Sean Joudrie"
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="blueprint-grid absolute inset-0 grid place-items-center">
+                  <span className="font-display text-5xl font-bold text-navy-600">SJ</span>
+                </div>
+              )}
+              {/* corner ticks */}
+              <span aria-hidden className="absolute left-2 top-2 h-3 w-3 border-l-2 border-t-2 border-accent/60" />
+              <span aria-hidden className="absolute right-2 top-2 h-3 w-3 border-r-2 border-t-2 border-accent/60" />
+              <span aria-hidden className="absolute bottom-2 left-2 h-3 w-3 border-b-2 border-l-2 border-accent/60" />
+              <span aria-hidden className="absolute bottom-2 right-2 h-3 w-3 border-b-2 border-r-2 border-accent/60" />
+            </div>
+            <figcaption className="annotation mt-3">
+              Officer Candidate · U.S. Army National Guard
+            </figcaption>
+          </figure>
         </Reveal>
 
         <Reveal delay={80}>

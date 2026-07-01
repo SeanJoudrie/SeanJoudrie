@@ -215,3 +215,93 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .intro-line { animation: none; transform: scaleX(1); }
 }
+
+/* ---- Cold-open overlay (first load, skippable, <= ~1.2s) ---- */
+.coldopen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--color-navy-950);
+  animation: coldopen-out 0.5s ease 1.05s forwards;
+}
+.coldopen__inner { text-align: center; padding: 2rem; }
+.coldopen__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  opacity: 0;
+  animation: co-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
+.coldopen__rule {
+  height: 2px;
+  width: 0;
+  margin: 1rem auto 0;
+  background: var(--color-accent);
+  animation: co-rule 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
+}
+.coldopen__tag {
+  margin-top: 1rem;
+  opacity: 0;
+  animation: co-fade 0.5s ease 0.6s both;
+}
+.coldopen__skip {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+}
+@keyframes coldopen-out {
+  to { opacity: 0; visibility: hidden; }
+}
+@keyframes co-rise {
+  from { opacity: 0; transform: translateY(14px); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes co-rule { from { width: 0; } to { width: 220px; } }
+@keyframes co-fade { to { opacity: 1; } }
+
+/* Subtle blur-in variant for reveals (used sparingly) */
+.reveal-blur { filter: blur(5px); }
+.reveal-blur.reveal-on { filter: blur(0); transition: filter 0.7s ease; }
+
+/* Card hover — physics-y lift + accent border glow. */
+.card-lift {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease, box-shadow 0.35s ease;
+}
+.card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.7);
+}
+
+/* Nav active underline that slides/grows. */
+.nav-link { position: relative; }
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 2px;
+  width: 100%;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav-link:hover::after,
+.nav-link[data-active="true"]::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coldopen,
+  .coldopen__name,
+  .coldopen__rule,
+  .coldopen__tag { animation: none !important; }
+  .coldopen { animation: coldopen-out 0.01s linear 0.3s forwards; }
+  .card-lift { transition: border-color 0.3s ease; }
+  .card-lift:hover { transform: none; }
+  .reveal-blur { filter: none; }
+}

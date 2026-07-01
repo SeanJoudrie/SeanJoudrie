@@ -7,7 +7,7 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
   const fig = `Fig. ${String(index + 1).padStart(2, '0')}`
 
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-navy-800 bg-navy-900/60 transition-colors hover:border-navy-600">
+    <article className="card-lift group relative overflow-hidden rounded-2xl border border-navy-800 bg-navy-900/60 hover:border-accent/40">
       <div aria-hidden className="h-1 w-full" style={{ backgroundColor: project.accent }} />
 
       <div className="p-6 sm:p-8">

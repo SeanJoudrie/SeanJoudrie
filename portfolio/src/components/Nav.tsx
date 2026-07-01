@@ -46,7 +46,8 @@ export function Nav() {
             <li key={l.id}>
               <a
                 href={`#${l.id}`}
-                className={`text-sm font-medium transition-colors ${
+                data-active={active === l.id}
+                className={`nav-link text-sm font-medium transition-colors ${
                   active === l.id ? 'text-accent' : 'text-mute hover:text-ink'
                 }`}
               >
