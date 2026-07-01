@@ -15,6 +15,13 @@ export type Project = {
   }
   // [FILL: screenshot] — drop a path like "/shots/flexyn.webp" to render a preview image.
   screenshot?: string
+  // Screenshots shown in the case-study drawer gallery.
+  shots?: string[]
+}
+
+/** URL-safe slug used for deep-linking a project's case study (e.g. #flexyn). */
+export function slug(name: string) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 }
 
 export const projects: Project[] = [
@@ -70,6 +77,11 @@ export const projects: Project[] = [
     status: 'Live',
     liveUrl: 'https://globalio.app',
     accent: '#4dd6c1',
+    shots: [
+      'shots/globalio-today.webp',
+      'shots/globalio-france.webp',
+      'shots/globalio-progress.webp',
+    ],
     // screenshot: '/shots/globalio.webp', // [FILL: screenshot]
     caseStudy: {
       problem:
