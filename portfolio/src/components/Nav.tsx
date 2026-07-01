@@ -6,7 +6,7 @@ import { site } from '../data/site'
 const links = [
   { id: 'work', label: 'Work' },
   { id: 'about', label: 'About' },
-  { id: 'skills', label: 'Skills' },
+  { id: 'skills', label: 'Lab' },
   { id: 'contact', label: 'Contact' },
 ]
 
