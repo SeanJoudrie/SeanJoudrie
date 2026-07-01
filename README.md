@@ -3,7 +3,7 @@
 **Human-systems design** — psychology + military leadership + product engineering.
 I design systems and teams that hold up under real-world pressure, then build and lead them.
 
-- 🌐 **Portfolio:** [seanjoudrie.github.io](https://seanjoudrie.github.io)
+- 🌐 **Portfolio:** [seanjoudrie.github.io/SeanJoudrie](https://seanjoudrie.github.io/SeanJoudrie/)
 - 🎖️ Officer Candidate, U.S. Army National Guard
 - 🎓 B.A. Psychology · Business Analytics minor
 - 🛠️ Building solo across fitness, entertainment, games, and social
