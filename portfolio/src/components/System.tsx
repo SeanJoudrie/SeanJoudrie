@@ -29,7 +29,7 @@ export function System() {
   return (
     <section id="system" className="border-b border-navy-800/70 bg-navy-950/40">
       <div ref={ref} className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
-        <span className="annotation">Fig. 02 — Operating model</span>
+        <span className="annotation">How I work</span>
         <h2 className="mt-4 max-w-3xl font-display text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl">
           Understand people, design the system, lead the execution.
         </h2>
