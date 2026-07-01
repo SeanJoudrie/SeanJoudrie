@@ -9,7 +9,7 @@ export function Contact() {
     >
       <div className="mx-auto max-w-6xl px-5 py-24 text-center sm:px-8 sm:py-32">
         <Reveal>
-          <p className="eyebrow mb-4">Contact</p>
+          <p className="annotation mb-4">Contact</p>
           <h2 className="mx-auto max-w-2xl font-display text-3xl font-bold leading-tight tracking-tight text-ink sm:text-5xl">
             Let&apos;s build something that holds up.
           </h2>
@@ -17,6 +17,9 @@ export function Contact() {
             Open to analyst, operations, project-management, and product roles —
             and to freelance builds. If you need someone who understands people,
             builds the system, and leads the execution, reach out.
+          </p>
+          <p className="mx-auto mt-4 annotation text-faint">
+            {site.location} · Open to Boston / Remote · Actively looking
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
@@ -29,6 +32,8 @@ export function Contact() {
             {site.hasResume && (
               <a
                 href={site.resumeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="rounded-xl border border-navy-600 px-6 py-3.5 font-semibold text-ink transition-colors hover:border-accent hover:text-accent"
               >
                 Download résumé
