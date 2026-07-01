@@ -16,7 +16,7 @@ export function Now() {
       <div className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
         <div className="grid gap-12 md:grid-cols-[0.8fr_1.2fr] md:gap-16">
           <Reveal>
-            <p className="eyebrow mb-4">Now</p>
+            <p className="annotation mb-4">Now</p>
             <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl">
               Where things stand today.
             </h2>
@@ -39,9 +39,7 @@ export function Now() {
               </p>
 
               <div className="rounded-xl border border-navy-700 bg-navy-900/60 p-5">
-                <p className="font-display text-xs font-semibold uppercase tracking-wider text-accent">
-                  What I&apos;m looking for
-                </p>
+                <p className="annotation text-accent">What I&apos;m looking for</p>
                 <p className="mt-2 text-base text-ink">
                   A program-analyst, operations, or project-management role where
                   judgment under pressure matters — and open to select freelance
