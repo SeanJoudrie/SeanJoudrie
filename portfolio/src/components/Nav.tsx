@@ -3,10 +3,9 @@ import { useScrollSpy } from '../hooks/useScrollSpy'
 import { site } from '../data/site'
 
 const links = [
-  { id: 'about', label: 'About' },
   { id: 'work', label: 'Work' },
-  { id: 'experience', label: 'Experience' },
-  { id: 'now', label: 'Now' },
+  { id: 'about', label: 'About' },
+  { id: 'skills', label: 'Skills' },
   { id: 'contact', label: 'Contact' },
 ]
 
@@ -28,14 +27,14 @@ export function Nav() {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
         scrolled
-          ? 'border-b border-navy-700/60 bg-navy-950/85 backdrop-blur-md'
+          ? 'border-b border-line bg-paper/90 backdrop-blur-md'
           : 'border-b border-transparent'
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
         <a
           href="#top"
-          className="font-display text-lg font-bold tracking-tight text-ink"
+          className="font-display text-lg font-semibold tracking-tight text-ink"
           aria-label="Sean Joudrie — home"
         >
           Sean Joudrie<span className="text-accent">.</span>
@@ -48,7 +47,7 @@ export function Nav() {
                 href={`#${l.id}`}
                 data-active={active === l.id}
                 className={`nav-link text-sm font-medium transition-colors ${
-                  active === l.id ? 'text-accent' : 'text-mute hover:text-ink'
+                  active === l.id ? 'text-accent' : 'text-ink-2 hover:text-ink'
                 }`}
               >
                 {l.label}
@@ -59,7 +58,7 @@ export function Nav() {
             <li>
               <a
                 href={site.resumeUrl}
-                className="rounded-lg border border-navy-600 px-3.5 py-2 text-sm font-semibold text-ink transition-colors hover:border-accent hover:text-accent"
+                className="springy rounded-lg border border-ink/25 px-3.5 py-2 text-sm font-semibold text-ink hover:border-accent hover:text-accent"
               >
                 Résumé
               </a>
@@ -91,14 +90,14 @@ export function Nav() {
       </nav>
 
       {open && (
-        <ul className="flex flex-col gap-1 border-t border-navy-700/60 bg-navy-950/95 px-5 pb-4 pt-2 md:hidden">
+        <ul className="flex flex-col gap-1 border-t border-line bg-paper/95 px-5 pb-4 pt-2 backdrop-blur md:hidden">
           {links.map((l) => (
             <li key={l.id}>
               <a
                 href={`#${l.id}`}
                 onClick={() => setOpen(false)}
                 className={`block rounded-lg px-2 py-2.5 text-base font-medium ${
-                  active === l.id ? 'text-accent' : 'text-mute'
+                  active === l.id ? 'text-accent' : 'text-ink-2'
                 }`}
               >
                 {l.label}

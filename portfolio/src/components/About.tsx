@@ -3,68 +3,63 @@ import { site } from '../data/site'
 
 export function About() {
   return (
-    <section id="about" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
-      <div className="grid gap-12 md:grid-cols-[0.8fr_1.2fr] md:gap-16">
-        <Reveal>
-          <span className="annotation">About</span>
-          <h2 className="mt-4 font-display text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl">
-            People first. <br className="hidden sm:block" />
-            Systems that survive them.
-          </h2>
-
-          {/* portrait frame — blueprint plate; monogram until a photo lands */}
-          <figure className="relative mt-8 max-w-[280px]">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-navy-700 bg-navy-900">
-              {site.photo ? (
-                <img
-                  src={site.photo}
-                  alt="Sean Joudrie — U.S. Army National Guard officer candidate"
-                  loading="lazy"
-                  decoding="async"
-                  className="h-full w-full object-cover"
-                  style={{ objectPosition: '50% 22%' }}
-                />
-              ) : (
-                <div className="absolute inset-0 grid place-items-center">
-                  <span className="font-display text-5xl font-bold text-navy-600">SJ</span>
-                </div>
-              )}
-              {/* corner ticks */}
-              <span aria-hidden className="absolute left-2 top-2 h-3 w-3 border-l-2 border-t-2 border-accent/60" />
-              <span aria-hidden className="absolute right-2 top-2 h-3 w-3 border-r-2 border-t-2 border-accent/60" />
-              <span aria-hidden className="absolute bottom-2 left-2 h-3 w-3 border-b-2 border-l-2 border-accent/60" />
-              <span aria-hidden className="absolute bottom-2 right-2 h-3 w-3 border-b-2 border-r-2 border-accent/60" />
+    <section id="about" className="border-b border-line">
+      <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
+        <div className="grid gap-10 md:grid-cols-[1.2fr_0.8fr] md:gap-16">
+          <Reveal>
+            <div className="flex items-center gap-4">
+              <span className="annotation whitespace-nowrap">About</span>
+              <span className="dim-line flex-1" />
             </div>
-            <figcaption className="annotation mt-3">
-              Officer Candidate · U.S. Army National Guard
-            </figcaption>
-          </figure>
-        </Reveal>
+            <h2 className="mt-6 font-display text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-4xl">
+              Taste, systems, and the discipline to ship.
+            </h2>
 
-        <Reveal delay={80}>
-          <div className="space-y-5 text-lg leading-relaxed text-mute">
-            <p>
-              I work at the seam between people and the systems they use. A
-              psychology degree taught me to start from how humans actually
-              behave — not how a process diagram wishes they would — and to
-              measure whether a system is really working.
-            </p>
-            <p>
-              The military taught me the other half: leadership under pressure.
-              As a U.S. Army National Guard officer candidate I lead peers as a
-              platoon guide, where plans meet friction and someone has to keep a
-              team accountable, calm, and moving. Operational rigor isn&apos;t a
-              buzzword to me — it&apos;s a standard I&apos;ve been held to.
-            </p>
-            <p>
-              And I build. Across fitness, social, games, and entertainment
-              I&apos;ve conceived, designed, and shipped real products — owning
-              the whole stack from the psychology of the user down to the
-              database. That combination — understand people, build the system,
-              lead the execution — is what I bring to a team.
-            </p>
-          </div>
-        </Reveal>
+            <div className="mt-6 max-w-xl space-y-5 leading-relaxed text-ink-2">
+              <p>
+                I&apos;m a self-taught designer-builder with a psychology degree
+                — I design for how people actually behave, then measure whether
+                it worked. Everything in the index above I conceived, designed,
+                and shipped myself, from the first sketch to the deployed build.
+              </p>
+              <p>
+                I build with AI agents the way a director works a crew: the
+                architecture, the taste, and the quality bar are mine — the
+                typing is negotiable. That workflow took Globalio from an empty
+                repo to a live game with 50+ modes in a week.
+              </p>
+              <p>
+                The standard comes from the Army — I&apos;m a National Guard
+                officer candidate, and &ldquo;good enough&rdquo; isn&apos;t a
+                phrase that survives there.
+              </p>
+            </div>
+          </Reveal>
+
+          <Reveal delay={80}>
+            <figure className="mx-auto max-w-[240px] md:ml-auto md:mr-0">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-line bg-paper-2">
+                {site.photo ? (
+                  <img
+                    src={site.photo}
+                    alt="Sean Joudrie"
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover"
+                    style={{ objectPosition: '50% 22%' }}
+                  />
+                ) : (
+                  <div className="absolute inset-0 grid place-items-center">
+                    <span className="font-display text-5xl font-semibold text-faint">SJ</span>
+                  </div>
+                )}
+              </div>
+              <figcaption className="coord mt-3 text-center">
+                Wakefield, MA · U.S. Army National Guard OC
+              </figcaption>
+            </figure>
+          </Reveal>
+        </div>
       </div>
     </section>
   )

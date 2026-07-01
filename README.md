@@ -1,15 +1,14 @@
-### Hi, I'm Sean 👋
+### Sean Joudrie — designer-builder
 
-**Human-systems design** — psychology + military leadership + product engineering.
-I design systems and teams that hold up under real-world pressure, then build and lead them.
+I design interfaces you can play — then ship them, solo, from first sketch to deployed build.
+Most recently: [Globalio](https://globalio.app), a geography game with 50+ modes and a 4,000-entry codex, built in a week.
 
 - 🌐 **Portfolio:** [seanjoudrie.github.io/SeanJoudrie](https://seanjoudrie.github.io/SeanJoudrie/)
-- 🎖️ Officer Candidate, U.S. Army National Guard
-- 🎓 B.A. Psychology · Business Analytics minor
-- 🛠️ Building solo across fitness, entertainment, games, and social
+- 🛠️ Building solo across games, fitness, film, and social
+- 🎖️ Officer Candidate, U.S. Army National Guard · B.A. Psychology
 - 📫 Reach me: **sjoudrie@gmail.com**
 
-**Shipped work:** [Globalio](https://globalio.app) · [REX](https://seanjoudrie.github.io/REX/) · Flexyn · Rap Sheet
+**Work:** [Globalio](https://globalio.app) · [REX](https://seanjoudrie.github.io/REX/) · Flexyn (private beta) · Rap Sheet
 
 <!--
 The portfolio site lives in /portfolio (React + Vite + TypeScript + Tailwind)
