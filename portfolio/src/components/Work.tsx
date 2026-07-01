@@ -11,8 +11,11 @@ export function Work() {
     >
       <div className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
         <Reveal>
-          <p className="eyebrow mb-4">Selected work</p>
-          <h2 className="max-w-3xl font-display text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl">
+          <div className="flex items-center gap-4">
+            <span className="annotation whitespace-nowrap">Fig. 03 — Selected work</span>
+            <span className="dim-line flex-1" />
+          </div>
+          <h2 className="mt-6 max-w-3xl font-display text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl">
             Four products. One operator behind all of them.
           </h2>
           <p className="mt-4 max-w-2xl text-lg text-mute">
@@ -25,7 +28,7 @@ export function Work() {
         <div className="mt-12 grid gap-6 lg:grid-cols-2">
           {projects.map((p, i) => (
             <Reveal key={p.name} delay={i * 70} as="div">
-              <ProjectCard project={p} />
+              <ProjectCard project={p} index={i} />
             </Reveal>
           ))}
         </div>

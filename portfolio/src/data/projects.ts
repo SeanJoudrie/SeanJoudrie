@@ -25,7 +25,7 @@ export const projects: Project[] = [
       'A 5,000+ exercise database, barcode-based nutrition scanning, workout & progress tracking, AI-assisted form feedback, plus gamification and a social feed — a full consumer product, not a prototype.',
     role: 'Co-Founder — product, design, and full-stack build',
     stack: ['React', 'Vite', 'Supabase', 'Tailwind', 'PWA'],
-    status: 'Live · beta-tested · App Store roadmap in progress',
+    status: 'Live · Beta-tested',
     repoUrl: 'https://github.com/SeanJoudrie',
     // liveUrl: '[FILL: link]',
     accent: '#7c5cff',

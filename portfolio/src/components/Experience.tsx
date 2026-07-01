@@ -13,8 +13,11 @@ export function Experience() {
   return (
     <section id="experience" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
       <Reveal>
-        <p className="eyebrow mb-4">Experience &amp; credentials</p>
-        <h2 className="max-w-3xl font-display text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl">
+        <div className="flex items-center gap-4">
+          <span className="annotation whitespace-nowrap">Fig. 04 — Service record</span>
+          <span className="dim-line flex-1" />
+        </div>
+        <h2 className="mt-6 max-w-3xl font-display text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl">
           Leadership and operational rigor — earned, not claimed.
         </h2>
       </Reveal>
@@ -25,12 +28,12 @@ export function Experience() {
           const period = real(item.period)
           return (
           <Reveal as="li" key={`${item.role}-${i}`} delay={i * 50}>
-            <div className="grid gap-4 border-t border-navy-800 py-7 md:grid-cols-[180px_1fr] md:gap-10">
-              <div className="flex items-start gap-3 md:flex-col md:gap-1">
-                <span className="font-display text-xs font-semibold uppercase tracking-wider text-accent">
-                  {kindLabel[item.kind]}
+            <div className="grid gap-4 border-t border-navy-800 py-7 md:grid-cols-[190px_1fr] md:gap-10">
+              <div className="flex items-start gap-3 md:flex-col md:gap-1.5">
+                <span className="annotation text-accent">
+                  {String(i + 1).padStart(2, '0')} · {kindLabel[item.kind]}
                 </span>
-                {period && <span className="text-sm text-faint">{period}</span>}
+                {period && <span className="font-mono text-xs text-faint">{period}</span>}
               </div>
               <div>
                 <h3 className="font-display text-xl font-semibold text-ink">
