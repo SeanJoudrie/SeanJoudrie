@@ -218,6 +218,48 @@ body {
   .draw-path { stroke-dashoffset: 0 !important; }
 }
 
+/* ---- Scroll choreography ---- */
+
+/* Small plates settle in with a hint of rotation. */
+.reveal.reveal-settle { transform: translateY(14px) rotate(0.8deg); }
+.reveal.reveal-on.reveal-settle { transform: none; }
+
+/* Dimension lines draw across when their section reveals. */
+.reveal .dim-draw {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 1s var(--ease-out) 0.15s;
+}
+.reveal.reveal-on .dim-draw { transform: scaleX(1); }
+
+/* Featured-plate screenshots fan open from a stack. --fan holds each
+   item's final transform; before reveal they sit stacked and square. */
+.reveal .fan-item {
+  transform: none;
+  transition: transform 0.9s var(--spring);
+}
+.reveal.reveal-on .fan-item { transform: var(--fan); }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal.reveal-settle { transform: none; }
+  .reveal .dim-draw { transform: scaleX(1); transition: none; }
+  .reveal .fan-item { transform: var(--fan); transition: none; }
+}
+
+/* ---- View transitions (plate → case-study page) ---- */
+.vt-gio-title { view-transition-name: gio-title; }
+.vt-gio-shots { view-transition-name: gio-shots; }
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: 0.4s; }
+::view-transition-group(gio-title),
+::view-transition-group(gio-shots) { animation-duration: 0.5s; }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-image-pair(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) { animation: none !important; }
+}
+
 /* Mobile menu sheet — links rise in with a small stagger. */
 @keyframes menu-link-in {
   from { opacity: 0; transform: translateY(14px); }

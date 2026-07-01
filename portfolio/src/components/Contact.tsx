@@ -42,7 +42,7 @@ export function Contact() {
               className="springy rounded-lg border border-ink/25 px-4 py-3 text-sm font-semibold text-ink hover:border-accent hover:text-accent"
               aria-live="polite"
             >
-              {copied ? 'Copied ✓' : 'Copy'}
+              {copied ? <span className="stamp">Copied</span> : 'Copy'}
             </button>
           </div>
 
