@@ -122,6 +122,32 @@ export function GlobalioDemo() {
               Open full screen
             </a>
           </div>
+
+          {/* more views — real screenshots (desktop) */}
+          <div className="mt-8 hidden items-center gap-3 lg:flex">
+            <span className="annotation">More views</span>
+            {[
+              { src: 'shots/globalio-france.webp', label: 'Flag Codex' },
+              { src: 'shots/globalio-progress.webp', label: 'Progress Map' },
+            ].map((s) => (
+              <a
+                key={s.src}
+                href={GLOBALIO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={s.label}
+                className="block h-24 w-[52px] shrink-0 overflow-hidden rounded-lg border border-navy-700 transition-colors hover:border-[#4dd6c1]"
+              >
+                <img
+                  src={s.src}
+                  alt={`Globalio — ${s.label}`}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover object-top"
+                />
+              </a>
+            ))}
+          </div>
         </div>
 
         {/* live phone (desktop) */}
@@ -153,31 +179,32 @@ export function GlobalioDemo() {
           </div>
         </div>
 
-        {/* rich card (mobile) */}
+        {/* real screenshot in a phone frame (mobile) */}
         <a
           href={GLOBALIO_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-[#4dd6c1]/30 bg-navy-950/70 p-5 transition-colors hover:border-[#4dd6c1] lg:hidden"
+          className="group relative mx-auto block w-[248px] lg:hidden"
         >
-          <span
-            aria-hidden
-            className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-[#4dd6c1] text-3xl shadow-lg shadow-[#4dd6c1]/30"
-          >
-            🌍
-          </span>
-          <div className="min-w-0">
-            <p className="font-display text-lg font-bold text-ink">
-              Play Globalio{' '}
-              <span className="text-[#7ff0dd] transition-transform group-hover:translate-x-0.5 inline-block">
-                ↗
-              </span>
-            </p>
-            <p className="mt-0.5 text-sm text-mute">
-              The live game — one Daily Challenge for the whole planet. Opens in
-              a new tab.
-            </p>
+          <div className="relative overflow-hidden rounded-[2.2rem] border-[10px] border-navy-800 bg-navy-950 shadow-2xl shadow-black/50 ring-1 ring-[#4dd6c1]/30">
+            <div
+              aria-hidden
+              className="absolute left-1/2 top-2.5 z-10 h-1.5 w-16 -translate-x-1/2 rounded-full bg-navy-700"
+            />
+            <div className="absolute -right-2 top-5 z-20 rotate-3 rounded-lg bg-[#f6a821] px-2 py-0.5 font-display text-[10px] font-bold text-navy-950 shadow-lg">
+              ● LIVE
+            </div>
+            <img
+              src="shots/globalio-today.webp"
+              alt="Globalio — Today screen"
+              loading="lazy"
+              decoding="async"
+              className="w-full rounded-[1.5rem]"
+            />
           </div>
+          <span className="mt-4 block text-center font-semibold text-[#7ff0dd]">
+            Tap to play ↗
+          </span>
         </a>
       </div>
     </div>
