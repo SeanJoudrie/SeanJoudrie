@@ -16,7 +16,7 @@ export default function App() {
         Skip to the work
       </a>
       <Nav />
-      <main>
+      <main aria-label="Portfolio">
         <Hero />
         <Work />
         <About />

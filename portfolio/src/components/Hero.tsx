@@ -4,7 +4,7 @@ import { FlagGame } from './FlagGame'
 export function Hero() {
   return (
     <section id="top" className="paper-wash border-b border-line">
-      <div className="mx-auto max-w-6xl px-5 pb-16 pt-28 sm:px-8 sm:pb-24 sm:pt-36">
+      <div className="mx-auto max-w-6xl px-5 pb-10 pt-24 sm:px-8 sm:pb-24 sm:pt-36">
         <div className="grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
           <div>
             <div className="flex items-center gap-4">
@@ -24,6 +24,11 @@ export function Hero() {
               geography game with 50+ ways to play and a 4,000-entry codex —
               designed, built, and live in a week. Warm up with today’s flag
               while you’re here.
+            </p>
+
+            <p className="mt-4 text-sm font-medium text-faint">
+              Looking for: product / UI design &amp; design-engineer roles —
+              full-time or contract.
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-4">

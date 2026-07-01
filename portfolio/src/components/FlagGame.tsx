@@ -140,7 +140,7 @@ export function FlagGame() {
               key={f.name}
               disabled={done}
               onClick={() => setPicked(f.name)}
-              className={`springy rounded-lg border px-3 py-2 text-sm font-medium ${
+              className={`springy rounded-lg border px-3 py-2.5 text-sm font-medium ${
                 done
                   ? isAnswer
                     ? 'border-accent bg-accent text-paper'
@@ -159,7 +159,9 @@ export function FlagGame() {
       <div className="mt-4 flex min-h-9 items-center justify-between gap-3" aria-live="polite">
         {done ? (
           <>
-            <span className="stamp">{correct ? 'Correct' : answer.name}</span>
+            <span className="stamp">
+              {correct ? '✓ Correct' : `✗ ${answer.name}`}
+            </span>
             <a
               href="https://globalio.app"
               target="_blank"

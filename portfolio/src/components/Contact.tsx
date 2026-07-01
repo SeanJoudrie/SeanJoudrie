@@ -17,17 +17,17 @@ export function Contact() {
 
   return (
     <section id="contact" className="paper-wash">
-      <div className="mx-auto max-w-6xl px-5 py-24 text-center sm:px-8 sm:py-32">
+      <div className="mx-auto max-w-6xl px-5 py-16 text-center sm:px-8 sm:py-32">
         <Reveal>
           <p className="annotation mb-4">Contact</p>
           <h2 className="mx-auto max-w-2xl font-display text-4xl font-semibold leading-tight tracking-tight text-ink sm:text-5xl">
             Have something worth
-            <br />
-            building <em className="text-accent">well</em>?
+            <br className="hidden sm:block" /> building{' '}
+            <em className="text-accent">well</em>?
           </h2>
           <p className="mx-auto mt-5 max-w-md text-lg text-ink-2">
-            Design, front-end, and product-build roles or freelance work.
-            One email reaches me.
+            Design, front-end, and product-build roles or freelance work. One
+            email reaches me — I reply within 24–48 hours.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
@@ -77,7 +77,11 @@ export function Contact() {
             </a>
           </div>
 
-          <p className="coord mt-8">{site.location} · {site.availability}</p>
+          <p className="coord mt-8 flex flex-col items-center gap-1 sm:flex-row sm:justify-center sm:gap-2">
+            <span>{site.location}</span>
+            <span className="hidden sm:inline" aria-hidden>·</span>
+            <span>{site.availability}</span>
+          </p>
         </Reveal>
       </div>
     </section>
