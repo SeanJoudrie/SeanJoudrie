@@ -18,10 +18,11 @@ export function About() {
               {site.photo ? (
                 <img
                   src={site.photo}
-                  alt="Sean Joudrie"
+                  alt="Sean Joudrie — U.S. Army National Guard officer candidate"
                   loading="lazy"
                   decoding="async"
                   className="h-full w-full object-cover"
+                  style={{ objectPosition: '50% 22%' }}
                 />
               ) : (
                 <div className="absolute inset-0 grid place-items-center">
