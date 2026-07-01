@@ -1,46 +1,69 @@
 @import "tailwindcss";
 
+/* ============================================================
+   Self-hosted variable fonts (latin subsets)
+   ============================================================ */
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("./assets/fonts/fraunces.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Fraunces";
+  font-style: italic;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("./assets/fonts/fraunces-italic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("./assets/fonts/inter.woff2") format("woff2");
+}
+
+/* ============================================================
+   "Atlas" theme — warm paper, ink, one cartographic accent.
+   The portfolio inherits Globalio's own design language.
+   ============================================================ */
 @theme {
-  /* "Between the flags" — near-black navy base (college-blue ↔ army-black),
-     warm gold hero accent, soft steel-blue + cream for friendliness. */
-  --color-navy-950: #0b1220;
-  --color-navy-900: #0f1a2e;
-  --color-navy-850: #12203a;
-  --color-navy-800: #172640;
-  --color-navy-700: #223252;
-  --color-navy-600: #35476b;
+  --color-paper: #f4eee1;
+  --color-paper-2: #ece4d1;
+  --color-paper-3: #e3d9c2;
 
-  --color-ink: #f0ebde;   /* warm off-white */
-  --color-mute: #aeb6c6;  /* soft steel */
-  --color-faint: #737e96;
+  --color-ink: #211b12;
+  --color-ink-2: #5c5340;
+  --color-faint: #857b63;
 
-  --color-accent: #f5b841;      /* warm gold */
-  --color-accent-soft: #f8ce7a;
-  --color-steel: #7fa6d9;       /* friendly blue, used sparingly */
-  --color-cream: #f3ecdd;
+  --color-line: #d7ccb4;
 
-  --font-display: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --color-accent: #bd3a1c;      /* cartographic vermilion */
+  --color-accent-deep: #932c14;
+  --color-gold: #9c7420;        /* stamp / annotation gold */
+  --color-sea: #2b4a8a;         /* deep map-blue, used sparingly */
+
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, monospace;
 }
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html {
   scroll-behavior: smooth;
 }
-
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+  html { scroll-behavior: auto; }
 }
 
 body {
   margin: 0;
-  background-color: var(--color-navy-950);
+  background-color: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -49,128 +72,45 @@ body {
 
 ::selection {
   background: var(--color-accent);
-  color: var(--color-navy-950);
+  color: var(--color-paper);
 }
 
-/* Section label — mono-ish uppercase eyebrow */
-.eyebrow {
-  font-family: var(--font-display);
-  font-size: 0.78rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--color-accent);
-}
-
-/* Reveal-on-scroll. Respects reduced motion via the hook (adds .reveal-on). */
-.reveal {
-  opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
-}
-.reveal.reveal-on {
-  opacity: 1;
-  transform: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}
-
-/* Focus visibility */
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
-/* ---- Globalio showcase animations ---- */
-@keyframes gio-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-14px); }
-}
-@keyframes gio-spin {
-  to { transform: rotate(360deg); }
-}
-@keyframes gio-shimmer {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
-}
-@keyframes gio-pulse {
-  0%, 100% { opacity: 0.55; transform: scale(1); }
-  50% { opacity: 0.9; transform: scale(1.06); }
-}
-@keyframes gio-drift {
-  0% { transform: translateY(0) rotate(var(--r, 0deg)); }
-  50% { transform: translateY(-10px) rotate(var(--r, 0deg)); }
-  100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+/* Paper grain — a barely-there radial wash so large fields don't go flat. */
+.paper-wash {
+  background:
+    radial-gradient(80rem 40rem at 85% -10%, rgba(156, 116, 32, 0.06), transparent 60%),
+    radial-gradient(60rem 30rem at -10% 110%, rgba(43, 74, 138, 0.05), transparent 60%);
 }
 
-.gio-float { animation: gio-float 6s ease-in-out infinite; }
-.gio-spin { animation: gio-spin 60s linear infinite; }
-.gio-pulse { animation: gio-pulse 5s ease-in-out infinite; }
-.gio-drift { animation: gio-drift 7s ease-in-out infinite; }
-
-/* Animated gradient text (used for the Globalio wordmark) */
-.gio-gradient-text {
-  background: linear-gradient(
-    100deg,
-    #4dd6c1 0%,
-    #7ff0dd 25%,
-    #f6a821 50%,
-    #7ff0dd 75%,
-    #4dd6c1 100%
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: gio-shimmer 6s linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .gio-float,
-  .gio-spin,
-  .gio-pulse,
-  .gio-drift,
-  .gio-gradient-text {
-    animation: none !important;
-  }
-}
-
-/* ============================================================
-   Blueprint design system
-   ============================================================ */
-
-/* Drafting-paper grid — subtle, technical, not a gradient blob. */
-.blueprint-grid {
-  background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--color-steel) 100%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--color-steel) 100%, transparent) 1px, transparent 1px);
-  background-size: 56px 56px;
-  opacity: 0.06;
-}
-
-/* Section micro-label — clean uppercase sans, quiet and professional. */
+/* Small-caps annotation — the atlas margin note. */
 .annotation {
   font-family: var(--font-sans);
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-faint);
 }
 
-/* A hairline "measured" rule with end ticks, like a dimension line. */
+/* Coordinate label — real mono, used for plate numbers & dates. */
+.coord {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--color-faint);
+}
+
+/* Hairline "dimension" rule with survey ticks at each end. */
 .dim-line {
   position: relative;
   height: 1px;
-  background: color-mix(in srgb, var(--color-accent) 45%, transparent);
+  background: var(--color-line);
 }
 .dim-line::before,
 .dim-line::after {
@@ -179,130 +119,124 @@ body {
   top: -3px;
   width: 1px;
   height: 7px;
-  background: color-mix(in srgb, var(--color-accent) 60%, transparent);
+  background: var(--color-faint);
 }
 .dim-line::before { left: 0; }
 .dim-line::after { right: 0; }
 
-/* Scroll-driven path draw. --draw is set 0→1 by the useScrollProgress hook;
-   pathLength is normalized to 1 on the <path>. Reduced motion → fully drawn. */
-.draw-path {
-  stroke-dasharray: 1;
-  stroke-dashoffset: calc(1 - var(--draw, 0));
+/* ============================================================
+   Motion — springs and reveals. Every rule has a reduced-motion out.
+   ============================================================ */
+
+/* Spring curve used everywhere an element responds to the hand. */
+:root {
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Reveal-on-scroll — quick and quiet, not a parade. */
+.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out);
+}
+.reveal.reveal-on {
+  opacity: 1;
+  transform: none;
 }
 @media (prefers-reduced-motion: reduce) {
-  .draw-path { stroke-dashoffset: 0 !important; }
-  .blueprint-grid { opacity: 0.06; }
+  .reveal { opacity: 1; transform: none; transition: none; }
 }
 
-/* A soft "wake up" for nodes as they draw in. */
-.node-dot {
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.3s ease;
+/* Buttons & plates respond with a spring, not a fade. */
+.springy {
+  transition:
+    transform 0.35s var(--spring),
+    box-shadow 0.35s var(--ease-out),
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    color 0.25s ease;
 }
-.node-dot:hover {
-  transform: translateY(-2px) scale(1.04);
+.springy:hover { transform: translateY(-2px); }
+.springy:active { transform: translateY(0) scale(0.98); transition-duration: 0.12s; }
+
+.plate-lift {
+  transition:
+    transform 0.4s var(--spring),
+    box-shadow 0.4s var(--ease-out),
+    border-color 0.3s ease;
+}
+.plate-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px -24px rgba(33, 27, 18, 0.35);
 }
 
-/* Hero cold-open: a gold rule draws across, then the title settles in. */
-@keyframes intro-draw {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
-}
-.intro-line {
-  transform-origin: left center;
-  animation: intro-draw 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
 @media (prefers-reduced-motion: reduce) {
-  .intro-line { animation: none; transform: scaleX(1); }
+  .springy, .plate-lift { transition: border-color 0.25s ease, background-color 0.25s ease, color 0.25s ease; }
+  .springy:hover, .springy:active, .plate-lift:hover { transform: none; box-shadow: none; }
 }
 
-/* ---- Cold-open overlay (first load, skippable, <= ~1.2s) ---- */
-.coldopen {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: grid;
-  place-items: center;
-  background: var(--color-navy-950);
-  animation: coldopen-out 0.5s ease 1.05s forwards;
-}
-.coldopen__inner { text-align: center; padding: 2rem; }
-.coldopen__name {
-  font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--color-ink);
-  opacity: 0;
-  animation: co-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
-}
-.coldopen__rule {
-  height: 2px;
-  width: 0;
-  margin: 1rem auto 0;
-  background: var(--color-accent);
-  animation: co-rule 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
-}
-.coldopen__tag {
-  margin-top: 1rem;
-  opacity: 0;
-  animation: co-fade 0.5s ease 0.6s both;
-}
-.coldopen__skip {
-  position: absolute;
-  bottom: 1.5rem;
-  right: 1.5rem;
-}
-@keyframes coldopen-out {
-  to { opacity: 0; visibility: hidden; }
-}
-@keyframes co-rise {
-  from { opacity: 0; transform: translateY(14px); filter: blur(6px); }
-  to { opacity: 1; transform: none; filter: blur(0); }
-}
-@keyframes co-rule { from { width: 0; } to { width: 220px; } }
-@keyframes co-fade { to { opacity: 1; } }
-
-/* Subtle blur-in variant for reveals (used sparingly) */
-.reveal-blur { filter: blur(5px); }
-.reveal-blur.reveal-on { filter: blur(0); transition: filter 0.7s ease; }
-
-/* Card hover — physics-y lift + accent border glow. */
-.card-lift {
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.3s ease, box-shadow 0.35s ease;
-}
-.card-lift:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.7);
-}
-
-/* Nav active underline that slides/grows. */
+/* Nav underline that slides from the left. */
 .nav-link { position: relative; }
 .nav-link::after {
   content: "";
   position: absolute;
   left: 0;
   bottom: -4px;
-  height: 2px;
+  height: 1.5px;
   width: 100%;
   background: var(--color-accent);
   transform: scaleX(0);
   transform-origin: left center;
-  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.28s var(--ease-out);
 }
 .nav-link:hover::after,
-.nav-link[data-active="true"]::after {
-  transform: scaleX(1);
+.nav-link[data-active="true"]::after { transform: scaleX(1); }
+
+/* Flag-game feedback */
+@keyframes flag-pop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+@keyframes flag-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  55% { transform: translateX(4px); }
+  80% { transform: translateX(-2px); }
+}
+.flag-pop { animation: flag-pop 0.45s var(--spring); }
+.flag-shake { animation: flag-shake 0.4s ease; }
+
+/* The "stamp" that lands on a correct answer. */
+@keyframes stamp-in {
+  from { opacity: 0; transform: scale(1.35) rotate(-9deg); }
+  to { opacity: 1; transform: scale(1) rotate(-6deg); }
+}
+.stamp {
+  display: inline-block;
+  transform: rotate(-6deg);
+  animation: stamp-in 0.35s var(--ease-out) both;
+  border: 2px solid var(--color-accent);
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.55rem;
+  border-radius: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .coldopen,
-  .coldopen__name,
-  .coldopen__rule,
-  .coldopen__tag { animation: none !important; }
-  .coldopen { animation: coldopen-out 0.01s linear 0.3s forwards; }
-  .card-lift { transition: border-color 0.3s ease; }
-  .card-lift:hover { transform: none; }
-  .reveal-blur { filter: none; }
+  .flag-pop, .flag-shake, .stamp { animation: none !important; }
+}
+
+/* Scroll-drawn route line (kept from v1 — now drawn in ink). */
+.draw-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--draw, 0));
+}
+@media (prefers-reduced-motion: reduce) {
+  .draw-path { stroke-dashoffset: 0 !important; }
 }

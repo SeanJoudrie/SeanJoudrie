@@ -3,21 +3,20 @@
 
 export const site = {
   name: 'Sean Joudrie',
+  tagline: 'Designer-builder',
   email: 'sjoudrie@gmail.com',
   github: 'https://github.com/SeanJoudrie',
 
   linkedin: 'https://www.linkedin.com/in/seanjoudrie' as string | null,
   location: 'Wakefield, MA',
+  availability: 'Boston · Remote · Open to work',
 
-  // Portrait for the About section (uniform portrait). null shows a monogram.
+  // Portrait for the About section. null shows a monogram.
   photo: 'sean-uniform.webp' as string | null,
 
   // Résumé lives at public/resume.pdf.
   hasResume: true,
   resumeUrl: 'resume.pdf',
-
-  // Shown in the "Now" section so it reads as intentionally current.
-  nowUpdated: 'July 2026',
 }
 
 /**
