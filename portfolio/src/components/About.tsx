@@ -30,7 +30,7 @@ export function About() {
           <Reveal>
             <div className="flex items-center gap-4">
               <span className="annotation whitespace-nowrap">About</span>
-              <span className="dim-line flex-1" />
+              <span className="dim-line dim-draw flex-1" />
             </div>
             <h2 className="mt-6 font-display text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-4xl">
               Taste, systems, and the discipline to ship.

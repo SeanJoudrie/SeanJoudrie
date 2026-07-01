@@ -42,7 +42,7 @@ export function Lab() {
         <Reveal>
           <div className="flex items-center gap-4">
             <span className="annotation whitespace-nowrap">The Lab</span>
-            <span className="dim-line flex-1" />
+            <span className="dim-line dim-draw flex-1" />
             <span className="coord whitespace-nowrap">{EXPERIMENTS.length} experiments</span>
           </div>
           <h2 className="mt-6 max-w-2xl font-display text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-4xl">

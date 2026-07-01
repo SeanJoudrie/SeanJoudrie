@@ -4,8 +4,13 @@ import type { Project } from '../data/projects'
 import { CaseStudyDrawer } from './CaseStudyDrawer'
 import { Reveal } from './Reveal'
 import { PlateMotif } from './PlateMotif'
+import { navigate } from '../lib/router'
 
-const bySlug = (h: string) => projects.find((p) => slug(p.name) === h) ?? null
+/** Projects with a dedicated case-study page skip the drawer. */
+const hasPage = (name: string) => slug(name) === 'globalio'
+
+const bySlug = (h: string) =>
+  projects.find((p) => slug(p.name) === h && !hasPage(p.name)) ?? null
 
 export function Work() {
   const [active, setActive] = useState<Project | null>(null)
@@ -21,6 +26,10 @@ export function Work() {
   }, [])
 
   const open = useCallback((p: Project, opener?: HTMLElement | null) => {
+    if (hasPage(p.name)) {
+      navigate(`#/work/${slug(p.name)}`)
+      return
+    }
     openerRef.current = opener ?? null
     setActive(p)
     history.replaceState(null, '', `#${slug(p.name)}`)
@@ -40,7 +49,7 @@ export function Work() {
         <Reveal>
           <div className="flex items-center gap-4">
             <span className="annotation whitespace-nowrap">Index of works</span>
-            <span className="dim-line flex-1" />
+            <span className="dim-line dim-draw flex-1" />
             <span className="coord whitespace-nowrap">{projects.length} entries</span>
           </div>
         </Reveal>
@@ -53,7 +62,7 @@ export function Work() {
         {/* Plates 02–04 */}
         <div className="mt-6 grid gap-6 md:grid-cols-3">
           {rest.map((p, i) => (
-            <Reveal key={p.name} delay={i * 60} as="div">
+            <Reveal key={p.name} delay={i * 60} as="div" className="reveal-settle">
               <Plate project={p} onOpen={open} />
             </Reveal>
           ))}
@@ -94,7 +103,11 @@ function FeaturedPlate({
             <StatusChip status={p.status} live={!!p.liveUrl} />
           </div>
 
-          <h3 className="mt-4 font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
+          <h3
+            className={`mt-4 font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl ${
+              hasPage(p.name) ? 'vt-gio-title' : ''
+            }`}
+          >
             {p.name}
           </h3>
           <p className="mt-2 font-display text-xl italic text-ink-2">{p.hook}</p>
@@ -133,9 +146,13 @@ function FeaturedPlate({
           </div>
         </div>
 
-        {/* Real product — three screens fanned like specimen plates */}
+        {/* Real product — three screens that fan open as the plate reveals */}
         {p.shots && (
-          <div className="relative mx-auto flex min-h-[22rem] w-full max-w-md items-center justify-center sm:min-h-[26rem]">
+          <div
+            className={`relative mx-auto flex min-h-[22rem] w-full max-w-md items-center justify-center sm:min-h-[26rem] ${
+              hasPage(p.name) ? 'vt-gio-shots' : ''
+            }`}
+          >
             {p.shots.slice(0, 3).map((s, i) => (
               <img
                 key={s}
@@ -143,11 +160,14 @@ function FeaturedPlate({
                 alt={`${p.name} — screen ${i + 1}`}
                 loading="lazy"
                 decoding="async"
-                className="plate-lift absolute max-h-[88%] w-36 rounded-xl border border-line bg-paper object-cover object-top shadow-lg sm:w-44"
-                style={{
-                  transform: `rotate(${(i - 1) * 7}deg) translateX(${(i - 1) * 58}%)`,
-                  zIndex: i === 1 ? 2 : 1,
-                }}
+                className="plate-lift fan-item absolute max-h-[88%] w-36 rounded-xl border border-line bg-paper object-cover object-top shadow-lg sm:w-44"
+                style={
+                  {
+                    '--fan': `rotate(${(i - 1) * 7}deg) translateX(${(i - 1) * 58}%)`,
+                    transitionDelay: `${i * 90}ms`,
+                    zIndex: i === 1 ? 2 : 1,
+                  } as React.CSSProperties
+                }
               />
             ))}
           </div>
