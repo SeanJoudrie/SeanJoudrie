@@ -22,8 +22,8 @@ export const projects: Project[] = [
     name: 'Flexyn',
     hook: 'A social fitness app that turns training into a progression loop.',
     description:
-      'Workout & nutrition tracking, gamification, a social feed with DMs, leaderboards, and a marketplace — a full consumer product, not a prototype.',
-    role: 'Solo builder — product, design, frontend, backend, database',
+      'A 5,000+ exercise database, barcode-based nutrition scanning, workout & progress tracking, AI-assisted form feedback, plus gamification and a social feed — a full consumer product, not a prototype.',
+    role: 'Co-Founder — product, design, and full-stack build',
     stack: ['React', 'Vite', 'Supabase', 'Tailwind', 'PWA'],
     status: 'Live · beta-tested · App Store roadmap in progress',
     repoUrl: 'https://github.com/SeanJoudrie',

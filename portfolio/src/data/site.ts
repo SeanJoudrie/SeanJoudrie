@@ -6,14 +6,12 @@ export const site = {
   email: 'sjoudrie@gmail.com',
   github: 'https://github.com/SeanJoudrie',
 
-  // Set to a real URL once the LinkedIn profile is ready, e.g.
-  // 'https://www.linkedin.com/in/sean-joudrie'. Null hides the link.
-  linkedin: null as string | null,
+  linkedin: 'https://www.linkedin.com/in/seanjoudrie' as string | null,
+  location: 'Wakefield, MA',
 
-  // Drop the file at public/resume.pdf, then set this to true. While false,
-  // every "Download résumé" CTA is hidden instead of pointing at a 404.
-  hasResume: false,
-  resumeUrl: '/resume.pdf',
+  // Résumé lives at public/resume.pdf.
+  hasResume: true,
+  resumeUrl: 'resume.pdf',
 
   // Shown in the "Now" section so it reads as intentionally current.
   nowUpdated: 'July 2026',
