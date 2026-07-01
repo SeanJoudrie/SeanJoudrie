@@ -36,12 +36,12 @@ export function Work() {
 
   return (
     <section id="work" className="border-b border-line">
-      <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
+      <div className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-28">
         <Reveal>
           <div className="flex items-center gap-4">
             <span className="annotation whitespace-nowrap">Index of works</span>
             <span className="dim-line flex-1" />
-            <span className="coord whitespace-nowrap">4 entries</span>
+            <span className="coord whitespace-nowrap">{projects.length} entries</span>
           </div>
         </Reveal>
 
@@ -119,14 +119,14 @@ function FeaturedPlate({
                 href={p.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="springy rounded-lg bg-accent px-5 py-2.5 font-semibold text-paper hover:bg-accent-deep"
+                className="springy w-full rounded-lg bg-accent px-5 py-3 text-center font-semibold text-paper hover:bg-accent-deep sm:w-auto sm:py-2.5"
               >
                 Play it live ↗
               </a>
             )}
             <button
               onClick={(e) => onOpen(p, e.currentTarget)}
-              className="springy rounded-lg border border-ink/25 px-5 py-2.5 font-semibold text-ink hover:border-accent hover:text-accent"
+              className="springy w-full rounded-lg border border-ink/25 px-5 py-3 text-center font-semibold text-ink hover:border-accent hover:text-accent sm:w-auto sm:py-2.5"
             >
               Case study →
             </button>

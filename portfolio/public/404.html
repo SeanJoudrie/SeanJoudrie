@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Uncharted territory — Sean Joudrie</title>
+  <link rel="icon" type="image/svg+xml" href="/SeanJoudrie/favicon.svg" />
+  <style>
+    @font-face {
+      font-family: "Fraunces";
+      font-style: normal;
+      font-weight: 400 700;
+      font-display: swap;
+      src: url("/SeanJoudrie/fonts/fraunces.woff2") format("woff2");
+    }
+    * { margin: 0; box-sizing: border-box; }
+    body {
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      background: #f4eee1;
+      color: #211b12;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      padding: 2rem;
+    }
+    .card { max-width: 30rem; text-align: center; }
+    .coord {
+      font-family: ui-monospace, Menlo, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      color: #857b63;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-family: Fraunces, Georgia, serif;
+      font-weight: 600;
+      font-size: clamp(2.2rem, 8vw, 3.2rem);
+      line-height: 1.05;
+      letter-spacing: -0.015em;
+      margin-top: 1rem;
+    }
+    h1 em { color: #bd3a1c; font-style: italic; }
+    p { margin-top: 1rem; color: #5c5340; line-height: 1.6; }
+    a.home {
+      display: inline-block;
+      margin-top: 2rem;
+      background: #211b12;
+      color: #f4eee1;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 0.5rem;
+      transition: background 0.25s ease, transform 0.25s ease;
+    }
+    a.home:hover { background: #bd3a1c; transform: translateY(-2px); }
+    svg { margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <span class="coord">Plate 404 · Not on any map</span>
+    <h1>Uncharted <em>territory</em>.</h1>
+    <svg width="120" height="60" viewBox="0 0 120 60" fill="none" aria-hidden="true">
+      <path d="M8 46 C 30 10, 52 54, 76 22 S 108 30, 114 14"
+        stroke="#bd3a1c" stroke-width="2" stroke-dasharray="5 6" stroke-linecap="round"/>
+      <circle cx="8" cy="46" r="3.5" fill="#211b12"/>
+      <path d="M110 10 l8 4 -8 4 2-4z" fill="#bd3a1c"/>
+    </svg>
+    <p>This page isn’t in the codex — the route may have moved, or it never existed.
+       The index of works is back at base camp.</p>
+    <a class="home" href="/SeanJoudrie/">Return to the index</a>
+  </main>
+</body>
+</html>

@@ -47,7 +47,7 @@ const GROUPS: { title: string; items: string[] }[] = [
 export function Capabilities() {
   return (
     <section id="skills" className="border-b border-line bg-paper-2/40">
-      <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
+      <div className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-24">
         <Reveal>
           <div className="flex items-center gap-4">
             <span className="annotation whitespace-nowrap">Capabilities</span>

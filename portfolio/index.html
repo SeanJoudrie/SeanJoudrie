@@ -30,6 +30,49 @@
       content="Interfaces you can play, shipped solo: a geography game with 50+ modes and a 4,000-entry codex."
     />
     <meta name="twitter:image" content="https://seanjoudrie.github.io/SeanJoudrie/og.png" />
+
+    <!-- Self-hosted variable fonts: preloaded, stable public URLs -->
+    <link rel="preload" href="%BASE_URL%fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="%BASE_URL%fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: "Fraunces";
+        font-style: normal;
+        font-weight: 400 700;
+        font-display: swap;
+        src: url("%BASE_URL%fonts/fraunces.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Fraunces";
+        font-style: italic;
+        font-weight: 400 700;
+        font-display: swap;
+        src: url("%BASE_URL%fonts/fraunces-italic.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Inter";
+        font-style: normal;
+        font-weight: 400 700;
+        font-display: swap;
+        src: url("%BASE_URL%fonts/inter.woff2") format("woff2");
+      }
+    </style>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Sean Joudrie",
+        "jobTitle": "Product / UI Designer & Design Engineer",
+        "url": "https://seanjoudrie.github.io/SeanJoudrie/",
+        "email": "mailto:sjoudrie@gmail.com",
+        "address": { "@type": "PostalAddress", "addressLocality": "Wakefield", "addressRegion": "MA" },
+        "sameAs": [
+          "https://github.com/SeanJoudrie",
+          "https://www.linkedin.com/in/seanjoudrie"
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
