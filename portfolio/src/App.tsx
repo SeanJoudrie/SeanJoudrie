@@ -18,9 +18,14 @@ export default function App() {
   // scroll to it once the sections exist.
   useEffect(() => {
     if (caseSlug) return
-    const m = window.location.hash.match(/^#([a-z]+)$/)
+    const m = window.location.hash.match(/^#([a-z-]+)$/)
     if (!m) return
-    requestAnimationFrame(() => document.getElementById(m[1])?.scrollIntoView())
+    requestAnimationFrame(() => {
+      // Section anchors scroll to themselves; drawer slugs (#rex…) have no
+      // element, so land on the Work section the drawer belongs to.
+      const el = document.getElementById(m[1]) ?? document.getElementById('work')
+      el?.scrollIntoView()
+    })
   }, [caseSlug])
 
   if (caseSlug === 'globalio') {

@@ -39,7 +39,7 @@ export function Contact() {
             </a>
             <button
               onClick={copyEmail}
-              className="springy rounded-lg border border-ink/25 px-4 py-3 text-sm font-semibold text-ink hover:border-accent hover:text-accent"
+              className="springy inline-flex min-w-28 items-center justify-center rounded-lg border border-ink/25 px-4 py-3 text-sm font-semibold text-ink hover:border-accent hover:text-accent"
               aria-live="polite"
             >
               {copied ? <span className="stamp">Copied</span> : 'Copy'}

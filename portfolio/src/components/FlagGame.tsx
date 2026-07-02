@@ -68,7 +68,7 @@ export function FlagGame() {
               href="https://globalio.app"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-semibold text-accent hover:text-accent-deep"
+              className="result-link text-sm font-semibold text-accent hover:text-accent-deep"
             >
               Keep going — play Globalio ↗
             </a>

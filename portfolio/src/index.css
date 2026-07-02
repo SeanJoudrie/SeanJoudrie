@@ -105,10 +105,17 @@ body {
    Motion — springs and reveals. Every rule has a reduced-motion out.
    ============================================================ */
 
-/* Spring curve used everywhere an element responds to the hand. */
+/* Motion language — five duration tiers, two curves. New rules use these;
+   springs respond to the hand only, ease-out owns every enter/exit. */
 :root {
   --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --t-feedback: 150ms; /* in-place state: chips, rows, colors */
+  --t-enter: 250ms;    /* things appearing */
+  --t-exit: 200ms;     /* things leaving — always a touch faster */
+  --t-reveal: 550ms;   /* scroll reveals */
+  --t-emph: 400ms;     /* one-shot emphasis: stamp, pop, shake */
 }
 
 /* Reveal-on-scroll — quick and quiet, not a parade. */
@@ -260,7 +267,17 @@ body {
   ::view-transition-new(*) { animation: none !important; }
 }
 
-/* Mobile menu sheet — links rise in with a small stagger. */
+/* Mobile menu sheet — the surface rises in, links stagger after it,
+   and the whole thing fades out (slightly faster) on close. */
+@keyframes sheet-in {
+  from { opacity: 0; transform: translateY(8px); }
+}
+@keyframes sheet-out {
+  to { opacity: 0; transform: translateY(6px); }
+}
+.menu-sheet { animation: sheet-in var(--t-enter) var(--ease-out) both; }
+.menu-sheet-out { animation: sheet-out var(--t-exit) var(--ease-out) both; }
+
 @keyframes menu-link-in {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: none; }
@@ -271,5 +288,41 @@ body {
   animation-delay: var(--stagger, 0ms);
 }
 @media (prefers-reduced-motion: reduce) {
+  .menu-sheet, .menu-sheet-out { animation: none; }
   .menu-link { animation: none; opacity: 1; }
+}
+
+/* Seed Scrubber — the round slides in from the direction of travel. */
+@keyframes seed-swap {
+  from { opacity: 0; transform: translateX(var(--dx, 10px)); }
+}
+.seed-swap { animation: seed-swap 220ms var(--ease-out) both; }
+.seed-swap li { animation: seed-swap 220ms var(--ease-out) both; }
+.seed-swap li:nth-child(2) { animation-delay: 40ms; }
+.seed-swap li:nth-child(3) { animation-delay: 80ms; }
+.seed-swap li:nth-child(4) { animation-delay: 120ms; }
+
+/* Generic soft appear for in-place content (empty states, result rows). */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(4px); }
+}
+.fade-in { animation: fade-in-up var(--t-enter) var(--ease-out) both; }
+
+/* Flag-game CTA — arrives after the stamp lands: verdict, then invitation. */
+@keyframes link-in {
+  from { opacity: 0; transform: translateX(-6px); }
+}
+.result-link { animation: link-in var(--t-enter) var(--ease-out) 120ms both; }
+
+/* First-paint cascade — hero and case-study headers only. */
+@keyframes hero-in {
+  from { opacity: 0; transform: translateY(10px); }
+}
+.hero-in {
+  animation: hero-in 350ms var(--ease-out) both;
+  animation-delay: var(--d, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seed-swap, .seed-swap li, .fade-in, .result-link, .hero-in { animation: none; opacity: 1; }
 }

@@ -43,10 +43,13 @@ export function useRoute(): Route {
 type DocWithVT = Document & { startViewTransition?: (cb: () => void) => void }
 
 export function navigate(to: string) {
+  // Section anchors (#work, #rex…) manage their own scroll via App's
+  // effect / the drawer — jumping to top first would double-scroll.
+  const isSection = /^#[a-z-]+$/.test(to)
   const apply = () => {
     history.pushState(null, '', to)
     flushSync(() => set(to))
-    window.scrollTo(0, 0)
+    if (!isSection) window.scrollTo(0, 0)
   }
   const svt = (document as DocWithVT).startViewTransition?.bind(document)
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches

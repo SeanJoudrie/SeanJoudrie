@@ -56,7 +56,7 @@ export default function CodexExplorer() {
         <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter by region">
           <button
             onClick={() => setRegion(null)}
-            className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${
+            className={`rounded-full border px-2.5 py-1 text-xs font-semibold transition-colors duration-150 ${
               region === null ? 'border-accent bg-accent text-paper' : 'border-line text-ink-2 hover:border-accent hover:text-accent'
             }`}
           >
@@ -66,7 +66,7 @@ export default function CodexExplorer() {
             <button
               key={r}
               onClick={() => setRegion(region === r ? null : r)}
-              className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${
+              className={`rounded-full border px-2.5 py-1 text-xs font-semibold transition-colors duration-150 ${
                 region === r ? 'border-accent bg-accent text-paper' : 'border-line text-ink-2 hover:border-accent hover:text-accent'
               }`}
             >
@@ -92,7 +92,7 @@ export default function CodexExplorer() {
           </thead>
           <tbody>
             {rows.map((e) => (
-              <tr key={e.code} className="border-b border-line/60 last:border-b-0 hover:bg-paper-2/60">
+              <tr key={e.code} className="border-b border-line/60 transition-colors duration-150 last:border-b-0 hover:bg-paper-2/60">
                 <td className="px-3 py-1.5">
                   <img
                     src={`https://flagcdn.com/w40/${e.code}.png`}
@@ -114,7 +114,7 @@ export default function CodexExplorer() {
             {rows.length === 0 && (
               <tr>
                 <td colSpan={4} className="px-3 py-6 text-center text-faint">
-                  Nothing in the codex matches “{q}”.
+                  <span className="fade-in block">Nothing in the codex matches “{q}”.</span>
                 </td>
               </tr>
             )}
@@ -130,7 +130,7 @@ function Th({ label, onClick, className = '' }: { label: string; onClick: () => 
     <th className={`border-b border-line px-3 py-2 ${className}`}>
       <button
         onClick={onClick}
-        className="font-semibold text-ink transition-colors hover:text-accent"
+        className="font-semibold text-ink transition-colors duration-150 hover:text-accent"
       >
         {label}
       </button>

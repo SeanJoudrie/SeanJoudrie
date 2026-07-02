@@ -55,12 +55,16 @@ export function GlobalioCaseStudy() {
         <div className="mx-auto max-w-4xl px-5 pb-12 sm:px-8 sm:pb-16">
           <button
             onClick={() => navigate('#work')}
-            className="coord transition-colors hover:text-accent"
+            className="hero-in coord transition-colors hover:text-accent"
+            style={{ '--d': '0ms' } as React.CSSProperties}
           >
             ← Index of works
           </button>
 
-          <div className="mt-6 flex items-center gap-3">
+          <div
+            className="hero-in mt-6 flex items-center gap-3"
+            style={{ '--d': '40ms' } as React.CSSProperties}
+          >
             <span className="coord">Plate 01 · Case study</span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 px-2.5 py-0.5 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-accent">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
@@ -68,14 +72,23 @@ export function GlobalioCaseStudy() {
             </span>
           </div>
 
-          <h1 className="vt-gio-title mt-4 font-display text-5xl font-semibold tracking-tight text-ink sm:text-6xl">
+          <h1
+            className="vt-gio-title hero-in mt-4 font-display text-5xl font-semibold tracking-tight text-ink sm:text-6xl"
+            style={{ '--d': '80ms' } as React.CSSProperties}
+          >
             Globalio
           </h1>
-          <p className="mt-3 font-display text-xl italic text-ink-2 sm:text-2xl">
+          <p
+            className="hero-in mt-3 font-display text-xl italic text-ink-2 sm:text-2xl"
+            style={{ '--d': '120ms' } as React.CSSProperties}
+          >
             A geography game the whole planet plays together.
           </p>
 
-          <ul className="mt-6 flex flex-wrap gap-2">
+          <ul
+            className="hero-in mt-6 flex flex-wrap gap-2"
+            style={{ '--d': '160ms' } as React.CSSProperties}
+          >
             {['50+ game modes', '4,000+ codex entries', '197 countries', 'Solo, in one week'].map(
               (f) => (
                 <li
@@ -88,7 +101,10 @@ export function GlobalioCaseStudy() {
             )}
           </ul>
 
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div
+            className="hero-in mt-8 flex flex-wrap gap-3"
+            style={{ '--d': '200ms' } as React.CSSProperties}
+          >
             <a
               href="https://globalio.app"
               target="_blank"
