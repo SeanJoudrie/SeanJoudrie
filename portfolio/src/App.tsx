@@ -4,6 +4,7 @@ import { Hero } from './components/Hero'
 import { Work } from './components/Work'
 import { About } from './components/About'
 import { Lab } from './components/Lab'
+import { Range } from './components/Range'
 import { Now } from './components/Now'
 import { Contact } from './components/Contact'
 import { Footer } from './components/Footer'
@@ -82,6 +83,7 @@ export default function App() {
         <Work />
         <About />
         <Lab />
+        <Range />
         <Now />
         <Contact />
       </main>
