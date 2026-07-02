@@ -1,7 +1,7 @@
 import { Canvas } from '@react-three/fiber'
 import { CameraControls, ContactShadows, Environment, Lightformer } from '@react-three/drei'
 import { ACESFilmicToneMapping } from 'three'
-import { CaseBody } from './watch/Case'
+import { Bezel, CaseBody } from './watch/Case'
 
 /**
  * The stage. Zero downloaded assets: the "studio" is authored Lightformers
@@ -32,12 +32,16 @@ export default function Scene() {
         <Lightformer intensity={0.9} position={[4, 0.8, -2.5]} rotation-y={-Math.PI / 2} scale={[4, 2.5, 1]} color="#c9a55a" />
         {/* Bounce — dim, from below, so casebacks and bevels don't go dead. */}
         <Lightformer intensity={0.35} position={[0, -3, 0]} rotation-x={-Math.PI / 2} scale={[6, 6, 1]} color="#8a7f6b" />
+        {/* Camera-side fill — polished, camera-facing surfaces (bezel dome,
+            crystal) need something frontal to mirror or they read black. */}
+        <Lightformer intensity={0.5} position={[0, 0.5, 5]} scale={[6, 3, 1]} color="#f2efe8" />
       </Environment>
 
       {/* The watch, product-shot orientation: dial toward the camera with a
           slight backward lean, floating over its shadow. */}
       <group rotation={[Math.PI / 2 - 0.28, 0, 0]}>
         <CaseBody />
+        <Bezel />
       </group>
 
       {/* Static scene → the shadow renders once, not per frame. */}
