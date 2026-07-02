@@ -67,6 +67,7 @@ export const projects: Project[] = [
     stack: ['React', 'Supabase', 'Tailwind', 'PWA'],
     status: 'In build · private beta',
     facts: ['5,000+ exercise database', 'Row-level security throughout', 'Web-push from DB triggers'],
+    screenshot: 'shots/flexyn-plate.webp',
     caseStudy: {
       problem:
         'Fitness apps treat logging as a chore and lose users by week two. The hard problem is retention — making people want to come back tomorrow.',

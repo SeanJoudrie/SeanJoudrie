@@ -11,6 +11,13 @@ import { useRoute } from './lib/router'
 
 const GlobalioCaseStudy = lazy(() => import('./pages/GlobalioCaseStudy'))
 const RexCaseStudy = lazy(() => import('./pages/RexCaseStudy'))
+const FlexynCaseStudy = lazy(() => import('./pages/FlexynCaseStudy'))
+
+const CASE_PAGES: Record<string, React.LazyExoticComponent<() => React.JSX.Element>> = {
+  globalio: GlobalioCaseStudy,
+  rex: RexCaseStudy,
+  flexyn: FlexynCaseStudy,
+}
 
 export default function App() {
   const { caseSlug } = useRoute()
@@ -29,7 +36,8 @@ export default function App() {
     })
   }, [caseSlug])
 
-  if (caseSlug === 'globalio' || caseSlug === 'rex') {
+  const CasePage = caseSlug ? CASE_PAGES[caseSlug] : undefined
+  if (CasePage) {
     return (
       <>
         <Nav />
@@ -41,7 +49,7 @@ export default function App() {
               </div>
             }
           >
-            {caseSlug === 'globalio' ? <GlobalioCaseStudy /> : <RexCaseStudy />}
+            <CasePage />
           </Suspense>
         </main>
         <Footer />
