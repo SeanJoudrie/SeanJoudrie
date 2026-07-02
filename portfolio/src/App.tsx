@@ -14,11 +14,28 @@ const GlobalioCaseStudy = lazy(() => import('./pages/GlobalioCaseStudy'))
 const RexCaseStudy = lazy(() => import('./pages/RexCaseStudy'))
 const FlexynCaseStudy = lazy(() => import('./pages/FlexynCaseStudy'))
 const AeroScaleDashboard = lazy(() => import('./pages/AeroScaleDashboard'))
+const MeridianConfigurator = lazy(() => import('./pages/MeridianConfigurator'))
 
 const CASE_PAGES: Record<string, React.LazyExoticComponent<() => React.JSX.Element>> = {
   globalio: GlobalioCaseStudy,
   rex: RexCaseStudy,
   flexyn: FlexynCaseStudy,
+}
+
+// Demos are standalone products — they bring their own chrome, so the
+// portfolio nav and footer stay out of the frame. Each declares the shell
+// classes its loading state wears so the chunk never flashes paper.
+const DEMO_PAGES: Record<
+  string,
+  { Page: React.LazyExoticComponent<() => React.JSX.Element>; label: string; shell: string; spinner: string }
+> = {
+  aeroscale: { Page: AeroScaleDashboard, label: 'AeroScale UI demo', shell: 'bg-aero-bg', spinner: 'text-aero-muted' },
+  meridian: {
+    Page: MeridianConfigurator,
+    label: 'Meridian configurator demo',
+    shell: 'bg-meridian-bg',
+    spinner: 'text-meridian-muted',
+  },
 }
 
 export default function App() {
@@ -38,19 +55,18 @@ export default function App() {
     })
   }, [caseSlug, demoSlug])
 
-  // Demos are standalone products — they bring their own chrome, so the
-  // portfolio nav and footer stay out of the frame.
-  if (demoSlug === 'aeroscale') {
+  const demo = demoSlug ? DEMO_PAGES[demoSlug] : undefined
+  if (demo) {
     return (
-      <main aria-label="AeroScale UI demo">
+      <main aria-label={demo.label}>
         <Suspense
           fallback={
-            <div className="grid min-h-svh place-items-center bg-aero-bg">
-              <span className="coord text-aero-muted">loading demo…</span>
+            <div className={`grid min-h-svh place-items-center ${demo.shell}`}>
+              <span className={`coord ${demo.spinner}`}>loading demo…</span>
             </div>
           }
         >
-          <AeroScaleDashboard />
+          <demo.Page />
         </Suspense>
       </main>
     )

@@ -6,7 +6,7 @@ import { exportChartPng } from './exportPng'
 import { fmtCompact, fmtMonth } from './format'
 import type { SeriesId } from './series'
 import { SERIES, visValue } from './series'
-import { addTask, easeOutCubic } from './useSharedTicker'
+import { addTask, easeOutCubic } from '../../lib/ticker'
 
 /** Fixed resample count — every timeframe renders as the same number of
     points, so morphs are a plain element-wise tween, Safari included. */

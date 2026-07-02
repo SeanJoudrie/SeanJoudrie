@@ -1,0 +1,29 @@
+/* Meridian — demo-scoped warm-dark chrome. Color tokens live in index.css
+   @theme (meridian-*); this sheet carries what utilities can't. Deliberately
+   warmer than AeroScale's slate so the two demos read as different rooms. */
+.meridian-root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+}
+.meridian-root ::selection {
+  background: var(--color-meridian-brass);
+  color: var(--color-meridian-bg);
+}
+.meridian-root :focus-visible {
+  outline-color: var(--color-meridian-brass);
+}
+
+/* The demo owns the whole viewport — the body swap covers overscroll. */
+body.meridian-page {
+  background-color: var(--color-meridian-bg);
+}
+
+/* Small-caps label — the warm twin of AeroScale's .aero-label. */
+.meridian-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-meridian-muted);
+}
