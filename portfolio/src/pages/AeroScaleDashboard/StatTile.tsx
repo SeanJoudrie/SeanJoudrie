@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { useCountUp } from './useSharedTicker'
+import { useCountUp } from '../../lib/ticker'
 
 export type Delta = { label: string; up: boolean; vs: string }
 
