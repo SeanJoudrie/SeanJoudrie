@@ -10,6 +10,14 @@ import { europe, CODEX_TOTALS } from '../../data/codex'
 export default function CodexExplorer() {
   const [q, setQ] = useState('')
   const [open, setOpen] = useState<string | null>('fr')
+  // Only ever-opened panels render their images — keeps ~150 flag
+  // thumbnails from fetching while collapsed.
+  const [seen, setSeen] = useState<Set<string>>(() => new Set(['fr']))
+
+  const toggle = (code: string) => {
+    setOpen((cur) => (cur === code ? null : code))
+    setSeen((s) => (s.has(code) ? s : new Set(s).add(code)))
+  }
 
   const rows = useMemo(() => {
     const needle = q.trim().toLowerCase()
@@ -45,7 +53,7 @@ export default function CodexExplorer() {
           return (
             <li key={c.code} className="border-b border-line/60 last:border-b-0">
               <button
-                onClick={() => setOpen(isOpen ? null : c.code)}
+                onClick={() => toggle(c.code)}
                 aria-expanded={isOpen}
                 className={`flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors duration-150 hover:bg-paper-2/60 ${
                   isOpen ? 'bg-paper-2/60' : ''
@@ -84,21 +92,32 @@ export default function CodexExplorer() {
                 style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
               >
                 <div className="overflow-hidden">
+                  {seen.has(c.code) && (
                   <div className="border-t border-line/60 bg-paper-2/40 px-4 py-3 pl-12">
                     <p className="annotation text-gold">Subdivisions</p>
                     <p className="mt-1 text-sm text-ink-2">{c.subdiv}</p>
                     <p className="annotation mt-3 text-gold">Flag history</p>
-                    <ol className="mt-1.5 space-y-1.5">
+                    <ol className="mt-2 space-y-2.5">
                       {c.history.map((h) => (
-                        <li key={h.name} className="flex items-baseline gap-3 text-sm">
-                          <span className="coord w-24 shrink-0 text-right">{h.era}</span>
-                          <span className="relative pl-3 leading-snug text-ink-2 before:absolute before:left-0 before:top-[0.45em] before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent/60">
-                            {h.name}
-                          </span>
+                        <li key={h.name} className="flex items-center gap-3 text-sm">
+                          <img
+                            src={h.img}
+                            srcSet={`${h.img.replace('/120px-', '/240px-').replace('/w80/', '/w160/')} 2x`}
+                            alt={`${h.name} flag`}
+                            width={44}
+                            height={30}
+                            loading="lazy"
+                            decoding="async"
+                            className="h-[30px] w-11 shrink-0 rounded-[2px] border border-line/70 bg-paper-2 object-contain shadow-sm"
+                            onError={(ev) => ((ev.target as HTMLImageElement).style.visibility = 'hidden')}
+                          />
+                          <span className="coord w-24 shrink-0">{h.era}</span>
+                          <span className="leading-snug text-ink-2">{h.name}</span>
                         </li>
                       ))}
                     </ol>
                   </div>
+                  )}
                 </div>
               </div>
             </li>
