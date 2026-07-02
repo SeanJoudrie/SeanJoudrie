@@ -14,9 +14,9 @@ const EXPERIMENTS = [
   {
     n: '01',
     skill: 'Data',
-    title: 'Codex Explorer',
+    title: 'Codex Explorer — the Europe section',
     caption:
-      'Search, facet, and sort the 197-country spine of Globalio’s codex — live, instant, keyboard-friendly. The production codex layers 4,000+ entries on top of this.',
+      'One region of Globalio’s codex, in the shape the product uses: open any country for its subdivisions and flag-history timeline. The full codex covers 197 countries and 4,000+ entries.',
     Demo: CodexExplorer,
   },
   {
@@ -30,9 +30,9 @@ const EXPERIMENTS = [
   {
     n: '03',
     skill: 'Interaction',
-    title: 'Swipe Deck',
+    title: 'Swipe Deck — decide together',
     caption:
-      'REX’s core gesture, miniaturized: rotation follows the hand, the verdict fades in with distance, release commits with a spring — or snaps back. Keyboard works too.',
+      'REX’s real loop: your partner already swiped, and every shared like flashes IT’S A MATCH. Ten decisions in, you get the night’s match list. Drag, tap, or use ← →.',
     Demo: SwipeDeck,
   },
 ]

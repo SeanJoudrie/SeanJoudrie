@@ -4,6 +4,8 @@ import type { Project } from '../data/projects'
 import { CaseStudyDrawer } from './CaseStudyDrawer'
 import { Reveal } from './Reveal'
 import { PlateMotif } from './PlateMotif'
+import { Lightbox } from './Lightbox'
+import type { LightboxImage } from './Lightbox'
 import { navigate } from '../lib/router'
 
 /** Projects with a dedicated case-study page skip the drawer. */
@@ -94,6 +96,7 @@ function FeaturedPlate({
   project: Project
   onOpen: (p: Project, opener?: HTMLElement | null) => void
 }) {
+  const [zoom, setZoom] = useState<LightboxImage | null>(null)
   return (
     <article className="mt-8 overflow-hidden rounded-xl border border-line bg-paper-2/50">
       <div className="grid gap-8 p-6 sm:p-10 lg:grid-cols-[1fr_0.9fr] lg:gap-12">
@@ -154,13 +157,11 @@ function FeaturedPlate({
             }`}
           >
             {p.shots.slice(0, 3).map((s, i) => (
-              <img
+              <button
                 key={s}
-                src={s}
-                alt={`${p.name} — screen ${i + 1}`}
-                loading="lazy"
-                decoding="async"
-                className="plate-lift fan-item absolute max-h-[88%] w-36 rounded-xl border border-line bg-paper object-cover object-top shadow-lg sm:w-44"
+                onClick={() => setZoom({ src: s, alt: `${p.name} — screen ${i + 1}` })}
+                aria-label={`View ${p.name} screen ${i + 1} larger`}
+                className="plate-lift fan-item absolute max-h-[88%] w-36 cursor-zoom-in overflow-hidden rounded-xl border border-line bg-paper shadow-lg sm:w-44"
                 style={
                   {
                     '--fan': `rotate(${(i - 1) * 7}deg) translateX(${(i - 1) * 58}%)`,
@@ -168,11 +169,20 @@ function FeaturedPlate({
                     zIndex: i === 1 ? 2 : 1,
                   } as React.CSSProperties
                 }
-              />
+              >
+                <img
+                  src={s}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full object-cover object-top"
+                />
+              </button>
             ))}
           </div>
         )}
       </div>
+      {zoom && <Lightbox image={zoom} onClose={() => setZoom(null)} />}
     </article>
   )
 }

@@ -81,7 +81,7 @@ export function Nav() {
         <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
           <a
             href="#top"
-            className="font-display text-lg font-semibold tracking-tight text-ink"
+            className="wordmark font-display text-lg font-semibold tracking-tight text-ink"
             aria-label="Sean Joudrie — home"
           >
             Sean Joudrie<span className="text-accent">.</span>

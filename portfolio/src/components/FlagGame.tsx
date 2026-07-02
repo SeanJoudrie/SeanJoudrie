@@ -20,7 +20,7 @@ export function FlagGame() {
       </div>
 
       <div
-        className={`mx-auto mt-5 w-fit ${done ? (correct ? 'flag-pop' : 'flag-shake') : ''}`}
+        className={`flag-tilt mx-auto mt-5 w-fit ${done ? (correct ? 'flag-pop' : 'flag-shake') : ''}`}
         aria-hidden
       >
         <svg

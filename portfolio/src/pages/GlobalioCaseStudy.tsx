@@ -1,5 +1,7 @@
-import { Suspense, lazy } from 'react'
+import { Suspense, lazy, useState } from 'react'
 import { Reveal } from '../components/Reveal'
+import { Lightbox } from '../components/Lightbox'
+import type { LightboxImage } from '../components/Lightbox'
 import { navigate } from '../lib/router'
 
 const SeedScrubber = lazy(() => import('../components/lab/SeedScrubber'))
@@ -48,6 +50,7 @@ function SectionLabel({ n, title }: { n: string; title: string }) {
 }
 
 export function GlobalioCaseStudy() {
+  const [zoom, setZoom] = useState<LightboxImage | null>(null)
   return (
     <article className="pt-20 sm:pt-28">
       {/* Opening plate */}
@@ -224,13 +227,13 @@ export function GlobalioCaseStudy() {
                 },
               ].map((s, i) => (
                 <figure key={s.src}>
-                  <img
-                    src={s.src}
-                    alt={`Globalio screen ${i + 1}`}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full rounded-xl border border-line shadow-sm"
-                  />
+                  <button
+                    onClick={() => setZoom({ src: s.src, alt: s.cap })}
+                    aria-label={`View Globalio screen ${i + 1} larger`}
+                    className="plate-lift block w-full cursor-zoom-in overflow-hidden rounded-xl border border-line shadow-sm"
+                  >
+                    <img src={s.src} alt="" loading="lazy" decoding="async" className="w-full" />
+                  </button>
                   <figcaption className="mt-2 text-sm leading-relaxed text-faint">
                     {s.cap}
                   </figcaption>
@@ -249,10 +252,13 @@ export function GlobalioCaseStudy() {
                 <h3 className="font-display text-xl font-semibold text-ink">What shipped</h3>
                 <ul className="mt-3 space-y-2 text-ink-2">
                   {[
-                    'Live at globalio.app — free, no sign-up.',
-                    '50+ ways to play: dailies, quizzes, Flagle-style modes, Build-the-Flag, Odd One Out.',
-                    'Fully client-side PWA — offline-capable, installable.',
-                    '197 static country pages for SEO, generated from the codex.',
+                    'Live at globalio.app — free, no sign-up, installable PWA that works offline.',
+                    '50+ ways to play: Flagle, Flag Bracket, Build-the-Flag, Odd One Out, Sketch the Flag, Spot the Error, Flag Outline, quizzes and more.',
+                    'Daily rituals: the shared Daily Challenge, a ten-flag Daily Expedition, a Flag Gacha collection pull, and a flag fun-fact — a reason to return every day.',
+                    'A 2,000-flag codex across all 197 countries — subdivisions, historical states, and identity flags, each with era timelines and did-you-know facts.',
+                    'The Progress Map — every flag you learn lights its country up, permanently.',
+                    'Live event programming — a World Cup 2026 mode ("48 nations, one summer").',
+                    '197 static, crawlable country pages generated from the codex for SEO.',
                   ].map((x) => (
                     <li
                       key={x}
@@ -301,6 +307,7 @@ export function GlobalioCaseStudy() {
           </div>
         </Reveal>
       </div>
+      {zoom && <Lightbox image={zoom} onClose={() => setZoom(null)} />}
     </article>
   )
 }
