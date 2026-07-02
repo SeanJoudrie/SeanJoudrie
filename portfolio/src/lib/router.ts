@@ -12,8 +12,9 @@ export type Route = { caseSlug: string | null }
 function parse(hash: string): Route {
   const m = hash.match(/^#\/work\/([a-z0-9-]+)$/)
   if (m) return { caseSlug: m[1] }
-  // Legacy deep link from the drawer era.
+  // Legacy deep links from the drawer era.
   if (hash === '#globalio') return { caseSlug: 'globalio' }
+  if (hash === '#rex') return { caseSlug: 'rex' }
   return { caseSlug: null }
 }
 
