@@ -9,7 +9,7 @@ import type { LightboxImage } from './Lightbox'
 import { navigate } from '../lib/router'
 
 /** Projects with a dedicated case-study page skip the drawer. */
-const hasPage = (name: string) => ['globalio', 'rex'].includes(slug(name))
+const hasPage = (name: string) => ['globalio', 'rex', 'flexyn'].includes(slug(name))
 
 const bySlug = (h: string) =>
   projects.find((p) => slug(p.name) === h && !hasPage(p.name)) ?? null

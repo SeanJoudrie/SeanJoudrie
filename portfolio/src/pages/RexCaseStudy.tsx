@@ -279,10 +279,10 @@ export function RexCaseStudy() {
               ← Back to the index
             </button>
             <button
-              onClick={() => navigate('#/work/globalio')}
+              onClick={() => navigate('#/work/flexyn')}
               className="text-sm font-semibold text-accent transition-colors hover:text-accent-deep"
             >
-              Next expedition: Globalio →
+              Next expedition: Flexyn →
             </button>
           </div>
         </Reveal>

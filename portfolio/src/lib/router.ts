@@ -15,6 +15,7 @@ function parse(hash: string): Route {
   // Legacy deep links from the drawer era.
   if (hash === '#globalio') return { caseSlug: 'globalio' }
   if (hash === '#rex') return { caseSlug: 'rex' }
+  if (hash === '#flexyn') return { caseSlug: 'flexyn' }
   return { caseSlug: null }
 }
 
