@@ -11,7 +11,7 @@ function Portrait({ className = '' }: { className?: string }) {
           loading="lazy"
           decoding="async"
           className="h-full w-full object-cover"
-          style={{ objectPosition: '50% 22%' }}
+          style={{ objectPosition: '50% 12%' }}
         />
       ) : (
         <div className="grid h-full w-full place-items-center">

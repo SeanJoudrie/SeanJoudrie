@@ -1,5 +1,7 @@
-import { Suspense, lazy } from 'react'
+import { Suspense, lazy, useState } from 'react'
 import { Reveal } from '../components/Reveal'
+import { Lightbox } from '../components/Lightbox'
+import type { LightboxImage } from '../components/Lightbox'
 import { navigate } from '../lib/router'
 
 const SwipeDeck = lazy(() => import('../components/lab/SwipeDeck'))
@@ -34,6 +36,7 @@ function SectionLabel({ n, title }: { n: string; title: string }) {
 }
 
 export function RexCaseStudy() {
+  const [zoom, setZoom] = useState<LightboxImage | null>(null)
   return (
     <article className="pt-20 sm:pt-28">
       <header className="paper-wash border-b border-line">
@@ -124,7 +127,7 @@ export function RexCaseStudy() {
             </p>
             <ul className="mt-6 space-y-2">
               {[
-                'Decide, don’t scroll — every screen pushes toward one pick.',
+                'Decide together — matching two people’s taste is the headline feature, not an extra.',
                 'Learn privately — taste stays on the device, not on a server.',
                 'Free data, safely — TMDB powers it, but the key never touches the client.',
               ].map((c) => (
@@ -142,14 +145,15 @@ export function RexCaseStudy() {
         {/* Decision 1 — the gesture */}
         <Reveal>
           <section className="border-b border-line py-12 sm:py-16">
-            <SectionLabel n="02" title="Decision — the gesture" />
+            <SectionLabel n="02" title="Decision — the match" />
             <h2 className="mt-6 font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
-              One decision per card.
+              Two phones, one pick.
             </h2>
             <p className="mt-4 max-w-2xl leading-relaxed text-ink-2">
-              A swipe is a forced choice — that&apos;s the point. Rotation follows the hand,
-              the verdict fades in with drag distance, and release either commits with a
-              spring or snaps back. Try the real mechanic:
+              The real moment REX is built for is two people on a couch. Both swipe;
+              every shared like is a match, and ten cards in you have the night&apos;s
+              shortlist instead of an argument. A swipe is a forced choice — that&apos;s
+              the point. Try the loop (your partner here has already swiped):
             </p>
             <div className="mt-8">
               <Suspense fallback={<Fallback />}>
@@ -207,13 +211,13 @@ export function RexCaseStudy() {
                 },
               ].map((s, i) => (
                 <figure key={s.src}>
-                  <img
-                    src={s.src}
-                    alt={`REX screen ${i + 1}`}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full rounded-xl border border-line shadow-sm"
-                  />
+                  <button
+                    onClick={() => setZoom({ src: s.src, alt: s.cap })}
+                    aria-label={`View REX screen ${i + 1} larger`}
+                    className="plate-lift block w-full cursor-zoom-in overflow-hidden rounded-xl border border-line shadow-sm"
+                  >
+                    <img src={s.src} alt="" loading="lazy" decoding="async" className="w-full" />
+                  </button>
                   <figcaption className="mt-2 text-sm leading-relaxed text-faint">{s.cap}</figcaption>
                 </figure>
               ))}
@@ -283,6 +287,7 @@ export function RexCaseStudy() {
           </div>
         </Reveal>
       </div>
+      {zoom && <Lightbox image={zoom} onClose={() => setZoom(null)} />}
     </article>
   )
 }

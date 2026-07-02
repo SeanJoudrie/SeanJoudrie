@@ -81,15 +81,47 @@ export function dayNumberFor(date: Date) {
 
 export type Round = { answer: Flag; options: Flag[]; dayNumber: number; seed: number }
 
+/**
+ * Fair rotation: each N-day cycle is a fresh deterministic shuffle of the
+ * whole deck, so every flag appears exactly once per cycle — no repeats.
+ * The seam between cycles is guarded so the first flag of a cycle can never
+ * equal the last flag of the previous one.
+ */
+function rawPerm(cycle: number): number[] {
+  const rand = mulberry32(SEED_BASE + cycle * 7919)
+  const idx = FLAGS.map((_, i) => i)
+  for (let i = idx.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1))
+    ;[idx[i], idx[j]] = [idx[j], idx[i]]
+  }
+  return idx
+}
+
+function permFor(cycle: number): number[] {
+  const p = rawPerm(cycle)
+  // The seam guard only ever swaps positions 0/1, so the previous cycle's
+  // *displayed* last entry is always its raw last entry.
+  const prevLast = rawPerm(cycle - 1)[FLAGS.length - 1]
+  if (p[0] === prevLast) [p[0], p[1]] = [p[1], p[0]]
+  return p
+}
+
 /** The whole trick: date → seed → identical round for everyone. */
 export function roundForDay(dayNumber: number): Round {
   const seed = dayNumber + SEED_BASE
+  const N = FLAGS.length
+  const cycle = Math.floor(dayNumber / N)
+  const pos = ((dayNumber % N) + N) % N
+  const answer = FLAGS[permFor(cycle)[pos]]
+
+  // Distractors + option order come from the day seed.
   const rand = mulberry32(seed)
-  const order = FLAGS.map((f) => ({ f, k: rand() }))
+  const others = FLAGS.filter((f) => f !== answer)
+    .map((f) => ({ f, k: rand() }))
     .sort((a, b) => a.k - b.k)
+    .slice(0, 3)
     .map((x) => x.f)
-  const answer = order[0]
-  const options = [answer, order[1], order[2], order[3]]
+  const options = [answer, ...others]
     .map((f) => ({ f, k: rand() }))
     .sort((a, b) => a.k - b.k)
     .map((x) => x.f)

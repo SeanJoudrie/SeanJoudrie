@@ -160,6 +160,30 @@ body {
   .springy:hover, .springy:active, .plate-lift:hover { transform: none; box-shadow: none; }
 }
 
+/* Wordmark — the vermilion period stretches into an underline on hover. */
+.wordmark { position: relative; }
+.wordmark::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 2px;
+  width: 100%;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.3s var(--ease-out);
+}
+.wordmark:hover::after,
+.wordmark:focus-visible::after { transform: scaleX(1); }
+
+/* Hero mystery flag — a soft tilt when the hand passes over it. */
+.flag-tilt { transition: transform 0.35s var(--spring); }
+.flag-tilt:hover { transform: rotate(1.6deg) scale(1.02); }
+@media (prefers-reduced-motion: reduce) {
+  .flag-tilt:hover { transform: none; }
+}
+
 /* Nav underline that slides from the left. */
 .nav-link { position: relative; }
 .nav-link::after {
@@ -243,14 +267,20 @@ body {
    item's final transform; before reveal they sit stacked and square. */
 .reveal .fan-item {
   transform: none;
-  transition: transform 0.9s var(--spring);
+  transition: transform 0.9s var(--spring), box-shadow 0.4s ease;
 }
 .reveal.reveal-on .fan-item { transform: var(--fan); }
+/* Hover rise — --fan owns the transform, so the lift composes onto it. */
+.reveal.reveal-on .fan-item:hover {
+  transform: var(--fan) translateY(-5px);
+  transition: transform 0.35s var(--spring), box-shadow 0.35s ease;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .reveal.reveal-settle { transform: none; }
   .reveal .dim-draw { transform: scaleX(1); transition: none; }
   .reveal .fan-item { transform: var(--fan); transition: none; }
+  .reveal.reveal-on .fan-item:hover { transform: var(--fan); }
 }
 
 /* ---- View transitions (plate → case-study page) ---- */
@@ -313,6 +343,37 @@ body {
   from { opacity: 0; transform: translateX(-6px); }
 }
 .result-link { animation: link-in var(--t-enter) var(--ease-out) 120ms both; }
+
+/* "It's a match" — lands like the stamp, holds a beat, gone. */
+@keyframes match-in {
+  0% { opacity: 0; transform: scale(1.25) rotate(-4deg); }
+  18% { opacity: 1; transform: scale(1) rotate(0deg); }
+  82% { opacity: 1; }
+  100% { opacity: 0; transform: scale(0.98); }
+}
+.match-flash { animation: match-in 1.1s var(--ease-out) both; }
+@media (prefers-reduced-motion: reduce) {
+  .match-flash { animation: none; }
+}
+
+/* Codex accordion — animated via grid rows (no layout thrash on content). */
+.codex-expand { transition: grid-template-rows 0.3s var(--ease-out); }
+@media (prefers-reduced-motion: reduce) {
+  .codex-expand { transition: none; }
+}
+
+/* Lightbox — soft zoom-in for the viewer and its image. */
+@keyframes lightbox-in {
+  from { opacity: 0; }
+}
+@keyframes lightbox-img-in {
+  from { opacity: 0; transform: scale(0.96); }
+}
+.lightbox { animation: lightbox-in var(--t-enter) ease both; }
+.lightbox-img { animation: lightbox-img-in 0.3s var(--ease-out) both; }
+@media (prefers-reduced-motion: reduce) {
+  .lightbox, .lightbox-img { animation: none; }
+}
 
 /* First-paint cascade — hero and case-study headers only. */
 @keyframes hero-in {

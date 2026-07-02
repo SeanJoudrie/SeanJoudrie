@@ -88,7 +88,7 @@ export const projects: Project[] = [
     liveUrl: 'https://seanjoudrie.github.io/REX/',
     repoUrl: 'https://github.com/SeanJoudrie/REX',
     facts: ['On-device taste model', 'Two-phone match sessions', 'Keys proxied server-side'],
-    screenshot: 'shots/rex-onboarding.webp',
+    screenshot: 'shots/rex-plate.webp',
     shots: ['shots/rex-onboarding.webp', 'shots/rex-discover.webp', 'shots/rex-mirror.webp'],
     caseStudy: {
       problem:
