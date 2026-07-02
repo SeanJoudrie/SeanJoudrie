@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import codexData from '../../data/codexEurope.json'
 
 /**
@@ -31,33 +31,32 @@ const hideOnError = (ev: React.SyntheticEvent<HTMLImageElement>) =>
 
 const era = (h: HistoryEntry) => `${h.from} — ${h.to ?? 'Present'}`
 
-export default function CodexExplorer() {
-  const [q, setQ] = useState('')
-  const [open, setOpen] = useState<string | null>(null)
+/** Small landmark glyph for capitals — quieter than an emoji. */
+function CapitalIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="h-3 w-3 shrink-0 opacity-50"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      aria-hidden
+    >
+      <path d="M4 21h16M5 21V10M19 21V10M9 21v-7M15 21v-7M12 3 4 8h16z" />
+    </svg>
+  )
+}
 
-  const rows = useMemo(() => {
-    const needle = q.trim().toLowerCase()
-    if (!needle) return europe
-    return europe.filter(
-      (c) => c.name.toLowerCase().includes(needle) || c.capital.toLowerCase().includes(needle),
-    )
-  }, [q])
+export default function CodexExplorer() {
+  const [open, setOpen] = useState<string | null>(null)
+  const rows = europe
 
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <input
-          type="search"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Search Europe — country or capital…"
-          aria-label="Search the Europe section of the codex"
-          className="w-full rounded-lg border border-line bg-paper px-3 py-2 text-sm text-ink transition-colors duration-150 placeholder:text-faint focus:border-accent focus:outline-none sm:w-72"
-        />
-        <p className="coord" aria-live="polite">
-          Europe · {rows.length} of {europe.length} — one region of 197 · data straight from the app
-        </p>
-      </div>
+      <p className="coord">
+        Europe · {europe.length} countries, A–Z · one region of 197 — data straight from the app
+      </p>
 
       <ul className="mt-3 max-h-[34rem] overflow-y-auto rounded-lg border border-line bg-paper">
         {rows.map((c) => {
@@ -83,7 +82,10 @@ export default function CodexExplorer() {
                 />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-semibold text-ink">{c.name}</span>
-                  <span className="block truncate text-xs text-faint">🏛 {c.capital}</span>
+                  <span className="mt-0.5 flex items-center gap-1 truncate text-[0.7rem] text-faint/70">
+                    <CapitalIcon />
+                    {c.capital}
+                  </span>
                 </span>
                 <span
                   aria-hidden
@@ -96,11 +98,6 @@ export default function CodexExplorer() {
             </li>
           )
         })}
-        {rows.length === 0 && (
-          <li className="px-3 py-6 text-center text-faint">
-            <span className="fade-in block">Nothing in Europe matches “{q}”.</span>
-          </li>
-        )}
       </ul>
 
       <p className="mt-3 max-w-lg text-sm leading-relaxed text-faint">
@@ -162,24 +159,24 @@ function CountryPanel({ c }: { c: Country }) {
             onToggle={() => setSubsOpen((v) => !v)}
           />
           {subsOpen && (
-            <div className="fade-in mt-3 grid grid-cols-3 gap-x-3 gap-y-4 sm:grid-cols-5">
+            <div className="fade-in mt-4 grid grid-cols-3 gap-x-3 gap-y-4 sm:grid-cols-5">
               {c.subdivisions.map((s) => (
                 <figure key={s.name} className="text-center">
-                  <div className="grid h-12 place-items-center rounded-md border border-line/60 bg-paper px-1.5 py-1">
+                  <div className="flex h-11 items-center justify-center">
                     {s.img ? (
                       <img
                         src={s.img}
                         alt={`Flag of ${s.name}`}
                         loading="lazy"
                         decoding="async"
-                        className="max-h-10 max-w-full object-contain"
+                        className="max-h-11 max-w-full rounded-[2px] object-contain shadow-sm"
                         onError={hideOnError}
                       />
                     ) : (
-                      <span className="coord">no flag</span>
+                      <span className="coord opacity-60">no flag</span>
                     )}
                   </div>
-                  <figcaption className="mt-1 truncate text-[0.7rem] text-ink-2">{s.name}</figcaption>
+                  <figcaption className="mt-1.5 truncate text-[0.68rem] text-faint">{s.name}</figcaption>
                 </figure>
               ))}
             </div>
@@ -193,6 +190,7 @@ function CountryPanel({ c }: { c: Country }) {
           <PillRow
             label="Flag history"
             beta
+            tone="blue"
             value={`${c.history.length} flag${c.history.length > 1 ? 's' : ''}`}
             open={histOpen}
             onToggle={() => setHistOpen((v) => !v)}
@@ -211,7 +209,7 @@ function CountryPanel({ c }: { c: Country }) {
 
               <div key={hi} className="seed-swap mt-3 overflow-hidden rounded-xl border border-line bg-paper">
                 {hi === 0 && h.to === null && (
-                  <p className="border-b border-line/60 bg-paper-2/60 py-2 text-center text-sm font-semibold text-gold">
+                  <p className="border-b border-line/60 bg-paper-2/60 py-2 text-center text-sm font-semibold text-codexblue">
                     ↑ Current flag
                   </p>
                 )}
@@ -228,7 +226,7 @@ function CountryPanel({ c }: { c: Country }) {
                 <div className="px-4 pb-4 sm:px-5">
                   <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
                     <h4 className="font-display text-lg font-semibold text-ink">{h.label}</h4>
-                    <span className="rounded-full border border-gold/40 bg-paper-2/70 px-2.5 py-0.5 text-xs font-semibold text-gold">
+                    <span className="rounded-full border border-codexblue/35 bg-paper-2/70 px-2.5 py-0.5 text-xs font-semibold text-codexblue">
                       {era(h)}
                     </span>
                   </div>
@@ -246,7 +244,7 @@ function CountryPanel({ c }: { c: Country }) {
                         onClick={() => setHi(i)}
                         aria-label={`${t.label}, ${era(t)}`}
                         className={`shrink-0 rounded-lg border p-1.5 pb-1 text-center transition-colors duration-150 ${
-                          i === hi ? 'border-gold bg-paper' : 'border-line/60 bg-paper opacity-70 hover:opacity-100'
+                          i === hi ? 'border-codexblue bg-paper' : 'border-line/60 bg-paper opacity-70 hover:opacity-100'
                         }`}
                       >
                         <img
@@ -322,6 +320,7 @@ function PillRow({
   onToggle,
   beta,
   accent,
+  tone,
 }: {
   label: string
   value: string
@@ -329,24 +328,24 @@ function PillRow({
   onToggle: () => void
   beta?: boolean
   accent?: boolean
+  tone?: 'blue'
 }) {
+  const labelColor = accent ? 'text-accent/90' : tone === 'blue' ? 'text-codexblue' : 'text-gold'
   return (
     <button
       onClick={onToggle}
       aria-expanded={open}
       className="mt-4 flex w-full items-center gap-2.5 rounded-xl border border-line bg-paper px-4 py-3 text-left transition-colors duration-150 hover:border-gold/60"
     >
-      <span
-        className={`text-xs font-bold uppercase tracking-[0.12em] ${accent ? 'text-accent/90' : 'text-gold'}`}
-      >
+      <span className={`text-xs font-bold uppercase tracking-[0.12em] ${labelColor}`}>
         {label}
       </span>
       {beta && (
-        <span className="rounded-full border border-gold/40 bg-paper-2 px-2 py-0.5 text-[0.65rem] font-semibold text-gold">
+        <span className="rounded-full border border-codexblue/35 bg-paper-2 px-2 py-0.5 text-[0.65rem] font-semibold text-codexblue">
           Beta
         </span>
       )}
-      <span className="flex-1 text-sm text-ink-2">{value}</span>
+      <span className="flex-1 text-xs text-faint/80">{value}</span>
       <span
         aria-hidden
         className={`text-faint transition-transform duration-200 ${open ? 'rotate-90' : ''}`}
