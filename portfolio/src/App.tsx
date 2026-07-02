@@ -10,6 +10,7 @@ import { Footer } from './components/Footer'
 import { useRoute } from './lib/router'
 
 const GlobalioCaseStudy = lazy(() => import('./pages/GlobalioCaseStudy'))
+const RexCaseStudy = lazy(() => import('./pages/RexCaseStudy'))
 
 export default function App() {
   const { caseSlug } = useRoute()
@@ -28,7 +29,7 @@ export default function App() {
     })
   }, [caseSlug])
 
-  if (caseSlug === 'globalio') {
+  if (caseSlug === 'globalio' || caseSlug === 'rex') {
     return (
       <>
         <Nav />
@@ -40,7 +41,7 @@ export default function App() {
               </div>
             }
           >
-            <GlobalioCaseStudy />
+            {caseSlug === 'globalio' ? <GlobalioCaseStudy /> : <RexCaseStudy />}
           </Suspense>
         </main>
         <Footer />

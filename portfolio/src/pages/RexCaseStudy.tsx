@@ -2,31 +2,17 @@ import { Suspense, lazy } from 'react'
 import { Reveal } from '../components/Reveal'
 import { navigate } from '../lib/router'
 
-const SeedScrubber = lazy(() => import('../components/lab/SeedScrubber'))
-const CodexExplorer = lazy(() => import('../components/lab/CodexExplorer'))
+const SwipeDeck = lazy(() => import('../components/lab/SwipeDeck'))
 
-const SEED_CODE = `// date → seed → identical round, everywhere
-const day = Math.floor((Date.UTC(y, m, d) - EPOCH) / 86400000)
-const rand = mulberry32(day + SEED_BASE)
-
-const order = FLAGS
-  .map(f => ({ f, k: rand() }))
-  .sort((a, b) => a.k - b.k)
-
-const answer = order[0]           // today's flag
-const options = shuffle(order.slice(0, 4), rand)`
-
-const CODEX_SHAPE = `CodexEntry {
-  name        "France"
-  code        "fr"
-  capital     "Paris"
-  region      Europe
-  flags[]     current + historical (Bourbon, Tricolore…)
-  languages[] script-tagged, so distractors never leak
-  facts[]     per-entry trivia surfaced in play
+const TASTE_SHAPE = `TasteModel {                    // lives on-device, never uploaded
+  vector      weights per genre / era / tone
+  affinity    per-person & per-studio scores
+  update(swipe)   → nudge weights, decay stale ones
+  score(title)    → rank the next deck, client-side
 }
-// 197 sovereign entries at the spine — 4,000+ entries
-// across the historical / subdivision / language layers`
+// The TMDB key never ships to the browser — every request
+// goes through a Supabase Edge Function proxy with rate
+// limiting and a CORS allowlist.`
 
 function Fallback() {
   return (
@@ -47,11 +33,10 @@ function SectionLabel({ n, title }: { n: string; title: string }) {
   )
 }
 
-export function GlobalioCaseStudy() {
+export function RexCaseStudy() {
   return (
     <article className="pt-20 sm:pt-28">
-      {/* Opening plate */}
-      <header className="border-b border-line paper-wash">
+      <header className="paper-wash border-b border-line">
         <div className="mx-auto max-w-4xl px-5 pb-12 sm:px-8 sm:pb-16">
           <button
             onClick={() => navigate('#work')}
@@ -65,31 +50,31 @@ export function GlobalioCaseStudy() {
             className="hero-in mt-6 flex items-center gap-3"
             style={{ '--d': '40ms' } as React.CSSProperties}
           >
-            <span className="coord">Plate 01 · Case study</span>
+            <span className="coord">Plate 03 · Case study</span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 px-2.5 py-0.5 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-accent">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-              Live
+              Live beta
             </span>
           </div>
 
           <h1
-            className="vt-gio-title hero-in mt-4 font-display text-5xl font-semibold tracking-tight text-ink sm:text-6xl"
+            className="hero-in mt-4 font-display text-5xl font-semibold tracking-tight text-ink sm:text-6xl"
             style={{ '--d': '80ms' } as React.CSSProperties}
           >
-            Globalio
+            REX
           </h1>
           <p
             className="hero-in mt-3 font-display text-xl italic text-ink-2 sm:text-2xl"
             style={{ '--d': '120ms' } as React.CSSProperties}
           >
-            A geography game the whole planet plays together.
+            Swipe to decide what to watch — then go watch it.
           </p>
 
           <ul
             className="hero-in mt-6 flex flex-wrap gap-2"
             style={{ '--d': '160ms' } as React.CSSProperties}
           >
-            {['50+ game modes', '4,000+ codex entries', '197 countries', 'Solo, in one week'].map(
+            {['On-device taste model', 'Two-phone match sessions', 'Server-side key proxy', 'PWA · offline shell'].map(
               (f) => (
                 <li
                   key={f}
@@ -106,12 +91,20 @@ export function GlobalioCaseStudy() {
             style={{ '--d': '200ms' } as React.CSSProperties}
           >
             <a
-              href="https://globalio.app"
+              href="https://seanjoudrie.github.io/REX/"
               target="_blank"
               rel="noopener noreferrer"
               className="springy rounded-lg bg-accent px-5 py-2.5 font-semibold text-paper hover:bg-accent-deep"
             >
-              Play it live ↗
+              Open the beta ↗
+            </a>
+            <a
+              href="https://github.com/SeanJoudrie/REX"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="springy rounded-lg border border-ink/25 px-5 py-2.5 font-semibold text-ink hover:border-accent hover:text-accent"
+            >
+              Source code
             </a>
           </div>
         </div>
@@ -123,16 +116,17 @@ export function GlobalioCaseStudy() {
           <section className="border-b border-line py-12 sm:py-16">
             <SectionLabel n="01" title="The bet" />
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-ink-2">
-              A daily geography game only works if <em className="text-ink">everyone plays the
-              same puzzle</em> — that&apos;s what makes it shareable. The obvious way is a server
-              handing out the day&apos;s challenge. The bet was that a server isn&apos;t needed at
-              all: the date itself can be the source of truth.
+              Discovery apps fail because they optimize for <em className="text-ink">browsing</em>,
+              and browsing is the problem — you open them bored and leave bored. REX bets that the
+              product should get you to a <em className="text-ink">confident pick fast</em>, then
+              get out of the way. Three moves, one decision: right saves it, left passes, up marks
+              it watched.
             </p>
             <ul className="mt-6 space-y-2">
               {[
-                'Solo — one person owns product, design, and build.',
-                'Zero backend — no accounts, no API, works offline.',
-                'Ship in days, not months — scope ruthlessly, cut nothing that matters.',
+                'Decide, don’t scroll — every screen pushes toward one pick.',
+                'Learn privately — taste stays on the device, not on a server.',
+                'Free data, safely — TMDB powers it, but the key never touches the client.',
               ].map((c) => (
                 <li
                   key={c}
@@ -145,53 +139,43 @@ export function GlobalioCaseStudy() {
           </section>
         </Reveal>
 
-        {/* Decision 1 — the seed */}
+        {/* Decision 1 — the gesture */}
         <Reveal>
           <section className="border-b border-line py-12 sm:py-16">
-            <SectionLabel n="02" title="Decision — the seed" />
+            <SectionLabel n="02" title="Decision — the gesture" />
             <h2 className="mt-6 font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
-              The date is the server.
+              One decision per card.
             </h2>
             <p className="mt-4 max-w-2xl leading-relaxed text-ink-2">
-              A tiny seeded PRNG (mulberry32) turns today&apos;s date into today&apos;s puzzle —
-              deterministically, on every device on Earth. Same date in, same round out. No
-              lookup table to maintain, no API to pay for, nothing to go down. It&apos;s the
-              engine behind this site&apos;s hero warm-up too. Try it:
+              A swipe is a forced choice — that&apos;s the point. Rotation follows the hand,
+              the verdict fades in with drag distance, and release either commits with a
+              spring or snaps back. Try the real mechanic:
             </p>
-            <pre className="mt-6 overflow-x-auto rounded-lg border border-line bg-paper p-4 font-mono text-[0.8rem] leading-relaxed text-ink-2">
-              {SEED_CODE}
-            </pre>
-            <div className="mt-6">
+            <div className="mt-8">
               <Suspense fallback={<Fallback />}>
-                <SeedScrubber />
+                <SwipeDeck />
               </Suspense>
             </div>
           </section>
         </Reveal>
 
-        {/* Decision 2 — the codex */}
+        {/* Decision 2 — the model */}
         <Reveal>
           <section className="border-b border-line py-12 sm:py-16">
-            <SectionLabel n="03" title="Decision — the codex" />
+            <SectionLabel n="03" title="Decision — the taste model" />
             <h2 className="mt-6 font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
-              The data is the difficulty.
+              The algorithm belongs to the user.
             </h2>
             <p className="mt-4 max-w-2xl leading-relaxed text-ink-2">
-              A quiz is only as good as its wrong answers. The codex is structured so
-              distractors are always plausible — similar flags, same region, same script —
-              and never leak the answer. A script-detection engine keeps a question about a
-              Cyrillic-script country from offering three Latin-script distractors that give
-              it away. The spine is 197 sovereign entries; historical flags, subdivisions,
-              and languages layer 4,000+ entries on top.
+              Every swipe nudges a taste vector — genres, eras, tone, people — scored entirely
+              client-side. No account, no tracking, nothing uploaded: close the tab and your
+              taste is still yours. After enough swipes the &ldquo;Mirror&rdquo; renders a
+              shareable portrait of that taste. The same model powers two-phone
+              &ldquo;match&rdquo; sessions: both people swipe, REX surfaces the overlap.
             </p>
             <pre className="mt-6 overflow-x-auto rounded-lg border border-line bg-paper p-4 font-mono text-[0.8rem] leading-relaxed text-ink-2">
-              {CODEX_SHAPE}
+              {TASTE_SHAPE}
             </pre>
-            <div className="mt-6">
-              <Suspense fallback={<Fallback />}>
-                <CodexExplorer />
-              </Suspense>
-            </div>
           </section>
         </Reveal>
 
@@ -200,47 +184,44 @@ export function GlobalioCaseStudy() {
           <section className="border-b border-line py-12 sm:py-16">
             <SectionLabel n="04" title="Decision — the interface" />
             <h2 className="mt-6 font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
-              Warm paper, not quiz-app blue.
+              Teach in one screen, then disappear.
             </h2>
             <p className="mt-4 max-w-2xl leading-relaxed text-ink-2">
-              Every geography quiz looks like a pub trivia machine. Globalio is set like an
-              atlas instead — cream paper, an editorial serif, plate-like cards — so learning
-              feels like collecting, not testing. The design system carried so well that this
-              portfolio is set in the same language.
+              The whole product is learnable in one modal — three gestures, one promise
+              (&ldquo;build your own algorithm&rdquo;). A pixel mascot keeps waiting states
+              human, and the Mirror turns a progress bar into a reason to keep going.
             </p>
-            <div className="vt-gio-shots mt-8 grid gap-4 sm:grid-cols-3">
+            <div className="mt-8 grid gap-4 sm:grid-cols-3">
               {[
                 {
-                  src: 'shots/globalio-today.webp',
-                  cap: 'The Today screen — a daily ritual loop (challenge, expedition, gacha pull), not a menu.',
+                  src: 'shots/rex-onboarding.webp',
+                  cap: 'Onboarding — the entire product taught in three moves, before any content loads.',
                 },
                 {
-                  src: 'shots/globalio-france.webp',
-                  cap: 'The codex in product — historical flags with era timelines; the data layer made collectible.',
+                  src: 'shots/rex-discover.webp',
+                  cap: 'Rex the mascot fronts every waiting state — personality where most apps put a spinner.',
                 },
                 {
-                  src: 'shots/globalio-progress.webp',
-                  cap: 'The Progress Map — every flag you learn lights its country, forever. Long-term retention as cartography.',
+                  src: 'shots/rex-mirror.webp',
+                  cap: 'The Mirror — swipe 12 more titles and it renders a portrait of your taste. Progress as motivation.',
                 },
               ].map((s, i) => (
                 <figure key={s.src}>
                   <img
                     src={s.src}
-                    alt={`Globalio screen ${i + 1}`}
+                    alt={`REX screen ${i + 1}`}
                     loading="lazy"
                     decoding="async"
                     className="w-full rounded-xl border border-line shadow-sm"
                   />
-                  <figcaption className="mt-2 text-sm leading-relaxed text-faint">
-                    {s.cap}
-                  </figcaption>
+                  <figcaption className="mt-2 text-sm leading-relaxed text-faint">{s.cap}</figcaption>
                 </figure>
               ))}
             </div>
           </section>
         </Reveal>
 
-        {/* What shipped + honest ledger */}
+        {/* Shipped + honest ledger */}
         <Reveal>
           <section className="border-b border-line py-12 sm:py-16">
             <SectionLabel n="05" title="Shipped — and the honest ledger" />
@@ -249,10 +230,11 @@ export function GlobalioCaseStudy() {
                 <h3 className="font-display text-xl font-semibold text-ink">What shipped</h3>
                 <ul className="mt-3 space-y-2 text-ink-2">
                   {[
-                    'Live at globalio.app — free, no sign-up.',
-                    '50+ ways to play: dailies, quizzes, Flagle-style modes, Build-the-Flag, Odd One Out.',
-                    'Fully client-side PWA — offline-capable, installable.',
-                    '197 static country pages for SEO, generated from the codex.',
+                    'Live beta — swipe deck, watchlist, ratings, filters by service, genre, and year.',
+                    'On-device recommendation engine with the Mirror taste portrait.',
+                    'Real-time two-phone match sessions.',
+                    'Supabase Edge Function proxy — rate-limited, CORS-allowlisted, key never exposed.',
+                    'PWA with offline app shell and poster caching.',
                   ].map((x) => (
                     <li
                       key={x}
@@ -268,22 +250,22 @@ export function GlobalioCaseStudy() {
                   What I&apos;d do differently
                 </h3>
                 <p className="mt-3 leading-relaxed text-ink-2">
-                  Ship analytics on day one — a game this replayable deserves real retention
-                  numbers, and I launched without them. And the first pass at the codex mixed
-                  presentation into the data; separating them cleanly is what made 50+ modes
-                  possible, and I&apos;d start there next time.
+                  The taste model improved with every iteration, but I built the UI around it
+                  before instrumenting <em>whether picks got faster</em> — the product&apos;s
+                  whole thesis. Next: measure time-to-pick from day one. And the match session
+                  deserves to be the front door, not a feature behind the deck — deciding
+                  together is the moment people actually reach for an app like this.
                 </p>
                 <p className="mt-3 leading-relaxed text-ink-2">
-                  Built in a week by directing AI agents against a spec I owned — the
-                  architecture, the data model, and every design call above were the human
-                  parts. That workflow is the sixth thing this project demonstrates.
+                  Still cooking: it&apos;s a beta on a github.io URL on purpose — the
+                  recommendation engine, multiplayer, and privacy model all work end to end,
+                  and the polish pass comes before a domain does.
                 </p>
               </div>
             </div>
           </section>
         </Reveal>
 
-        {/* Route out */}
         <Reveal>
           <div className="flex flex-wrap items-center justify-between gap-4 py-10">
             <button
@@ -293,10 +275,10 @@ export function GlobalioCaseStudy() {
               ← Back to the index
             </button>
             <button
-              onClick={() => navigate('#/work/rex')}
+              onClick={() => navigate('#/work/globalio')}
               className="text-sm font-semibold text-accent transition-colors hover:text-accent-deep"
             >
-              Next expedition: REX →
+              Next expedition: Globalio →
             </button>
           </div>
         </Reveal>
@@ -305,4 +287,4 @@ export function GlobalioCaseStudy() {
   )
 }
 
-export default GlobalioCaseStudy
+export default RexCaseStudy

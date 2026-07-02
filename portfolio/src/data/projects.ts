@@ -88,6 +88,8 @@ export const projects: Project[] = [
     liveUrl: 'https://seanjoudrie.github.io/REX/',
     repoUrl: 'https://github.com/SeanJoudrie/REX',
     facts: ['On-device taste model', 'Two-phone match sessions', 'Keys proxied server-side'],
+    screenshot: 'shots/rex-onboarding.webp',
+    shots: ['shots/rex-onboarding.webp', 'shots/rex-discover.webp', 'shots/rex-mirror.webp'],
     caseStudy: {
       problem:
         'Discovery apps fail at retention: people open them bored, find nothing, and leave. The product has to help you decide — then get out of the way.',

@@ -3,6 +3,7 @@ import { Reveal } from './Reveal'
 
 const CodexExplorer = lazy(() => import('./lab/CodexExplorer'))
 const SeedScrubber = lazy(() => import('./lab/SeedScrubber'))
+const SwipeDeck = lazy(() => import('./lab/SwipeDeck'))
 
 /**
  * The Lab — skills demonstrated, not listed. Each experiment is a live,
@@ -25,6 +26,14 @@ const EXPERIMENTS = [
     caption:
       'One date in, one identical puzzle out — for every player on Earth, with zero backend. Scrub the timeline and watch determinism do the work.',
     Demo: SeedScrubber,
+  },
+  {
+    n: '03',
+    skill: 'Interaction',
+    title: 'Swipe Deck',
+    caption:
+      'REX’s core gesture, miniaturized: rotation follows the hand, the verdict fades in with distance, release commits with a spring — or snaps back. Keyboard works too.',
+    Demo: SwipeDeck,
   },
 ]
 
