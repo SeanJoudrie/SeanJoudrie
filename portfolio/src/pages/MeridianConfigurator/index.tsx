@@ -1,12 +1,33 @@
-import { useEffect, useRef, useState } from 'react'
-import type { ComponentRef, CSSProperties } from 'react'
+import { Component, useEffect, useRef, useState } from 'react'
+import type { ComponentRef, CSSProperties, ReactNode } from 'react'
 import type { CameraControls } from '@react-three/drei'
 import { navigate } from '../../lib/router'
 import type { PartId, Selection } from './config'
-import { decodeSelection, encodeSelection } from './config'
+import { bezelOf, caseOf, decodeSelection, dialOf, encodeSelection, strapOf } from './config'
+import { Fallback } from './Fallback'
 import { Panel } from './Panel'
 import Scene from './Scene'
 import './theme.css'
+
+function webglAvailable(): boolean {
+  try {
+    const c = document.createElement('canvas')
+    return !!(c.getContext('webgl2') || c.getContext('webgl'))
+  } catch {
+    return false
+  }
+}
+
+/** A render error in the 3D tree lands on the static fallback, not a crash. */
+class SceneBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false }
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+  render() {
+    return this.state.failed ? <Fallback /> : this.props.children
+  }
+}
 
 const d = (ms: number) => ({ '--d': `${ms}ms` }) as CSSProperties
 
@@ -23,11 +44,22 @@ function Mark() {
 export default function MeridianConfigurator() {
   const [selection, setSelection] = useState<Selection>(() => decodeSelection(window.location.hash))
   const controlsRef = useRef<ComponentRef<typeof CameraControls>>(null)
+  const [glOk] = useState(webglAvailable)
+  const [lost, setLost] = useState(false)
 
   // The build is shareable: non-default choices ride the hash query.
   useEffect(() => {
     history.replaceState(null, '', `#/demos/meridian${encodeSelection(selection)}`)
   }, [selection])
+
+  // A shared link opened while already on the page changes only the hash —
+  // no remount — so hash edits must sync back into state. Our own
+  // replaceState writes don't fire hashchange, so this can't loop.
+  useEffect(() => {
+    const onHash = () => setSelection(decodeSelection(window.location.hash))
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
 
   const onSelect = (part: PartId, id: string) => setSelection((s) => ({ ...s, [part]: id }))
 
@@ -69,11 +101,22 @@ export default function MeridianConfigurator() {
       <div className="mx-auto grid w-full max-w-6xl flex-1 gap-4 px-5 py-6 sm:px-8 lg:grid-cols-[1fr_21rem]">
         {/* The stage — CameraControls owns gestures inside this box only,
             so page scroll survives on touch. */}
-        <div className="hero-in relative min-h-[26rem] overflow-hidden rounded-xl border border-meridian-line bg-meridian-card lg:min-h-[34rem]" style={d(120)}>
-          <Scene selection={selection} controlsRef={controlsRef} />
-          <p className="meridian-label pointer-events-none absolute bottom-3 left-4">
-            Drag to orbit · scroll to zoom
-          </p>
+        <div
+          className="hero-in relative min-h-[26rem] overflow-hidden rounded-xl border border-meridian-line bg-meridian-card lg:min-h-[34rem]"
+          style={d(120)}
+          role="img"
+          aria-label={`The Meridian One in ${caseOf(selection).label.toLowerCase()} with a ${dialOf(selection).label.toLowerCase()} dial, ${bezelOf(selection).label.toLowerCase()} bezel and ${strapOf(selection).label.toLowerCase()} strap, keeping the current time.`}
+        >
+          {glOk && !lost ? (
+            <SceneBoundary>
+              <Scene selection={selection} controlsRef={controlsRef} onContextLost={() => setLost(true)} />
+            </SceneBoundary>
+          ) : (
+            <Fallback />
+          )}
+          {glOk && !lost && (
+            <p className="meridian-label pointer-events-none absolute bottom-3 left-4">Drag to orbit · scroll to zoom</p>
+          )}
         </div>
 
         <div className="hero-in" style={d(180)}>

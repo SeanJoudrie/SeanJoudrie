@@ -131,13 +131,29 @@ function AutoRotate({ controls }: { controls: ControlsRef }) {
   return null
 }
 
-export default function Scene({ selection, controlsRef }: { selection: Selection; controlsRef: ControlsRef }) {
+export default function Scene({
+  selection,
+  controlsRef,
+  onContextLost,
+}: {
+  selection: Selection
+  controlsRef: ControlsRef
+  onContextLost: () => void
+}) {
   return (
     <Canvas
       frameloop="demand"
       dpr={[1, 2]}
       camera={{ position: [1.4, 0.55, 2.2], fov: 35 }}
       gl={{ antialias: true, toneMapping: ACESFilmicToneMapping }}
+      onCreated={({ gl }) => {
+        // An unrecovered GPU context is a black rectangle — hand the stage
+        // to the static fallback instead.
+        gl.domElement.addEventListener('webglcontextlost', (e) => {
+          e.preventDefault()
+          onContextLost()
+        })
+      }}
     >
       <Environment resolution={512}>
         {/* Continuous ambient — see GradientDome. */}
