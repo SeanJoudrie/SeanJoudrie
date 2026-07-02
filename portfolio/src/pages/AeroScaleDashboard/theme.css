@@ -1,0 +1,87 @@
+/* AeroScale UI — demo-scoped dark chrome. Color tokens live in index.css
+   @theme (aero-*); this sheet carries what utilities can't: color-scheme,
+   selection, focus, and the skeleton blocks later phases replace. */
+.aero-root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+}
+.aero-root ::selection {
+  background: var(--color-aero-pro);
+  color: var(--color-aero-ink);
+}
+.aero-root :focus-visible {
+  outline-color: var(--color-aero-starter);
+}
+
+/* The demo owns the whole viewport — swapping the body color too means
+   overscroll rubber-banding never flashes the portfolio's paper. */
+body.aero-page {
+  background-color: var(--color-aero-bg);
+}
+
+/* Small-caps card label — the dark twin of the portfolio's .annotation. */
+.aero-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-aero-muted);
+}
+
+/* Motion that rides state changes — killed together under reduced motion. */
+.aero-slide {
+  transition: transform 250ms var(--ease-out);
+}
+.aero-tip {
+  transition: transform 140ms var(--ease-out);
+}
+
+/* ---- Chart draw-on ----
+   pathLength=1 normalizes every path to unit length, so the dash trick
+   needs no getTotalLength() measuring and survives any responsive width.
+   The classes are removed once the draw finishes — later morphs work on
+   clean paths. */
+.aero-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: aero-draw 1.3s var(--ease-out) both;
+  animation-delay: var(--dd, 0ms);
+}
+@keyframes aero-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* The fill + glow wipe in under the drawing line. */
+.aero-wipe {
+  clip-path: inset(0 100% 0 0);
+  animation: aero-wipe 1.5s var(--ease-out) both;
+  animation-delay: var(--dd, 0ms);
+}
+@keyframes aero-wipe {
+  to { clip-path: inset(0 0 0 0); }
+}
+
+/* End dots & labels arrive as their line lands. */
+.aero-fade {
+  opacity: 0;
+  animation: aero-fade 0.35s var(--ease-out) both;
+  animation-delay: var(--dd, 0ms);
+}
+@keyframes aero-fade {
+  to { opacity: 1; }
+}
+
+/* The glow is a blurred echo of the total line — static after the draw,
+   so it rasterizes once and never costs a frame. */
+.aero-glow {
+  filter: blur(6px);
+  opacity: 0.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aero-draw { animation: none; stroke-dasharray: none; stroke-dashoffset: 0; }
+  .aero-wipe { animation: none; clip-path: none; }
+  .aero-fade { animation: none; opacity: 1; }
+  .aero-slide, .aero-tip { transition: none; }
+}

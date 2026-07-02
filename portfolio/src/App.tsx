@@ -4,6 +4,7 @@ import { Hero } from './components/Hero'
 import { Work } from './components/Work'
 import { About } from './components/About'
 import { Lab } from './components/Lab'
+import { Range } from './components/Range'
 import { Now } from './components/Now'
 import { Contact } from './components/Contact'
 import { Footer } from './components/Footer'
@@ -12,6 +13,7 @@ import { useRoute } from './lib/router'
 const GlobalioCaseStudy = lazy(() => import('./pages/GlobalioCaseStudy'))
 const RexCaseStudy = lazy(() => import('./pages/RexCaseStudy'))
 const FlexynCaseStudy = lazy(() => import('./pages/FlexynCaseStudy'))
+const AeroScaleDashboard = lazy(() => import('./pages/AeroScaleDashboard'))
 
 const CASE_PAGES: Record<string, React.LazyExoticComponent<() => React.JSX.Element>> = {
   globalio: GlobalioCaseStudy,
@@ -20,12 +22,12 @@ const CASE_PAGES: Record<string, React.LazyExoticComponent<() => React.JSX.Eleme
 }
 
 export default function App() {
-  const { caseSlug } = useRoute()
+  const { caseSlug, demoSlug } = useRoute()
 
   // Landing back on home with a plain section hash (#work, #about…):
   // scroll to it once the sections exist.
   useEffect(() => {
-    if (caseSlug) return
+    if (caseSlug || demoSlug) return
     const m = window.location.hash.match(/^#([a-z-]+)$/)
     if (!m) return
     requestAnimationFrame(() => {
@@ -34,7 +36,25 @@ export default function App() {
       const el = document.getElementById(m[1]) ?? document.getElementById('work')
       el?.scrollIntoView()
     })
-  }, [caseSlug])
+  }, [caseSlug, demoSlug])
+
+  // Demos are standalone products — they bring their own chrome, so the
+  // portfolio nav and footer stay out of the frame.
+  if (demoSlug === 'aeroscale') {
+    return (
+      <main aria-label="AeroScale UI demo">
+        <Suspense
+          fallback={
+            <div className="grid min-h-svh place-items-center bg-aero-bg">
+              <span className="coord text-aero-muted">loading demo…</span>
+            </div>
+          }
+        >
+          <AeroScaleDashboard />
+        </Suspense>
+      </main>
+    )
+  }
 
   const CasePage = caseSlug ? CASE_PAGES[caseSlug] : undefined
   if (CasePage) {
@@ -71,6 +91,7 @@ export default function App() {
         <Work />
         <About />
         <Lab />
+        <Range />
         <Now />
         <Contact />
       </main>
