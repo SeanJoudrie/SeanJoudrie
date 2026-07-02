@@ -49,3 +49,7 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          # Pages publish occasionally exceeds the 10-min default and aborts
+          # with "Timeout reached, aborting!"; give it more headroom.
+          timeout: 900000
