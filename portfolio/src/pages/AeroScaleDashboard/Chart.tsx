@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import type { MonthRow, TierId } from './data'
 import { ChartTable, ChartTooltip, HoverMarks } from './ChartHover'
+import { exportChartPng } from './exportPng'
 import { fmtCompact, fmtMonth } from './format'
 import type { SeriesId } from './series'
 import { SERIES, visValue } from './series'
@@ -85,6 +86,7 @@ export function Chart({
   const pathRefs = useRef<Partial<Record<SeriesId, SVGPathElement | null>>>({})
   const areaRef = useRef<SVGPathElement | null>(null)
   const glowRef = useRef<SVGPathElement | null>(null)
+  const svgRef = useRef<SVGSVGElement | null>(null)
 
   // Reduced motion never fires animationend, so the hover layer must not
   // wait for the draw there.
@@ -200,19 +202,29 @@ export function Chart({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <ul className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
-        {SERIES.map((s) => (
-          <li
-            key={s.id}
-            className={`flex items-center gap-1.5 text-xs text-aero-ink-2 transition-opacity ${
-              s.id !== 'total' && !active.has(s.id) ? 'opacity-40' : ''
-            }`}
-          >
-            <span aria-hidden="true" className="h-0.5 w-3.5 rounded-full" style={{ background: s.color }} />
-            {s.name}
-          </li>
-        ))}
-      </ul>
+      <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
+        <ul className="flex flex-wrap gap-x-4 gap-y-1">
+          {SERIES.map((s) => (
+            <li
+              key={s.id}
+              className={`flex items-center gap-1.5 text-xs text-aero-ink-2 transition-opacity ${
+                s.id !== 'total' && !active.has(s.id) ? 'opacity-40' : ''
+              }`}
+            >
+              <span aria-hidden="true" className="h-0.5 w-3.5 rounded-full" style={{ background: s.color }} />
+              {s.name}
+            </li>
+          ))}
+        </ul>
+        <button
+          onClick={() => {
+            if (svgRef.current) void exportChartPng(svgRef.current, 'aeroscale-revenue.png')
+          }}
+          className="ml-auto font-mono text-[11px] text-aero-muted transition-colors hover:text-aero-ink"
+        >
+          Export PNG ↓
+        </button>
+      </div>
       <div
         ref={ref}
         className="relative mt-3 min-h-64 flex-1 rounded-md"
@@ -237,6 +249,7 @@ export function Chart({
       >
         {geo && (
           <svg
+            ref={svgRef}
             width={w}
             height={h}
             viewBox={`0 0 ${w} ${h}`}
@@ -341,7 +354,9 @@ export function Chart({
                     style={{ '--dd': `${DRAW_DELAY[s.id] + DRAW_MS - 150}ms` } as CSSProperties}
                   >
                     <circle cx={ex} cy={ey} r="4" fill={s.color} stroke="var(--color-aero-card)" strokeWidth="2" />
-                    {showEndLabels && (
+                    {/* A tier sitting at zero (pre-launch) keeps its dot but
+                        skips the label — "$0" would collide with the axis. */}
+                    {showEndLabels && v >= 0.5 && (
                       <>
                         <text x={ex + 10} y={ey + 3.5} className="fill-aero-ink-2 text-[11px] font-medium">
                           {s.id === 'total' ? 'Total' : s.name}

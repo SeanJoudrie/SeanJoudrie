@@ -121,7 +121,7 @@ export default function AeroScaleDashboard() {
         <div className="hero-in flex flex-wrap items-end justify-between gap-3" style={d(100)}>
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">Revenue overview</h1>
-            <p className="mt-1 text-sm text-aero-ink-2">Trailing twelve months, everything derived from one seeded ledger.</p>
+            <p className="mt-1 text-sm text-aero-ink-2">Fiscal year 2026, every number derived from one seeded ledger.</p>
           </div>
           <p className="aero-label">Hand-rolled SVG · no chart libraries</p>
         </div>
@@ -213,7 +213,36 @@ export default function AeroScaleDashboard() {
           </div>
         </div>
 
-        <footer className="hero-in mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-aero-line pt-5" style={d(640)}>
+        {/* The case-study strip — what a reviewer should know is under the hood. */}
+        <section
+          aria-label="How this demo is built"
+          className="hero-in mt-8 grid gap-5 rounded-xl border border-aero-line bg-aero-card p-5 sm:grid-cols-3"
+          style={d(620)}
+        >
+          <div>
+            <h2 className="aero-label">Hand-rolled SVG</h2>
+            <p className="mt-1.5 text-xs leading-relaxed text-aero-ink-2">
+              Scales, ticks, paths, the dash-offset draw-on and the resample-and-tween timeframe morphs are computed
+              from scratch — this page adds zero dependencies.
+            </p>
+          </div>
+          <div>
+            <h2 className="aero-label">One seeded ledger</h2>
+            <p className="mt-1.5 text-xs leading-relaxed text-aero-ink-2">
+              Every figure derives from a single deterministic simulation of logos, expansion and churn. Dev-mode
+              asserts hold ARR = MRR × 12, tier sums, churn bands and LTV:CAC.
+            </p>
+          </div>
+          <div>
+            <h2 className="aero-label">One rAF loop</h2>
+            <p className="mt-1.5 text-xs leading-relaxed text-aero-ink-2">
+              Tickers and chart morphs share a single frame loop writing straight to the DOM — React never renders at
+              60Hz, and every animation has a reduced-motion path.
+            </p>
+          </div>
+        </section>
+
+        <footer className="hero-in mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-aero-line pt-5" style={d(680)}>
           <p className="font-mono text-xs text-aero-muted">
             Fictional company, deterministic data — built for Sean Joudrie's portfolio.
           </p>

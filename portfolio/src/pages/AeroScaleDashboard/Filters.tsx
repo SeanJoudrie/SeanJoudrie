@@ -32,12 +32,8 @@ export function TimeframeControl({ value, onChange }: { value: TfId; onChange: (
       {/* The sliding selection — one element, transform only. */}
       <span
         aria-hidden="true"
-        className="absolute bottom-1 left-1 top-1 rounded-md bg-aero-card-2"
-        style={{
-          width: 'calc((100% - 0.5rem) / 6)',
-          transform: `translateX(${idx * 100}%)`,
-          transition: 'transform 250ms var(--ease-out)',
-        }}
+        className="aero-slide absolute bottom-1 left-1 top-1 rounded-md bg-aero-card-2"
+        style={{ width: 'calc((100% - 0.5rem) / 6)', transform: `translateX(${idx * 100}%)` }}
       />
       {TIMEFRAMES.map((t, i) => (
         <button

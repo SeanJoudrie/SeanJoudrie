@@ -70,10 +70,9 @@ export function ChartTooltip({
   return (
     <div
       aria-hidden="true"
-      className="aero-fade pointer-events-none absolute left-0 top-0 z-10 w-48 rounded-lg border border-aero-line bg-aero-card-2/95 p-3 shadow-lg backdrop-blur-sm"
+      className="aero-fade aero-tip pointer-events-none absolute left-0 top-0 z-10 w-48 rounded-lg border border-aero-line bg-aero-card-2/95 p-3 shadow-lg backdrop-blur-sm"
       style={{
         transform: `translate3d(${px.toFixed(1)}px, ${top.toFixed(1)}px, 0) translateX(${flip ? 'calc(-100% - 14px)' : '14px'})`,
-        transition: 'transform 140ms var(--ease-out)',
       }}
     >
       <p className="aero-label">{fmtMonth(m.label)}</p>

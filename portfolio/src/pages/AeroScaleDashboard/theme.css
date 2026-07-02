@@ -29,11 +29,12 @@ body.aero-page {
   color: var(--color-aero-muted);
 }
 
-/* Placeholder block for components that land in later phases.
-   (No border-radius here — unlayered CSS would beat the rounded-* utilities,
-   so the radius rides in with each block's classes.) */
-.aero-skeleton {
-  background: var(--color-aero-card-2);
+/* Motion that rides state changes — killed together under reduced motion. */
+.aero-slide {
+  transition: transform 250ms var(--ease-out);
+}
+.aero-tip {
+  transition: transform 140ms var(--ease-out);
 }
 
 /* ---- Chart draw-on ----
@@ -82,4 +83,5 @@ body.aero-page {
   .aero-draw { animation: none; stroke-dasharray: none; stroke-dashoffset: 0; }
   .aero-wipe { animation: none; clip-path: none; }
   .aero-fade { animation: none; opacity: 1; }
+  .aero-slide, .aero-tip { transition: none; }
 }
