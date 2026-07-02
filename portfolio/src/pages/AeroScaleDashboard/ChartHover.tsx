@@ -1,6 +1,6 @@
-import type { MonthRow } from './data'
+import type { MonthRow, TierId } from './data'
 import { fmtCompact, fmtMonth, fmtPct } from './format'
-import { netNew, SERIES, seriesValue } from './series'
+import { netNew, SERIES, seriesValue, visValue } from './series'
 
 /**
  * The hover layer: a crosshair that snaps to the nearest month, ringed dots
@@ -12,6 +12,7 @@ import { netNew, SERIES, seriesValue } from './series'
 export function HoverMarks({
   months,
   hovered,
+  active,
   x,
   y,
   top,
@@ -19,6 +20,7 @@ export function HoverMarks({
 }: {
   months: MonthRow[]
   hovered: number
+  active: ReadonlySet<TierId>
   x: (i: number) => number
   y: (v: number) => number
   top: number
@@ -28,11 +30,11 @@ export function HoverMarks({
   return (
     <g aria-hidden="true">
       <line x1={cx} x2={cx} y1={top} y2={bottom} stroke="var(--color-aero-muted)" strokeOpacity="0.45" strokeWidth="1" />
-      {SERIES.map((s) => (
+      {SERIES.filter((s) => s.id === 'total' || active.has(s.id)).map((s) => (
         <circle
           key={s.id}
           cx={cx}
-          cy={y(seriesValue(s.id, months[hovered]))}
+          cy={y(visValue(s.id, months[hovered], active))}
           r="4"
           fill={s.color}
           stroke="var(--color-aero-card)"
@@ -46,6 +48,7 @@ export function HoverMarks({
 export function ChartTooltip({
   months,
   hovered,
+  active,
   px,
   py,
   w,
@@ -53,6 +56,7 @@ export function ChartTooltip({
 }: {
   months: MonthRow[]
   hovered: number
+  active: ReadonlySet<TierId>
   /** Pixel anchor: the hovered month's x and the total line's y. */
   px: number
   py: number
@@ -60,6 +64,7 @@ export function ChartTooltip({
   h: number
 }) {
   const m = months[hovered]
+  const rows = SERIES.filter((s) => s.id === 'total' || active.has(s.id))
   const flip = px > w * 0.62
   const top = Math.max(8, Math.min(py - 16, h - 168))
   return (
@@ -73,11 +78,13 @@ export function ChartTooltip({
     >
       <p className="aero-label">{fmtMonth(m.label)}</p>
       <ul className="mt-2 space-y-1.5">
-        {SERIES.map((s) => (
+        {rows.map((s) => (
           <li key={s.id} className="flex items-center gap-2 text-xs">
             <span className="h-0.5 w-3 flex-none rounded-full" style={{ background: s.color }} />
             <span className="text-aero-muted">{s.id === 'total' ? 'Total' : s.name}</span>
-            <span className="ml-auto font-semibold tabular-nums text-aero-ink">{fmtCompact(seriesValue(s.id, m))}</span>
+            <span className="ml-auto font-semibold tabular-nums text-aero-ink">
+              {fmtCompact(visValue(s.id, m, active))}
+            </span>
           </li>
         ))}
       </ul>

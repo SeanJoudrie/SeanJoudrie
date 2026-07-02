@@ -1,9 +1,12 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import { navigate } from '../../lib/router'
 import { Chart } from './Chart'
-import { DATASET, FY_LABEL } from './data'
+import type { MonthRow, TfId, TierId } from './data'
+import { DATASET, TIER_ORDER, TIMEFRAMES } from './data'
+import { TierChips, TimeframeControl } from './Filters'
 import { fmtCompact, fmtInt, fmtMoney, fmtMonth, fmtSignedPct } from './format'
+import { visValue } from './series'
 import { StatTile } from './StatTile'
 import { TierDonut } from './TierDonut'
 import { Transactions } from './Transactions'
@@ -50,18 +53,34 @@ function Card({
   )
 }
 
-/** Skeleton bar — replaced by real components phase by phase. */
-function Bar({ className }: { className: string }) {
-  const radius = className.includes('rounded') ? '' : 'rounded-md'
-  return <div aria-hidden="true" className={`aero-skeleton motion-safe:animate-pulse ${radius} ${className}`} />
-}
-
 export default function AeroScaleDashboard() {
-  // Full-year view for now — the timeframe filter rescopes these in phase 5.
   const months = DATASET.months
-  const first = months[0]
-  const last = months[months.length - 1]
-  const prev = months[months.length - 2]
+
+  const [tf, setTf] = useState<TfId>(() => {
+    const m = window.location.hash.match(/[?&]tf=(q1|q2|q3|q4|h1|fy)\b/)
+    return (m?.[1] as TfId) ?? 'fy'
+  })
+  const [active, setActive] = useState<ReadonlySet<TierId>>(() => new Set(TIER_ORDER))
+  const [preview, setPreview] = useState<TierId | null>(null)
+
+  // The view is shareable: the timeframe rides in the hash.
+  useEffect(() => {
+    const base = '#/demos/aeroscale'
+    history.replaceState(null, '', tf === 'fy' ? base : `${base}?tf=${tf}`)
+  }, [tf])
+
+  const timeframe = TIMEFRAMES.find((t) => t.id === tf) ?? TIMEFRAMES[TIMEFRAMES.length - 1]
+  const [rs, re] = timeframe.range
+  const slice = months.slice(rs, re + 1)
+  const first = slice[0]
+  const last = slice[slice.length - 1]
+  const prev = months[re - 1]
+  const tfName = tf === 'fy' ? 'FY 2026' : `${timeframe.label} FY26`
+
+  // Everything below the filter row answers to the same slice + tiers.
+  const mrrOf = (m: MonthRow) => visValue('total', m, active)
+  const custOf = (m: MonthRow) => TIER_ORDER.reduce((s, id) => s + (active.has(id) ? m.tiers[id].customers : 0), 0)
+  const transactions = DATASET.transactions.filter((t) => active.has(t.tier))
 
   useEffect(() => {
     document.body.classList.add('aero-page')
@@ -107,19 +126,22 @@ export default function AeroScaleDashboard() {
           <p className="aero-label">Hand-rolled SVG · no chart libraries</p>
         </div>
 
-        {/* Filter row — timeframe + tier chips land in phase 5. */}
-        <div aria-hidden="true" className="hero-in mt-6 flex flex-wrap items-center gap-2" style={d(140)}>
-          <div className="flex gap-1 rounded-lg border border-aero-line p-1">
-            {['h-7 w-10 rounded-md', 'h-7 w-10 rounded-md', 'h-7 w-10 rounded-md', 'h-7 w-14 rounded-md'].map(
-              (c, i) => (
-                <Bar key={i} className={c} />
-              ),
-            )}
-          </div>
-          <span className="mx-1 h-4 w-px bg-aero-line" />
-          {['h-9 w-24 rounded-full', 'h-9 w-28 rounded-full', 'h-9 w-24 rounded-full'].map((c, i) => (
-            <Bar key={i} className={c} />
-          ))}
+        {/* The one filter row — it scopes every card below it. */}
+        <div className="hero-in mt-6 flex flex-wrap items-center gap-3" style={d(140)}>
+          <TimeframeControl value={tf} onChange={setTf} />
+          <span aria-hidden="true" className="hidden h-4 w-px bg-aero-line sm:block" />
+          <TierChips
+            active={active}
+            onToggle={(id) =>
+              setActive((cur) => {
+                const next = new Set(cur)
+                if (next.has(id)) next.delete(id)
+                else next.add(id)
+                return next
+              })
+            }
+            onPreview={setPreview}
+          />
         </div>
 
         <div className="mt-4 grid grid-cols-12 gap-4">
@@ -127,56 +149,66 @@ export default function AeroScaleDashboard() {
           <StatTile
             hero
             label="Annual recurring revenue"
-            value={fmtCompact(last.arr)}
-            delta={{ label: fmtSignedPct(last.arr / first.arr - 1), up: last.arr >= first.arr, vs: fmtMonth(first.label) }}
-            note={`LTV:CAC ${(last.ltv / last.cac).toFixed(1)}× · ${FY_LABEL} exit run-rate`}
+            value={mrrOf(last) * 12}
+            format={fmtCompact}
+            delta={{
+              label: fmtSignedPct(mrrOf(last) / mrrOf(first) - 1),
+              up: mrrOf(last) >= mrrOf(first),
+              vs: fmtMonth(first.label),
+            }}
+            note={`LTV:CAC ${(last.ltv / last.cac).toFixed(1)}× · ${tfName} exit run-rate`}
             delay={180}
             className="col-span-12 sm:col-span-6 lg:col-span-3"
           />
           <StatTile
             label="Monthly recurring revenue"
-            value={fmtMoney(last.mrr)}
-            delta={{ label: fmtSignedPct(last.mrr / prev.mrr - 1), up: last.mrr >= prev.mrr, vs: fmtMonth(prev.label) }}
-            spark={months.map((m) => m.mrr)}
+            value={mrrOf(last)}
+            format={fmtMoney}
+            delta={{ label: fmtSignedPct(mrrOf(last) / mrrOf(prev) - 1), up: mrrOf(last) >= mrrOf(prev), vs: fmtMonth(prev.label) }}
+            spark={slice.map(mrrOf)}
             delay={240}
             className="col-span-12 sm:col-span-6 lg:col-span-3"
           />
           <StatTile
             label="Net revenue"
-            value={fmtMoney(last.netRevenue)}
+            value={last.netRevenue}
+            format={fmtMoney}
             delta={{
               label: fmtSignedPct(last.netRevenue / prev.netRevenue - 1),
               up: last.netRevenue >= prev.netRevenue,
               vs: fmtMonth(prev.label),
             }}
             note={`${fmtMonth(last.label)} · net of credits, plus services`}
-            spark={months.map((m) => m.netRevenue)}
+            spark={slice.map((m) => m.netRevenue)}
             delay={300}
             className="col-span-12 sm:col-span-6 lg:col-span-3"
           />
           <StatTile
             label="Active customers"
-            value={fmtInt(last.customers)}
+            value={custOf(last)}
+            format={fmtInt}
             delta={{
-              label: fmtInt(Math.abs(last.customers - prev.customers)),
-              up: last.customers >= prev.customers,
+              label: fmtInt(Math.abs(custOf(last) - custOf(prev))),
+              up: custOf(last) >= custOf(prev),
               vs: fmtMonth(prev.label),
             }}
-            spark={months.map((m) => m.customers)}
+            spark={slice.map(custOf)}
             delay={360}
             className="col-span-12 sm:col-span-6 lg:col-span-3"
           />
 
           <Card label="Revenue trend · monthly MRR" delay={460} className="col-span-12 lg:col-span-8">
-            <Chart months={months} />
+            <Chart months={months} range={timeframe.range} active={active} preview={preview} />
           </Card>
 
           <div className="col-span-12 flex flex-col gap-4 lg:col-span-4">
             <Card label={`Revenue by tier · ${fmtMonth(last.label)}`} delay={520} className="flex-none">
-              <TierDonut row={last} />
+              <div key={`${tf}-${[...active].sort().join('.')}`} className="aero-fade">
+                <TierDonut row={last} active={active} />
+              </div>
             </Card>
             <Card label="Recent transactions" delay={580} className="flex-1">
-              <Transactions transactions={DATASET.transactions} />
+              <Transactions transactions={transactions} />
             </Card>
           </div>
         </div>

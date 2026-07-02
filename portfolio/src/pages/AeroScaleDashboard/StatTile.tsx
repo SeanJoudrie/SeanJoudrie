@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { useCountUp } from './useSharedTicker'
 
 export type Delta = { label: string; up: boolean; vs: string }
 
@@ -35,10 +36,14 @@ function Sparkline({ points }: { points: number[] }) {
 /**
  * The stat-tile contract: label · value (proportional figures — tabular would
  * loosen large numbers) · signed delta vs a named period · optional trend.
+ * The value is a live ticker on the shared rAF loop: it counts up from zero
+ * on load and tweens from its current value when a filter rescopes it. The
+ * invisible twin span reserves the final width, so nothing reflows mid-count.
  */
 export function StatTile({
   label,
   value,
+  format,
   delta,
   spark,
   note,
@@ -47,7 +52,8 @@ export function StatTile({
   className = '',
 }: {
   label: string
-  value: string
+  value: number
+  format: (n: number) => string
   delta?: Delta
   spark?: number[]
   note?: string
@@ -55,13 +61,20 @@ export function StatTile({
   delay?: number
   className?: string
 }) {
+  const ticker = useCountUp(value, format)
   return (
     <section
       className={`hero-in rounded-xl border border-aero-line bg-aero-card p-5 ${className}`}
       style={{ '--d': `${delay}ms` } as CSSProperties}
     >
       <h2 className="aero-label">{label}</h2>
-      <p className={`mt-2.5 font-semibold tracking-tight text-aero-ink ${hero ? 'text-5xl' : 'text-3xl'}`}>{value}</p>
+      <p className={`mt-2.5 font-semibold tracking-tight text-aero-ink ${hero ? 'text-5xl' : 'text-3xl'}`}>
+        <span className="sr-only">{format(value)}</span>
+        <span aria-hidden="true" className="relative inline-block">
+          <span className="invisible">{format(value)}</span>
+          <span ref={ticker} className="absolute inset-0 whitespace-nowrap" />
+        </span>
+      </p>
       {delta && (
         <p className="mt-2.5 text-xs font-medium">
           <span className={delta.up ? 'text-aero-good' : 'text-aero-bad'}>

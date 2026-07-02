@@ -21,10 +21,13 @@ function arcPath(a0: number, a1: number) {
 /**
  * Part-to-whole at a glance — three segments, so a donut is the right form.
  * Segments are stroke arcs separated by the 2px surface gap (butt caps; round
- * caps would eat the gap), identity carried by the legend beside it.
+ * caps would eat the gap), identity carried by the legend beside it. Scopes
+ * to the active tiers, like everything below the filter row.
  */
-export function TierDonut({ row }: { row: MonthRow }) {
-  const shares = TIER_ORDER.map((id) => ({ id, share: row.tiers[id].mrr / row.mrr }))
+export function TierDonut({ row, active }: { row: MonthRow; active: ReadonlySet<TierId> }) {
+  const ids = TIER_ORDER.filter((id) => active.has(id))
+  const total = ids.reduce((s, id) => s + row.tiers[id].mrr, 0)
+  const shares = ids.map((id) => ({ id, share: row.tiers[id].mrr / total }))
 
   let angle = -Math.PI / 2
   const segments = shares.map(({ id, share }) => {
@@ -45,7 +48,7 @@ export function TierDonut({ row }: { row: MonthRow }) {
         </svg>
         <div className="absolute inset-0 grid place-items-center">
           <div className="text-center">
-            <p className="text-2xl font-semibold tracking-tight text-aero-ink">{fmtCompact(row.mrr)}</p>
+            <p className="text-2xl font-semibold tracking-tight text-aero-ink">{fmtCompact(total)}</p>
             <p className="aero-label mt-0.5">MRR</p>
           </div>
         </div>

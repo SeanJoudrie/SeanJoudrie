@@ -54,6 +54,17 @@ export type Dataset = { months: MonthRow[]; transactions: Transaction[] }
 export const FY_LABEL = 'FY 2026'
 export const AERO_SEED = 20260630
 
+export type TfId = 'q1' | 'q2' | 'q3' | 'q4' | 'h1' | 'fy'
+/** Month-index ranges (inclusive) into the fiscal year Jul '25 – Jun '26. */
+export const TIMEFRAMES: { id: TfId; label: string; range: [number, number] }[] = [
+  { id: 'q1', label: 'Q1', range: [0, 2] },
+  { id: 'q2', label: 'Q2', range: [3, 5] },
+  { id: 'q3', label: 'Q3', range: [6, 8] },
+  { id: 'q4', label: 'Q4', range: [9, 11] },
+  { id: 'h1', label: 'H1', range: [0, 5] },
+  { id: 'fy', label: 'FY', range: [0, 11] },
+]
+
 export const TIER_ORDER: TierId[] = ['starter', 'pro', 'ent']
 
 export const TIER_META: Record<
