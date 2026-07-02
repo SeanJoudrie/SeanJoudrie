@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import { navigate } from '../../lib/router'
+import { Chart } from './Chart'
 import { DATASET, FY_LABEL } from './data'
 import { fmtCompact, fmtInt, fmtMoney, fmtMonth, fmtSignedPct } from './format'
 import { StatTile } from './StatTile'
@@ -40,7 +41,7 @@ function Card({
 }) {
   return (
     <section
-      className={`hero-in rounded-xl border border-aero-line bg-aero-card p-5 ${className}`}
+      className={`hero-in flex flex-col rounded-xl border border-aero-line bg-aero-card p-5 ${className}`}
       style={d(delay)}
     >
       <h2 className="aero-label">{label}</h2>
@@ -166,8 +167,8 @@ export default function AeroScaleDashboard() {
             className="col-span-12 sm:col-span-6 lg:col-span-3"
           />
 
-          <Card label="Revenue trend" delay={460} className="col-span-12 lg:col-span-8">
-            <Bar className="mt-4 h-72 w-full sm:h-80" />
+          <Card label="Revenue trend · monthly MRR" delay={460} className="col-span-12 lg:col-span-8">
+            <Chart months={months} />
           </Card>
 
           <div className="col-span-12 flex flex-col gap-4 lg:col-span-4">

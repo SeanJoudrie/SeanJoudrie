@@ -35,3 +35,51 @@ body.aero-page {
 .aero-skeleton {
   background: var(--color-aero-card-2);
 }
+
+/* ---- Chart draw-on ----
+   pathLength=1 normalizes every path to unit length, so the dash trick
+   needs no getTotalLength() measuring and survives any responsive width.
+   The classes are removed once the draw finishes — later morphs work on
+   clean paths. */
+.aero-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: aero-draw 1.3s var(--ease-out) both;
+  animation-delay: var(--dd, 0ms);
+}
+@keyframes aero-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* The fill + glow wipe in under the drawing line. */
+.aero-wipe {
+  clip-path: inset(0 100% 0 0);
+  animation: aero-wipe 1.5s var(--ease-out) both;
+  animation-delay: var(--dd, 0ms);
+}
+@keyframes aero-wipe {
+  to { clip-path: inset(0 0 0 0); }
+}
+
+/* End dots & labels arrive as their line lands. */
+.aero-fade {
+  opacity: 0;
+  animation: aero-fade 0.35s var(--ease-out) both;
+  animation-delay: var(--dd, 0ms);
+}
+@keyframes aero-fade {
+  to { opacity: 1; }
+}
+
+/* The glow is a blurred echo of the total line — static after the draw,
+   so it rasterizes once and never costs a frame. */
+.aero-glow {
+  filter: blur(6px);
+  opacity: 0.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aero-draw { animation: none; stroke-dasharray: none; stroke-dashoffset: 0; }
+  .aero-wipe { animation: none; clip-path: none; }
+  .aero-fade { animation: none; opacity: 1; }
+}
