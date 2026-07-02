@@ -15,6 +15,7 @@ const sectionIds = links.map((l) => l.id)
 export function Nav() {
   const active = useScrollSpy(sectionIds)
   const [open, setOpen] = useState(false)
+  const [closing, setClosing] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   // Mobile: header slides away on scroll-down, returns on scroll-up.
   const [hidden, setHidden] = useState(false)
@@ -37,23 +38,34 @@ export function Nav() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Close = play the exit animation, then unmount (instant under
+  // reduced motion, where the exit keyframes never run).
+  const close = () => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setOpen(false)
+      burgerRef.current?.focus()
+      return
+    }
+    setClosing(true)
+  }
+
+  const onSheetAnimationEnd = (e: React.AnimationEvent) => {
+    if (!closing || e.target !== e.currentTarget) return
+    setOpen(false)
+    setClosing(false)
+    burgerRef.current?.focus()
+  }
+
   useEffect(() => {
     if (!open) return
     firstLinkRef.current?.focus()
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setOpen(false)
-        burgerRef.current?.focus()
-      }
+      if (e.key === 'Escape') close()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
-
-  const close = () => {
-    setOpen(false)
-    burgerRef.current?.focus()
-  }
 
   return (
     <>
@@ -120,7 +132,10 @@ export function Nav() {
       {/* Full-screen menu sheet (mobile) — opaque, scroll-locked, staggered. */}
       {open && (
         <div
-          className="fixed inset-0 z-[70] flex flex-col bg-paper md:hidden"
+          className={`menu-sheet fixed inset-0 z-[70] flex flex-col bg-paper md:hidden ${
+            closing ? 'menu-sheet-out' : ''
+          }`}
+          onAnimationEnd={onSheetAnimationEnd}
           role="dialog"
           aria-modal="true"
           aria-label="Menu"
