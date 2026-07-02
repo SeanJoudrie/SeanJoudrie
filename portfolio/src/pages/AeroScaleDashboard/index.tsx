@@ -1,6 +1,11 @@
 import { useEffect } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import { navigate } from '../../lib/router'
+import { DATASET, FY_LABEL } from './data'
+import { fmtCompact, fmtInt, fmtMoney, fmtMonth, fmtSignedPct } from './format'
+import { StatTile } from './StatTile'
+import { TierDonut } from './TierDonut'
+import { Transactions } from './Transactions'
 import './theme.css'
 
 const d = (ms: number) => ({ '--d': `${ms}ms` }) as CSSProperties
@@ -51,6 +56,12 @@ function Bar({ className }: { className: string }) {
 }
 
 export default function AeroScaleDashboard() {
+  // Full-year view for now — the timeframe filter rescopes these in phase 5.
+  const months = DATASET.months
+  const first = months[0]
+  const last = months[months.length - 1]
+  const prev = months[months.length - 2]
+
   useEffect(() => {
     document.body.classList.add('aero-page')
     const prev = document.title
@@ -112,32 +123,59 @@ export default function AeroScaleDashboard() {
 
         <div className="mt-4 grid grid-cols-12 gap-4">
           {/* Hero figure — ARR, the one number the page leads with. */}
-          <Card label="Annual recurring revenue" delay={180} className="col-span-12 sm:col-span-6 lg:col-span-3">
-            <Bar className="mt-3 h-12 w-40" />
-            <Bar className="mt-3 h-3 w-24" />
-          </Card>
-          {['Monthly recurring revenue', 'Net revenue', 'Active customers'].map((label, i) => (
-            <Card key={label} label={label} delay={240 + i * 60} className="col-span-12 sm:col-span-6 lg:col-span-3">
-              <Bar className="mt-3 h-8 w-28" />
-              <Bar className="mt-3 h-3 w-20" />
-              <Bar className="mt-4 h-8 w-full" />
-            </Card>
-          ))}
+          <StatTile
+            hero
+            label="Annual recurring revenue"
+            value={fmtCompact(last.arr)}
+            delta={{ label: fmtSignedPct(last.arr / first.arr - 1), up: last.arr >= first.arr, vs: fmtMonth(first.label) }}
+            note={`LTV:CAC ${(last.ltv / last.cac).toFixed(1)}× · ${FY_LABEL} exit run-rate`}
+            delay={180}
+            className="col-span-12 sm:col-span-6 lg:col-span-3"
+          />
+          <StatTile
+            label="Monthly recurring revenue"
+            value={fmtMoney(last.mrr)}
+            delta={{ label: fmtSignedPct(last.mrr / prev.mrr - 1), up: last.mrr >= prev.mrr, vs: fmtMonth(prev.label) }}
+            spark={months.map((m) => m.mrr)}
+            delay={240}
+            className="col-span-12 sm:col-span-6 lg:col-span-3"
+          />
+          <StatTile
+            label="Net revenue"
+            value={fmtMoney(last.netRevenue)}
+            delta={{
+              label: fmtSignedPct(last.netRevenue / prev.netRevenue - 1),
+              up: last.netRevenue >= prev.netRevenue,
+              vs: fmtMonth(prev.label),
+            }}
+            note={`${fmtMonth(last.label)} · net of credits, plus services`}
+            spark={months.map((m) => m.netRevenue)}
+            delay={300}
+            className="col-span-12 sm:col-span-6 lg:col-span-3"
+          />
+          <StatTile
+            label="Active customers"
+            value={fmtInt(last.customers)}
+            delta={{
+              label: fmtInt(Math.abs(last.customers - prev.customers)),
+              up: last.customers >= prev.customers,
+              vs: fmtMonth(prev.label),
+            }}
+            spark={months.map((m) => m.customers)}
+            delay={360}
+            className="col-span-12 sm:col-span-6 lg:col-span-3"
+          />
 
           <Card label="Revenue trend" delay={460} className="col-span-12 lg:col-span-8">
             <Bar className="mt-4 h-72 w-full sm:h-80" />
           </Card>
 
           <div className="col-span-12 flex flex-col gap-4 lg:col-span-4">
-            <Card label="Revenue by tier" delay={520} className="flex-none">
-              <Bar className="mx-auto mt-4 h-40 w-40 rounded-full" />
+            <Card label={`Revenue by tier · ${fmtMonth(last.label)}`} delay={520} className="flex-none">
+              <TierDonut row={last} />
             </Card>
             <Card label="Recent transactions" delay={580} className="flex-1">
-              <div className="mt-4 space-y-3">
-                {[0, 1, 2, 3].map((i) => (
-                  <Bar key={i} className="h-9 w-full" />
-                ))}
-              </div>
+              <Transactions transactions={DATASET.transactions} />
             </Card>
           </div>
         </div>

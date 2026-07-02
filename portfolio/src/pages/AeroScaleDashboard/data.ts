@@ -92,7 +92,9 @@ export function buildDataset(seed: number = AERO_SEED): Dataset {
 
   const targets = Array.from({ length: N }, (_, m) => {
     const base = 100_000 * Math.pow(2, m / (N - 1))
-    const noise = m === 0 || m === N - 1 ? 1 : jit(0.012)
+    // Endpoints get only a whisper of noise — the headline must land on the
+    // authored story, but an MRR of exactly $200,000 would read as fake.
+    const noise = m === 0 || m === N - 1 ? jit(0.004) : jit(0.012)
     return base * SEASONAL[m] * noise
   })
 
