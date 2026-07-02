@@ -113,11 +113,13 @@ export default function CodexExplorer() {
 function CountryPanel({ c }: { c: Country }) {
   const [more, setMore] = useState(false)
   const [subsOpen, setSubsOpen] = useState(false)
-  const [histOpen, setHistOpen] = useState(true)
+  const [histOpen, setHistOpen] = useState(false)
   const [predsOpen, setPredsOpen] = useState(false)
   const [hi, setHi] = useState(0)
+  const [pi, setPi] = useState(0)
 
   const h = c.history[hi]
+  const pred = c.predecessors[pi]
 
   return (
     <div className="fade-in border-t border-line/60 bg-paper-2/40 px-3 py-4 sm:px-5">
@@ -276,35 +278,75 @@ function CountryPanel({ c }: { c: Country }) {
             open={predsOpen}
             onToggle={() => setPredsOpen((v) => !v)}
           />
-          {predsOpen && (
-            <div className="fade-in mt-3 space-y-3">
+          {predsOpen && pred && (
+            <div className="fade-in mt-3">
               <p className="text-sm leading-snug text-accent/80">
                 Vanished empires and states tied to this land’s history —
                 featured in the Historical Flag game.
               </p>
-              {c.predecessors.map((p) => (
-                <div key={p.name} className="overflow-hidden rounded-xl border border-line bg-paper">
-                  <div className="grid place-items-center px-4 pb-2 pt-4">
-                    <img
-                      src={p.img}
-                      alt={`Flag of ${p.name}`}
-                      loading="lazy"
-                      decoding="async"
-                      className="h-20 max-w-full rounded-sm border border-line/50 object-contain shadow-sm"
-                      onError={hideOnError}
-                    />
-                  </div>
-                  <div className="px-4 pb-4">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <h4 className="font-display text-base font-semibold text-ink">{p.name}</h4>
-                      <span className="rounded-full border border-accent/30 bg-paper-2/70 px-2.5 py-0.5 text-xs font-semibold text-accent/90">
-                        {p.era}
-                      </span>
-                    </div>
-                    <p className="mt-1.5 text-sm leading-relaxed text-ink-2">{p.note}</p>
-                  </div>
+
+              <div className="mt-3 flex items-center justify-between">
+                <span className="text-sm text-faint">
+                  {pi + 1} / {c.predecessors.length}
+                </span>
+                <span className="flex gap-2">
+                  <PagerButton label="Previous state" disabled={pi === 0} onClick={() => setPi(pi - 1)}>‹</PagerButton>
+                  <PagerButton
+                    label="Next state"
+                    disabled={pi === c.predecessors.length - 1}
+                    onClick={() => setPi(pi + 1)}
+                  >
+                    ›
+                  </PagerButton>
+                </span>
+              </div>
+
+              <div key={pi} className="seed-swap mt-3 overflow-hidden rounded-xl border border-line bg-paper">
+                <div className="grid place-items-center px-4 pb-2 pt-5">
+                  <img
+                    src={pred.img}
+                    alt={`Flag of ${pred.name}`}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-24 max-w-full rounded-sm border border-line/50 object-contain shadow-sm sm:h-32"
+                    onError={hideOnError}
+                  />
                 </div>
-              ))}
+                <div className="px-4 pb-4 sm:px-5">
+                  <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                    <h4 className="font-display text-lg font-semibold text-ink">{pred.name}</h4>
+                    <span className="rounded-full border border-accent/30 bg-paper-2/70 px-2.5 py-0.5 text-xs font-semibold text-accent/90">
+                      {pred.era}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-2">{pred.note}</p>
+                </div>
+              </div>
+
+              {c.predecessors.length > 1 && (
+                <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+                  {c.predecessors.map((p, i) => (
+                    <button
+                      key={p.name}
+                      onClick={() => setPi(i)}
+                      aria-label={`${p.name}, ${p.era}`}
+                      className={`shrink-0 rounded-lg border p-1.5 pb-1 text-center transition-colors duration-150 ${
+                        i === pi ? 'border-accent/60 bg-paper' : 'border-line/60 bg-paper opacity-70 hover:opacity-100'
+                      }`}
+                    >
+                      <img
+                        src={p.img}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        className={`h-9 w-14 rounded-[2px] object-cover ${i === pi ? '' : 'saturate-50'}`}
+                        onError={hideOnError}
+                      />
+                      <span className="mt-0.5 block max-w-14 truncate text-[0.65rem] text-faint">{p.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </>
