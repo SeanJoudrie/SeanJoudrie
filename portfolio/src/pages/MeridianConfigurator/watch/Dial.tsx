@@ -1,7 +1,9 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
+import { useThree } from '@react-three/fiber'
 import { BoxGeometry, InstancedMesh, Matrix4, Quaternion, Vector3 } from 'three'
-import { MM } from './Case'
+import { DIALS } from '../config'
 import { makeDialTexture } from '../textures'
+import { MM } from './Case'
 
 /**
  * The dial: a canvas-textured face (sunray, minute track, brand print)
@@ -12,12 +14,20 @@ import { makeDialTexture } from '../textures'
 const DIAL_Y = 4.1 // mm — the face plane
 const INDEX_R = 11.6 // mm — index centers
 
-export function Dial() {
-  // Default build: midnight-blue sunray. The config system re-targets this.
-  const texture = useMemo(
-    () => makeDialTexture({ base: '#2e4468', deep: '#101b30', ink: '#e8e6df' }),
-    [],
+export function Dial({ dialId }: { dialId: string }) {
+  const invalidate = useThree((s) => s.invalidate)
+
+  // ALL dial faces are painted once at mount — a handful of small canvases —
+  // so option swaps only rebind an existing texture, never allocate.
+  const textures = useMemo(() => new Map(DIALS.map((d) => [d.id, makeDialTexture(d.face)])), [])
+  useEffect(
+    () => () => {
+      for (const t of textures.values()) t.dispose()
+    },
+    [textures],
   )
+  useEffect(() => invalidate(), [dialId, invalidate])
+  const texture = textures.get(dialId) ?? textures.get('midnight')!
 
   const indices = useMemo(() => {
     const geo = new BoxGeometry(1.15 * MM, 0.55 * MM, 3.1 * MM)

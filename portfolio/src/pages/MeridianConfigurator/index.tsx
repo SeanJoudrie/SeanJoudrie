@@ -1,6 +1,10 @@
-import { useEffect } from 'react'
-import type { CSSProperties } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import type { ComponentRef, CSSProperties } from 'react'
+import type { CameraControls } from '@react-three/drei'
 import { navigate } from '../../lib/router'
+import type { PartId, Selection } from './config'
+import { decodeSelection, encodeSelection } from './config'
+import { Panel } from './Panel'
 import Scene from './Scene'
 import './theme.css'
 
@@ -17,6 +21,16 @@ function Mark() {
 }
 
 export default function MeridianConfigurator() {
+  const [selection, setSelection] = useState<Selection>(() => decodeSelection(window.location.hash))
+  const controlsRef = useRef<ComponentRef<typeof CameraControls>>(null)
+
+  // The build is shareable: non-default choices ride the hash query.
+  useEffect(() => {
+    history.replaceState(null, '', `#/demos/meridian${encodeSelection(selection)}`)
+  }, [selection])
+
+  const onSelect = (part: PartId, id: string) => setSelection((s) => ({ ...s, [part]: id }))
+
   useEffect(() => {
     document.body.classList.add('meridian-page')
     const prev = document.title
@@ -52,33 +66,19 @@ export default function MeridianConfigurator() {
         </div>
       </header>
 
-      <div className="mx-auto grid w-full max-w-6xl flex-1 gap-4 px-5 py-6 sm:px-8 lg:grid-cols-[1fr_20rem]">
+      <div className="mx-auto grid w-full max-w-6xl flex-1 gap-4 px-5 py-6 sm:px-8 lg:grid-cols-[1fr_21rem]">
         {/* The stage — CameraControls owns gestures inside this box only,
             so page scroll survives on touch. */}
         <div className="hero-in relative min-h-[26rem] overflow-hidden rounded-xl border border-meridian-line bg-meridian-card lg:min-h-[34rem]" style={d(120)}>
-          <Scene />
+          <Scene selection={selection} controlsRef={controlsRef} />
           <p className="meridian-label pointer-events-none absolute bottom-3 left-4">
             Drag to orbit · scroll to zoom
           </p>
         </div>
 
-        {/* Configurator panel — real controls land in phase 3. */}
-        <aside className="hero-in flex flex-col gap-4" style={d(180)}>
-          <section className="rounded-xl border border-meridian-line bg-meridian-card p-5">
-            <h1 className="text-xl font-semibold tracking-tight">The Meridian One</h1>
-            <p className="mt-1 text-sm text-meridian-ink-2">
-              40mm · quartz movement, real local time · every part procedural.
-            </p>
-            <p className="mt-4 font-mono text-xs text-meridian-muted">
-              Configurator lands here — case, dial, bezel, strap.
-            </p>
-          </section>
-          <section className="rounded-xl border border-meridian-line bg-meridian-card p-5">
-            <h2 className="meridian-label">Demo pricing</h2>
-            <p className="mt-2 text-3xl font-semibold tracking-tight">$1,450</p>
-            <p className="mt-1 font-mono text-xs text-meridian-muted">Fictional brand, fictional price.</p>
-          </section>
-        </aside>
+        <div className="hero-in" style={d(180)}>
+          <Panel selection={selection} onSelect={onSelect} controls={controlsRef} />
+        </div>
       </div>
 
       <footer className="border-t border-meridian-line">
