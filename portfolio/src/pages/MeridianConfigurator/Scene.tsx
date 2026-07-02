@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import type { ComponentRef, RefObject } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
 import { CameraControls, ContactShadows, Environment, Lightformer } from '@react-three/drei'
@@ -66,6 +66,17 @@ function GradientDome() {
  * frameloop="demand": the scene renders only when something changes (camera,
  * config, the 1Hz quartz tick later); idle GPU cost is ~zero.
  */
+/** One-time quality tier, decided at mount and never swapped live: WebGL1
+    devices get a plain reflective crystal instead of real transmission
+    (which renders the scene twice). */
+const LOW_TIER = (() => {
+  try {
+    return !document.createElement('canvas').getContext('webgl2')
+  } catch {
+    return true
+  }
+})()
+
 function Watch({ selection }: { selection: Selection }) {
   const caseMat = useDampedMetal(caseOf(selection).metal)
   const bezelMat = useDampedMetal(bezelOf(selection).metal)
@@ -75,10 +86,30 @@ function Watch({ selection }: { selection: Selection }) {
       <Bezel material={bezelMat} />
       <Dial dialId={selection.dial} />
       <Hands />
-      <Crystal />
+      <Crystal low={LOW_TIER} />
       <Strap option={strapOf(selection)} caseMaterial={caseMat} />
     </group>
   )
+}
+
+/** The arrival: the watch starts 30° off-hero and settles as the page
+    fades in. Skipped under reduced motion and on the low GPU tier — the
+    flourish is a bonus, never a gate. */
+function Intro({ controls, ready }: { controls: ControlsRef; ready: boolean }) {
+  const invalidate = useThree((s) => s.invalidate)
+  const played = useRef(false)
+  useEffect(() => {
+    if (!ready || played.current) return
+    played.current = true
+    if (LOW_TIER || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const c = controls.current
+    if (!c) return
+    const az = c.azimuthAngle
+    void c.rotateAzimuthTo(az + 0.52, false)
+    void c.rotateAzimuthTo(az, true)
+    invalidate()
+  }, [ready, controls, invalidate])
+  return null
 }
 
 /** Idle autorotate: starts after 6s of stillness, pauses the moment a hand
@@ -135,10 +166,14 @@ export default function Scene({
   selection,
   controlsRef,
   onContextLost,
+  onReady,
+  ready,
 }: {
   selection: Selection
   controlsRef: ControlsRef
   onContextLost: () => void
+  onReady: () => void
+  ready: boolean
 }) {
   return (
     <Canvas
@@ -153,6 +188,8 @@ export default function Scene({
           e.preventDefault()
           onContextLost()
         })
+        // First painted frame → fade the stage in; never a black flash.
+        requestAnimationFrame(() => onReady())
       }}
     >
       <Environment resolution={512}>
@@ -188,6 +225,7 @@ export default function Scene({
         maxPolarAngle={Math.PI / 2 + 0.25}
       />
       <AutoRotate controls={controlsRef} />
+      <Intro controls={controlsRef} ready={ready} />
     </Canvas>
   )
 }

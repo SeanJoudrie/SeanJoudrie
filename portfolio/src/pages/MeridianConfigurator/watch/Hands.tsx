@@ -79,20 +79,25 @@ export function Hands() {
 }
 
 /** The crystal — a flattened sphere cap seated on the bezel's inner rim.
-    transmission renders the dial through real refraction. */
-export function Crystal() {
+    Full tier gets real transmission (refracts the dial); the low tier gets
+    a plain reflective glass — transmission renders the scene twice. */
+export function Crystal({ low }: { low: boolean }) {
   return (
     <mesh position={[0, -5.77 * MM, 0]} scale={[1, 0.5, 1]}>
       <sphereGeometry args={[30 * MM, 96, 24, 0, Math.PI * 2, 0, 0.497]} />
-      <meshPhysicalMaterial
-        transmission={1}
-        thickness={1.2 * MM}
-        ior={1.5}
-        roughness={0.05}
-        clearcoat={1}
-        clearcoatRoughness={0.06}
-        dithering
-      />
+      {low ? (
+        <meshPhysicalMaterial transparent opacity={0.18} roughness={0.06} metalness={0} clearcoat={1} clearcoatRoughness={0.06} dithering />
+      ) : (
+        <meshPhysicalMaterial
+          transmission={1}
+          thickness={1.2 * MM}
+          ior={1.5}
+          roughness={0.05}
+          clearcoat={1}
+          clearcoatRoughness={0.06}
+          dithering
+        />
+      )}
     </mesh>
   )
 }

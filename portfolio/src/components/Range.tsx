@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { Reveal } from './Reveal'
 import { navigate } from '../lib/router'
 
@@ -15,7 +16,53 @@ const COMMISSIONS = [
       'A dark-mode SaaS revenue dashboard, hand-rolled: self-drawing SVG charts, morphing timeframe filters, live number tickers on a single rAF loop, keyboard-navigable tooltips — zero chart libraries. Fictional company, deterministic data, real engineering.',
     href: '#/demos/aeroscale',
   },
+  {
+    n: '02',
+    skill: '3D & WebGL',
+    title: 'Meridian — 3D watch configurator',
+    caption:
+      'A wristwatch in the browser: orbit it, swap case metals, dials, bezels and straps live, watch the price tick. React Three Fiber with zero downloaded models — every part is procedural geometry, the dial keeps your real local time, and an idle scene renders once a second.',
+    href: '#/demos/meridian',
+  },
 ]
+
+/** A miniature of the watch — warm dark, brass ring, ten past ten. */
+function MeridianThumb() {
+  return (
+    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
+      <rect width="280" height="160" rx="10" fill="#0e0d0b" />
+      {/* strap hints */}
+      <path d="M 122 0 L 158 0 L 154 34 L 126 34 Z" fill="#9a6b42" />
+      <path d="M 126 126 L 154 126 L 158 160 L 122 160 Z" fill="#9a6b42" />
+      {/* case + bezel */}
+      <circle cx="140" cy="80" r="52" fill="#171511" stroke="#c9cdd3" strokeWidth="5" />
+      <circle cx="140" cy="80" r="43" fill="#1c2a45" stroke="#c9a55a" strokeWidth="1.5" />
+      {/* indices */}
+      {Array.from({ length: 12 }, (_, i) => {
+        const a = (i / 12) * Math.PI * 2
+        return (
+          <line
+            key={i}
+            x1={140 + Math.sin(a) * 36}
+            y1={80 - Math.cos(a) * 36}
+            x2={140 + Math.sin(a) * 30}
+            y2={80 - Math.cos(a) * 30}
+            stroke="#c9a55a"
+            strokeWidth={i % 3 === 0 ? 3 : 1.5}
+          />
+        )
+      })}
+      {/* hands at ten past ten */}
+      <line x1="140" y1="80" x2="122" y2="62" stroke="#e8e6df" strokeWidth="4" strokeLinecap="round" />
+      <line x1="140" y1="80" x2="158" y2="54" stroke="#e8e6df" strokeWidth="3" strokeLinecap="round" />
+      <circle cx="140" cy="80" r="3.5" fill="#c9a55a" />
+      {/* crown */}
+      <rect x="194" y="74" width="9" height="12" rx="3" fill="#c9cdd3" />
+    </svg>
+  )
+}
+
+const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb }
 
 /** A miniature of the dashboard — the dark demo peeking through the paper. */
 function AeroThumb() {
@@ -108,7 +155,7 @@ export function Range() {
                   aria-label={`Open ${c.title}`}
                   className="plate-lift h-40 overflow-hidden rounded-xl border border-line"
                 >
-                  <AeroThumb />
+                  {THUMBS[c.n]()}
                 </button>
               </article>
             </Reveal>

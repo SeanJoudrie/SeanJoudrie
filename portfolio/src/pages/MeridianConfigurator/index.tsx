@@ -46,6 +46,7 @@ export default function MeridianConfigurator() {
   const controlsRef = useRef<ComponentRef<typeof CameraControls>>(null)
   const [glOk] = useState(webglAvailable)
   const [lost, setLost] = useState(false)
+  const [ready, setReady] = useState(false)
 
   // The build is shareable: non-default choices ride the hash query.
   useEffect(() => {
@@ -109,12 +110,23 @@ export default function MeridianConfigurator() {
         >
           {glOk && !lost ? (
             <SceneBoundary>
-              <Scene selection={selection} controlsRef={controlsRef} onContextLost={() => setLost(true)} />
+              <div className="h-full" style={{ opacity: ready ? 1 : 0, transition: 'opacity 500ms var(--ease-out)' }}>
+                <Scene
+                  selection={selection}
+                  controlsRef={controlsRef}
+                  onContextLost={() => setLost(true)}
+                  onReady={() => setReady(true)}
+                  ready={ready}
+                />
+              </div>
+              {!ready && (
+                <p className="meridian-label absolute inset-0 grid place-items-center">assembling the One…</p>
+              )}
             </SceneBoundary>
           ) : (
             <Fallback />
           )}
-          {glOk && !lost && (
+          {glOk && !lost && ready && (
             <p className="meridian-label pointer-events-none absolute bottom-3 left-4">Drag to orbit · scroll to zoom</p>
           )}
         </div>
