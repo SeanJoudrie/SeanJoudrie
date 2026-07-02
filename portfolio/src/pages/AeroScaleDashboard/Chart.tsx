@@ -1,17 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
-import type { MonthRow, TierId } from './data'
-import { TIER_META, TIER_ORDER } from './data'
+import type { MonthRow } from './data'
+import { ChartTable, ChartTooltip, HoverMarks } from './ChartHover'
 import { fmtCompact, fmtMonth } from './format'
-
-export type SeriesId = 'total' | TierId
-
-export const SERIES: { id: SeriesId; name: string; color: string }[] = [
-  { id: 'total', name: 'Total MRR', color: 'var(--color-aero-total)' },
-  ...TIER_ORDER.map((id) => ({ id, name: TIER_META[id].name, color: TIER_META[id].color })),
-]
-
-const seriesValue = (id: SeriesId, m: MonthRow) => (id === 'total' ? m.mrr : m.tiers[id].mrr)
+import type { SeriesId } from './series'
+import { SERIES, seriesValue } from './series'
 
 /** Stagger for the draw-on, ms — total leads, tiers follow. */
 const DRAW_DELAY: Record<SeriesId, number> = { total: 650, starter: 850, pro: 1000, ent: 1150 }
@@ -50,7 +43,18 @@ function niceStep(rough: number) {
 export function Chart({ months }: { months: MonthRow[] }) {
   const [ref, { w, h }] = useSize<HTMLDivElement>()
   const [drawn, setDrawn] = useState(false)
+  const [hovered, setHovered] = useState<number | null>(null)
   const endedRef = useRef(0)
+  const hideRef = useRef<number | null>(null)
+
+  // Reduced motion never fires animationend, so the hover layer must not
+  // wait for the draw there.
+  const reduced = useMemo(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches, [])
+  const ready = drawn || reduced
+
+  useEffect(() => () => {
+    if (hideRef.current) clearTimeout(hideRef.current)
+  }, [])
 
   const showEndLabels = w >= 560
   const M = { top: 12, right: showEndLabels ? 92 : 14, bottom: 26, left: 46 }
@@ -73,6 +77,19 @@ export function Chart({ months }: { months: MonthRow[] }) {
     return { max, ticks, x, y, linePath, areaPath, baseline, everyOther }
   }, [months, w, h, M.left, M.right])
 
+  /** Snap the pointer to the nearest month — aim at a date, not a 2px line. */
+  const snap = (e: React.PointerEvent<SVGSVGElement>) => {
+    if (!ready) return
+    if (hideRef.current) {
+      clearTimeout(hideRef.current)
+      hideRef.current = null
+    }
+    const bounds = e.currentTarget.getBoundingClientRect()
+    const stepW = (w - M.left - M.right) / (months.length - 1)
+    const i = Math.round((e.clientX - bounds.left - M.left) / stepW)
+    setHovered(Math.max(0, Math.min(months.length - 1, i)))
+  }
+
   const label = useMemo(() => {
     const first = months[0]
     const last = months[months.length - 1]
@@ -89,9 +106,42 @@ export function Chart({ months }: { months: MonthRow[] }) {
           </li>
         ))}
       </ul>
-      <div ref={ref} className="mt-3 min-h-64 flex-1">
+      <div
+        ref={ref}
+        className="relative mt-3 min-h-64 flex-1 rounded-md"
+        tabIndex={0}
+        aria-label={`${label} Interactive: left and right arrows move between months, Escape dismisses.`}
+        onKeyDown={(e) => {
+          if (!ready || !geo) return
+          const lastIdx = months.length - 1
+          let next: number | null = null
+          if (e.key === 'ArrowLeft') next = hovered === null ? lastIdx : Math.max(0, hovered - 1)
+          else if (e.key === 'ArrowRight') next = hovered === null ? 0 : Math.min(lastIdx, hovered + 1)
+          else if (e.key === 'Home') next = 0
+          else if (e.key === 'End') next = lastIdx
+          else if (e.key === 'Escape') {
+            setHovered(null)
+            return
+          } else return
+          e.preventDefault()
+          setHovered(next)
+        }}
+        onBlur={() => setHovered(null)}
+      >
         {geo && (
-          <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} role="img" aria-label={label}>
+          <svg
+            width={w}
+            height={h}
+            viewBox={`0 0 ${w} ${h}`}
+            role="img"
+            aria-label={label}
+            onPointerMove={snap}
+            onPointerDown={snap}
+            onPointerLeave={() => {
+              // A beat of grace so the tooltip doesn't flicker at the edges.
+              hideRef.current = window.setTimeout(() => setHovered(null), 90)
+            }}
+          >
             <defs>
               <linearGradient id="aero-total-fill" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0" style={{ stopColor: 'var(--color-aero-total)', stopOpacity: 0.14 }} />
@@ -170,9 +220,31 @@ export function Chart({ months }: { months: MonthRow[] }) {
                 </g>
               )
             })}
+
+            {ready && hovered !== null && (
+              <HoverMarks months={months} hovered={hovered} x={geo.x} y={geo.y} top={M.top} bottom={h - M.bottom} />
+            )}
           </svg>
         )}
+
+        {geo && ready && hovered !== null && (
+          <ChartTooltip
+            months={months}
+            hovered={hovered}
+            px={geo.x(hovered)}
+            py={geo.y(seriesValue('total', months[hovered]))}
+            w={w}
+            h={h}
+          />
+        )}
+
+        <div aria-live="polite" className="sr-only">
+          {hovered !== null &&
+            `${fmtMonth(months[hovered].label)}: total ${fmtCompact(seriesValue('total', months[hovered]))}`}
+        </div>
       </div>
+
+      <ChartTable months={months} />
     </div>
   )
 }
