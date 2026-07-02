@@ -2,20 +2,23 @@ import { useSyncExternalStore } from 'react'
 import { flushSync } from 'react-dom'
 
 /**
- * A deliberately tiny hash router: `#/work/<slug>` renders a case-study page;
+ * A deliberately tiny hash router: `#/work/<slug>` renders a case-study page,
+ * `#/demos/<slug>` a standalone demo (its own chrome, no portfolio nav);
  * anything else renders home. Navigation wraps the DOM swap in a View
  * Transition when the browser supports it (and motion isn't reduced), so the
  * plate morphs into the page instead of cutting.
  */
-export type Route = { caseSlug: string | null }
+export type Route = { caseSlug: string | null; demoSlug: string | null }
 
 function parse(hash: string): Route {
   const m = hash.match(/^#\/work\/([a-z0-9-]+)$/)
-  if (m) return { caseSlug: m[1] }
+  if (m) return { caseSlug: m[1], demoSlug: null }
+  const d = hash.match(/^#\/demos\/([a-z0-9-]+)(\?.*)?$/)
+  if (d) return { caseSlug: null, demoSlug: d[1] }
   // Legacy deep links from the drawer era.
-  if (hash === '#globalio') return { caseSlug: 'globalio' }
-  if (hash === '#rex') return { caseSlug: 'rex' }
-  return { caseSlug: null }
+  if (hash === '#globalio') return { caseSlug: 'globalio', demoSlug: null }
+  if (hash === '#rex') return { caseSlug: 'rex', demoSlug: null }
+  return { caseSlug: null, demoSlug: null }
 }
 
 let route: Route = parse(window.location.hash)
@@ -23,7 +26,7 @@ const subs = new Set<() => void>()
 
 function set(hash: string) {
   const next = parse(hash)
-  if (next.caseSlug === route.caseSlug) return
+  if (next.caseSlug === route.caseSlug && next.demoSlug === route.demoSlug) return
   route = next
   subs.forEach((f) => f())
 }

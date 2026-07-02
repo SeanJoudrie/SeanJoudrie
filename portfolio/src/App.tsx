@@ -11,14 +11,15 @@ import { useRoute } from './lib/router'
 
 const GlobalioCaseStudy = lazy(() => import('./pages/GlobalioCaseStudy'))
 const RexCaseStudy = lazy(() => import('./pages/RexCaseStudy'))
+const AeroScaleDashboard = lazy(() => import('./pages/AeroScaleDashboard'))
 
 export default function App() {
-  const { caseSlug } = useRoute()
+  const { caseSlug, demoSlug } = useRoute()
 
   // Landing back on home with a plain section hash (#work, #about…):
   // scroll to it once the sections exist.
   useEffect(() => {
-    if (caseSlug) return
+    if (caseSlug || demoSlug) return
     const m = window.location.hash.match(/^#([a-z-]+)$/)
     if (!m) return
     requestAnimationFrame(() => {
@@ -27,7 +28,25 @@ export default function App() {
       const el = document.getElementById(m[1]) ?? document.getElementById('work')
       el?.scrollIntoView()
     })
-  }, [caseSlug])
+  }, [caseSlug, demoSlug])
+
+  // Demos are standalone products — they bring their own chrome, so the
+  // portfolio nav and footer stay out of the frame.
+  if (demoSlug === 'aeroscale') {
+    return (
+      <main aria-label="AeroScale UI demo">
+        <Suspense
+          fallback={
+            <div className="grid min-h-svh place-items-center bg-aero-bg">
+              <span className="coord text-aero-muted">loading demo…</span>
+            </div>
+          }
+        >
+          <AeroScaleDashboard />
+        </Suspense>
+      </main>
+    )
+  }
 
   if (caseSlug === 'globalio' || caseSlug === 'rex') {
     return (

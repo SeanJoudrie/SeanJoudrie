@@ -1,0 +1,37 @@
+/* AeroScale UI — demo-scoped dark chrome. Color tokens live in index.css
+   @theme (aero-*); this sheet carries what utilities can't: color-scheme,
+   selection, focus, and the skeleton blocks later phases replace. */
+.aero-root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+}
+.aero-root ::selection {
+  background: var(--color-aero-pro);
+  color: var(--color-aero-ink);
+}
+.aero-root :focus-visible {
+  outline-color: var(--color-aero-starter);
+}
+
+/* The demo owns the whole viewport — swapping the body color too means
+   overscroll rubber-banding never flashes the portfolio's paper. */
+body.aero-page {
+  background-color: var(--color-aero-bg);
+}
+
+/* Small-caps card label — the dark twin of the portfolio's .annotation. */
+.aero-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-aero-muted);
+}
+
+/* Placeholder block for components that land in later phases.
+   (No border-radius here — unlayered CSS would beat the rounded-* utilities,
+   so the radius rides in with each block's classes.) */
+.aero-skeleton {
+  background: var(--color-aero-card-2);
+}
