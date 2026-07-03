@@ -227,6 +227,10 @@ export function Range() {
             The Lab extracts pieces from my products; these are stand-alone builds, each answering a question a
             hiring team actually asks.
           </p>
+          <p className="annotation mt-2">
+            <span className="coord text-accent">⌘K</span> — this site runs on a
+            command palette. Press it.
+          </p>
         </Reveal>
 
         <div className="mt-10 space-y-6">

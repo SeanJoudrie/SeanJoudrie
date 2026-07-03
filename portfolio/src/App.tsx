@@ -8,6 +8,7 @@ import { Range } from './components/Range'
 import { Now } from './components/Now'
 import { Contact } from './components/Contact'
 import { Footer } from './components/Footer'
+import { CommandPalette } from './components/CommandPalette'
 import { useRoute } from './lib/router'
 
 const GlobalioCaseStudy = lazy(() => import('./pages/GlobalioCaseStudy'))
@@ -102,6 +103,7 @@ export default function App() {
             <CasePage />
           </Suspense>
         </main>
+        <CommandPalette />
         <Footer />
       </>
     )
@@ -125,6 +127,7 @@ export default function App() {
         <Now />
         <Contact />
       </main>
+      <CommandPalette />
       <Footer />
     </>
   )

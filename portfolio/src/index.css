@@ -388,6 +388,84 @@ body {
   .menu-link { animation: none; opacity: 1; }
 }
 
+/* ============================================================
+   Command palette (⌘K) — overlay fades, panel drops in from the
+   top like a survey plate settling; both leave a touch faster.
+   Mirrors the mobile menu-sheet enter/exit choreography.
+   ============================================================ */
+@keyframes palette-overlay-in  { from { opacity: 0; } }
+@keyframes palette-overlay-out { to   { opacity: 0; } }
+@keyframes palette-panel-in {
+  from { opacity: 0; transform: translate(-50%, -10px) scale(0.98); }
+}
+@keyframes palette-panel-out {
+  to   { opacity: 0; transform: translate(-50%, -6px) scale(0.985); }
+}
+.palette-overlay     { animation: palette-overlay-in  var(--t-enter) var(--ease-out) both; }
+.palette-overlay-out { animation: palette-overlay-out var(--t-exit)  var(--ease-out) both; }
+.palette-panel       { animation: palette-panel-in    var(--t-enter) var(--ease-out) both; }
+.palette-panel-out   { animation: palette-panel-out   var(--t-exit)  var(--ease-out) both; }
+
+/* Result rows stagger in on open, like menu-link — capped so long lists
+   never feel slow. Uses the same --stagger custom-prop convention. */
+@keyframes palette-row-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.palette-row {
+  opacity: 0;
+  animation: palette-row-in var(--t-feedback) var(--ease-out) both;
+  animation-delay: var(--stagger, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .palette-overlay, .palette-overlay-out,
+  .palette-panel,   .palette-panel-out,
+  .palette-row { animation: none; opacity: 1; transform: none; }
+}
+
+/* ============================================================
+   Survey Grid — the ⌘K easter egg. A faint cartographic
+   graticule washes over the whole page with corner coordinate
+   ticks, as if the site were laid out on a surveyor's sheet.
+   Toggled by adding `.survey-grid` to <html>. Esc removes it.
+   ============================================================ */
+.survey-grid::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right,  rgba(189, 58, 28, 0.10) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(189, 58, 28, 0.10) 1px, transparent 1px),
+    linear-gradient(to right,  rgba(133, 123, 99, 0.16) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(133, 123, 99, 0.16) 1px, transparent 1px);
+  background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+  animation: survey-in var(--t-enter, 250ms) var(--ease-out, ease) both;
+}
+.survey-grid::after {
+  content: "N 42.5047°  ·  W 71.0728°  ·  ATLAS SURVEY — press esc to clear";
+  position: fixed;
+  bottom: 0.75rem;
+  right: 0.9rem;
+  z-index: 41;
+  pointer-events: none;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-paper) 82%, transparent);
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--color-line);
+  border-radius: 3px;
+  animation: survey-in var(--t-enter, 250ms) var(--ease-out, ease) both;
+}
+@keyframes survey-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .survey-grid::before, .survey-grid::after { animation: none; }
+}
+
 /* Seed Scrubber — the round slides in from the direction of travel. */
 @keyframes seed-swap {
   from { opacity: 0; transform: translateX(var(--dx, 10px)); }
