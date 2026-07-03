@@ -118,12 +118,14 @@ export default function App() {
         Skip to the work
       </a>
       <Nav />
+      {/* Range-first: the demo shelf is the fastest proof of breadth, so it
+          leads; the deeper case studies and Lab follow. */}
       <main aria-label="Portfolio">
         <Hero />
-        <Work />
-        <About />
-        <Lab />
         <Range />
+        <About />
+        <Work />
+        <Lab />
         <Now />
         <Contact />
       </main>

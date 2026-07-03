@@ -1,26 +1,18 @@
 import { Suspense, lazy } from 'react'
 import { Reveal } from './Reveal'
 
-const CodexExplorer = lazy(() => import('./lab/CodexExplorer'))
 const SeedScrubber = lazy(() => import('./lab/SeedScrubber'))
 const SwipeDeck = lazy(() => import('./lab/SwipeDeck'))
 
 /**
  * The Lab — skills demonstrated, not listed. Each experiment is a live,
- * touchable widget labeled with the skill it proves. New experiments get
- * appended here as the index grows.
+ * touchable widget labeled with the skill it proves. The third slot is
+ * intentionally open for the next non-Globalio experiment — the Hero's flag
+ * game already covers that product live, so nothing here should re-prove it.
  */
 const EXPERIMENTS = [
   {
     n: '01',
-    skill: 'Data',
-    title: 'Codex Explorer — the Europe section',
-    caption:
-      'One region of Globalio’s codex, in the shape the product uses: open any country for its subdivisions and flag-history timeline. The full codex covers 197 countries and 4,000+ entries.',
-    Demo: CodexExplorer,
-  },
-  {
-    n: '02',
     skill: 'Systems',
     title: 'Daily Seed Scrubber',
     caption:
@@ -28,7 +20,7 @@ const EXPERIMENTS = [
     Demo: SeedScrubber,
   },
   {
-    n: '03',
+    n: '02',
     skill: 'Interaction',
     title: 'Swipe Deck — decide together',
     caption:

@@ -72,7 +72,7 @@ export function About() {
 
           {/* Desktop: portrait column, top-aligned with the heading. */}
           <Reveal delay={80} className="hidden md:block">
-            <figure className="ml-auto max-w-[240px]">
+            <figure className="parallax-1 ml-auto max-w-[240px]">
               <Portrait className="aspect-[4/5]" />
               <figcaption className="coord mt-3 text-center">
                 Wakefield, MA · U.S. Army National Guard OC

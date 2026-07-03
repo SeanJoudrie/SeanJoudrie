@@ -1,6 +1,9 @@
+import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Reveal } from './Reveal'
 import { navigate } from '../lib/router'
+
+const MeridianLive = lazy(() => import('./MeridianLive'))
 
 /**
  * Range — stand-alone commissioned builds, one hireable skill each. Where
@@ -163,6 +166,68 @@ function PalisadeThumb() {
 
 const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb }
 
+/**
+ * The Meridian card's live slot. The heavy three.js chunk loads only when
+ * the card nears the viewport; until then (and on devices without WebGL, or
+ * after a lost GL context) the static thumbnail stands in. The canvas also
+ * reports its own visibility so the idle spin never runs off screen.
+ */
+function MeridianLiveThumb() {
+  const wrap = useRef<HTMLDivElement>(null)
+  const [near, setNear] = useState(false)
+  const [inView, setInView] = useState(true)
+  const [failed, setFailed] = useState(false)
+
+  useEffect(() => {
+    if (failed) return
+    let ok = false
+    try {
+      const c = document.createElement('canvas')
+      ok = !!(c.getContext('webgl2') ?? c.getContext('webgl'))
+    } catch {
+      ok = false
+    }
+    if (!ok) {
+      setFailed(true)
+      return
+    }
+    const el = wrap.current
+    if (!el) return
+    const loadIo = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setNear(true)
+          loadIo.disconnect()
+        }
+      },
+      { rootMargin: '400px' },
+    )
+    const viewIo = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.1 })
+    loadIo.observe(el)
+    viewIo.observe(el)
+    return () => {
+      loadIo.disconnect()
+      viewIo.disconnect()
+    }
+  }, [failed])
+
+  return (
+    <div ref={wrap} className="h-full w-full">
+      {near && !failed ? (
+        <Suspense fallback={<MeridianThumb />}>
+          <MeridianLive
+            active={inView}
+            onActivate={() => navigate('#/demos/meridian')}
+            onFail={() => setFailed(true)}
+          />
+        </Suspense>
+      ) : (
+        <MeridianThumb />
+      )}
+    </div>
+  )
+}
+
 /** A miniature of the dashboard — the dark demo peeking through the paper. */
 function AeroThumb() {
   return (
@@ -253,13 +318,32 @@ export function Range() {
                     </button>
                   </div>
                 </div>
-                <button
-                  onClick={() => navigate(c.href)}
-                  aria-label={`Open ${c.title}`}
-                  className="plate-lift h-40 overflow-hidden rounded-xl border border-line"
-                >
-                  {THUMBS[c.n]()}
-                </button>
+                {c.n === '02' ? (
+                  <div className="parallax-1 flex flex-col gap-2">
+                    <div
+                      className="plate-lift h-40 overflow-hidden rounded-xl border border-line"
+                      style={{ background: '#0e0d0b' }}
+                    >
+                      <MeridianLiveThumb />
+                    </div>
+                    <button
+                      onClick={() => navigate(c.href)}
+                      className="coord text-left text-accent transition-colors hover:text-accent-deep"
+                    >
+                      Click to customize — swap the case, dial, and strap →
+                    </button>
+                  </div>
+                ) : (
+                  <div className="parallax-1">
+                    <button
+                      onClick={() => navigate(c.href)}
+                      aria-label={`Open ${c.title}`}
+                      className="plate-lift block h-40 w-full overflow-hidden rounded-xl border border-line"
+                    >
+                      {THUMBS[c.n]()}
+                    </button>
+                  </div>
+                )}
               </article>
             </Reveal>
           ))}

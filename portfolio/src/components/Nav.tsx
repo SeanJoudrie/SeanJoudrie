@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useScrollSpy } from '../hooks/useScrollSpy'
 import { useBodyLock } from '../hooks/useBodyLock'
 import { openCommandPalette } from '../hooks/useCommandPalette'
+import { ThemeSwitcher } from './ThemeSwitcher'
 import { site } from '../data/site'
 
 const links = [
@@ -116,6 +117,9 @@ export function Nav() {
                   ⌘K
                 </kbd>
               </button>
+            </li>
+            <li>
+              <ThemeSwitcher />
             </li>
             {site.hasResume && (
               <li>
