@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useScrollSpy } from '../hooks/useScrollSpy'
 import { useBodyLock } from '../hooks/useBodyLock'
+import { openCommandPalette } from '../hooks/useCommandPalette'
 import { site } from '../data/site'
 
 const links = [
@@ -101,6 +102,21 @@ export function Nav() {
                 </a>
               </li>
             ))}
+            <li>
+              <button
+                id="cmdk-pill"
+                type="button"
+                onClick={() => openCommandPalette()}
+                aria-label="Open command palette"
+                aria-keyshortcuts="Meta+K Control+K"
+                className="springy hidden items-center gap-2 rounded-lg border border-line px-2.5 py-1.5 text-ink-2 hover:border-accent hover:text-accent lg:inline-flex"
+              >
+                <span className="text-sm font-medium">Search</span>
+                <kbd className="coord rounded border border-line px-1.5 py-0.5 text-[0.65rem] leading-none">
+                  ⌘K
+                </kbd>
+              </button>
+            </li>
             {site.hasResume && (
               <li>
                 <a
@@ -112,6 +128,18 @@ export function Nav() {
               </li>
             )}
           </ul>
+
+          <button
+            type="button"
+            onClick={() => openCommandPalette()}
+            aria-label="Open command palette"
+            className="mr-1 p-1 text-ink md:hidden"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="7" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </button>
 
           <button
             ref={burgerRef}
