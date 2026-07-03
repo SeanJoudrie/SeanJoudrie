@@ -15,6 +15,7 @@ const RexCaseStudy = lazy(() => import('./pages/RexCaseStudy'))
 const FlexynCaseStudy = lazy(() => import('./pages/FlexynCaseStudy'))
 const AeroScaleDashboard = lazy(() => import('./pages/AeroScaleDashboard'))
 const MeridianConfigurator = lazy(() => import('./pages/MeridianConfigurator'))
+const LedgerLens = lazy(() => import('./pages/LedgerLens'))
 
 const CASE_PAGES: Record<string, React.LazyExoticComponent<() => React.JSX.Element>> = {
   globalio: GlobalioCaseStudy,
@@ -35,6 +36,12 @@ const DEMO_PAGES: Record<
     label: 'Meridian configurator demo',
     shell: 'bg-meridian-bg',
     spinner: 'text-meridian-muted',
+  },
+  'ledger-lens': {
+    Page: LedgerLens,
+    label: 'Ledger Lens receipt extractor demo',
+    shell: 'bg-ledger-bg',
+    spinner: 'text-ledger-muted',
   },
 }
 

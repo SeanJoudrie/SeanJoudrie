@@ -57,6 +57,21 @@
   --color-meridian-muted: #8f8878;
   --color-meridian-brass: #c9a55a;
   --color-meridian-brass-2: #a98944;
+
+  /* ---- Ledger Lens demo — scoped "ledger" dark system (pages/LedgerLens).
+     Warm cream ink on near-black charcoal, one mint "verified/total" accent
+     plus amber (low-confidence) and red (error) status colors. All text roles
+     WCAG-checked ≥4.5:1 against bg AND card; see docs/roster/1-ledger-lens.md §4. ---- */
+  --color-ledger-bg: #0d0c0a;
+  --color-ledger-card: #17150f;
+  --color-ledger-card-2: #201d15;
+  --color-ledger-line: rgb(255 255 255 / 0.08);
+  --color-ledger-ink: #f4efe2;
+  --color-ledger-ink-2: #cabfa6;
+  --color-ledger-muted: #9a8f78;
+  --color-ledger-mint: #58c98a;
+  --color-ledger-flag: #e0a53a;
+  --color-ledger-bad: #e06a5a;
 }
 
 :root {

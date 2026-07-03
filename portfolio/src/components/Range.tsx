@@ -24,6 +24,14 @@ const COMMISSIONS = [
       'A wristwatch in the browser: orbit it, swap case metals, dials, bezels and straps live, watch the price tick. React Three Fiber with zero downloaded models — every part is procedural geometry, the dial keeps your real local time, and an idle scene renders once a second.',
     href: '#/demos/meridian',
   },
+  {
+    n: '03',
+    skill: 'AI-native product',
+    title: 'Ledger Lens — AI receipt & invoice extractor',
+    caption:
+      'Drop a receipt photo (or pick one of three procedurally rendered examples) and watch Claude read it: a streaming "reading → structuring" pass fills an editable table with line items, per-field confidence, and derived totals it recomputes rather than trusts. Vision + a strict JSON schema, the Anthropic key held server-side in a rate-limited Supabase Edge Function — your key never touches the browser.',
+    href: '#/demos/ledger-lens',
+  },
 ]
 
 /** A miniature of the watch — warm dark, brass ring, ten past ten. */
@@ -62,7 +70,51 @@ function MeridianThumb() {
   )
 }
 
-const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb }
+/** A miniature of a receipt being read — warm dark, cream slip, a mint check. */
+function LedgerThumb() {
+  return (
+    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
+      <rect width="280" height="160" rx="10" fill="#0d0c0a" />
+      {/* the receipt slip, faintly tilted, with a torn/zigzag bottom */}
+      <g transform="rotate(-3 140 80)">
+        <path
+          d="M 96 26 H 184 V 118
+             l -6 5 l -6 -5 l -6 5 l -6 -5 l -6 5 l -6 -5 l -6 5 l -6 -5
+             l -6 5 l -6 -5 l -6 5 l -6 -5 l -6 5 l -6 -5 Z"
+          fill="#f4efe2"
+        />
+        {/* merchant header bar */}
+        <rect x="112" y="34" width="56" height="7" rx="2" fill="#211b12" />
+        <rect x="120" y="45" width="40" height="4" rx="2" fill="#9a8f78" />
+        {/* dashed rule */}
+        <line x1="104" y1="56" x2="176" y2="56" stroke="#c9bfa6" strokeWidth="1.5" strokeDasharray="3 3" />
+        {/* line-item rows: description + amount */}
+        {[62, 72, 82, 92].map((y, i) => (
+          <g key={y}>
+            <rect x="104" y={y} width={40 - i * 4} height="4" rx="2" fill="#5c5340" />
+            <rect x={168 - 16} y={y} width="16" height="4" rx="2" fill="#211b12" />
+          </g>
+        ))}
+        {/* dashed rule + total row (mint = verified/total) */}
+        <line x1="104" y1="102" x2="176" y2="102" stroke="#c9bfa6" strokeWidth="1.5" strokeDasharray="3 3" />
+        <rect x="104" y="108" width="24" height="5" rx="2" fill="#211b12" />
+        <rect x="150" y="108" width="26" height="5" rx="2" fill="#2f7a4f" />
+      </g>
+      {/* the "lens" — a mint verified check ringing the total */}
+      <circle cx="196" cy="118" r="15" fill="#0d0c0a" stroke="#58c98a" strokeWidth="2.5" />
+      <polyline
+        points="189,118 194,123 204,112"
+        fill="none"
+        stroke="#58c98a"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb }
 
 /** A miniature of the dashboard — the dark demo peeking through the paper. */
 function AeroThumb() {
