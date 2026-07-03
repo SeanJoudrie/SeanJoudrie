@@ -32,6 +32,14 @@ const COMMISSIONS = [
       'Drop a receipt photo (or pick one of three procedurally rendered examples) and watch Claude read it: a streaming "reading → structuring" pass fills an editable table with line items, per-field confidence, and derived totals it recomputes rather than trusts. Vision + a strict JSON schema, the Anthropic key held server-side in a rate-limited Supabase Edge Function — your key never touches the browser.',
     href: '#/demos/ledger-lens',
   },
+  {
+    n: '04',
+    skill: 'Enterprise UI & performance at scale',
+    title: 'Palisade — enterprise data grid',
+    caption:
+      'Ten thousand freight-manifest rows in the browser, hand-rolled: windowed virtualization (no grid library), Excel-grade keyboard nav with a single roving active cell, range copy/paste as TSV, click-to-sort, a filter row, column resize / reorder / pin, undo-redo, and CSV export that honours the current view. Session-only edits, one seeded dataset, zero table dependencies.',
+    href: '#/demos/palisade',
+  },
 ]
 
 /** A miniature of the watch — warm dark, brass ring, ten past ten. */
@@ -114,7 +122,46 @@ function LedgerThumb() {
   )
 }
 
-const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb }
+/** A miniature of the data grid — pinned column, a sort caret, a status
+    badge, and the teal active-cell ring peeking through the paper. */
+function PalisadeThumb() {
+  const rowY = [58, 76, 94, 112, 130]
+  return (
+    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
+      <rect width="280" height="160" rx="10" fill="#0a1214" />
+      {/* toolbar hint */}
+      <rect x="14" y="14" width="90" height="10" rx="5" fill="#16262b" />
+      <rect x="228" y="13" width="38" height="12" rx="6" fill="#0f1a1d" stroke="#2dd4bf" strokeWidth="1" />
+      {/* header row */}
+      <rect x="14" y="34" width="252" height="16" rx="3" fill="#16262b" />
+      <rect x="20" y="40" width="30" height="4" rx="2" fill="#7d908f" />
+      <rect x="84" y="40" width="34" height="4" rx="2" fill="#7d908f" />
+      {/* sort caret on a column */}
+      <path d="M 150 39 l 4 5 l 4 -5 Z" fill="#2dd4bf" />
+      <rect x="164" y="40" width="26" height="4" rx="2" fill="#7d908f" />
+      {/* pinned first column band */}
+      <rect x="14" y="50" width="60" height="88" fill="#0f1a1d" />
+      <line x1="74" y1="34" x2="74" y2="138" stroke="rgb(255,255,255)" strokeOpacity="0.12" strokeWidth="1" />
+      {/* body rows */}
+      {rowY.map((y, i) => (
+        <g key={y}>
+          <rect x="20" y={y - 4} width="44" height="4" rx="2" fill="#b3c2c1" />
+          <rect x="84" y={y - 4} width="40" height="4" rx="2" fill="#b3c2c1" />
+          {/* status badge */}
+          <rect x="150" y={y - 6} width="46" height="9" rx="4.5"
+            fill={i === 1 ? 'rgba(52,211,153,0.15)' : i === 3 ? 'rgba(248,113,113,0.15)' : 'rgba(96,165,250,0.15)'} />
+          <circle cx="156" cy={y - 1.5} r="2" fill={i === 1 ? '#34d399' : i === 3 ? '#f87171' : '#60a5fa'} />
+          {/* right-aligned tabular number */}
+          <rect x="228" y={y - 4} width="34" height="4" rx="2" fill="#eef4f3" />
+        </g>
+      ))}
+      {/* active-cell ring */}
+      <rect x="82" y="86" width="44" height="16" rx="2" fill="none" stroke="#2dd4bf" strokeWidth="1.5" />
+    </svg>
+  )
+}
+
+const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb }
 
 /** A miniature of the dashboard — the dark demo peeking through the paper. */
 function AeroThumb() {

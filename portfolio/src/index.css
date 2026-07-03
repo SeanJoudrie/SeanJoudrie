@@ -72,6 +72,25 @@
   --color-ledger-mint: #58c98a;
   --color-ledger-flag: #e0a53a;
   --color-ledger-bad: #e06a5a;
+
+  /* ---- Palisade demo — enterprise data grid (pages/PalisadeGrid).
+     Teal-tinted deep charcoal; text roles WCAG-checked ≥4.5:1 against
+     bg #0a1214 and card #0f1a1d. Status colors pair icon+text (see
+     docs/roster/2-data-grid.md §4). Do not retune by eye. ---- */
+  --color-palisade-bg: #0a1214;
+  --color-palisade-card: #0f1a1d;
+  --color-palisade-card-2: #16262b;
+  --color-palisade-line: rgb(255 255 255 / 0.08);
+  --color-palisade-ink: #eef4f3;
+  --color-palisade-ink-2: #b3c2c1;
+  --color-palisade-muted: #7d908f;
+  --color-palisade-accent: #2dd4bf;
+  --color-palisade-accent-2: #14b8a6;
+  --color-palisade-good: #34d399;
+  --color-palisade-warn: #fbbf24;
+  --color-palisade-bad: #f87171;
+  --color-palisade-info: #60a5fa;
+  --color-palisade-sel: rgb(45 212 191 / 0.16);
 }
 
 :root {

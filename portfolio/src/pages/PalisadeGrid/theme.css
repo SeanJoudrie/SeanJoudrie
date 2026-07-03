@@ -1,0 +1,70 @@
+/* Palisade — enterprise data grid, demo-scoped dark chrome. Color tokens
+   live in index.css @theme (palisade-*); this sheet carries what utilities
+   can't: color-scheme, selection, focus, the body wash, and the grid's
+   structural rules (sticky, tabular numerals, no-select while range-dragging). */
+.palisade-root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+}
+.palisade-root ::selection {
+  background: var(--color-palisade-accent);
+  color: var(--color-palisade-bg);
+}
+.palisade-root :focus-visible {
+  outline-color: var(--color-palisade-accent);
+}
+
+/* The demo owns the viewport — swap the body color so overscroll never
+   flashes the portfolio's paper. Toggled on mount (index.tsx). */
+body.palisade-page {
+  background-color: var(--color-palisade-bg);
+}
+
+/* Small-caps label — the dark twin of the portfolio's .annotation. */
+.palisade-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-palisade-muted);
+}
+
+/* Numeric cells share one tabular rhythm so columns of money align. */
+.palisade-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* While a range drag is in flight the body must not select text. */
+.palisade-dragging,
+.palisade-dragging * {
+  user-select: none !important;
+  cursor: cell;
+}
+
+/* Active cell ring is drawn with box-shadow (inset) so it never affects
+   layout / row height — critical for the fixed-height virtualization. */
+.palisade-active {
+  box-shadow: inset 0 0 0 2px var(--color-palisade-accent);
+}
+
+/* Invalid-edit flash — a one-shot shake, reduced-motion safe. */
+@keyframes palisade-nudge {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+.palisade-invalid {
+  box-shadow: inset 0 0 0 2px var(--color-palisade-bad);
+  animation: palisade-nudge 0.18s ease;
+}
+
+/* Column drop indicator during header reorder. */
+.palisade-dropline {
+  box-shadow: inset 2px 0 0 var(--color-palisade-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .palisade-invalid { animation: none; }
+}

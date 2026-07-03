@@ -16,6 +16,7 @@ const FlexynCaseStudy = lazy(() => import('./pages/FlexynCaseStudy'))
 const AeroScaleDashboard = lazy(() => import('./pages/AeroScaleDashboard'))
 const MeridianConfigurator = lazy(() => import('./pages/MeridianConfigurator'))
 const LedgerLens = lazy(() => import('./pages/LedgerLens'))
+const PalisadeGrid = lazy(() => import('./pages/PalisadeGrid'))
 
 const CASE_PAGES: Record<string, React.LazyExoticComponent<() => React.JSX.Element>> = {
   globalio: GlobalioCaseStudy,
@@ -42,6 +43,12 @@ const DEMO_PAGES: Record<
     label: 'Ledger Lens receipt extractor demo',
     shell: 'bg-ledger-bg',
     spinner: 'text-ledger-muted',
+  },
+  palisade: {
+    Page: PalisadeGrid,
+    label: 'Palisade data grid demo',
+    shell: 'bg-palisade-bg',
+    spinner: 'text-palisade-muted',
   },
 }
 
