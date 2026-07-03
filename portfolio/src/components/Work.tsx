@@ -4,8 +4,6 @@ import type { Project } from '../data/projects'
 import { CaseStudyDrawer } from './CaseStudyDrawer'
 import { Reveal } from './Reveal'
 import { PlateMotif } from './PlateMotif'
-import { Lightbox } from './Lightbox'
-import type { LightboxImage } from './Lightbox'
 import { navigate } from '../lib/router'
 
 /** Projects with a dedicated case-study page skip the drawer. */
@@ -19,7 +17,7 @@ export function Work() {
   const openerRef = useRef<HTMLElement | null>(null)
 
   // Deep-linking: open the drawer if the URL hash matches a project slug,
-  // and keep it in sync (shareable links like …/#globalio).
+  // and keep it in sync (shareable links like …/#rap-sheet).
   useEffect(() => {
     const apply = () => setActive(bySlug(location.hash.replace('#', '')))
     apply()
@@ -43,8 +41,6 @@ export function Work() {
     openerRef.current?.focus()
   }, [])
 
-  const [flagship, ...rest] = projects
-
   return (
     <section id="work" className="border-b border-line">
       <div className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-28">
@@ -56,14 +52,10 @@ export function Work() {
           </div>
         </Reveal>
 
-        {/* Plate 01 — flagship */}
-        <Reveal>
-          <FeaturedPlate project={flagship} onOpen={open} />
-        </Reveal>
-
-        {/* Plates 02–04 */}
-        <div className="mt-6 grid gap-6 md:grid-cols-3">
-          {rest.map((p, i) => (
+        {/* Every shipped product at equal weight — the Range shelf above
+            carries the spotlight; this is the index. */}
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {projects.map((p, i) => (
             <Reveal key={p.name} delay={i * 60} as="div" className="reveal-settle">
               <Plate project={p} onOpen={open} />
             </Reveal>
@@ -89,104 +81,6 @@ function StatusChip({ status, live }: { status: string; live: boolean }) {
   )
 }
 
-function FeaturedPlate({
-  project: p,
-  onOpen,
-}: {
-  project: Project
-  onOpen: (p: Project, opener?: HTMLElement | null) => void
-}) {
-  const [zoom, setZoom] = useState<LightboxImage | null>(null)
-  return (
-    <article className="mt-8 overflow-hidden rounded-xl border border-line bg-paper-2/50">
-      <div className="grid gap-8 p-6 sm:p-10 lg:grid-cols-[1fr_0.9fr] lg:gap-12">
-        <div className="flex flex-col justify-center">
-          <div className="flex items-center gap-3">
-            <span className="coord">Plate {p.plate}</span>
-            <StatusChip status={p.status} live={!!p.liveUrl} />
-          </div>
-
-          <h3
-            className={`mt-4 font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl ${
-              hasPage(p.name) ? 'vt-gio-title' : ''
-            }`}
-          >
-            {p.name}
-          </h3>
-          <p className="mt-2 font-display text-xl italic text-ink-2">{p.hook}</p>
-          <p className="mt-4 max-w-lg leading-relaxed text-ink-2">{p.description}</p>
-
-          {p.facts && (
-            <ul className="mt-6 flex flex-wrap gap-2">
-              {p.facts.map((f) => (
-                <li
-                  key={f}
-                  className="rounded-md border border-line bg-paper px-2.5 py-1 text-sm font-medium text-ink-2"
-                >
-                  {f}
-                </li>
-              ))}
-            </ul>
-          )}
-
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            {p.liveUrl && (
-              <a
-                href={p.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="springy w-full rounded-lg bg-accent px-5 py-3 text-center font-semibold text-paper hover:bg-accent-deep sm:w-auto sm:py-2.5"
-              >
-                Play it live ↗
-              </a>
-            )}
-            <button
-              onClick={(e) => onOpen(p, e.currentTarget)}
-              className="springy w-full rounded-lg border border-ink/25 px-5 py-3 text-center font-semibold text-ink hover:border-accent hover:text-accent sm:w-auto sm:py-2.5"
-            >
-              Case study →
-            </button>
-          </div>
-        </div>
-
-        {/* Real product — three screens that fan open as the plate reveals */}
-        {p.shots && (
-          <div
-            className={`relative mx-auto flex min-h-[22rem] w-full max-w-md items-center justify-center sm:min-h-[26rem] ${
-              hasPage(p.name) ? 'vt-gio-shots' : ''
-            }`}
-          >
-            {p.shots.slice(0, 3).map((s, i) => (
-              <button
-                key={s}
-                onClick={() => setZoom({ src: s, alt: `${p.name} — screen ${i + 1}` })}
-                aria-label={`View ${p.name} screen ${i + 1} larger`}
-                className="plate-lift fan-item absolute max-h-[88%] w-36 cursor-zoom-in overflow-hidden rounded-xl border border-line bg-paper shadow-lg sm:w-44"
-                style={
-                  {
-                    '--fan': `rotate(${(i - 1) * 7}deg) translateX(${(i - 1) * 58}%)`,
-                    transitionDelay: `${i * 90}ms`,
-                    zIndex: i === 1 ? 2 : 1,
-                  } as React.CSSProperties
-                }
-              >
-                <img
-                  src={s}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full object-cover object-top"
-                />
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-      {zoom && <Lightbox image={zoom} onClose={() => setZoom(null)} />}
-    </article>
-  )
-}
-
 function Plate({
   project: p,
   onOpen,
@@ -200,11 +94,19 @@ function Plate({
       <button
         onClick={(e) => onOpen(p, e.currentTarget)}
         aria-label={`Open ${p.name} case study`}
-        className="block w-full cursor-pointer border-b border-line"
+        className="parallax-2 block w-full cursor-pointer border-b border-line"
       >
         {p.screenshot ? (
           <img
             src={p.screenshot}
+            alt={`${p.name} — interface`}
+            loading="lazy"
+            decoding="async"
+            className="aspect-[16/10] w-full object-cover object-top"
+          />
+        ) : p.shots?.[0] ? (
+          <img
+            src={p.shots[0]}
             alt={`${p.name} — interface`}
             loading="lazy"
             decoding="async"
@@ -221,7 +123,11 @@ function Plate({
           <StatusChip status={p.status} live={!!p.liveUrl} />
         </div>
 
-        <h3 className="mt-3 font-display text-2xl font-semibold tracking-tight text-ink">
+        <h3
+          className={`mt-3 font-display text-2xl font-semibold tracking-tight text-ink ${
+            slug(p.name) === 'globalio' ? 'vt-gio-title' : ''
+          }`}
+        >
           {p.name}
         </h3>
         <p className="mt-1.5 leading-relaxed text-ink-2">{p.hook}</p>

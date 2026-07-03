@@ -97,6 +97,43 @@
   color-scheme: light;
 }
 
+/* ============================================================
+   Theme presets — the gear-icon switcher stamps data-theme on
+   <html>; each block re-declares the shell tokens, so every
+   Tailwind utility that reads var(--color-*) reskins for free.
+   House rule: never pure white, never pure black. Values mirror
+   src/data/themes.ts (which powers the switcher UI). Custom mode
+   overrides paper/ink/accent inline, winning over any block.
+   ============================================================ */
+:root[data-theme='fatigues'] {
+  /* Dark navy-charcoal + brass — Army + college colors. */
+  --color-paper: #151b26;
+  --color-paper-2: #1b2331;
+  --color-paper-3: #232d3f;
+  --color-ink: #ece7da;
+  --color-ink-2: #b8b19e;
+  --color-faint: #8b8674;
+  --color-line: #2e3950;
+  --color-accent: #d9a441;
+  --color-accent-deep: #b98527;
+  --color-gold: #c9a55a;
+  color-scheme: dark;
+}
+:root[data-theme='slate'] {
+  /* Cool graphite + cyan — deliberately unlike any one demo. */
+  --color-paper: #23272e;
+  --color-paper-2: #2a2f38;
+  --color-paper-3: #333945;
+  --color-ink: #e9ecf0;
+  --color-ink-2: #b6bdc7;
+  --color-faint: #8b939f;
+  --color-line: #3b424e;
+  --color-accent: #45b8cb;
+  --color-accent-deep: #2e97a9;
+  --color-gold: #c9a55a;
+  color-scheme: dark;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -184,18 +221,46 @@ body {
   --t-emph: 400ms;     /* one-shot emphasis: stamp, pop, shake */
 }
 
-/* Reveal-on-scroll — quick and quiet, not a parade. */
+/* Scroll-scrubbed reveal — driven by --reveal (0..1), written by
+   useScrollProgress on IntersectionObserver ratio steps. Transform-led,
+   proportional to how far into view the block is, and it reverses smoothly
+   when you scroll back out — a scrubbed dial, not a one-shot fade. The
+   short transition eases between the observer's 5% steps. */
 .reveal {
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out);
-}
-.reveal.reveal-on {
-  opacity: 1;
-  transform: none;
+  --reveal: 0;
+  opacity: calc(0.12 + var(--reveal) * 0.88);
+  transform: translateY(calc((1 - var(--reveal)) * 26px)) scale(calc(0.985 + var(--reveal) * 0.015));
+  transition: opacity 0.45s var(--ease-out), transform 0.45s var(--ease-out);
+  will-change: opacity, transform;
 }
 @media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; transition: none; }
+  .reveal { --reveal: 1; opacity: 1; transform: none; transition: none; }
+}
+
+/* Parallax layers — children of a .reveal inherit its --reveal and drift at
+   their own multiplier, so backgrounds settle at a different rate than the
+   text beside them. Two speeds only; subtle by design. */
+.parallax-1 {
+  transform: translateY(calc((1 - var(--reveal, 1)) * 34px));
+  transition: transform 0.6s var(--ease-out);
+  will-change: transform;
+}
+.parallax-2 {
+  transform: translateY(calc((1 - var(--reveal, 1)) * -18px));
+  transition: transform 0.6s var(--ease-out);
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .parallax-1, .parallax-2 { transform: none; transition: none; }
+}
+
+/* Theme switcher popover — same enter language as the palette/menu sheet. */
+@keyframes theme-pop-in {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+}
+.theme-pop { animation: theme-pop-in var(--t-enter) var(--ease-out) both; }
+@media (prefers-reduced-motion: reduce) {
+  .theme-pop { animation: none; }
 }
 
 /* Buttons & plates respond with a spring, not a fade. */
@@ -317,9 +382,14 @@ body {
 
 /* ---- Scroll choreography ---- */
 
-/* Small plates settle in with a hint of rotation. */
-.reveal.reveal-settle { transform: translateY(14px) rotate(0.8deg); }
-.reveal.reveal-on.reveal-settle { transform: none; }
+/* Small plates settle in with a hint of rotation — same --reveal dial as
+   the base scrub, so the tilt unwinds proportionally with scroll. */
+.reveal.reveal-settle {
+  transform:
+    translateY(calc((1 - var(--reveal)) * 26px))
+    rotate(calc((1 - var(--reveal)) * 0.8deg))
+    scale(calc(0.985 + var(--reveal) * 0.015));
+}
 
 /* Dimension lines draw across when their section reveals. */
 .reveal .dim-draw {

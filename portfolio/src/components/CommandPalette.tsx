@@ -107,13 +107,15 @@ export function CommandPalette() {
       const cmdK = (e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')
       if (cmdK) {
         e.preventDefault()
-        if (open) doClose()
+        // Mid-exit counts as closed: ⌘K during the exit animation reopens
+        // (doOpen resets `closing`), never double-closes and eats the press.
+        if (open && !closing) doClose()
         else doOpen()
         return
       }
       if (
         e.key === '/' &&
-        !open &&
+        (!open || closing) &&
         !e.metaKey && !e.ctrlKey && !e.altKey &&
         !isTypingTarget(e.target)
       ) {
@@ -121,10 +123,11 @@ export function CommandPalette() {
         doOpen()
         return
       }
-      // Esc clears the survey-grid easter egg when the palette is closed.
+      // Esc clears the survey-grid easter egg when the palette is closed
+      // (or already on its way out — an open palette eats Esc in its input).
       if (
         e.key === 'Escape' &&
-        !open &&
+        (!open || closing) &&
         document.documentElement.classList.contains('survey-grid')
       ) {
         document.documentElement.classList.remove('survey-grid')
@@ -132,7 +135,7 @@ export function CommandPalette() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [open, doOpen, doClose])
+  }, [open, closing, doOpen, doClose])
 
   // --- focus the input on open ----------------------------------------------
   useEffect(() => {
