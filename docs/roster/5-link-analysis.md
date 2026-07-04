@@ -656,7 +656,7 @@ const T0 = ms(WINDOW_START)
 const T1 = ms(WINDOW_END)
 const SPAN_DAYS = Math.round((T1 - T0) / DAY) // 546
 
-export const ENTITY_TARGET = 54
+export const ENTITY_TARGET = 50 // 29 authored core + 21 seeded filler (8 shells + 8 accounts + 5 couriers)
 export const REL_TARGET = 132
 
 /* Three activity "waves" (fractions of the span) so scrubbing reveals phases. */
@@ -814,11 +814,9 @@ export function buildCase(seed: number = SKEIN_SEED): Case {
     const name = `${FILLER_SHELL[i % FILLER_SHELL.length]} ${pick(rnd, FILLER_SUFFIX)}`
     const e: Entity = { id, type: 'org', name, subtitle: 'Shell trading co', risk: risk(rnd), aliases: [], note: 'Peripheral invoicing shell.' }
     entities.push(e); byId.set(id, e)
-    addRel({ id: '', type: 'owns', source: 'o.bs', target: id, date: waveDate(0, 0.12 + rnd() * 0.1) } as Rel)
-    addRel({ id: '', type: 'registered', source: id, target: 'o.casselvane', date: waveDate(0, 0.1 + rnd() * 0.1) } as Rel)
+    addRel({ type: 'owns', source: 'o.bs', target: id, date: waveDate(0, 0.12 + rnd() * 0.1) })
+    addRel({ type: 'registered', source: id, target: 'o.casselvane', date: waveDate(0, 0.1 + rnd() * 0.1) })
   }
-  // rebuild ids for the two addRel-with-blank calls above
-  rels.forEach((r) => { if (r.id === '') r.id = `r${(relSeq++).toString(36)}` })
 
   // --- filler accounts, each owned by a random org + fed by a transfer ---
   for (let i = 0; i < 8; i++) {
@@ -826,9 +824,9 @@ export function buildCase(seed: number = SKEIN_SEED): Case {
     const owner = pick(rnd, orgs())
     const e: Entity = { id, type: 'account', name: `${owner.name.split(' ')[0]} ****${1000 + Math.floor(rnd() * 8999)}`, subtitle: 'Grindwall Bank', risk: risk(rnd), aliases: [], note: 'Secondary account.' }
     entities.push(e); byId.set(id, e)
-    addRel({ id: `r${(relSeq++).toString(36)}`, type: 'owns', source: owner.id, target: id, date: waveDate(0, 0.14 + rnd() * 0.1) })
+    addRel({ type: 'owns', source: owner.id, target: id, date: waveDate(0, 0.14 + rnd() * 0.1) })
     const src = pick(rnd, accounts().filter((a) => a.id !== id))
-    addRel({ id: `r${(relSeq++).toString(36)}`, type: 'transferred', source: src.id, target: id, amount: 5_000 + Math.floor(rnd() * 480_000), date: waveDate(1, rnd()) })
+    addRel({ type: 'transferred', source: src.id, target: id, amount: 5_000 + Math.floor(rnd() * 480_000), date: waveDate(1, rnd()) })
   }
 
   // --- filler couriers, each employed by an org + communicating with a principal ---
@@ -837,9 +835,9 @@ export function buildCase(seed: number = SKEIN_SEED): Case {
     const e: Entity = { id, type: 'person', name: `${pick(rnd, FILLER_FIRST)} ${pick(rnd, FILLER_LAST)}`, subtitle: pick(rnd, ['Courier', 'Clerk', 'Agent', 'Broker']), risk: risk(rnd), aliases: [], note: 'Peripheral operative.' }
     entities.push(e); byId.set(id, e)
     const employer = pick(rnd, orgs())
-    addRel({ id: `r${(relSeq++).toString(36)}`, type: 'employed', source: id, target: employer.id, date: waveDate(0, 0.16 + rnd() * 0.1) })
+    addRel({ type: 'employed', source: id, target: employer.id, date: waveDate(0, 0.16 + rnd() * 0.1) })
     const principal = pick(rnd, persons().filter((p) => p.id !== id))
-    addRel({ id: `r${(relSeq++).toString(36)}`, type: 'communicated', source: id, target: principal.id, date: waveDate(1 + Math.floor(rnd() * 2), rnd()) })
+    addRel({ type: 'communicated', source: id, target: principal.id, date: waveDate(1 + Math.floor(rnd() * 2), rnd()) })
   }
 
   // --- density: extra transfers, communications, shipments spread across waves ---
@@ -849,21 +847,21 @@ export function buildCase(seed: number = SKEIN_SEED): Case {
       const a = pick(rnd, accounts()); let b = pick(rnd, accounts())
       let guard = 0; while (b.id === a.id && guard++ < 8) b = pick(rnd, accounts())
       if (a.id === b.id) continue
-      addRel({ id: `r${(relSeq++).toString(36)}`, type: 'transferred', source: a.id, target: b.id, amount: 5_000 + Math.floor(rnd() * 700_000), date: waveDate(Math.floor(rnd() * 3), rnd()) })
+      addRel({ type: 'transferred', source: a.id, target: b.id, amount: 5_000 + Math.floor(rnd() * 700_000), date: waveDate(Math.floor(rnd() * 3), rnd()) })
     } else if (roll < 0.72) {
       const a = pick(rnd, persons()); let b = pick(rnd, persons())
       let guard = 0; while (b.id === a.id && guard++ < 8) b = pick(rnd, persons())
       if (a.id === b.id) continue
-      addRel({ id: `r${(relSeq++).toString(36)}`, type: 'communicated', source: a.id, target: b.id, date: waveDate(Math.floor(rnd() * 3), rnd()) })
+      addRel({ type: 'communicated', source: a.id, target: b.id, date: waveDate(Math.floor(rnd() * 3), rnd()) })
     } else if (roll < 0.88) {
       const v = pick(rnd, vessels()); const dst = pick(rnd, [byId.get('o.stallpine')!, ...orgs().slice(0, 3)])
       const loc = pick(rnd, locations)
-      addRel({ id: `r${(relSeq++).toString(36)}`, type: 'shipped', source: v.id, target: dst.id, locationId: loc.id, date: waveDate(1 + Math.floor(rnd() * 2), rnd()) })
+      addRel({ type: 'shipped', source: v.id, target: dst.id, locationId: loc.id, date: waveDate(1 + Math.floor(rnd() * 2), rnd()) })
     } else {
       const a = pick(rnd, persons()); let b = pick(rnd, persons())
       let guard = 0; while (b.id === a.id && guard++ < 8) b = pick(rnd, persons())
       if (a.id === b.id) continue
-      addRel({ id: `r${(relSeq++).toString(36)}`, type: 'met', source: a.id, target: b.id, locationId: pick(rnd, locations).id, date: waveDate(Math.floor(rnd() * 3), rnd()) })
+      addRel({ type: 'met', source: a.id, target: b.id, locationId: pick(rnd, locations).id, date: waveDate(Math.floor(rnd() * 3), rnd()) })
     }
   }
 
@@ -883,11 +881,15 @@ export function buildCase(seed: number = SKEIN_SEED): Case {
 export const CASE: Case = buildCase()
 ```
 
-> **Implementation note for Fable:** the two `as Rel` / `as CoreRel` casts and the
-> `if (r.id === '')` fix-up in the shell loop are load-bearing shortcuts to keep
-> the authored block terse; keep them. Every `addRel` path assigns a real,
-> unique `r<base36>` id before the case is returned — `generate.assert.ts`
-> verifies uniqueness and will throw in dev if any slips through.
+> **Implementation note for Fable:** `addRel` is the **single id authority** — it
+> stamps a unique `r<base36>` id on every relationship, so **no** call site passes
+> an `id` (an earlier draft had call sites pre-computing ids that `addRel` then
+> overwrote, double-incrementing `relSeq` and leaving a dead `if (r.id === '')`
+> fix-up; that is removed — do not reintroduce it). Every `addRel` path yields a
+> real, unique id before the case is returned, and `generate.assert.ts` verifies
+> uniqueness (throwing in dev if that ever regresses). The two `as CoreRel` casts
+> on the Veridian rows are only there because those literals omit optional keys the
+> rest of the array shares — harmless; keep or drop.
 
 ### 6.4 `portfolio/src/pages/Skein/generate.assert.ts`
 
@@ -1024,8 +1026,10 @@ detail panel, the entity list, and the legend. Plus a small risk dot.
 import type { EntityType, Risk } from './schema'
 import { FLAG } from './schema'
 
-/** 24×24 path(s) per entity type; stroke uses currentColor. */
-const PATHS: Record<EntityType, string> = {
+/** 24×24 path(s) per entity type; stroke uses currentColor. Exported as the
+    single source of glyph geometry — Graph.tsx imports these to draw node
+    centers directly (no nested <svg> per node), so there is only one copy. */
+export const PATHS: Record<EntityType, string> = {
   person: 'M12 12a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0',
   org: 'M4 21V6l7-3 7 3v15M4 21h16M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01',
   account: 'M3 7h18v10H3zM3 11h18M7 15h4',
@@ -1243,7 +1247,7 @@ export function derive(state: SkeinState, c: Case = CASE): Derived {
 ### 7.4 `portfolio/src/pages/Skein/layout.ts` — the hand-rolled force layout
 
 Pure physics, no React, no library. Coulomb repulsion between every node pair
-(O(n²), fine at n≈54), Hooke springs along deduped edges (rest length grows with
+(O(n²), fine at n≈50), Hooke springs along deduped edges (rest length grows with
 endpoint degree so hubs breathe), gentle centering, damped Euler integration with
 a velocity clamp, and **alpha annealing**: alpha decays each tick and is
 *reheated* on any interaction (drag, filter, resize), so the graph settles when
@@ -1263,7 +1267,7 @@ export interface Node {
   degree: number
 }
 
-/* Tuned for n≈54 / m≈132 in the WORLD box below. Do not retune by eye —
+/* Tuned for n≈50 / m≈132 in the WORLD box below. Do not retune by eye —
    these produce a legible, non-jittery settle in ~120 frames. */
 const REPULSION = 5400   // Coulomb constant
 const SPRING = 0.05      // Hooke stiffness
@@ -1415,7 +1419,7 @@ export class LayoutEngine {
 ### 7.5 `portfolio/src/pages/Skein/Graph.tsx` — link chart: force paint, drag/pan/zoom, select
 
 Renders edges + nodes declaratively (so selection/dim styling is data-driven),
-positions them **imperatively** every frame via element refs (so ~54 nodes ×
+positions them **imperatively** every frame via element refs (so ~50 nodes ×
 ~132 edges never trigger a React re-render mid-simulation). One `addTask` task
 owns the paint loop; it stops when the sim cools and is re-armed by
 `ensureRunning()` on any interaction. Pan/zoom live in a ref-backed viewport
@@ -1427,6 +1431,7 @@ import { addTask } from '../../lib/ticker'
 import { CASE } from './generate'
 import { LayoutEngine, WORLD } from './layout'
 import { REL_META, TYPE_COLOR, THREAD } from './schema'
+import { PATHS } from './icons'
 import type { Derived } from './model'
 import type { Action } from './model'
 
@@ -1504,13 +1509,19 @@ export function Graph({ engine, derived, selected, selectedRel, hover, reduceMot
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Reheat when the filter/selection changes so the layout can relax a touch.
+  // Reheat ONLY when the active topology changes (timeline scrub / location
+  // filter) — those move which edges pull. Keyed on the active counts, NOT the
+  // whole `derived` object: hovering or selecting a node mints a fresh `derived`
+  // reference every render, and keying on it would reheat the sim on every
+  // mouse-move, so the graph would jiggle continuously while you explore. The
+  // counts change only on a real window/filter change, which is exactly when a
+  // relax is wanted.
   useEffect(() => {
     if (reduceMotion) return
     engine.reheat(0.35)
     ensureRunning()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [derived])
+  }, [derived.activeNodeCount, derived.activeRelCount])
 
   // --- coordinate helpers ---
   const toWorld = (clientX: number, clientY: number) => {
@@ -1532,7 +1543,10 @@ export function Graph({ engine, derived, selected, selectedRel, hover, reduceMot
       const w = toWorld(e.clientX, e.clientY)
       engine.pin(id, w.x, w.y)
       svgRef.current?.classList.add('skein-dragging')
-      ensureRunning()
+      // Under reduced motion the rAF loop is never started; onPointerMove paints
+      // the dragged node directly. Starting the loop here would run a live settle
+      // on release — exactly what reduced motion should avoid.
+      if (!reduceMotion) ensureRunning()
     } else {
       pan.current = { x: e.clientX, y: e.clientY }
       svgRef.current?.classList.add('skein-panning')
@@ -1651,7 +1665,7 @@ export function Graph({ engine, derived, selected, selectedRel, hover, reduceMot
                 <circle r={rad} fill={color} fillOpacity={0.2} stroke={color} strokeWidth={isHover ? 2.5 : 1.6} />
                 {/* type glyph as a small mark; kept as a path to avoid a nested svg per node */}
                 <g transform={`translate(${-rad * 0.5} ${-rad * 0.5}) scale(${(rad * 0.9) / 24})`} stroke={color} fill="none" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" opacity={0.9} pointerEvents="none">
-                  <path d={GLYPH[e.type]} />
+                  <path d={PATHS[e.type]} />
                 </g>
                 {(isSel || isHover || st.hi) && (
                   <text y={rad + 13} textAnchor="middle" fontSize="11" fill="var(--color-skein-ink)" style={{ fontFamily: 'var(--font-mono)', pointerEvents: 'none' }}>
@@ -1666,17 +1680,13 @@ export function Graph({ engine, derived, selected, selectedRel, hover, reduceMot
     </svg>
   )
 }
-
-/* Local copy of the glyph paths (see icons.tsx PATHS) so nodes don't nest an
-   <svg> each. Keep in lockstep with icons.tsx. */
-const GLYPH: Record<string, string> = {
-  person: 'M12 12a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0',
-  org: 'M4 21V6l7-3 7 3v15M4 21h16M9 9h.01M15 9h.01M9 13h.01M15 13h.01',
-  account: 'M3 7h18v10H3zM3 11h18',
-  location: 'M12 21s7-6.5 7-12a7 7 0 10-14 0c0 5.5 7 12 7 12z',
-  vessel: 'M3 15l1.5 4h15L21 15M5 15V8l7-3 7 3v7',
-}
 ```
+
+> **Node glyphs reuse `PATHS` from `icons.tsx`** (imported at the top). Node
+> centers draw the raw `<path d={PATHS[type]} />` inside the already-open node
+> `<g>` — no nested `<svg>` per node, and no second copy of the path data to keep
+> in lockstep (an earlier draft duplicated a local `GLYPH` record here; it had
+> already drifted out of sync with `icons.tsx`, so it was removed).
 
 > **Note on the drag-release behavior:** `engine.unpin(id)` on pointer-up lets a
 > dragged node rejoin the simulation (the graph "heals" around it). If a reviewer
@@ -2230,7 +2240,13 @@ export default function Skein() {
   const engineRef = useRef<LayoutEngine | null>(null)
   if (!engineRef.current) engineRef.current = new LayoutEngine(CASE.entities, CASE.rels)
 
-  const derived = useMemo(() => derive(state, CASE), [state])
+  // derive() doesn't read `hover`, so memoize on the fields it actually uses.
+  // This keeps `derived`'s reference stable across hover — cheaper, and it means
+  // hovering never churns the three views (see the Graph reheat note in §7.5).
+  const derived = useMemo(
+    () => derive(state, CASE),
+    [state.window, state.selected, state.selectedRel, state.locationFilter],
+  )
 
   useEffect(() => {
     document.body.classList.add('skein-page')
@@ -2465,9 +2481,9 @@ opaque `<canvas>` and stop. Skein does not.
 
 ## 12 · Performance budget & how met
 
-- **Dataset:** `ENTITY_TARGET = 54`, `REL_TARGET = 132` (§6.3). Chosen so the
-  O(n²) force solver is cheap: 54 nodes → 1,431 pair interactions/tick +
-  ≤132 spring passes + 54 integrations ≈ **~1.6k float ops/frame** — sub-
+- **Dataset:** `ENTITY_TARGET = 50`, `REL_TARGET = 132` (§6.3). Chosen so the
+  O(n²) force solver is cheap: 50 nodes → 1,225 pair interactions/tick +
+  ≤132 spring passes + 50 integrations ≈ **~1.4k float ops/frame** — sub-
   millisecond, comfortably inside a 16ms frame with headroom to spare. No
   quadtree needed at this scale (Barnes–Hut would be over-engineering here — noted
   as a "later" item in §16).
@@ -2476,8 +2492,9 @@ opaque `<canvas>` and stop. Skein does not.
   re-arms only on interaction. The graph never re-renders React during the
   simulation — positions are written imperatively to element refs; React
   re-renders only on selection/filter/hover state change.
-- **Derivation:** `derive()` is O(entities + rels) ≈ 186 ops, memoized on
-  `state`; it runs once per discrete interaction, not per frame.
+- **Derivation:** `derive()` is O(entities + rels) ≈ 182 ops, memoized on the
+  fields it reads (window / selection / location filter — not hover); it runs once
+  per discrete interaction, not per frame.
 - **Timeline/map** recompute their memoized bins/lanes only when the window or
   filter changes.
 - **No dependencies added** → zero bundle-size hit beyond the page's own modules,
@@ -2494,8 +2511,8 @@ opaque `<canvas>` and stop. Skein does not.
 1. **Schema.** Create `schema.ts`. Exit: `tsc` clean; `REL_META`, `TYPE_COLOR`,
    date/money helpers exported.
 2. **Generator + invariants.** Create `generate.ts` + `generate.assert.ts`. Exit:
-   `npm run dev`, console shows `[Skein] 54 entities · 132 rels … OK`, no thrown
-   invariant error; `CASE.entities.length ≈ 54`, `CASE.rels.length ≈ 132`.
+   `npm run dev`, console shows `[Skein] 50 entities · 132 rels … OK`, no thrown
+   invariant error; `CASE.entities.length === 50`, `CASE.rels.length ≈ 132`.
 3. **Theme.** Append the `@theme` block to `index.css`; create `theme.css`. Exit:
    `bg-skein-bg` / `text-skein-*` utilities resolve; body swap works.
 4. **Model.** Create `model.ts`. Exit: `tsc` clean; `derive(initialState())`
@@ -2647,7 +2664,7 @@ the other demo smokes):
 
 - **Real map tiles / real geography.** The schematic chart is the craft signal;
   Mapbox/Leaflet would hide it and add a dependency.
-- **Barnes–Hut / quadtree force approximation.** Unnecessary at n≈54; it becomes
+- **Barnes–Hut / quadtree force approximation.** Unnecessary at n≈50; it becomes
   worth it past a few hundred nodes. Explicitly parked so the O(n²) choice reads
   as deliberate, not naïve.
 - **Multi-case support / case switcher.** One case tells the story; a picker is
