@@ -43,6 +43,14 @@ const COMMISSIONS = [
       'Ten thousand freight-manifest rows in the browser, hand-rolled: windowed virtualization (no grid library), Excel-grade keyboard nav with a single roving active cell, range copy/paste as TSV, click-to-sort, a filter row, column resize / reorder / pin, undo-redo, and CSV export that honours the current view. Session-only edits, one seeded dataset, zero table dependencies.',
     href: '#/demos/palisade',
   },
+  {
+    n: '05',
+    skill: 'Link analysis & spatial-temporal fusion',
+    title: 'Skein — OSINT link-analysis case board',
+    caption:
+      'One fictional smuggling case, three fused views: a hand-rolled force-directed link chart (no graph library), a timeline scrubber, and a schematic map (no map tiles). Drag the time brush and watch the network surface — nodes dim, edges fade, the map recolours; click an entity or a port and everything present there in that window lights up across all three. Deterministic synthetic data, real physics, the Palantir-style triple-linked view built from scratch.',
+    href: '#/demos/skein',
+  },
 ]
 
 /** A miniature of the watch — warm dark, brass ring, ten past ten. */
@@ -164,7 +172,48 @@ function PalisadeThumb() {
   )
 }
 
-const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb }
+/** A miniature of the case board — typed nodes wired by a red thread, a
+    timeline strip beneath, a port pin off to the side. */
+function SkeinThumb() {
+  return (
+    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
+      <rect width="280" height="160" rx="10" fill="#0c0b12" />
+      {/* edges (resting) */}
+      <g stroke="#c5bcd6" strokeOpacity="0.28" strokeWidth="1.5">
+        <line x1="96" y1="52" x2="150" y2="40" />
+        <line x1="150" y1="40" x2="204" y2="66" />
+        <line x1="96" y1="52" x2="120" y2="104" />
+        <line x1="120" y1="104" x2="188" y2="112" />
+      </g>
+      {/* the highlighted "thread" — a selected relationship */}
+      <line x1="150" y1="40" x2="120" y2="104" stroke="#e8635f" strokeWidth="2.5" />
+      {/* nodes, one per type color */}
+      {[
+        { x: 96, y: 52, c: '#6aa9f0', r: 11 },  /* person */
+        { x: 150, y: 40, c: '#b48cf0', r: 13 }, /* org (hub) */
+        { x: 204, y: 66, c: '#e07db4', r: 9 },  /* account */
+        { x: 120, y: 104, c: '#5cc6d6', r: 10 },/* vessel */
+        { x: 188, y: 112, c: '#57c8a0', r: 9 }, /* location */
+      ].map((n, i) => (
+        <g key={i}>
+          <circle cx={n.x} cy={n.y} r={n.r} fill={n.c} fillOpacity="0.2" stroke={n.c} strokeWidth="2" />
+        </g>
+      ))}
+      {/* selection ring on the hub */}
+      <circle cx="150" cy="40" r="17" fill="none" stroke="#e8635f" strokeWidth="1.5" strokeDasharray="3 3" />
+      {/* timeline strip */}
+      <rect x="14" y="136" width="252" height="12" rx="3" fill="#1e1b2b" />
+      {[22, 40, 58, 92, 120, 150, 176, 210, 236].map((x, i) => (
+        <rect key={i} x={x} y={140 - (i % 3) * 2} width="4" height={4 + (i % 3) * 2} rx="1" fill="#928aa6" />
+      ))}
+      {/* the brush window */}
+      <rect x="86" y="134" width="86" height="16" rx="3" fill="none" stroke="#e8635f" strokeWidth="1.5" />
+      <rect x="86" y="134" width="86" height="16" fill="#e8635f" fillOpacity="0.14" />
+    </svg>
+  )
+}
+
+const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb }
 
 /**
  * The Meridian card's live slot. The heavy three.js chunk loads only when

@@ -18,6 +18,7 @@ const AeroScaleDashboard = lazy(() => import('./pages/AeroScaleDashboard'))
 const MeridianConfigurator = lazy(() => import('./pages/MeridianConfigurator'))
 const LedgerLens = lazy(() => import('./pages/LedgerLens'))
 const PalisadeGrid = lazy(() => import('./pages/PalisadeGrid'))
+const Skein = lazy(() => import('./pages/Skein'))
 
 const CASE_PAGES: Record<string, React.LazyExoticComponent<() => React.JSX.Element>> = {
   globalio: GlobalioCaseStudy,
@@ -50,6 +51,12 @@ const DEMO_PAGES: Record<
     label: 'Palisade data grid demo',
     shell: 'bg-palisade-bg',
     spinner: 'text-palisade-muted',
+  },
+  skein: {
+    Page: Skein,
+    label: 'Skein link-analysis demo',
+    shell: 'bg-skein-bg',
+    spinner: 'text-skein-muted',
   },
 }
 

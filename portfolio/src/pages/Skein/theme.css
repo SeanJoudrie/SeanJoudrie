@@ -1,0 +1,68 @@
+/* Skein — link-analysis case board, demo-scoped "situation room" chrome.
+   Color tokens live in index.css @theme (skein-*); this sheet carries what
+   utilities can't: color-scheme, selection, focus, the body wash, the small-caps
+   label, and the few keyframes the board uses. Every animation has a
+   reduced-motion out. */
+.skein-root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+}
+.skein-root ::selection {
+  background: var(--color-skein-thread);
+  color: var(--color-skein-bg);
+}
+.skein-root :focus-visible {
+  outline: 2px solid var(--color-skein-thread);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* The demo owns the whole viewport — swapping the body color too means
+   overscroll rubber-banding never flashes the portfolio's paper. */
+body.skein-page {
+  background-color: var(--color-skein-bg);
+}
+
+/* Small-caps mono label — the Skein twin of the portfolio's .annotation. */
+.skein-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-skein-muted);
+}
+
+/* Tabular numerals for money + dates so columns align. */
+.skein-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+/* The graph canvas never shows a text caret and never lets touch-scroll steal a
+   drag — pan/drag needs the whole gesture. */
+.skein-canvas {
+  touch-action: none;
+  cursor: grab;
+}
+.skein-canvas.skein-panning { cursor: grabbing; }
+.skein-canvas.skein-dragging { cursor: grabbing; }
+
+/* First-paint cascade — header + panes settle in (mirrors Meridian's hero-in). */
+@keyframes skein-in { from { opacity: 0; transform: translateY(10px); } }
+.skein-in {
+  animation: skein-in 350ms var(--ease-out) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* The "waiting to settle" dot pulses only while the sim is hot. */
+@keyframes skein-pulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+.skein-pulse { animation: skein-pulse 1.4s var(--ease-out) infinite; }
+
+/* Detail panel swaps content with a soft fade. */
+.skein-fade { animation: skein-in var(--t-enter) var(--ease-out) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .skein-in, .skein-pulse, .skein-fade { animation: none; opacity: 1; transform: none; }
+}

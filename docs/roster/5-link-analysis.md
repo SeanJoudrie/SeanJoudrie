@@ -2793,3 +2793,44 @@ unrelated in-flight changes into the same merge. If the gate can't be made green
 without a design change this spec didn't anticipate, stop and surface it rather
 than shipping something half-right to production.
 
+
+---
+
+## 19 · Build-run errata (found while building; the shipped code is the source of truth)
+
+Five defects survived the pre-build review and were caught by the smoke suite +
+screenshot verification during the build. Each is fixed in the shipped code;
+recorded here so the doc doesn't mislead a future reader:
+
+1. **Locations were orphans.** Locations participate via `rel.locationId`, never
+   as `source`/`target` — so `derive()` never activated them and §6.4's degree
+   check called all six ports orphans (dev invariant would throw). Fixed: both
+   `derive()` and the assert count `locationId` as connectivity.
+2. **Pointer capture killed every click.** `setPointerCapture` on the SVG
+   retargets `pointerup`, so the browser computed the composed `click`'s target
+   as the SVG — the per-element `onClick` on edges could never fire, and the
+   svg-level background-click handler cleared every node selection immediately
+   after it was made. Fixed: all click semantics live in `onPointerUp`
+   (`elementFromPoint` for edge hits); the per-element and svg `onClick`
+   handlers are gone.
+3. **`toWorld()` ignored letterboxing.** Mapping the pointer across the element
+   rect is wrong whenever the pane's aspect ≠ 960:660 (`preserveAspectRatio`
+   letterboxes) — pinning teleported nodes away from the cursor. Fixed: client →
+   viewBox via `svg.getScreenCTM().inverse()`; pan and wheel-zoom use the same
+   mapping. A pan-release also no longer counts as a background click.
+4. **The left rail never clipped.** The 50-row entity list stretched the grid
+   row to ~1700px, so the board didn't fit any viewport. Fixed: on `lg` the left
+   aside is sticky and viewport-height and the section column is
+   viewport-height, with `h-full` on the EntityList root so the list scrolls
+   internally; on mobile the list caps at 24rem.
+5. **Smoke robustness.** `has-text("Wave I")` substring-matches all three wave
+   chips (use exact role queries); `.skein-label` uppercases via CSS so text
+   regexes need `/i`; and a mid-settle or mid-reheat node can sit outside the
+   clipped SVG box (or off-viewport after chip-click auto-scroll), so the node
+   to click is picked from inside the viewport∩svg intersection after the sim
+   cools.
+
+Also applied from the earlier review + §17: `addRel` as the sole id authority,
+reheat keyed on active counts (not the `derived` reference), `PATHS` as the
+single glyph source, the dev-assert import without a swallowing `.catch`,
+frame-coalesced brush dispatches, and focus-on-entry to the entity filter.

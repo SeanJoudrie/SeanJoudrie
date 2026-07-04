@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "smoke": "node scripts/smoke-meridian.mjs && node scripts/smoke-aeroscale.mjs && node scripts/smoke-ledger-lens.mjs && node scripts/smoke-palisade.mjs && node scripts/smoke-cmdk.mjs && node scripts/smoke-shell.mjs"
+    "smoke": "node scripts/smoke-meridian.mjs && node scripts/smoke-aeroscale.mjs && node scripts/smoke-ledger-lens.mjs && node scripts/smoke-palisade.mjs && node scripts/smoke-skein.mjs && node scripts/smoke-cmdk.mjs && node scripts/smoke-shell.mjs"
   },
   "dependencies": {
     "@react-three/drei": "10.7.7",
