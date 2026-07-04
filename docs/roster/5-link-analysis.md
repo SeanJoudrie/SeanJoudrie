@@ -2536,6 +2536,13 @@ opaque `<canvas>` and stop. Skein does not.
     check, focus rings. Exit: §15 DoD holds; `npm run build` succeeds.
 13. **Smoke.** Create `scripts/smoke-skein.mjs`; chain it in `package.json`
     (§14). Exit: `smoke-skein.mjs` exits ✓; existing smokes still ✓.
+14. **Professional polish (§17).** Frame-coalesce the timeline scrub (§17.1),
+    confirm responsive/touch posture (§17.2), focus the entity filter on entry
+    (§17.3). Exit: a fast brush drag holds 60fps; the demo is usable on a tablet;
+    the first Tab lands in the tool.
+15. **Ship (§18).** Run the ship gate; if fully green, merge to `main` and let
+    Pages deploy — this demo is pre-authorized to go live. Exit: the deploy run is
+    green and `#/demos/skein` is live on the portfolio.
 
 ---
 
@@ -2683,5 +2690,106 @@ the other demo smokes):
 - **Path-finding / centrality analytics** (shortest path between two entities,
   betweenness ranking). Strong future signal; deferred to keep the first build
   focused on the triple-linked-view fusion that is the point.
+
+---
+
+## 17 · Polish the spec didn't yet nail (do these — they're the difference between "works" and "professional")
+
+### 17.1 Frame-coalesce the timeline scrub (the headline interaction must never jank)
+
+`Timeline.onMove` currently dispatches `{t:'window'}` on **every** `pointermove`.
+Each dispatch re-derives and re-renders the graph + map, so a fast drag can fire
+dozens of full reconciliations per second. Coalesce to **one dispatch per frame**
+— the same discipline Palisade uses for scroll. Keep the latest pointer value in a
+ref and flush it on the next `requestAnimationFrame`:
+
+```tsx
+// inside Timeline(), alongside the other refs
+const pending = useRef<[number, number] | null>(null)
+const rafId = useRef(0)
+const flush = () => {
+  rafId.current = 0
+  if (pending.current) { dispatch({ t: 'window', range: pending.current }); pending.current = null }
+}
+const schedule = (range: [number, number]) => {
+  pending.current = range
+  if (!rafId.current) rafId.current = requestAnimationFrame(flush)
+}
+// …and in onMove, replace each `dispatch({ t: 'window', range })` with `schedule(range)`.
+// Cancel on unmount: useEffect(() => () => { if (rafId.current) cancelAnimationFrame(rafId.current) }, [])
 ```
+
+The quick-range **chips** dispatch directly (a single discrete change — no
+coalescing needed). Result: the brush stays glued to the pointer and the graph
+re-derives at most once per frame.
+
+### 17.2 Responsive & touch (state it, don't leave it to chance)
+
+The `index.tsx` grid already collapses from `lg:grid-cols-[15rem_1fr_19rem]` to a
+single column below `lg`, stacking **graph+timeline → entity list + legend → map +
+detail** (the `order-*` classes). That order is intentional — keep it. Beyond that:
+
+- **Touch:** the graph already uses Pointer Events + `touch-action: none` (§4.5),
+  so one-finger drag pans / drags a node on touch. Pinch-zoom is **out of scope**
+  for v1 (wheel-zoom is desktop-only); document that, don't fake it.
+- **Timeline handles on touch:** each handle already carries a 20px-wide invisible
+  hit target (§7.6) — keep it; do not shrink it for looks.
+- **Graph height on small screens:** the center column is `min-h-[60vh]`; that is
+  the intended comfortable minimum on phone/tablet. The SVG `viewBox` letterboxes,
+  so no re-layout is needed at any width.
+- **Honesty:** Skein is **best on a laptop/desktop**, fully usable on tablet, and
+  legible-but-tight on a phone. That is the correct posture for an analyst tool —
+  do not compromise the desktop layout to chase a perfect phone experience.
+
+### 17.3 Focus on route entry
+
+When the demo mounts, keyboard users should land on its primary control, not the
+top of `<body>`. In `Skein()`'s mount effect, after the title swap, move focus to
+the entity filter (the graph's keyboard equivalent):
+
+```tsx
+// in the mount useEffect, once:
+requestAnimationFrame(() => document.getElementById('skein-filter')?.focus())
+```
+
+Guard it under `!reduceMotion`? No — focus is not motion; always do it. It costs
+nothing and makes the very first Tab land inside the tool. (The `← Portfolio` link
+remains the first Shift+Tab target.)
+
+---
+
+## 18 · Deployment (AUTHORIZED — ship it when the gate is green)
+
+> **Standing rule override, granted by Sean for this build.** Every prior demo in
+> this roster carried "develop on the feature branch, stop for review, never touch
+> `main`, never deploy." **Skein is different: it is pre-authorized to ship to the
+> live portfolio once — and only once — the gate below is fully green.** No
+> separate "make it live" confirmation is required for this demo.
+
+**Ship gate (ALL must pass — if any fails, do not ship; fix or report):**
+
+1. `npm run build` is clean under TS strict — zero errors.
+2. `npm run smoke` runs **every** suite green, including the new
+   `smoke-skein.mjs` (and the existing meridian / aeroscale / ledger-lens /
+   palisade / cmdk / shell suites — no regressions).
+3. The dev console prints `[Skein] 50 entities · 132 rels · span … OK` with **no**
+   thrown invariant (§6.4).
+4. A quick visual check on the built preview confirms the three-view fusion is
+   real: the graph settles without jitter, dragging the timeline brush visibly
+   dims/undims the graph and recolours the map, and clicking a port filters the
+   graph — plus the Range shelf shows **Commission 05 — Skein** and opens it.
+
+**Ship steps (only after the gate is green):**
+
+1. Commit the Skein work + its four wiring edits (§4.3 / §5 / §14.2) to the feature
+   branch with a clear message; push the branch.
+2. Merge the feature branch into `main` (PR or fast-forward — either is fine).
+   GitHub Pages `deploy.yml` builds and deploys automatically on push to `main`
+   under `portfolio/**`.
+3. Confirm the deploy run goes green, then report the live status. Done.
+
+**Guardrails:** ship **only** the Skein feature and its wiring — do not sweep
+unrelated in-flight changes into the same merge. If the gate can't be made green
+without a design change this spec didn't anticipate, stop and surface it rather
+than shipping something half-right to production.
 
