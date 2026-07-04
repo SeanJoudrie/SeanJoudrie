@@ -91,6 +91,30 @@
   --color-palisade-bad: #f87171;
   --color-palisade-info: #60a5fa;
   --color-palisade-sel: rgb(45 212 191 / 0.16);
+
+  /* ---- Skein demo — OSINT link-analysis case board (pages/Skein).
+     Cool near-black violet-charcoal + a coral "thread" accent (the analyst's
+     red string). Five entity-type hues, each WCAG-checked ≥4.5:1 against bg
+     #0c0b12 AND card #14121d; see docs/roster/5-link-analysis.md §4. Node fills
+     are the type hue at low alpha with a full-strength stroke carrying meaning.
+     Do not retune by eye. ---- */
+  --color-skein-bg: #0c0b12;
+  --color-skein-card: #14121d;
+  --color-skein-card-2: #1e1b2b;
+  --color-skein-line: rgb(255 255 255 / 0.08);
+  --color-skein-ink: #f2eef7;
+  --color-skein-ink-2: #c3bcd2;
+  --color-skein-muted: #928aa6;
+  --color-skein-thread: #e8635f;
+  --color-skein-thread-2: #c94a48;
+  --color-skein-flag: #f0b64e;
+  --color-skein-person: #6aa9f0;
+  --color-skein-org: #b48cf0;
+  --color-skein-account: #e07db4;
+  --color-skein-location: #57c8a0;
+  --color-skein-vessel: #5cc6d6;
+  --color-skein-edge: rgb(197 188 214 / 0.22);
+  --color-skein-sel: rgb(232 99 95 / 0.16);
 }
 
 :root {
