@@ -5,7 +5,10 @@
  */
 export function PlateMotif({ name }: { name: string }) {
   const motif =
-    name === 'Flexyn' ? <FlexynMotif /> : name === 'REX' ? <RexMotif /> : <RapSheetMotif />
+    name === 'Flexyn' ? <FlexynMotif /> :
+    name === 'REX' ? <RexMotif /> :
+    name === 'Curio' ? <CurioMotif /> :
+    <RapSheetMotif />
 
   return (
     <div className="relative aspect-[16/10] w-full overflow-hidden bg-paper-2">
@@ -89,6 +92,44 @@ function RexMotif() {
       </g>
       <text x="42" y="108" fontFamily="var(--font-mono)" fontSize="22" fill="var(--color-faint)">✕</text>
       <text x="272" y="108" fontFamily="var(--font-mono)" fontSize="20" fill="var(--color-accent)">♥</text>
+    </svg>
+  )
+}
+
+/** Curio — the daily card: today's small challenge, a "how it felt" wax stamp,
+    and a shelf of collected marks (the cabinet). */
+function CurioMotif() {
+  return (
+    <svg viewBox="0 0 320 200" className="h-full w-full" aria-hidden>
+      {/* today's card */}
+      <g transform="translate(58, 26) rotate(-3 82 66)">
+        <rect width="164" height="132" rx="8" fill="var(--color-paper)" stroke="var(--color-ink)" strokeOpacity="0.28" />
+        <text x="18" y="28" fontFamily="var(--font-mono)" fontSize="11" letterSpacing="2" fill="var(--color-faint)">TODAY</text>
+        {/* a small skill glyph — a hand + spark */}
+        <g transform="translate(70, 42)" stroke="var(--color-ink)" strokeOpacity="0.5" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 30 v-16 a4 4 0 0 1 8 0 v-4 a4 4 0 0 1 8 0 v4 a4 4 0 0 1 8 0 v6 c0 10 -6 16 -14 16 c-8 0 -12 -2 -18 -6z" />
+        </g>
+        <path d="M110 34 l4 -10 l4 10 l10 4 l-10 4 l-4 10 l-4 -10 l-10 -4z" fill="var(--color-accent)" opacity="0.85" />
+        <g fill="var(--color-paper-3)">
+          <rect x="18" y="98" width="120" height="7" rx="3.5" />
+          <rect x="18" y="112" width="86" height="7" rx="3.5" />
+        </g>
+      </g>
+      {/* the "how it felt" wax stamp, pressed onto the card */}
+      <g transform="translate(210, 118) rotate(-10)">
+        <circle r="26" fill="none" stroke="var(--color-accent)" strokeWidth="2.5" strokeDasharray="3 3" />
+        <circle r="18" fill="var(--color-accent)" opacity="0.14" />
+        <text textAnchor="middle" dominantBaseline="central" fontFamily="var(--font-mono)" fontWeight="700" fontSize="10" letterSpacing="1" fill="var(--color-accent)">DONE</text>
+      </g>
+      {/* the cabinet — a shelf of collected stamps (kept clear of the caption) */}
+      <g transform="translate(24, 150)">
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <circle key={i} cx={i * 20} cy="0" r="6.5"
+            fill={i < 4 ? 'var(--color-paper-3)' : 'none'}
+            stroke="var(--color-ink)" strokeOpacity={i < 4 ? '0.25' : '0.15'} strokeWidth="1.5"
+            strokeDasharray={i < 4 ? undefined : '2 2'} />
+        ))}
+      </g>
     </svg>
   )
 }

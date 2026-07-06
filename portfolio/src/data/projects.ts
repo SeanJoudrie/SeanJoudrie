@@ -120,4 +120,24 @@ export const projects: Project[] = [
         'Proof of range — a different domain, a different stack, and a hard real-time networking problem solved without a server.',
     },
   },
+  {
+    name: 'Curio',
+    plate: '05',
+    hook: 'One small real-world skill a day — do it, stamp how it felt, collect it.',
+    description:
+      'A daily cabinet of curiosities: each day serves one tiny hands-on challenge — beatbox a rhythm, roll an omelette, learn a phrase, palm a coin — most with optional level-ups. Do it in the real world, stamp how it went, and add it to your cabinet. Swipe less, do more. Installable PWA, works offline.',
+    role: 'Solo — product, design, build',
+    stack: ['React', 'TypeScript', 'Tailwind', 'PWA'],
+    status: 'Live',
+    liveUrl: 'https://seanjoudrie.github.io/Curio/',
+    facts: ['A new challenge every day', 'Skills across many crafts', 'Stamp-and-collect ritual', 'Installable · offline'],
+    caseStudy: {
+      problem:
+        'Most "daily" apps train you to swipe, not to do — the habit they build is scrolling. The problem was the opposite one: get someone to put the phone down and make one small real thing each day, and make that worth coming back to.',
+      built:
+        'A daily-challenge PWA with a deep, hand-authored library of tiny real-world skills spanning cooking, music, sleight-of-hand, language, mime, and craft — each with optional "level-up" extensions. A one-tap "stamp how it felt" reflection and a growing collection (the cabinet) turn a single action into a streak-worthy ritual. Installable, offline-capable, warm paper aesthetic.',
+      outcome:
+        'A calm, anti-doomscroll daily habit — one small thing, done in the real world and kept — live and installable at seanjoudrie.github.io/Curio.',
+    },
+  },
 ]

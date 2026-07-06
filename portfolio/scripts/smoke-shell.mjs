@@ -34,9 +34,9 @@ check(
   order.join(' → '),
 )
 
-// 2. Work: four equal-weight cards, no featured double-wide.
+// 2. Work: equal-weight cards, no featured double-wide (grows as projects land).
 const workCards = await p.locator('#work article').count()
-check('Work shows 4 equal cards', workCards === 4, `${workCards} articles`)
+check('Work shows the project cards', workCards >= 4, `${workCards} articles`)
 
 // 3. Lab: two experiments (Codex Explorer cut).
 const labArticles = await p.locator('#skills article').count()
