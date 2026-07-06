@@ -130,6 +130,7 @@ export const projects: Project[] = [
     stack: ['React', 'TypeScript', 'Tailwind', 'PWA'],
     status: 'Live',
     liveUrl: 'https://seanjoudrie.github.io/Curio/',
+    repoUrl: 'https://github.com/SeanJoudrie/Curio',
     facts: ['A new challenge every day', 'Skills across many crafts', 'Stamp-and-collect ritual', 'Installable · offline'],
     caseStudy: {
       problem:
