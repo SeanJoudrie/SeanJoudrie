@@ -159,6 +159,16 @@
   --color-bloom-muted: #8b8090;
   --color-bloom-hot: #d94a3d;
   --color-bloom-leaf: #4f9d3a;
+
+  /* Riff (playable guitar demo) — warm venue dark, amp-light red */
+  --color-riff-bg: #0b0a09;
+  --color-riff-card: #131110;
+  --color-riff-line: rgb(255 255 255 / 0.08);
+  --color-riff-line-strong: rgb(255 255 255 / 0.2);
+  --color-riff-ink: #f2ede6;
+  --color-riff-ink-2: #ccc4b8;
+  --color-riff-muted: #8c8377;
+  --color-riff-hot: #e0563a;
 }
 
 :root {

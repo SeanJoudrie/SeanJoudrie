@@ -23,6 +23,7 @@ const Terra = lazy(() => import('./pages/Terra'))
 const Cortex = lazy(() => import('./pages/Cortex'))
 const Skull = lazy(() => import('./pages/Skull'))
 const Bloom = lazy(() => import('./pages/Bloom'))
+const Riff = lazy(() => import('./pages/Riff'))
 
 const CASE_PAGES: Record<string, React.LazyExoticComponent<() => React.JSX.Element>> = {
   globalio: GlobalioCaseStudy,
@@ -85,6 +86,12 @@ const DEMO_PAGES: Record<
     label: 'Bloom voxel rose demo',
     shell: 'bg-bloom-bg',
     spinner: 'text-bloom-muted',
+  },
+  riff: {
+    Page: Riff,
+    label: 'Riff playable guitar demo',
+    shell: 'bg-riff-bg',
+    spinner: 'text-riff-muted',
   },
 }
 

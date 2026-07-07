@@ -1,0 +1,27 @@
+/* Riff — demo-scoped stage-dark chrome. Color tokens live in index.css
+   @theme (riff-*); this sheet carries what utilities can't. A warm black
+   like a dim venue so the amp light and the finish colour carry. */
+.riff-root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+}
+.riff-root ::selection {
+  background: var(--color-riff-hot);
+  color: var(--color-riff-bg);
+}
+.riff-root :focus-visible {
+  outline-color: var(--color-riff-hot);
+}
+
+body.riff-page {
+  background-color: var(--color-riff-bg);
+}
+
+.riff-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-riff-muted);
+}

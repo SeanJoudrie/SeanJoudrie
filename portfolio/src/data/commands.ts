@@ -150,6 +150,11 @@ export const commands: Command[] = [
     keywords: ['rose', 'flower', 'voxel', 'cubes', 'lod', 'detail', 'minecraft', 'webgl', '3d'],
     perform: (ctx) => { ctx.close(); navigate('#/demos/bloom') },
   },
+  {
+    id: 'demo-riff', title: 'Open Riff playable guitar', group: 'Demos', hint: 'demo',
+    keywords: ['guitar', 'amp', 'music', 'audio', 'sound', 'play', 'web audio', 'riff', 'electric'],
+    perform: (ctx) => { ctx.close(); navigate('#/demos/riff') },
+  },
 
   // ---- Actions ----
   {

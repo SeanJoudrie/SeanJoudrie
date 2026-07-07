@@ -83,6 +83,14 @@ const COMMISSIONS = [
       'A low-poly rose surface-voxelized at build time into nine grid resolutions — 105 chunky cubes up to 77,000 fine ones, red bloom and green stem tagged straight from the source materials. A slider on the stage steps the detail level live; every level is one InstancedMesh, one draw call, solid lit bodies instead of the particle series’ glow. Model: Rose by Erbay ÇELIK (CC BY).',
     href: '#/demos/bloom',
   },
+  {
+    n: '10',
+    skill: 'Solid 3D config + real-time audio',
+    title: 'Riff — a playable guitar & amp',
+    caption:
+      'A solid 3D electric guitar and amp you can actually play. Recolour the body with finish swatches, plug the cable into the amp, then click the strings — the sound is hand-rolled Web Audio: Karplus-Strong plucked strings, a waveshaper overdrive and a synthesized convolution reverb, no samples and no audio library. Click the amp to switch tone. Models CC BY via Poly Pizza (guitar by jeremy, amp by Poly by Google).',
+    href: '#/demos/riff',
+  },
 ]
 
 /** A miniature of the watch — warm dark, brass ring, ten past ten. */
@@ -360,7 +368,33 @@ function BloomThumb() {
   )
 }
 
-const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb, '06': TerraThumb, '07': CortexThumb, '08': SkullThumb, '09': BloomThumb }
+/** A miniature — a guitar body, cable, and amp. */
+function RiffThumb() {
+  return (
+    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
+      <rect width="280" height="160" rx="10" fill="#0b0a09" />
+      {/* guitar */}
+      <g transform="rotate(-18 84 90)">
+        <ellipse cx="84" cy="98" rx="30" ry="26" fill="#e0563a" />
+        <ellipse cx="76" cy="90" rx="12" ry="10" fill="#0b0a09" opacity="0.35" />
+        <rect x="79" y="34" width="10" height="52" rx="2" fill="#5a4632" />
+        <rect x="76" y="24" width="16" height="13" rx="2" fill="#3a2d1f" />
+      </g>
+      {/* cable */}
+      <path d="M110 118 Q 150 150 186 110" fill="none" stroke="#2a2724" strokeWidth="3.5" />
+      {/* amp */}
+      <rect x="176" y="70" width="86" height="70" rx="5" fill="#211d1a" stroke="#3a352f" />
+      <rect x="184" y="94" width="70" height="40" rx="3" fill="#0f0d0c" />
+      {[...Array(9)].map((_, i) => (
+        <line key={i} x1={188 + i * 8} y1="96" x2={188 + i * 8} y2="132" stroke="#2b2723" strokeWidth="2" />
+      ))}
+      <circle cx="188" cy="80" r="3" fill="#7a746c" />
+      <circle cx="250" cy="80" r="3.2" fill="#59d98a" />
+    </svg>
+  )
+}
+
+const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb, '06': TerraThumb, '07': CortexThumb, '08': SkullThumb, '09': BloomThumb, '10': RiffThumb }
 
 /**
  * The Meridian card's live slot. The heavy three.js chunk loads only when
