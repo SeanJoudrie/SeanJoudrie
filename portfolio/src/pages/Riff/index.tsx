@@ -20,6 +20,17 @@ const FINISHES = [
   { name: 'Black', color: '#17171a' },
 ]
 
+const ACCENTS = [
+  { name: 'Original', color: 'original' },
+  { name: 'Black', color: '#17171a' },
+  { name: 'White', color: '#eceadf' },
+  { name: 'Red', color: '#c11a2b' },
+  { name: 'Blue', color: '#2b5fc1' },
+  { name: 'Gold', color: '#c9a227' },
+  { name: 'Silver', color: '#c9ccd2' },
+  { name: 'Pink', color: '#e35b8f' },
+]
+
 const TONE_LABEL: Record<Tone, string> = { clean: 'Clean', drive: 'Drive', reverb: 'Reverb' }
 
 function webglAvailable(): boolean {
@@ -57,6 +68,7 @@ export default function RiffPage() {
   const [lost, setLost] = useState(false)
   const [ready, setReady] = useState(false)
   const [bodyColor, setBodyColor] = useState('original')
+  const [accentColor, setAccentColor] = useState('original')
   const [tone, setTone] = useState<Tone>('clean')
   const [plugStage, setPlugStage] = useState<PlugStage>('unplugged')
   const [capo, setCapo] = useState(0)
@@ -148,7 +160,7 @@ export default function RiffPage() {
 
       <div className="mx-auto grid w-full max-w-6xl flex-1 gap-4 px-5 py-6 sm:px-8 lg:grid-cols-[1fr_18rem]">
         <div
-          className="hero-in relative min-h-[26rem] overflow-hidden rounded-xl border border-riff-line bg-riff-card lg:min-h-[34rem]"
+          className="hero-in relative h-[26rem] self-start overflow-hidden rounded-xl border border-riff-line bg-riff-card sm:h-[30rem] lg:h-[34rem]"
           style={d(120)}
           role="img"
           aria-label="A solid 3D electric guitar beside an amp. Activate the cable, plug both jacks, then click the strings to play open notes."
@@ -159,6 +171,7 @@ export default function RiffPage() {
                 <Suspense fallback={null}>
                   <Scene
                     bodyColor={bodyColor}
+                    accentColor={accentColor}
                     tone={tone}
                     plugStage={plugStage}
                     capo={capo}
@@ -267,6 +280,28 @@ export default function RiffPage() {
               custom
               <input type="color" value={bodyColor === 'original' ? '#58c437' : bodyColor} onChange={(e) => setBodyColor(e.target.value)} className="h-6 w-10 cursor-pointer rounded border border-riff-line bg-transparent" />
               <span>{bodyColor === 'original' ? 'as shipped' : bodyColor}</span>
+            </label>
+          </div>
+
+          {/* Accent (pickups + knobs) */}
+          <div className="rounded-xl border border-riff-line bg-riff-card p-4">
+            <h2 className="riff-label !text-riff-ink-2">Accent — pickups &amp; knobs</h2>
+            <div className="mt-3 grid grid-cols-4 gap-2">
+              {ACCENTS.map((f) => (
+                <button
+                  key={f.name}
+                  onClick={() => { void riff.current!.click(); setAccentColor(f.color) }}
+                  title={f.name}
+                  aria-label={f.name}
+                  className={`aspect-square rounded-md border-2 transition-transform hover:scale-105 ${accentColor === f.color ? 'border-riff-ink' : 'border-transparent'}`}
+                  style={{ background: f.color === 'original' ? '#b1ba3f' : f.color }}
+                />
+              ))}
+            </div>
+            <label className="mt-3 flex items-center gap-2 font-mono text-[0.66rem] text-riff-muted">
+              custom
+              <input type="color" value={accentColor === 'original' ? '#b1ba3f' : accentColor} onChange={(e) => setAccentColor(e.target.value)} className="h-6 w-10 cursor-pointer rounded border border-riff-line bg-transparent" />
+              <span>{accentColor === 'original' ? 'as shipped' : accentColor}</span>
             </label>
           </div>
         </aside>

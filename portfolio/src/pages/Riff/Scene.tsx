@@ -10,12 +10,12 @@ import { StudioEnvironment } from '../../lib/meridianScene'
  * maxkorkiat / Maximusx0077, CC BY via Sketchfab; OBJ converted to GLB, its
  * own materials untouched) beside a solid amp, lit like Meridian.
  *
- * Interactions: the finish recolours the painted set (body + pickup bobbins +
- * knobs); six invisible hit-strings sit exactly over the model's real strings
- * so each click plays that string; a capo drags along the neck and raises the
- * pitch; and the cable is plugged by hand — activate it, then click the
- * glowing jack on the guitar and the one on the amp panel, the loose end
- * following your cursor in between.
+ * Interactions: the finish recolours the body set and the accent colour the
+ * pickup bobbins + knobs; six invisible hit-strings sit exactly over the
+ * model's real strings so each click plays that string; a trigger-style capo
+ * drags along the neck and raises the pitch; and the cable is plugged by hand
+ * — activate it, click a glowing jack, and a real metal 1/4" plug follows the
+ * cursor on the end of the cable until you seat it in the amp's input socket.
  */
 
 export type PlugStage = 'unplugged' | 'armed' | 'drag-guitar' | 'drag-amp' | 'plugged'
@@ -60,8 +60,9 @@ const fretFromY = (y: number) => {
 // The model's output jack plate (Plane.016, Metal3) sits on the lower treble
 // side of the body — that's where the cable plugs into the guitar.
 const GUITAR_JACK: [number, number, number] = [0.464, 5.248, 0.1]
-// The amp's input jack is on its control panel (in the amp group's frame).
-const AMP_JACK: [number, number, number] = [-0.62, 0.92, 0.78]
+// The amp's input socket: top-right of the control panel, on the front face
+// (the amp group's frame). The model has no jack there, so we mount one.
+const AMP_JACK: [number, number, number] = [0.78, 0.84, 0.76]
 
 /** Bounding box over an object's meshes → scale to a target height + centre. */
 function fit(object: THREE.Object3D, targetHeight: number) {
@@ -112,8 +113,52 @@ function JackGlow({ r, active, onClick }: { r: number; active: boolean; onClick:
   )
 }
 
+/** A trigger-style capo: rubber-lined clamp bar, curved lower jaw, spring grip. */
+function Capo({ fret, onGrab }: { fret: number; onGrab: () => void }) {
+  const y = capoY(fret)
+  return (
+    <group position={[-0.006, y, 0]} onPointerDown={(e) => { e.stopPropagation(); onGrab() }}>
+      {/* top clamp bar over the strings (slightly domed ends) */}
+      <mesh position={[0, 0, 0.1]} rotation={[0, 0, 0]}>
+        <capsuleGeometry args={[0.055, 0.42, 6, 12]} />
+        <meshStandardMaterial color="#c8ccd4" roughness={0.28} metalness={0.9} />
+      </mesh>
+      {/* rubber pad pressing the strings */}
+      <mesh position={[0, -0.005, 0.075]}>
+        <boxGeometry args={[0.44, 0.045, 0.05]} />
+        <meshStandardMaterial color="#17171a" roughness={0.9} metalness={0} />
+      </mesh>
+      {/* hinge post on the treble side */}
+      <mesh position={[0.26, -0.03, 0.02]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.035, 0.035, 0.2, 12]} />
+        <meshStandardMaterial color="#9aa0aa" roughness={0.35} metalness={0.85} />
+      </mesh>
+      {/* curved lower jaw wrapping behind the neck */}
+      <mesh position={[0.05, -0.075, -0.045]} rotation={[0.5, 0, 0]}>
+        <capsuleGeometry args={[0.045, 0.4, 6, 12]} />
+        <meshStandardMaterial color="#c8ccd4" roughness={0.28} metalness={0.9} />
+      </mesh>
+      {/* rubber sleeve on the jaw */}
+      <mesh position={[-0.08, -0.09, -0.07]} rotation={[0.5, 0, 0]}>
+        <capsuleGeometry args={[0.05, 0.18, 6, 12]} />
+        <meshStandardMaterial color="#17171a" roughness={0.9} metalness={0} />
+      </mesh>
+      {/* spring grip handles angling off the bass side */}
+      <mesh position={[-0.3, -0.06, 0.05]} rotation={[0, 0, 0.55]}>
+        <capsuleGeometry args={[0.035, 0.22, 6, 10]} />
+        <meshStandardMaterial color="#c8ccd4" roughness={0.3} metalness={0.9} />
+      </mesh>
+      <mesh position={[-0.32, -0.1, -0.02]} rotation={[0.3, 0, -0.4]}>
+        <capsuleGeometry args={[0.035, 0.2, 6, 10]} />
+        <meshStandardMaterial color="#9aa0aa" roughness={0.35} metalness={0.85} />
+      </mesh>
+    </group>
+  )
+}
+
 function Guitar({
   bodyColor,
+  accentColor,
   capo,
   plugStage,
   onPluck,
@@ -123,6 +168,7 @@ function Guitar({
   jackAnchor,
 }: {
   bodyColor: string
+  accentColor: string
   capo: number
   plugStage: PlugStage
   onPluck: (i: number) => void
@@ -134,40 +180,41 @@ function Guitar({
   const { scene } = useGLTF(GUITAR)
   const inner = useRef<THREE.Group>(null)
   const draggingCapo = useRef(false)
-  const { group, f, paintMats } = useMemo(() => {
+  const { group, f, bodyMats, accentMats } = useMemo(() => {
     const root = scene.clone(true)
-    // The finish recolours the painted set: 'Material.007' (body / neck /
-    // headstock) and 'Material.009' (the matching pickup bobbins + knobs).
-    const paintMats: THREE.MeshStandardMaterial[] = []
+    // 'Material.007' paints the body/neck/headstock; 'Material.009' the
+    // pickup bobbins + knobs (the accent set).
+    const bodyMats: THREE.MeshStandardMaterial[] = []
+    const accentMats: THREE.MeshStandardMaterial[] = []
     root.traverse((o) => {
       const mesh = o as THREE.Mesh
       if (!mesh.isMesh) return
       mesh.castShadow = true
       const mat = mesh.material as THREE.MeshStandardMaterial
       if (mat) mat.side = THREE.DoubleSide
-      if (mat && /Material\.(007|009)/i.test(mat.name) && !paintMats.includes(mat)) paintMats.push(mat)
+      if (mat && /Material\.007/i.test(mat.name) && !bodyMats.includes(mat)) bodyMats.push(mat)
+      if (mat && /Material\.009/i.test(mat.name) && !accentMats.includes(mat)) accentMats.push(mat)
     })
     const group = new THREE.Group()
     group.add(root)
     group.setRotationFromMatrix(autoOrient(root))
     const f = fit(group, GUITAR_HEIGHT)
-    return { group, f, paintMats }
+    return { group, f, bodyMats, accentMats }
   }, [scene])
 
-  // Body finish recolours the painted set together (body + pickup bobbins +
-  // knobs); pickguard, fretboard and strings keep their own colours.
-  // 'original' = exactly as downloaded.
-  useEffect(() => {
-    for (const mat of paintMats) {
-      if (bodyColor === 'original') {
+  const recolor = (mats: THREE.MeshStandardMaterial[], color: string) => {
+    for (const mat of mats) {
+      if (color === 'original') {
         if (mat.userData.origColor) mat.color.copy(mat.userData.origColor)
       } else {
         if (!mat.userData.origColor) mat.userData.origColor = mat.color.clone()
-        mat.color.set(bodyColor)
+        mat.color.set(color)
       }
       mat.needsUpdate = true
     }
-  }, [bodyColor, paintMats])
+  }
+  useEffect(() => recolor(bodyMats, bodyColor), [bodyColor, bodyMats]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => recolor(accentMats, accentColor), [accentColor, accentMats]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const up = () => { draggingCapo.current = false }
@@ -192,16 +239,8 @@ function Guitar({
             <meshBasicMaterial color="#ff2b2b" transparent opacity={0.7} />
           </mesh>
         ))}
-        {/* capo: a dark bar across the neck, draggable along it */}
-        {capo > 0 && (
-          <mesh
-            position={[-0.006, capoY(capo), 0.075]}
-            onPointerDown={(e) => { e.stopPropagation(); draggingCapo.current = true }}
-          >
-            <boxGeometry args={[0.5, 0.11, 0.14]} />
-            <meshStandardMaterial color="#b9bec7" roughness={0.3} metalness={0.85} />
-          </mesh>
-        )}
+        {/* trigger capo, draggable along the neck */}
+        {capo > 0 && <Capo fret={capo} onGrab={() => { draggingCapo.current = true }} />}
         {/* invisible rail over the fretboard that tracks the capo drag */}
         {capo > 0 && (
           <mesh
@@ -248,27 +287,59 @@ function Amp({
   }, [scene])
   const jackActive = plugStage === 'armed' || plugStage === 'drag-guitar'
   return (
-    <group position={[1.7, -0.15, 0]} rotation={[0, -0.5, 0]} onPointerDown={(e) => { e.stopPropagation(); onClick() }}>
+    <group position={[1.5, -0.15, 0]} rotation={[0, -0.42, 0]} onPointerDown={(e) => { e.stopPropagation(); onClick() }}>
       <group scale={f.scale} position={[-f.center.x * f.scale, -f.center.y * f.scale, -f.center.z * f.scale]}>
         <primitive object={root} />
       </group>
-      <mesh position={[0.55, 0.9, 0.75]}>
-        <sphereGeometry args={[0.05, 16, 16]} />
+      <mesh position={[0.32, 0.94, 0.75]}>
+        <sphereGeometry args={[0.045, 16, 16]} />
         <meshStandardMaterial emissive={tone === 'drive' ? '#ff5a2a' : tone === 'reverb' ? '#4aa3ff' : '#59d98a'} emissiveIntensity={2.2} color="#111" />
       </mesh>
-      {/* the amp's input jack on the control panel */}
+      {/* the amp's INPUT socket — a mounted 1/4" jack, top-right of the panel */}
       <group position={AMP_JACK}>
         <object3D ref={(o) => { jackAnchor.current = o }} />
-        <JackGlow r={0.09} active={jackActive} onClick={(/* jack */) => onJackClick()} />
+        {/* hex mounting plate + threaded collar + dark hole */}
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.085, 0.085, 0.02, 6]} />
+          <meshStandardMaterial color="#c9ccd2" roughness={0.3} metalness={0.9} />
+        </mesh>
+        <mesh position={[0, 0, 0.028]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.045, 0.045, 0.045, 16]} />
+          <meshStandardMaterial color="#aeb3bc" roughness={0.35} metalness={0.9} />
+        </mesh>
+        <mesh position={[0, 0, 0.052]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.028, 0.028, 0.012, 16]} />
+          <meshStandardMaterial color="#0a0a0c" roughness={0.9} metalness={0.1} />
+        </mesh>
+        <JackGlow r={0.1} active={jackActive} onClick={onJackClick} />
       </group>
     </group>
   )
 }
 
+/** A metal 1/4" instrument plug: chrome shaft + tip, black sleeve. +Z = outward. */
+function makePlug(): THREE.Group {
+  const g = new THREE.Group()
+  const chrome = new THREE.MeshStandardMaterial({ color: '#d6dae1', roughness: 0.2, metalness: 1 })
+  const sleeve = new THREE.MeshStandardMaterial({ color: '#131316', roughness: 0.55, metalness: 0.3 })
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.12, 12), chrome)
+  shaft.rotation.x = Math.PI / 2
+  shaft.position.z = -0.03
+  const tip = new THREE.Mesh(new THREE.SphereGeometry(0.024, 10, 10), chrome)
+  tip.position.z = -0.095
+  const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.036, 0.16, 14), sleeve)
+  barrel.rotation.x = Math.PI / 2
+  barrel.position.z = 0.11
+  const relief = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.03, 0.09, 12), sleeve)
+  relief.rotation.x = Math.PI / 2
+  relief.position.z = 0.23
+  g.add(shaft, tip, barrel, relief)
+  return g
+}
+
 /**
- * The instrument cable. While dragging, one end is anchored at the clicked
- * jack and the loose end hangs from the cursor; once plugged it sags between
- * the two jacks.
+ * The instrument cable. Each end carries a real metal plug; while dragging,
+ * the loose plug hangs at the cursor, and plugging in seats it in the socket.
  */
 function InstrumentCable({
   plugStage,
@@ -280,37 +351,73 @@ function InstrumentCable({
   ampJack: React.MutableRefObject<THREE.Object3D | null>
 }) {
   const mesh = useRef<THREE.Mesh>(null)
-  const { camera, pointer } = useThree()
+  const plugA = useMemo(makePlug, []) // guitar-side plug
+  const plugB = useMemo(makePlug, []) // amp-side / loose plug
+  const { camera, pointer, scene } = useThree()
   const ray = useMemo(() => new THREE.Raycaster(), [])
   const plane = useMemo(() => new THREE.Plane(new THREE.Vector3(0, 0, 1), -0.55), [])
   const hit = useMemo(() => new THREE.Vector3(), [])
   const a = useMemo(() => new THREE.Vector3(), [])
   const b = useMemo(() => new THREE.Vector3(), [])
+  const qa = useMemo(() => new THREE.Quaternion(), [])
+  const qb = useMemo(() => new THREE.Quaternion(), [])
+  const tmp = useMemo(() => new THREE.Vector3(), [])
+
+  useEffect(() => {
+    scene.add(plugA, plugB)
+    return () => { scene.remove(plugA, plugB) }
+  }, [scene, plugA, plugB])
 
   useFrame(() => {
     if (!mesh.current) return
     const dragging = plugStage === 'drag-guitar' || plugStage === 'drag-amp'
     const show = dragging || plugStage === 'plugged'
     mesh.current.visible = show
+    plugA.visible = show
+    plugB.visible = show
     if (!show) return
+
+    // seated end(s)
+    const gAnchor = guitarJack.current
+    const aAnchor = ampJack.current
+    if (!gAnchor || !aAnchor) return
+    const anchored = plugStage === 'drag-amp' ? aAnchor : gAnchor
+    const anchoredPlug = plugStage === 'drag-amp' ? plugB : plugA
+    const loosePlug = plugStage === 'drag-amp' ? plugA : plugB
+    anchored.getWorldPosition(a)
+    anchored.getWorldQuaternion(qa)
+    anchoredPlug.position.copy(a)
+    anchoredPlug.quaternion.copy(qa)
+    // cable leaves from the plug's sleeve back (outward +Z of the socket)
+    const outA = tmp.set(0, 0, 1).applyQuaternion(qa).normalize()
+    const cableStart = a.clone().addScaledVector(outA, 0.27)
+
+    let cableEnd: THREE.Vector3
     if (plugStage === 'plugged') {
-      guitarJack.current?.getWorldPosition(a)
-      ampJack.current?.getWorldPosition(b)
+      aAnchor.getWorldPosition(b)
+      aAnchor.getWorldQuaternion(qb)
+      plugB.position.copy(b)
+      plugB.quaternion.copy(qb)
+      const outB = new THREE.Vector3(0, 0, 1).applyQuaternion(qb).normalize()
+      cableEnd = b.clone().addScaledVector(outB, 0.27)
     } else {
-      const from = plugStage === 'drag-guitar' ? guitarJack : ampJack
-      from.current?.getWorldPosition(a)
       ray.setFromCamera(pointer, camera)
       if (!ray.ray.intersectPlane(plane, hit)) return
-      b.copy(hit)
+      // the hand holds the plug: tip points up toward the socket-to-be,
+      // cable trails from the sleeve below
+      loosePlug.position.copy(hit)
+      loosePlug.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, -1, 0.25).normalize())
+      cableEnd = hit.clone().add(new THREE.Vector3(0, -0.25, 0.06))
     }
+
     // sag: midpoints dip toward the floor, more when the ends are close
-    const mid1 = a.clone().lerp(b, 0.35)
-    const mid2 = a.clone().lerp(b, 0.7)
-    const slack = Math.max(0.25, 1.1 - a.distanceTo(b) * 0.18)
+    const mid1 = cableStart.clone().lerp(cableEnd, 0.35)
+    const mid2 = cableStart.clone().lerp(cableEnd, 0.7)
+    const slack = Math.max(0.25, 1.1 - cableStart.distanceTo(cableEnd) * 0.18)
     mid1.y -= slack
     mid2.y -= slack * 0.8
-    const curve = new THREE.CatmullRomCurve3([a.clone(), mid1, mid2, b.clone()])
-    const geo = new THREE.TubeGeometry(curve, 36, 0.035, 8, false)
+    const curve = new THREE.CatmullRomCurve3([cableStart, mid1, mid2, cableEnd])
+    const geo = new THREE.TubeGeometry(curve, 36, 0.032, 8, false)
     mesh.current.geometry.dispose()
     mesh.current.geometry = geo
   })
@@ -324,9 +431,9 @@ function InstrumentCable({
 }
 
 export default function Scene({
-  bodyColor, tone, plugStage, capo, onPluck, onStrum, onAmpClick, onJackClick, onCapoDrag, onReady, onFail,
+  bodyColor, accentColor, tone, plugStage, capo, onPluck, onStrum, onAmpClick, onJackClick, onCapoDrag, onReady, onFail,
 }: {
-  bodyColor: string; tone: string; plugStage: PlugStage; capo: number
+  bodyColor: string; accentColor: string; tone: string; plugStage: PlugStage; capo: number
   onPluck: (i: number) => void; onStrum: () => void; onAmpClick: () => void
   onJackClick: (which: 'guitar' | 'amp') => void
   onCapoDrag: (fret: number) => void
@@ -349,6 +456,7 @@ export default function Scene({
       <StudioEnvironment />
       <Guitar
         bodyColor={bodyColor}
+        accentColor={accentColor}
         capo={capo}
         plugStage={plugStage}
         onPluck={onPluck}
@@ -360,7 +468,7 @@ export default function Scene({
       <Amp tone={tone} plugStage={plugStage} onClick={onAmpClick} onJackClick={() => onJackClick('amp')} jackAnchor={ampJack} />
       <InstrumentCable plugStage={plugStage} guitarJack={guitarJack} ampJack={ampJack} />
       <ContactShadows position={[0, -1.7, 0]} opacity={0.4} scale={12} blur={3} far={3} resolution={1024} frames={1} />
-      <CameraControls makeDefault minDistance={3} maxDistance={11} />
+      <CameraControls makeDefault minDistance={0.7} maxDistance={11} />
     </Canvas>
   )
 }
