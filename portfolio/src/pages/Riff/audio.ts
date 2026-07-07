@@ -45,8 +45,11 @@ export class Riff {
   private reverbWet!: GainNode
   private reverbDry!: GainNode
   private busIn!: GainNode // plucks feed here
+  private ui!: GainNode // UI clicks bypass the plug gate (quiet, direct out)
   private tone: Tone = 'clean'
   plugged = false
+  /** Capo fret (0 = off). Every pluck is raised this many semitones. */
+  capo = 0
 
   /** Build the graph lazily on first plug (the required user gesture). */
   private ensure() {
@@ -58,6 +61,10 @@ export class Riff {
     this.master = ctx.createGain()
     this.master.gain.value = 0
     this.master.connect(ctx.destination)
+
+    this.ui = ctx.createGain()
+    this.ui.gain.value = 0.25
+    this.ui.connect(ctx.destination)
 
     this.busIn = ctx.createGain()
     this.busIn.gain.value = 0.9
@@ -154,7 +161,7 @@ export class Riff {
     if (!this.ctx || !this.plugged) return
     const ctx = this.ctx
     const sr = ctx.sampleRate
-    const freq = STRINGS[index].freq
+    const freq = STRINGS[index].freq * Math.pow(2, this.capo / 12)
 
     // Averaging two delayed taps adds half a sample of delay, so target N+0.5.
     const N = Math.max(2, Math.round(sr / freq - 0.5))
@@ -183,6 +190,50 @@ export class Riff {
     if (!this.ctx || !this.plugged) return
     const t0 = this.ctx.currentTime
     STRINGS.forEach((_, i) => this.pluck(i, t0 + i * 0.045))
+  }
+
+  setCapo(fret: number) {
+    this.capo = Math.max(0, Math.min(9, Math.round(fret)))
+  }
+
+  /** Small tactile tick for UI buttons — synthesized, bypasses the plug gate. */
+  async click() {
+    this.ensure()
+    const ctx = this.ctx!
+    if (ctx.state === 'suspended') await ctx.resume()
+    const t = ctx.currentTime
+    const len = Math.floor(ctx.sampleRate * 0.014)
+    const buf = ctx.createBuffer(1, len, ctx.sampleRate)
+    const d = buf.getChannelData(0)
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3)
+    const src = ctx.createBufferSource()
+    src.buffer = buf
+    const bp = ctx.createBiquadFilter()
+    bp.type = 'bandpass'
+    bp.frequency.value = 2400
+    bp.Q.value = 1.4
+    src.connect(bp)
+    bp.connect(this.ui)
+    src.start(t)
+  }
+
+  /** The jack-hits-the-socket sound: a short low thunk + tick out of the amp. */
+  connectThunk() {
+    if (!this.ctx) return
+    const ctx = this.ctx
+    const t = ctx.currentTime
+    const osc = ctx.createOscillator()
+    osc.type = 'sine'
+    osc.frequency.setValueAtTime(220, t)
+    osc.frequency.exponentialRampToValueAtTime(65, t + 0.09)
+    const g = ctx.createGain()
+    g.gain.setValueAtTime(0.6, t)
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.16)
+    osc.connect(g)
+    g.connect(this.busIn)
+    osc.start(t)
+    osc.stop(t + 0.18)
+    void this.click()
   }
 
   dispose() {
