@@ -59,6 +59,14 @@ const COMMISSIONS = [
       'A living globe: 60,000 GPU points sampled onto a procedural sphere — no globe model, no globe library, no particle library. Land and sea split by reading a NASA mask once on a 2D canvas; a hand-written vertex shader breathes noise along the normals, floats land a hair proud of the ocean, and parts the surface around your cursor. Drag to orbit. After cortiz2894’s open-source hologram-particles — rebuilt from scratch to understand it.',
     href: '#/demos/terra',
   },
+  {
+    n: '07',
+    skill: 'GPU particles & data pipeline',
+    title: 'Cortex — a particle brain',
+    caption:
+      '80,000 points baked from the BodyParts3D anatomical atlas — every structure its own mesh, area-weighted sampled and tagged with a region id, shipped as one 548 KB binary (not 100 MB of models). Pick the hippocampus, amygdala, thalamus… and the cortex ghosts to a blue haze while that structure glows red from inside the folds, rotating. Same particle engine as Terra, after cortiz2894’s hologram-particles.',
+    href: '#/demos/cortex',
+  },
 ]
 
 /** A miniature of the watch — warm dark, brass ring, ten past ten. */
@@ -257,7 +265,36 @@ function TerraThumb() {
   )
 }
 
-const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb, '06': TerraThumb }
+/** A miniature of the brain — dotted grey lobes, one deep red cluster. */
+function CortexThumb() {
+  const dots: Array<[number, number, boolean]> = []
+  // deterministic blob of points; a red cluster low-center = a deep structure
+  for (let i = 0; i < 150; i++) {
+    const a = (i * 2.399963) % (Math.PI * 2)
+    const r = 1 - ((i * 0.61803) % 1) * 0.4
+    const x = 140 + Math.cos(a) * 74 * r
+    const y = 80 + Math.sin(a) * 46 * r
+    const deep = Math.hypot(x - 150, y - 92) < 20
+    dots.push([x, y, deep])
+  }
+  return (
+    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
+      <rect width="280" height="160" rx="10" fill="#080a0f" />
+      {dots.map(([x, y, deep], i) => (
+        <circle
+          key={i}
+          cx={x.toFixed(1)}
+          cy={y.toFixed(1)}
+          r={deep ? 2.2 : 1.4}
+          fill={deep ? '#ff4d43' : '#5b8fd6'}
+          opacity={deep ? 0.95 : 0.4}
+        />
+      ))}
+    </svg>
+  )
+}
+
+const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb, '06': TerraThumb, '07': CortexThumb }
 
 /**
  * The Meridian card's live slot. The heavy three.js chunk loads only when

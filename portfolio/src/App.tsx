@@ -20,6 +20,7 @@ const LedgerLens = lazy(() => import('./pages/LedgerLens'))
 const PalisadeGrid = lazy(() => import('./pages/PalisadeGrid'))
 const Skein = lazy(() => import('./pages/Skein'))
 const Terra = lazy(() => import('./pages/Terra'))
+const Cortex = lazy(() => import('./pages/Cortex'))
 
 const CASE_PAGES: Record<string, React.LazyExoticComponent<() => React.JSX.Element>> = {
   globalio: GlobalioCaseStudy,
@@ -64,6 +65,12 @@ const DEMO_PAGES: Record<
     label: 'Terra particle Earth demo',
     shell: 'bg-terra-bg',
     spinner: 'text-terra-muted',
+  },
+  cortex: {
+    Page: Cortex,
+    label: 'Cortex particle brain demo',
+    shell: 'bg-cortex-bg',
+    spinner: 'text-cortex-muted',
   },
 }
 

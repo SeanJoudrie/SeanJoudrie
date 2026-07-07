@@ -1,0 +1,109 @@
+{
+  "count": 79961,
+  "quantScale": 1.2,
+  "regions": [
+    {
+      "id": 0,
+      "key": "frontal",
+      "label": "Frontal lobe",
+      "group": "shell"
+    },
+    {
+      "id": 1,
+      "key": "parietal",
+      "label": "Parietal lobe",
+      "group": "shell"
+    },
+    {
+      "id": 2,
+      "key": "temporal",
+      "label": "Temporal lobe",
+      "group": "shell"
+    },
+    {
+      "id": 3,
+      "key": "occipital",
+      "label": "Occipital lobe",
+      "group": "shell"
+    },
+    {
+      "id": 4,
+      "key": "cingulate",
+      "label": "Cingulate gyrus",
+      "group": "shell"
+    },
+    {
+      "id": 5,
+      "key": "insula",
+      "label": "Insula",
+      "group": "shell"
+    },
+    {
+      "id": 6,
+      "key": "cerebellum",
+      "label": "Cerebellum",
+      "group": "shell"
+    },
+    {
+      "id": 7,
+      "key": "brainstem",
+      "label": "Brainstem",
+      "group": "shell"
+    },
+    {
+      "id": 8,
+      "key": "hippocampus",
+      "label": "Hippocampus",
+      "group": "deep"
+    },
+    {
+      "id": 9,
+      "key": "amygdala",
+      "label": "Amygdala",
+      "group": "deep"
+    },
+    {
+      "id": 10,
+      "key": "thalamus",
+      "label": "Thalamus",
+      "group": "deep"
+    },
+    {
+      "id": 11,
+      "key": "caudate",
+      "label": "Caudate nucleus",
+      "group": "deep"
+    },
+    {
+      "id": 12,
+      "key": "putamen",
+      "label": "Putamen",
+      "group": "deep"
+    },
+    {
+      "id": 13,
+      "key": "pallidus",
+      "label": "Globus pallidus",
+      "group": "deep"
+    },
+    {
+      "id": 14,
+      "key": "fornix",
+      "label": "Fornix",
+      "group": "deep"
+    },
+    {
+      "id": 15,
+      "key": "callosum",
+      "label": "Corpus callosum",
+      "group": "deep"
+    },
+    {
+      "id": 16,
+      "key": "pituitary",
+      "label": "Pituitary gland",
+      "group": "deep"
+    }
+  ],
+  "source": "BodyParts3D, \u00a9 The Database Center for Life Science, CC BY-SA 2.1 JP"
+}

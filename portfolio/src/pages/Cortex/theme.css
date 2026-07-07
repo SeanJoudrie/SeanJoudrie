@@ -1,0 +1,27 @@
+/* Cortex — demo-scoped clinical-dark chrome. Color tokens live in index.css
+   @theme (cortex-*); this sheet carries what utilities can't. A cooler, more
+   neutral dark than Terra's space-blue so the red highlight reads as signal. */
+.cortex-root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+}
+.cortex-root ::selection {
+  background: var(--color-cortex-hot);
+  color: var(--color-cortex-bg);
+}
+.cortex-root :focus-visible {
+  outline-color: var(--color-cortex-hot);
+}
+
+body.cortex-page {
+  background-color: var(--color-cortex-bg);
+}
+
+.cortex-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-cortex-muted);
+}

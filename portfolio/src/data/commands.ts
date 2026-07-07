@@ -135,6 +135,11 @@ export const commands: Command[] = [
     keywords: ['globe', 'earth', 'particles', 'webgl', 'shader', '3d', 'planet', 'terra'],
     perform: (ctx) => { ctx.close(); navigate('#/demos/terra') },
   },
+  {
+    id: 'demo-cortex', title: 'Open Cortex particle brain', group: 'Demos', hint: 'demo',
+    keywords: ['brain', 'cortex', 'anatomy', 'hippocampus', 'neuro', 'particles', 'webgl', '3d'],
+    perform: (ctx) => { ctx.close(); navigate('#/demos/cortex') },
+  },
 
   // ---- Actions ----
   {

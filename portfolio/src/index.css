@@ -126,6 +126,17 @@
   --color-terra-muted: #7d8ca0;
   --color-terra-sea: #3a6fc4;
   --color-terra-land: #7fd7a1;
+
+  /* Cortex (particle brain demo) — clinical dark, blue tissue, red signal */
+  --color-cortex-bg: #080a0f;
+  --color-cortex-card: #0d1018;
+  --color-cortex-line: rgb(255 255 255 / 0.08);
+  --color-cortex-line-strong: rgb(255 255 255 / 0.2);
+  --color-cortex-ink: #eef1f6;
+  --color-cortex-ink-2: #b8c0cf;
+  --color-cortex-muted: #7c8496;
+  --color-cortex-dot: #5b8fd6;
+  --color-cortex-hot: #ff4d43;
 }
 
 :root {
