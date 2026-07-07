@@ -22,6 +22,7 @@ const Skein = lazy(() => import('./pages/Skein'))
 const Terra = lazy(() => import('./pages/Terra'))
 const Cortex = lazy(() => import('./pages/Cortex'))
 const Skull = lazy(() => import('./pages/Skull'))
+const Bloom = lazy(() => import('./pages/Bloom'))
 
 const CASE_PAGES: Record<string, React.LazyExoticComponent<() => React.JSX.Element>> = {
   globalio: GlobalioCaseStudy,
@@ -78,6 +79,12 @@ const DEMO_PAGES: Record<
     label: 'Skull particle demo',
     shell: 'bg-skull-bg',
     spinner: 'text-skull-muted',
+  },
+  bloom: {
+    Page: Bloom,
+    label: 'Bloom voxel rose demo',
+    shell: 'bg-bloom-bg',
+    spinner: 'text-bloom-muted',
   },
 }
 

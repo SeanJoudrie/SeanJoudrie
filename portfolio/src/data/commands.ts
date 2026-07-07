@@ -145,6 +145,11 @@ export const commands: Command[] = [
     keywords: ['skull', 'bones', 'anatomy', 'jaw', 'mandible', 'cranium', 'particles', 'webgl', '3d'],
     perform: (ctx) => { ctx.close(); navigate('#/demos/skull') },
   },
+  {
+    id: 'demo-bloom', title: 'Open Bloom voxel rose', group: 'Demos', hint: 'demo',
+    keywords: ['rose', 'flower', 'voxel', 'cubes', 'lod', 'detail', 'minecraft', 'webgl', '3d'],
+    perform: (ctx) => { ctx.close(); navigate('#/demos/bloom') },
+  },
 
   // ---- Actions ----
   {

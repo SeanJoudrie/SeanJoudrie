@@ -1,0 +1,39 @@
+/* Bloom — demo-scoped dusk chrome. Color tokens live in index.css
+   @theme (bloom-*); this sheet carries what utilities can't. A soft plum
+   near-black so the lit red bloom carries the frame. */
+.bloom-root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+}
+.bloom-root ::selection {
+  background: var(--color-bloom-hot);
+  color: var(--color-bloom-bg);
+}
+.bloom-root :focus-visible {
+  outline-color: var(--color-bloom-hot);
+}
+
+body.bloom-page {
+  background-color: var(--color-bloom-bg);
+}
+
+.bloom-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-bloom-muted);
+}
+
+/* The detail slider stands upright on the stage's right edge — up is finer.
+   writing-mode covers Chromium + Firefox; the rotated fallback isn't needed
+   in browsers new enough to run the demo itself. */
+.bloom-vslider {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  height: 11rem;
+  width: 1.25rem;
+  accent-color: var(--color-bloom-hot);
+  cursor: ns-resize;
+}

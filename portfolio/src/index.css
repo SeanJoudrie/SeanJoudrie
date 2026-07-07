@@ -148,6 +148,17 @@
   --color-skull-muted: #8f8672;
   --color-skull-dot: #d8ccb4;
   --color-skull-hot: #ff6a3d;
+
+  /* Bloom (voxel rose demo) — dusk plum dark, rose red, leaf green */
+  --color-bloom-bg: #0c0a0d;
+  --color-bloom-card: #131016;
+  --color-bloom-line: rgb(255 255 255 / 0.08);
+  --color-bloom-line-strong: rgb(255 255 255 / 0.2);
+  --color-bloom-ink: #f3edf1;
+  --color-bloom-ink-2: #c9c0c9;
+  --color-bloom-muted: #8b8090;
+  --color-bloom-hot: #d94a3d;
+  --color-bloom-leaf: #4f9d3a;
 }
 
 :root {

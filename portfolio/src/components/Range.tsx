@@ -75,6 +75,14 @@ const COMMISSIONS = [
       '61,000 points baked from the BodyParts3D atlas — every bone its own mesh, tagged and shipped as one 417 KB binary. Pick a bone (frontal, sphenoid, mandible…) and it lights up; the jaw swings on its real temporomandibular hinge, computed from the condyle points at bake time and applied in the vertex shader so 60,000 other points never move on the CPU. Same particle engine as Terra and Cortex, after cortiz2894’s hologram-particles.',
     href: '#/demos/skull',
   },
+  {
+    n: '09',
+    skill: 'Voxels & level-of-detail',
+    title: 'Bloom — a rose carved from cubes',
+    caption:
+      'A low-poly rose surface-voxelized at build time into nine grid resolutions — 105 chunky cubes up to 77,000 fine ones, red bloom and green stem tagged straight from the source materials. A slider on the stage steps the detail level live; every level is one InstancedMesh, one draw call, solid lit bodies instead of the particle series’ glow. Model: Rose by Erbay ÇELIK (CC BY).',
+    href: '#/demos/bloom',
+  },
 ]
 
 /** A miniature of the watch — warm dark, brass ring, ten past ten. */
@@ -327,7 +335,32 @@ function SkullThumb() {
   )
 }
 
-const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb, '06': TerraThumb, '07': CortexThumb, '08': SkullThumb }
+/** A miniature of the voxel rose — red cube bloom on a green cube stem. */
+function BloomThumb() {
+  const petals: Array<[number, number, number]> = [
+    [140, 44, 22], [118, 54, 16], [162, 54, 16], [130, 66, 18], [152, 68, 14], [124, 36, 12], [156, 36, 12], [140, 26, 12],
+  ]
+  const stem: Array<[number, number, number]> = [
+    [140, 86, 9], [140, 96, 9], [140, 106, 9], [140, 116, 9], [140, 126, 9],
+    [152, 100, 11], [162, 96, 8], [126, 116, 11], [116, 112, 8],
+  ]
+  return (
+    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
+      <rect width="280" height="160" rx="10" fill="#0c0a0d" />
+      {petals.map(([x, y, s], i) => (
+        <rect key={`p${i}`} x={x - s / 2} y={y - s / 2} width={s} height={s} rx="2" fill="#d94a3d" opacity={0.55 + (i % 4) * 0.12} />
+      ))}
+      {stem.map(([x, y, s], i) => (
+        <rect key={`s${i}`} x={x - s / 2} y={y - s / 2} width={s} height={s} rx="1.5" fill="#4f9d3a" opacity={0.5 + (i % 3) * 0.16} />
+      ))}
+      {/* the detail slider, hinted */}
+      <rect x="248" y="30" width="3" height="100" rx="1.5" fill="#8b8090" opacity="0.5" />
+      <rect x="243" y="52" width="13" height="8" rx="2" fill="#d94a3d" />
+    </svg>
+  )
+}
+
+const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb, '06': TerraThumb, '07': CortexThumb, '08': SkullThumb, '09': BloomThumb }
 
 /**
  * The Meridian card's live slot. The heavy three.js chunk loads only when

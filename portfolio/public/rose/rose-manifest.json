@@ -1,0 +1,55 @@
+{
+  "levels": [
+    {
+      "r": 9,
+      "count": 105,
+      "cubeSize": 0.19422
+    },
+    {
+      "r": 13,
+      "count": 232,
+      "cubeSize": 0.13446
+    },
+    {
+      "r": 19,
+      "count": 545,
+      "cubeSize": 0.092
+    },
+    {
+      "r": 27,
+      "count": 1264,
+      "cubeSize": 0.06474
+    },
+    {
+      "r": 38,
+      "count": 2926,
+      "cubeSize": 0.046
+    },
+    {
+      "r": 54,
+      "count": 6855,
+      "cubeSize": 0.03237
+    },
+    {
+      "r": 76,
+      "count": 15635,
+      "cubeSize": 0.023
+    },
+    {
+      "r": 107,
+      "count": 35228,
+      "cubeSize": 0.01634
+    },
+    {
+      "r": 150,
+      "count": 77219,
+      "cubeSize": 0.01165
+    }
+  ],
+  "quantScale": 1.2,
+  "colors": {
+    "0": "petal",
+    "1": "foliage"
+  },
+  "source": "Rose by Erbay \u00c7ELIK (Poly Pizza), CC BY 3.0"
+}
