@@ -51,6 +51,14 @@ const COMMISSIONS = [
       'One fictional smuggling case, three fused views: a hand-rolled force-directed link chart (no graph library), a timeline scrubber, and a schematic map (no map tiles). Drag the time brush and watch the network surface — nodes dim, edges fade, the map recolours; click an entity or a port and everything present there in that window lights up across all three. Deterministic synthetic data, real physics, the Palantir-style triple-linked view built from scratch.',
     href: '#/demos/skein',
   },
+  {
+    n: '06',
+    skill: 'GPU particles & shaders',
+    title: 'Terra — a particle Earth',
+    caption:
+      'A living globe: 60,000 GPU points sampled onto a procedural sphere — no globe model, no globe library, no particle library. Land and sea split by reading a NASA mask once on a 2D canvas; a hand-written vertex shader breathes noise along the normals, floats land a hair proud of the ocean, and parts the surface around your cursor. Drag to orbit. After cortiz2894’s open-source hologram-particles — rebuilt from scratch to understand it.',
+    href: '#/demos/terra',
+  },
 ]
 
 /** A miniature of the watch — warm dark, brass ring, ten past ten. */
@@ -213,7 +221,43 @@ function SkeinThumb() {
   )
 }
 
-const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb }
+/** A miniature of the globe — deep space, dotted sphere, a green land-run. */
+function TerraThumb() {
+  // Deterministic particle bands: (band radius, dot count, land indices).
+  const bands: Array<[number, number, number[]]> = [
+    [16, 20, [4, 5, 6, 14]],
+    [34, 28, [8, 9, 10, 11, 22, 23]],
+    [48, 32, [2, 3, 16, 17, 18, 27]],
+  ]
+  return (
+    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
+      <rect width="280" height="160" rx="10" fill="#060a12" />
+      <circle cx="140" cy="80" r="58" fill="none" stroke="#ffffff" strokeOpacity="0.14" strokeWidth="1" strokeDasharray="1 5" />
+      {bands.map(([ry, n, land], b) =>
+        Array.from({ length: n }, (_, i) => {
+          const a = (i / n) * Math.PI * 2
+          const cx = 140 + Math.cos(a) * 58 * Math.cos((ry / 58) * 0.85)
+          const cy = 80 + Math.sin(a) * ry
+          const isLand = land.includes(i)
+          return (
+            <circle
+              key={`${b}-${i}`}
+              cx={cx.toFixed(1)}
+              cy={cy.toFixed(1)}
+              r={isLand ? 2.1 : 1.5}
+              fill={isLand ? '#7fd7a1' : '#3a6fc4'}
+              opacity={isLand ? 0.95 : 0.6}
+            />
+          )
+        }),
+      )}
+      {/* the cursor, mid-disturbance */}
+      <circle cx="185" cy="52" r="9" fill="none" stroke="#c9f3dc" strokeWidth="1.2" strokeDasharray="2 3" opacity="0.8" />
+    </svg>
+  )
+}
+
+const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb, '06': TerraThumb }
 
 /**
  * The Meridian card's live slot. The heavy three.js chunk loads only when

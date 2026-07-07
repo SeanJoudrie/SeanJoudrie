@@ -19,6 +19,7 @@ const MeridianConfigurator = lazy(() => import('./pages/MeridianConfigurator'))
 const LedgerLens = lazy(() => import('./pages/LedgerLens'))
 const PalisadeGrid = lazy(() => import('./pages/PalisadeGrid'))
 const Skein = lazy(() => import('./pages/Skein'))
+const Terra = lazy(() => import('./pages/Terra'))
 
 const CASE_PAGES: Record<string, React.LazyExoticComponent<() => React.JSX.Element>> = {
   globalio: GlobalioCaseStudy,
@@ -57,6 +58,12 @@ const DEMO_PAGES: Record<
     label: 'Skein link-analysis demo',
     shell: 'bg-skein-bg',
     spinner: 'text-skein-muted',
+  },
+  terra: {
+    Page: Terra,
+    label: 'Terra particle Earth demo',
+    shell: 'bg-terra-bg',
+    spinner: 'text-terra-muted',
   },
 }
 

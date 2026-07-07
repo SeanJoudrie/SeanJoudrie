@@ -115,6 +115,17 @@
   --color-skein-vessel: #5cc6d6;
   --color-skein-edge: rgb(197 188 214 / 0.22);
   --color-skein-sel: rgb(232 99 95 / 0.16);
+
+  /* Terra (particle Earth demo) — deep space, sea blue, land green */
+  --color-terra-bg: #060a12;
+  --color-terra-card: #0a101c;
+  --color-terra-line: rgb(255 255 255 / 0.08);
+  --color-terra-line-strong: rgb(255 255 255 / 0.2);
+  --color-terra-ink: #eaf2f6;
+  --color-terra-ink-2: #b9c8d4;
+  --color-terra-muted: #7d8ca0;
+  --color-terra-sea: #3a6fc4;
+  --color-terra-land: #7fd7a1;
 }
 
 :root {

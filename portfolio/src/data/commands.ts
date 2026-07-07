@@ -130,6 +130,11 @@ export const commands: Command[] = [
     keywords: ['table', 'spreadsheet', 'rows', 'virtualization', 'freight', 'excel'],
     perform: (ctx) => { ctx.close(); navigate('#/demos/palisade') },
   },
+  {
+    id: 'demo-terra', title: 'Open Terra particle Earth', group: 'Demos', hint: 'demo',
+    keywords: ['globe', 'earth', 'particles', 'webgl', 'shader', '3d', 'planet', 'terra'],
+    perform: (ctx) => { ctx.close(); navigate('#/demos/terra') },
+  },
 
   // ---- Actions ----
   {

@@ -1,0 +1,29 @@
+/* Terra — demo-scoped deep-space chrome. Color tokens live in index.css
+   @theme (terra-*); this sheet carries what utilities can't. Cooler and
+   darker than Skein's indigo so the globe's additive glow owns the room. */
+.terra-root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+}
+.terra-root ::selection {
+  background: var(--color-terra-land);
+  color: var(--color-terra-bg);
+}
+.terra-root :focus-visible {
+  outline-color: var(--color-terra-land);
+}
+
+/* The demo owns the whole viewport — the body swap covers overscroll. */
+body.terra-page {
+  background-color: var(--color-terra-bg);
+}
+
+/* Small-caps label — the night-side twin of .meridian-label. */
+.terra-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-terra-muted);
+}
