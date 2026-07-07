@@ -59,10 +59,36 @@ const fretFromY = (y: number) => {
 const GUITAR_JACK: [number, number, number] = [0.464, 5.248, 0.1]
 const AMP_JACK_NATIVE = new THREE.Vector3(159, 132, 96)
 
-// Shared per-string "was plucked at" timestamps (performance.now ms) so the
-// visual shiver can be triggered from clicks, strum, or the keyboard.
-const pluckFx = { t: [0, 0, 0, 0, 0, 0] }
-export function flashString(i: number) { if (i >= 0 && i < 6) pluckFx.t[i] = performance.now() }
+const MAX_FRET = 12
+/** Y of fret wire f along the neck (native coords); f=0 is the nut. */
+const fretPosY = (f: number) => NUT_Y - (1 - Math.pow(2, -f / 12)) * SCALE_L
+/** Which fret a press at local y sounds (0 = open); clamped to the playable neck. */
+function fretAtY(y: number): number {
+  const dY = NUT_Y - y
+  if (dY <= 0.03) return 0
+  const t = Math.min(0.999, dY / SCALE_L)
+  return Math.max(0, Math.min(MAX_FRET, Math.ceil(-12 * Math.log2(1 - t) - 0.001)))
+}
+
+// Shared FX state, driven from clicks / strum / keyboard: per-string shiver
+// timestamps + a single "finger" dot at the last fretted position.
+const pluckFx = {
+  t: [0, 0, 0, 0, 0, 0],
+  finger: { x: 0, y: 0, z: 0, t: -1e9, on: false },
+}
+export function flashString(i: number, fret = 0) {
+  if (i < 0 || i >= 6) return
+  pluckFx.t[i] = performance.now()
+  if (fret > 0) {
+    pluckFx.finger = {
+      x: STRINGS[i].x,
+      y: (fretPosY(fret) + fretPosY(fret - 1)) / 2,
+      z: STRINGS[i].z + STRING_FRONT + 0.02,
+      t: performance.now(),
+      on: true,
+    }
+  }
+}
 
 const setCursor = (v: string) => { document.body.style.cursor = v }
 const HOVER = {
@@ -148,7 +174,7 @@ function Guitar({
   bodyColor, accentColor, capo, plugStage, reduce, onPluck, onStrum, onJackClick, onCapoDrag, jackAnchor,
 }: {
   bodyColor: string; accentColor: string; capo: number; plugStage: PlugStage; reduce: boolean
-  onPluck: (i: number) => void; onStrum: () => void; onJackClick: () => void
+  onPluck: (i: number, fret: number) => void; onStrum: () => void; onJackClick: () => void
   onCapoDrag: (fret: number) => void
   jackAnchor: React.MutableRefObject<THREE.Object3D | null>
 }) {
@@ -156,7 +182,16 @@ function Guitar({
   const outer = useRef<THREE.Group>(null)
   const inner = useRef<THREE.Group>(null)
   const fxRefs = useRef<(THREE.Mesh | null)[]>([])
+  const finger = useRef<THREE.Mesh>(null)
   const draggingCapo = useRef(false)
+
+  // Fret a string from where it was clicked (y along the neck → fret number).
+  const pluckAt = (i: number, e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation()
+    let fret = 0
+    if (inner.current) fret = fretAtY(inner.current.worldToLocal(e.point.clone()).y)
+    onPluck(i, fret)
+  }
   const { group, f, bodyMats, accentMats } = useMemo(() => {
     const root = scene.clone(true)
     const bodyMats: THREE.MeshStandardMaterial[] = []
@@ -209,6 +244,16 @@ function Guitar({
         m.scale.x = 1 + k * 1.4
       } else if (mat.opacity !== 0) { mat.opacity = 0; m.position.x = STRINGS[i].x; m.scale.x = 1 }
     }
+    // finger dot at the fretted position
+    if (finger.current) {
+      const g = pluckFx.finger
+      const dt = (now - g.t) / 1000
+      const mat = finger.current.material as THREE.MeshBasicMaterial
+      if (g.on && dt >= 0 && dt < 0.6) {
+        finger.current.position.set(g.x, g.y, g.z)
+        mat.opacity = 0.85 * (1 - dt / 0.6)
+      } else if (mat.opacity !== 0) mat.opacity = 0
+    }
   })
 
   const jackActive = plugStage === 'armed' || plugStage === 'drag-amp'
@@ -221,10 +266,10 @@ function Guitar({
           <boxGeometry args={[1.0, 1.2, 0.14]} />
           <meshBasicMaterial color="#3bff6b" transparent opacity={0.3} />
         </mesh>
-        {/* invisible hit-strings + a bright flash overlay that shivers on pluck */}
+        {/* invisible hit-strings (fret by where you click) + flash overlay */}
         {STRINGS.map((s, i) => (
           <group key={i}>
-            <mesh position={[s.x, s.y, s.z + STRING_FRONT]} visible={DEBUG_HITZONES} {...HOVER} onPointerDown={(e) => { e.stopPropagation(); onPluck(i) }}>
+            <mesh position={[s.x, s.y, s.z + STRING_FRONT]} visible={DEBUG_HITZONES} {...HOVER} onPointerDown={(e) => pluckAt(i, e)}>
               <boxGeometry args={[0.03, s.len, 0.05]} />
               <meshBasicMaterial color="#ff2b2b" transparent opacity={0.7} />
             </mesh>
@@ -234,6 +279,11 @@ function Guitar({
             </mesh>
           </group>
         ))}
+        {/* finger dot at the fretted position */}
+        <mesh ref={finger} renderOrder={1000}>
+          <sphereGeometry args={[0.05, 16, 16]} />
+          <meshBasicMaterial color="#57c8ff" transparent opacity={0} depthWrite={false} depthTest={false} />
+        </mesh>
         {capo > 0 && <Capo fret={capo} onGrab={() => { draggingCapo.current = true }} />}
         {capo > 0 && (
           <mesh visible={false} position={[-0.006, (NUT_Y + capoY(MAX_CAPO)) / 2, 0.08]}
@@ -395,7 +445,7 @@ export default function Scene({
 }: {
   bodyColor: string; accentColor: string; tone: string; plugStage: PlugStage; capo: number; reduce: boolean
   apiRef?: React.MutableRefObject<SceneApi | null>
-  onPluck: (i: number) => void; onStrum: () => void; onAmpClick: () => void
+  onPluck: (i: number, fret: number) => void; onStrum: () => void; onAmpClick: () => void
   onJackClick: (which: 'guitar' | 'amp') => void
   onCapoDrag: (fret: number) => void
   onReady: () => void; onFail: () => void

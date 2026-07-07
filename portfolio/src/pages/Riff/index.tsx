@@ -90,7 +90,7 @@ export default function RiffPage() {
     }
   }, [])
 
-  const pluck = (i: number) => { riff.current!.pluck(i); flashString(i) }
+  const pluck = (i: number, fret = 0) => { riff.current!.pluck(i, fret); flashString(i, fret) }
   const strum = () => { riff.current!.strum(); for (let i = 0; i < 6; i++) setTimeout(() => flashString(i), i * 45) }
 
   // Keyboard play: 1–6 pluck a string, space strums (once plugged in).
@@ -136,7 +136,7 @@ export default function RiffPage() {
   const changeCapo = (fret: number) => { riff.current!.setCapo(fret); setCapo(fret) }
 
   const stageHint =
-    plugged ? 'Click a string · click the body to strum · keys 1–6 / space'
+    plugged ? 'Click along a string to fret a note · body = strum · keys 1–6 / space'
     : plugStage === 'armed' ? 'Click a glowing jack to grab the cable'
     : plugStage === 'drag-guitar' ? 'Now click the amp’s INPUT jack'
     : plugStage === 'drag-amp' ? 'Now click the guitar’s jack'
@@ -161,6 +161,11 @@ export default function RiffPage() {
         </div>
       </header>
 
+      <p className="sr-only">
+        Interactive 3D electric guitar and amp. Use the Plug in button first. Once plugged in, press number keys 1 to 6 to
+        pluck the six strings from low to high, and the space bar to strum all six. The controls on the right change the amp
+        tone, add a capo, and recolour the guitar.
+      </p>
       <div className="mx-auto grid w-full max-w-6xl flex-1 gap-4 px-5 py-6 sm:px-8 lg:grid-cols-[1fr_18rem]">
         <div
           className="hero-in relative h-[26rem] self-start overflow-hidden rounded-xl border border-riff-line bg-riff-card sm:h-[30rem] lg:h-[34rem]"

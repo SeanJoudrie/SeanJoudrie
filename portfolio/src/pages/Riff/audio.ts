@@ -157,11 +157,13 @@ export class Riff {
    * to an octave at the high end. Computing it directly gives exact tuning and
    * still touches no audio files.
    */
-  pluck(index: number, when = 0) {
+  /** Pluck string `index` fretted at `fret` (0 = open). The capo is a floor. */
+  pluck(index: number, fret = 0, when = 0) {
     if (!this.ctx || !this.plugged) return
     const ctx = this.ctx
     const sr = ctx.sampleRate
-    const freq = STRINGS[index].freq * Math.pow(2, this.capo / 12)
+    const semitones = Math.max(fret, this.capo)
+    const freq = STRINGS[index].freq * Math.pow(2, semitones / 12)
 
     // Averaging two delayed taps adds half a sample of delay, so target N+0.5.
     const N = Math.max(2, Math.round(sr / freq - 0.5))
@@ -189,7 +191,7 @@ export class Riff {
   strum() {
     if (!this.ctx || !this.plugged) return
     const t0 = this.ctx.currentTime
-    STRINGS.forEach((_, i) => this.pluck(i, t0 + i * 0.045))
+    STRINGS.forEach((_, i) => this.pluck(i, 0, t0 + i * 0.045))
   }
 
   setCapo(fret: number) {
