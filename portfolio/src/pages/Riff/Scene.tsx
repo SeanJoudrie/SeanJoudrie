@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { Canvas, useFrame, useThree, type ThreeEvent } from '@react-three/fiber'
 import { CameraControls, ContactShadows, useGLTF } from '@react-three/drei'
 import { ACESFilmicToneMapping } from 'three'
 import { StudioEnvironment } from '../../lib/meridianScene'
@@ -12,13 +12,14 @@ import { StudioEnvironment } from '../../lib/meridianScene'
  *
  * Interactions: the finish recolours the body set and the accent colour the
  * pickup bobbins + knobs; six invisible hit-strings sit exactly over the
- * model's real strings so each click plays that string; a trigger-style capo
- * drags along the neck and raises the pitch; and the cable is plugged by hand
- * — activate it, click a glowing jack, and a real metal 1/4" plug follows the
- * cursor on the end of the cable until you seat it in the amp's input socket.
+ * model's real strings so each click plays that string (and the string flashes
+ * + shivers); a trigger capo drags along the neck and raises the pitch; and the
+ * cable is plugged by hand — click a glowing jack, and a real metal 1/4" plug
+ * follows the cursor until it seats in the amp's INPUT socket.
  */
 
 export type PlugStage = 'unplugged' | 'armed' | 'drag-guitar' | 'drag-amp' | 'plugged'
+export type SceneApi = { resetView: () => void }
 
 const GUITAR = `${import.meta.env.BASE_URL}riff/ibanez.glb`
 const AMP = `${import.meta.env.BASE_URL}riff/amp.glb`
@@ -43,40 +44,40 @@ const STRINGS = [
 ]
 const STRING_FRONT = 0.12 // push the hit-strings a hair in front of the body
 
-// Neck geometry in native model coords (from the fret strip Metal3):
-// nut at the top of the fretboard, bridge saddle plate lower on the body.
+// Neck geometry in native model coords (from the fret strip Metal3).
 const NUT_Y = 8.49
 const SCALE_L = 3.58 // nut → bridge
 const MAX_CAPO = 7
-/** Y of the capo bar for fret n (just behind the fret wire). */
 const capoY = (fret: number) => NUT_Y - (1 - Math.pow(2, -(fret - 0.45) / 12)) * SCALE_L
-/** Inverse: fret from a y position on the neck (clamped 1..MAX_CAPO). */
 const fretFromY = (y: number) => {
   const t = 1 - (NUT_Y - y) / SCALE_L
   const f = -12 * Math.log2(Math.max(0.2, Math.min(1, t))) + 0.45
   return Math.max(1, Math.min(MAX_CAPO, Math.round(f)))
 }
 
-// The model's output jack plate (Plane.016, Metal3) sits on the lower treble
-// side of the body — that's where the cable plugs into the guitar.
+// Jacks: the guitar's output plate (native) and the amp's real INPUT hex.
 const GUITAR_JACK: [number, number, number] = [0.464, 5.248, 0.1]
-// The amp's real INPUT jack (the hex socket labelled INPUT on the panel),
-// in the model's NATIVE coords (found by raycasting), so it tracks whatever
-// scale/position/rotation the amp is given.
 const AMP_JACK_NATIVE = new THREE.Vector3(159, 132, 96)
 
-/** Bounding box over an object's meshes → scale to a target height + centre. */
+// Shared per-string "was plucked at" timestamps (performance.now ms) so the
+// visual shiver can be triggered from clicks, strum, or the keyboard.
+const pluckFx = { t: [0, 0, 0, 0, 0, 0] }
+export function flashString(i: number) { if (i >= 0 && i < 6) pluckFx.t[i] = performance.now() }
+
+const setCursor = (v: string) => { document.body.style.cursor = v }
+const HOVER = {
+  onPointerOver: (e: ThreeEvent<PointerEvent>) => { e.stopPropagation(); setCursor('pointer') },
+  onPointerOut: () => setCursor(''),
+}
+
 function fit(object: THREE.Object3D, targetHeight: number) {
   object.updateWorldMatrix(true, true)
   const box = new THREE.Box3().setFromObject(object)
-  const size = new THREE.Vector3()
-  const center = new THREE.Vector3()
-  box.getSize(size)
-  box.getCenter(center)
+  const size = new THREE.Vector3(); const center = new THREE.Vector3()
+  box.getSize(size); box.getCenter(center)
   return { scale: targetHeight / size.y, center, size }
 }
 
-/** Rotation that stands any model upright: longest axis → Y, thinnest → Z. */
 function autoOrient(object: THREE.Object3D): THREE.Matrix4 {
   const s = new THREE.Box3().setFromObject(object).getSize(new THREE.Vector3())
   const ax = [new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 1)]
@@ -89,66 +90,47 @@ function autoOrient(object: THREE.Object3D): THREE.Matrix4 {
   return M
 }
 
-/** Pulsing light-blue jack marker. Sized in its parent's units via `r`. */
-function JackGlow({ r, active, onClick }: { r: number; active: boolean; onClick: () => void }) {
+/** Pulsing light-blue jack marker. */
+function JackGlow({ r, active, reduce, onClick }: { r: number; active: boolean; reduce: boolean; onClick: () => void }) {
   const mat = useRef<THREE.MeshBasicMaterial>(null)
   const mesh = useRef<THREE.Mesh>(null)
   useFrame(({ clock }) => {
     if (!mat.current || !mesh.current) return
-    const p = 0.5 + 0.5 * Math.sin(clock.elapsedTime * 4)
+    const p = reduce ? 0.7 : 0.5 + 0.5 * Math.sin(clock.elapsedTime * 4)
     mat.current.opacity = active ? 0.28 + 0.45 * p : 0
-    const s = 1 + 0.3 * p
-    mesh.current.scale.setScalar(s)
+    mesh.current.scale.setScalar(reduce ? 1.15 : 1 + 0.3 * p)
   })
   return (
     <group>
       <mesh ref={mesh} renderOrder={999}>
         <sphereGeometry args={[r, 20, 20]} />
-        {/* depthTest off so the marker shows even when the jack is recessed */}
         <meshBasicMaterial ref={mat} color="#57c8ff" transparent depthWrite={false} depthTest={false} />
       </mesh>
-      {/* generous invisible hit target, pulled toward the viewer so a recessed
-          jack is still the front-most thing under the cursor */}
-      <mesh position={[0, 0, r * 1.6]} visible={false} onPointerDown={(e) => { if (!active) return; e.stopPropagation(); onClick() }}>
+      <mesh position={[0, 0, r * 1.6]} visible={false} {...HOVER} onPointerDown={(e) => { if (!active) return; e.stopPropagation(); onClick() }}>
         <sphereGeometry args={[r * 2.6, 12, 12]} />
       </mesh>
     </group>
   )
 }
 
-/**
- * A trigger capo (like a Kyser / G4M): a curved chrome top arm with a
- * rubber-lined bar clamping the strings from the front, a spring-loaded
- * trigger lever curving down the treble side, and a lower jaw wrapping behind
- * the neck. Built once, cloned onto the neck. Local frame: X across the neck,
- * Y up, Z toward the viewer; the string face is around z ≈ +0.05.
- */
 function makeCapo(): THREE.Group {
   const g = new THREE.Group()
   const chrome = new THREE.MeshStandardMaterial({ color: '#cfd3da', roughness: 0.18, metalness: 1 })
   const rubber = new THREE.MeshStandardMaterial({ color: '#131315', roughness: 0.92, metalness: 0 })
-  const HW = 0.2 // half the fretboard width
+  const HW = 0.2
   const tube = (pts: number[][], r: number, mat: THREE.Material, seg = 24) =>
     new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map((p) => new THREE.Vector3(p[0], p[1], p[2]))), seg, r, 12, false), mat)
-
-  // top arm: sweeps across the strings then curves up into the head on the treble side
   g.add(tube([[-HW - 0.02, 0.02, 0.04], [-HW * 0.4, 0.05, 0.055], [HW * 0.4, 0.05, 0.055], [HW, 0.04, 0.045], [HW + 0.08, 0.11, 0.0], [HW + 0.05, 0.2, -0.05]], 0.05, chrome))
-  // rubber bar pressing the strings (front)
   const pad = new THREE.Mesh(new THREE.BoxGeometry(2 * HW + 0.02, 0.055, 0.045), rubber)
   pad.position.set(-0.01, 0.0, 0.05); g.add(pad)
-  // lower jaw: curves from the head down and wraps behind the neck
   g.add(tube([[HW + 0.05, 0.16, -0.05], [HW + 0.02, 0.02, -0.09], [HW * 0.3, -0.04, -0.11], [-HW * 0.5, -0.02, -0.1], [-HW, 0.02, -0.06]], 0.042, chrome))
-  // rubber sleeve on the jaw pad (behind the neck)
   const jawPad = new THREE.Mesh(new THREE.BoxGeometry(2 * HW, 0.05, 0.04), rubber)
   jawPad.position.set(-0.02, -0.01, -0.1); g.add(jawPad)
-  // pivot boss on the treble side
   const pivot = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.1, 20), chrome)
   pivot.rotation.z = Math.PI / 2; pivot.position.set(HW + 0.06, 0.08, -0.02); g.add(pivot)
-  // coil spring wound around the pivot axis (helix along X)
   const sp: number[][] = []
   for (let i = 0; i <= 44; i++) { const t = i / 44, an = t * Math.PI * 2 * 5; sp.push([HW + 0.02 + t * 0.09, 0.08 + 0.032 * Math.cos(an), -0.02 + 0.032 * Math.sin(an)]) }
   g.add(tube(sp, 0.007, chrome, 70))
-  // trigger lever: the squeeze handle sweeping down and toward the viewer
   g.add(tube([[HW + 0.06, 0.02, 0.0], [HW + 0.12, -0.16, 0.09], [HW + 0.08, -0.36, 0.12], [HW - 0.02, -0.54, 0.06]], 0.05, chrome, 28))
   return g
 }
@@ -156,40 +138,27 @@ function makeCapo(): THREE.Group {
 function Capo({ fret, onGrab }: { fret: number; onGrab: () => void }) {
   const capo = useMemo(makeCapo, [])
   return (
-    <group position={[0, capoY(fret), 0.03]} onPointerDown={(e) => { e.stopPropagation(); onGrab() }}>
+    <group position={[0, capoY(fret), 0.03]} {...HOVER} onPointerDown={(e) => { e.stopPropagation(); onGrab() }}>
       <primitive object={capo} />
     </group>
   )
 }
 
 function Guitar({
-  bodyColor,
-  accentColor,
-  capo,
-  plugStage,
-  onPluck,
-  onStrum,
-  onJackClick,
-  onCapoDrag,
-  jackAnchor,
+  bodyColor, accentColor, capo, plugStage, reduce, onPluck, onStrum, onJackClick, onCapoDrag, jackAnchor,
 }: {
-  bodyColor: string
-  accentColor: string
-  capo: number
-  plugStage: PlugStage
-  onPluck: (i: number) => void
-  onStrum: () => void
-  onJackClick: () => void
+  bodyColor: string; accentColor: string; capo: number; plugStage: PlugStage; reduce: boolean
+  onPluck: (i: number) => void; onStrum: () => void; onJackClick: () => void
   onCapoDrag: (fret: number) => void
   jackAnchor: React.MutableRefObject<THREE.Object3D | null>
 }) {
   const { scene } = useGLTF(GUITAR)
+  const outer = useRef<THREE.Group>(null)
   const inner = useRef<THREE.Group>(null)
+  const fxRefs = useRef<(THREE.Mesh | null)[]>([])
   const draggingCapo = useRef(false)
   const { group, f, bodyMats, accentMats } = useMemo(() => {
     const root = scene.clone(true)
-    // 'Material.007' paints the body/neck/headstock; 'Material.009' the
-    // pickup bobbins + knobs (the accent set).
     const bodyMats: THREE.MeshStandardMaterial[] = []
     const accentMats: THREE.MeshStandardMaterial[] = []
     root.traverse((o) => {
@@ -202,70 +171,83 @@ function Guitar({
       if (mat && /Material\.009/i.test(mat.name) && !accentMats.includes(mat)) accentMats.push(mat)
     })
     const group = new THREE.Group()
-    group.add(root)
-    group.setRotationFromMatrix(autoOrient(root))
-    const f = fit(group, GUITAR_HEIGHT)
-    return { group, f, bodyMats, accentMats }
+    group.add(root); group.setRotationFromMatrix(autoOrient(root))
+    return { group, f: fit(group, GUITAR_HEIGHT), bodyMats, accentMats }
   }, [scene])
 
   const recolor = (mats: THREE.MeshStandardMaterial[], color: string) => {
     for (const mat of mats) {
-      if (color === 'original') {
-        if (mat.userData.origColor) mat.color.copy(mat.userData.origColor)
-      } else {
-        if (!mat.userData.origColor) mat.userData.origColor = mat.color.clone()
-        mat.color.set(color)
-      }
+      if (color === 'original') { if (mat.userData.origColor) mat.color.copy(mat.userData.origColor) }
+      else { if (!mat.userData.origColor) mat.userData.origColor = mat.color.clone(); mat.color.set(color) }
       mat.needsUpdate = true
     }
   }
   useEffect(() => recolor(bodyMats, bodyColor), [bodyColor, bodyMats]) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => recolor(accentMats, accentColor), [accentColor, accentMats]) // eslint-disable-line react-hooks/exhaustive-deps
-
   useEffect(() => {
     const up = () => { draggingCapo.current = false }
     window.addEventListener('pointerup', up)
     return () => window.removeEventListener('pointerup', up)
   }, [])
 
+  useFrame(({ clock }) => {
+    // gentle idle sway invites interaction; frozen once plugged / reduced-motion
+    if (outer.current) {
+      const idle = plugStage === 'unplugged' && !reduce
+      outer.current.rotation.y = GUITAR_YAW + (idle ? Math.sin(clock.elapsedTime * 0.5) * 0.05 : 0)
+    }
+    // string shiver + flash on pluck
+    const now = performance.now()
+    for (let i = 0; i < 6; i++) {
+      const m = fxRefs.current[i]; if (!m) continue
+      const dt = (now - pluckFx.t[i]) / 1000
+      const mat = m.material as THREE.MeshBasicMaterial
+      if (dt >= 0 && dt < 0.45) {
+        const k = 1 - dt / 0.45
+        mat.opacity = 0.9 * k
+        m.position.x = STRINGS[i].x + (reduce ? 0 : Math.sin(dt * 90) * 0.012 * k)
+        m.scale.x = 1 + k * 1.4
+      } else if (mat.opacity !== 0) { mat.opacity = 0; m.position.x = STRINGS[i].x; m.scale.x = 1 }
+    }
+  })
+
   const jackActive = plugStage === 'armed' || plugStage === 'drag-amp'
   return (
-    <group position={GUITAR_POS} rotation={[0, GUITAR_YAW, 0]}>
+    <group ref={outer} position={GUITAR_POS} rotation={[0, GUITAR_YAW, 0]}>
       <group ref={inner} scale={f.scale} position={[-f.center.x * f.scale, -f.center.y * f.scale, -f.center.z * f.scale]}>
         <primitive object={group} />
-        {/* strum the body (lower half) */}
-        <mesh onPointerDown={(e) => { e.stopPropagation(); onStrum() }} visible={DEBUG_HITZONES} position={[0, 5.0, STRING_FRONT]}>
+        {/* strum the body */}
+        <mesh {...HOVER} onPointerDown={(e) => { e.stopPropagation(); onStrum() }} visible={DEBUG_HITZONES} position={[0, 5.0, STRING_FRONT]}>
           <boxGeometry args={[1.0, 1.2, 0.14]} />
           <meshBasicMaterial color="#3bff6b" transparent opacity={0.3} />
         </mesh>
-        {/* six invisible hit-strings laid exactly over the model's real strings */}
+        {/* invisible hit-strings + a bright flash overlay that shivers on pluck */}
         {STRINGS.map((s, i) => (
-          <mesh key={i} position={[s.x, s.y, s.z + STRING_FRONT]} visible={DEBUG_HITZONES} onPointerDown={(e) => { e.stopPropagation(); onPluck(i) }}>
-            <boxGeometry args={[0.018, s.len, 0.04]} />
-            <meshBasicMaterial color="#ff2b2b" transparent opacity={0.7} />
-          </mesh>
+          <group key={i}>
+            <mesh position={[s.x, s.y, s.z + STRING_FRONT]} visible={DEBUG_HITZONES} {...HOVER} onPointerDown={(e) => { e.stopPropagation(); onPluck(i) }}>
+              <boxGeometry args={[0.03, s.len, 0.05]} />
+              <meshBasicMaterial color="#ff2b2b" transparent opacity={0.7} />
+            </mesh>
+            <mesh ref={(m) => { fxRefs.current[i] = m }} position={[s.x, s.y, s.z + STRING_FRONT + 0.01]} renderOrder={998}>
+              <boxGeometry args={[0.02, s.len, 0.02]} />
+              <meshBasicMaterial color="#eaf4ff" transparent opacity={0} depthWrite={false} />
+            </mesh>
+          </group>
         ))}
-        {/* trigger capo, draggable along the neck */}
         {capo > 0 && <Capo fret={capo} onGrab={() => { draggingCapo.current = true }} />}
-        {/* invisible rail over the fretboard that tracks the capo drag */}
         {capo > 0 && (
-          <mesh
-            visible={false}
-            position={[-0.006, (NUT_Y + capoY(MAX_CAPO)) / 2, 0.08]}
+          <mesh visible={false} position={[-0.006, (NUT_Y + capoY(MAX_CAPO)) / 2, 0.08]}
             onPointerMove={(e) => {
               if (!draggingCapo.current || !inner.current) return
               e.stopPropagation()
-              const local = inner.current.worldToLocal(e.point.clone())
-              onCapoDrag(fretFromY(local.y))
-            }}
-          >
+              onCapoDrag(fretFromY(inner.current.worldToLocal(e.point.clone()).y))
+            }}>
             <boxGeometry args={[1.2, NUT_Y - capoY(MAX_CAPO) + 0.6, 0.02]} />
           </mesh>
         )}
-        {/* the guitar's output jack + glow (native jack-plate position) */}
         <group position={GUITAR_JACK}>
           <object3D ref={(o) => { jackAnchor.current = o }} />
-          <JackGlow r={0.16} active={jackActive} onClick={onJackClick} />
+          <JackGlow r={0.16} active={jackActive} reduce={reduce} onClick={onJackClick} />
         </group>
       </group>
     </group>
@@ -273,16 +255,10 @@ function Guitar({
 }
 
 function Amp({
-  tone,
-  plugStage,
-  onClick,
-  onJackClick,
-  jackAnchor,
+  tone, plugStage, reduce, onClick, onJackClick, jackAnchor,
 }: {
-  tone: string
-  plugStage: PlugStage
-  onClick: () => void
-  onJackClick: () => void
+  tone: string; plugStage: PlugStage; reduce: boolean
+  onClick: () => void; onJackClick: () => void
   jackAnchor: React.MutableRefObject<THREE.Object3D | null>
 }) {
   const { scene } = useGLTF(AMP)
@@ -290,13 +266,12 @@ function Amp({
     const root = scene.clone(true)
     root.traverse((o) => { (o as THREE.Mesh).castShadow = true })
     const f = fit(root, 2.15)
-    // native INPUT → the amp's outer frame (same transform the model gets)
     const jackPos = AMP_JACK_NATIVE.clone().sub(f.center).multiplyScalar(f.scale)
     return { root, f, jackPos }
   }, [scene])
   const jackActive = plugStage === 'armed' || plugStage === 'drag-guitar'
   return (
-    <group position={[1.35, -0.15, 0]} rotation={[0, -0.3, 0]} onPointerDown={(e) => { e.stopPropagation(); onClick() }}>
+    <group position={[1.35, -0.15, 0]} rotation={[0, -0.3, 0]} {...HOVER} onPointerDown={(e) => { e.stopPropagation(); onClick() }}>
       <group scale={f.scale} position={[-f.center.x * f.scale, -f.center.y * f.scale, -f.center.z * f.scale]}>
         <primitive object={root} />
       </group>
@@ -304,62 +279,44 @@ function Amp({
         <sphereGeometry args={[0.045, 16, 16]} />
         <meshStandardMaterial emissive={tone === 'drive' ? '#ff5a2a' : tone === 'reverb' ? '#4aa3ff' : '#59d98a'} emissiveIntensity={2.2} color="#111" />
       </mesh>
-      {/* anchor + glow on the amp's own INPUT jack (the model already has the
-          hex socket + hole; the plug seats straight into it) */}
       <group position={jackPos}>
         <object3D ref={(o) => { jackAnchor.current = o }} />
-        {/* glow + hit target sit a touch proud of the panel so they read and
-            stay clickable; the plug still seats at the anchor (the real hole) */}
         <group position={[0, 0, 0.08]}>
-          <JackGlow r={0.085} active={jackActive} onClick={onJackClick} />
+          <JackGlow r={0.085} active={jackActive} reduce={reduce} onClick={onJackClick} />
         </group>
       </group>
     </group>
   )
 }
 
-// Plug geometry, in local units: metal shaft points toward -Z (into a socket),
-// the black barrel + cable strain-relief toward +Z. Origin sits at the shaft /
-// barrel junction, so seating = put the origin at the socket face and the metal
-// disappears inward while the barrel stays proud.
 const PLUG_SCALE = 0.8
-const PLUG_BACK = 0.2 * PLUG_SCALE // origin → cable attach point (relief end)
-/** A metal 1/4" instrument plug. */
+const PLUG_BACK = 0.2 * PLUG_SCALE
 function makePlug(): THREE.Group {
   const g = new THREE.Group()
   const chrome = new THREE.MeshStandardMaterial({ color: '#dfe3ea', roughness: 0.16, metalness: 1 })
   const sleeve = new THREE.MeshStandardMaterial({ color: '#141417', roughness: 0.5, metalness: 0.35 })
   const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.019, 0.019, 0.13, 16), chrome)
   shaft.rotation.x = Math.PI / 2; shaft.position.z = -0.065
-  const tip = new THREE.Mesh(new THREE.SphereGeometry(0.021, 12, 12), chrome)
-  tip.position.z = -0.13
+  const tip = new THREE.Mesh(new THREE.SphereGeometry(0.021, 12, 12), chrome); tip.position.z = -0.13
   const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 0.02, 18), chrome)
   collar.rotation.x = Math.PI / 2; collar.position.z = -0.005
   const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.034, 0.034, 0.15, 18), sleeve)
   barrel.rotation.x = Math.PI / 2; barrel.position.z = 0.08
   const relief = new THREE.Mesh(new THREE.CylinderGeometry(0.017, 0.03, 0.08, 12), sleeve)
   relief.rotation.x = Math.PI / 2; relief.position.z = 0.2
-  g.add(shaft, tip, collar, barrel, relief)
-  g.scale.setScalar(PLUG_SCALE)
+  g.add(shaft, tip, collar, barrel, relief); g.scale.setScalar(PLUG_SCALE)
   return g
 }
 
-/**
- * The instrument cable. Each end carries a real metal plug; while dragging,
- * the loose plug hangs at the cursor, and plugging in seats it in the socket.
- */
-function InstrumentCable({
-  plugStage,
-  guitarJack,
-  ampJack,
-}: {
+function InstrumentCable({ plugStage, guitarJack, ampJack }: {
   plugStage: PlugStage
   guitarJack: React.MutableRefObject<THREE.Object3D | null>
   ampJack: React.MutableRefObject<THREE.Object3D | null>
 }) {
   const mesh = useRef<THREE.Mesh>(null)
-  const plugA = useMemo(makePlug, []) // guitar-side plug
-  const plugB = useMemo(makePlug, []) // amp-side / loose plug
+  const built = useRef(false)
+  const plugA = useMemo(makePlug, [])
+  const plugB = useMemo(makePlug, [])
   const { camera, pointer, scene } = useThree()
   const ray = useMemo(() => new THREE.Raycaster(), [])
   const plane = useMemo(() => new THREE.Plane(new THREE.Vector3(0, 0, 1), -0.55), [])
@@ -369,47 +326,34 @@ function InstrumentCable({
   const qa = useMemo(() => new THREE.Quaternion(), [])
   const tmp = useMemo(() => new THREE.Vector3(), [])
 
-  useEffect(() => {
-    scene.add(plugA, plugB)
-    return () => { scene.remove(plugA, plugB) }
-  }, [scene, plugA, plugB])
+  useEffect(() => { scene.add(plugA, plugB); return () => { scene.remove(plugA, plugB) } }, [scene, plugA, plugB])
 
   useFrame(() => {
     if (!mesh.current) return
     const dragging = plugStage === 'drag-guitar' || plugStage === 'drag-amp'
     const show = dragging || plugStage === 'plugged'
-    mesh.current.visible = show
-    plugA.visible = show
-    plugB.visible = show
-    if (!show) return
-
-    const gAnchor = guitarJack.current
-    const aAnchor = ampJack.current
+    mesh.current.visible = show; plugA.visible = show; plugB.visible = show
+    if (!show) { built.current = false; return }
+    const gAnchor = guitarJack.current, aAnchor = ampJack.current
     if (!gAnchor || !aAnchor) return
 
-    // Seat a plug into a jack: metal (-Z_local) enters the socket, barrel stays
-    // proud. Returns the cable attach point at the barrel's back.
     const seat = (anchor: THREE.Object3D, plug: THREE.Group, out: THREE.Vector3): THREE.Vector3 => {
-      anchor.getWorldPosition(tmp)
-      anchor.getWorldQuaternion(qa)
+      anchor.getWorldPosition(tmp); anchor.getWorldQuaternion(qa)
       out.set(0, 0, 1).applyQuaternion(qa).normalize()
-      plug.quaternion.copy(qa)
-      plug.position.copy(tmp).addScaledVector(out, 0.03) // barrel just outside the face
+      plug.quaternion.copy(qa); plug.position.copy(tmp).addScaledVector(out, 0.03)
       return tmp.clone().addScaledVector(out, 0.03 + PLUG_BACK)
     }
 
-    let cableStart: THREE.Vector3
-    let cableEnd: THREE.Vector3
+    let cableStart: THREE.Vector3, cableEnd: THREE.Vector3
     if (plugStage === 'plugged') {
-      cableStart = seat(gAnchor, plugA, a)
-      cableEnd = seat(aAnchor, plugB, b)
+      if (built.current) return // jacks are static once plugged — skip the rebuild
+      cableStart = seat(gAnchor, plugA, a); cableEnd = seat(aAnchor, plugB, b)
+      built.current = true
     } else {
       const anchor = plugStage === 'drag-amp' ? aAnchor : gAnchor
       const seated = plugStage === 'drag-amp' ? plugB : plugA
       const loose = plugStage === 'drag-amp' ? plugA : plugB
       cableStart = seat(anchor, seated, a)
-      // loose plug hangs from the cursor: metal tip up toward the socket-to-be,
-      // barrel + cable trailing down
       ray.setFromCamera(pointer, camera)
       if (!ray.ray.intersectPlane(plane, hit)) return
       loose.position.copy(hit)
@@ -417,16 +361,13 @@ function InstrumentCable({
       cableEnd = hit.clone().add(new THREE.Vector3(0, -PLUG_BACK, 0.05))
     }
 
-    // sag: midpoints dip toward the floor, more when the ends are close
     const mid1 = cableStart.clone().lerp(cableEnd, 0.35)
     const mid2 = cableStart.clone().lerp(cableEnd, 0.7)
     const slack = Math.max(0.25, 1.1 - cableStart.distanceTo(cableEnd) * 0.18)
-    mid1.y -= slack
-    mid2.y -= slack * 0.8
+    mid1.y -= slack; mid2.y -= slack * 0.8
     const curve = new THREE.CatmullRomCurve3([cableStart, mid1, mid2, cableEnd])
-    const geo = new THREE.TubeGeometry(curve, 36, 0.032, 8, false)
     mesh.current.geometry.dispose()
-    mesh.current.geometry = geo
+    mesh.current.geometry = new THREE.TubeGeometry(curve, 36, 0.032, 8, false)
   })
 
   return (
@@ -437,27 +378,23 @@ function InstrumentCable({
   )
 }
 
-/** Dev-only: window.__pick(clientX, clientY) → world point on the amp, for
- * calibrating jack positions against the model. Harmless in prod. */
-function Picker() {
-  const { raycaster, scene, camera, gl } = useThree()
+/** Applies camera limits and hands a reset() to the page. */
+function Rig({ apiRef }: { apiRef?: React.MutableRefObject<SceneApi | null> }) {
+  const cc = useRef<CameraControls>(null)
   useEffect(() => {
-    ;(window as unknown as { __pick?: (x: number, y: number) => number[] | null }).__pick = (cx, cy) => {
-      const r = gl.domElement.getBoundingClientRect()
-      const x = ((cx - r.left) / r.width) * 2 - 1
-      const y = -((cy - r.top) / r.height) * 2 + 1
-      raycaster.setFromCamera(new THREE.Vector2(x, y), camera)
-      const h = raycaster.intersectObjects(scene.children, true).filter((i) => i.object.visible && (i.object as THREE.Mesh).isMesh)[0]
-      return h ? h.point.toArray() : null
-    }
-  }, [raycaster, scene, camera, gl])
-  return null
+    const c = cc.current; if (!c) return
+    c.minPolarAngle = 0.35; c.maxPolarAngle = Math.PI * 0.62
+    if (apiRef) apiRef.current = { resetView: () => { void c.reset(true) } }
+  }, [apiRef])
+  return <CameraControls ref={cc} makeDefault minDistance={0.9} maxDistance={9} />
 }
 
 export default function Scene({
-  bodyColor, accentColor, tone, plugStage, capo, onPluck, onStrum, onAmpClick, onJackClick, onCapoDrag, onReady, onFail,
+  bodyColor, accentColor, tone, plugStage, capo, reduce, apiRef,
+  onPluck, onStrum, onAmpClick, onJackClick, onCapoDrag, onReady, onFail,
 }: {
-  bodyColor: string; accentColor: string; tone: string; plugStage: PlugStage; capo: number
+  bodyColor: string; accentColor: string; tone: string; plugStage: PlugStage; capo: number; reduce: boolean
+  apiRef?: React.MutableRefObject<SceneApi | null>
   onPluck: (i: number) => void; onStrum: () => void; onAmpClick: () => void
   onJackClick: (which: 'guitar' | 'amp') => void
   onCapoDrag: (fret: number) => void
@@ -466,7 +403,7 @@ export default function Scene({
   const [failed] = useState(false)
   const guitarJack = useRef<THREE.Object3D | null>(null)
   const ampJack = useRef<THREE.Object3D | null>(null)
-  const cc = useRef<CameraControls | null>(null)
+  useEffect(() => () => setCursor(''), [])
   if (failed) return null
   return (
     <Canvas
@@ -479,22 +416,16 @@ export default function Scene({
       }}
     >
       <StudioEnvironment />
-      <Picker />
+      <directionalLight position={[3.5, 4, 3]} intensity={0.7} color="#fff4e6" />
+      <directionalLight position={[-4, 2, -2]} intensity={0.35} color="#bcd3ff" />
       <Guitar
-        bodyColor={bodyColor}
-        accentColor={accentColor}
-        capo={capo}
-        plugStage={plugStage}
-        onPluck={onPluck}
-        onStrum={onStrum}
-        onJackClick={() => onJackClick('guitar')}
-        onCapoDrag={onCapoDrag}
-        jackAnchor={guitarJack}
+        bodyColor={bodyColor} accentColor={accentColor} capo={capo} plugStage={plugStage} reduce={reduce}
+        onPluck={onPluck} onStrum={onStrum} onJackClick={() => onJackClick('guitar')} onCapoDrag={onCapoDrag} jackAnchor={guitarJack}
       />
-      <Amp tone={tone} plugStage={plugStage} onClick={onAmpClick} onJackClick={() => onJackClick('amp')} jackAnchor={ampJack} />
+      <Amp tone={tone} plugStage={plugStage} reduce={reduce} onClick={onAmpClick} onJackClick={() => onJackClick('amp')} jackAnchor={ampJack} />
       <InstrumentCable plugStage={plugStage} guitarJack={guitarJack} ampJack={ampJack} />
-      <ContactShadows position={[0, -1.7, 0]} opacity={0.4} scale={12} blur={3} far={3} resolution={1024} frames={1} />
-      <CameraControls ref={(c) => { cc.current = c; if (c) (window as unknown as { __cc?: CameraControls }).__cc = c }} makeDefault minDistance={0.7} maxDistance={11} />
+      <ContactShadows position={[0, -1.55, 0]} opacity={0.55} scale={12} blur={2.6} far={3} resolution={1024} frames={1} />
+      <Rig apiRef={apiRef} />
     </Canvas>
   )
 }

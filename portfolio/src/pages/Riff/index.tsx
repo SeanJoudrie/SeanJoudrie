@@ -3,13 +3,14 @@ import type { CSSProperties, ReactNode } from 'react'
 import { navigate } from '../../lib/router'
 import { Fallback } from './Fallback'
 import { Riff, TONES, type Tone } from './audio'
-import type { PlugStage } from './Scene'
+import type { PlugStage, SceneApi } from './Scene'
+import { flashString } from './Scene'
 import './theme.css'
 
 const Scene = lazy(() => import('./Scene'))
 
 const FINISHES = [
-  { name: 'Original', color: 'original' },
+  { name: 'Reset', color: 'original' },
   { name: 'Cherry', color: '#7c1c22' },
   { name: 'Sunburst', color: '#b9741f' },
   { name: 'Surf Green', color: '#5cae94' },
@@ -21,7 +22,7 @@ const FINISHES = [
 ]
 
 const ACCENTS = [
-  { name: 'Original', color: 'original' },
+  { name: 'Reset', color: 'original' },
   { name: 'Black', color: '#17171a' },
   { name: 'White', color: '#eceadf' },
   { name: 'Red', color: '#c11a2b' },
@@ -65,6 +66,7 @@ function Mark() {
 
 export default function RiffPage() {
   const [glOk] = useState(webglAvailable)
+  const [reduce] = useState(() => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
   const [lost, setLost] = useState(false)
   const [ready, setReady] = useState(false)
   const [bodyColor, setBodyColor] = useState('original')
@@ -73,7 +75,9 @@ export default function RiffPage() {
   const [plugStage, setPlugStage] = useState<PlugStage>('unplugged')
   const [capo, setCapo] = useState(0)
   const riff = useRef<Riff | null>(null)
+  const sceneApi = useRef<SceneApi | null>(null)
   if (!riff.current) riff.current = new Riff()
+  const plugged = plugStage === 'plugged'
 
   useEffect(() => {
     document.title = 'Riff — a playable guitar · Sean Joudrie'
@@ -86,28 +90,36 @@ export default function RiffPage() {
     }
   }, [])
 
-  const plugged = plugStage === 'plugged'
+  const pluck = (i: number) => { riff.current!.pluck(i); flashString(i) }
+  const strum = () => { riff.current!.strum(); for (let i = 0; i < 6; i++) setTimeout(() => flashString(i), i * 45) }
 
-  const cableButton = async () => {
-    void riff.current!.click()
-    if (plugged) {
-      await riff.current!.plug(false)
-      setPlugStage('unplugged')
-    } else if (plugStage === 'unplugged') {
-      setPlugStage('armed')
-    } else {
-      setPlugStage('unplugged') // cancel an armed / dragging cable
+  // Keyboard play: 1–6 pluck a string, space strums (once plugged in).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return
+      if (!plugged) return
+      if (e.key >= '1' && e.key <= '6') { pluck(Number(e.key) - 1) }
+      else if (e.key === ' ') { e.preventDefault(); strum() }
     }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [plugged]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // One-tap plug (and unplug) — the fast path.
+  const quickPlug = async () => {
+    void riff.current!.click()
+    if (plugged) { await riff.current!.plug(false); setPlugStage('unplugged') }
+    else { setPlugStage('plugged'); await riff.current!.plug(true); riff.current!.connectThunk() }
   }
+  // Manual hand-plugging: arm the cable, then click each glowing jack.
+  const armCable = () => { void riff.current!.click(); setPlugStage(plugStage === 'unplugged' ? 'armed' : 'unplugged') }
 
   const onJackClick = async (which: 'guitar' | 'amp') => {
     void riff.current!.click()
     if (plugStage === 'armed') {
       setPlugStage(which === 'guitar' ? 'drag-guitar' : 'drag-amp')
-    } else if (
-      (plugStage === 'drag-guitar' && which === 'amp') ||
-      (plugStage === 'drag-amp' && which === 'guitar')
-    ) {
+    } else if ((plugStage === 'drag-guitar' && which === 'amp') || (plugStage === 'drag-amp' && which === 'guitar')) {
       setPlugStage('plugged')
       await riff.current!.plug(true)
       riff.current!.connectThunk()
@@ -120,24 +132,15 @@ export default function RiffPage() {
     riff.current!.setTone(next)
     setTone(next)
   }
-
-  const changeCapo = (fret: number) => {
-    riff.current!.setCapo(fret)
-    setCapo(fret)
-  }
-
-  const cableLabel =
-    plugged ? '● Plugged in — click to unplug'
-    : plugStage === 'unplugged' ? 'Activate the cable'
-    : plugStage === 'armed' ? 'Cable in hand — click a glowing jack'
-    : 'Now click the other jack…'
+  const setToneClick = (t: Tone) => { void riff.current!.click(); riff.current!.setTone(t); setTone(t) }
+  const changeCapo = (fret: number) => { riff.current!.setCapo(fret); setCapo(fret) }
 
   const stageHint =
-    plugged ? 'Click the strings · click the body to strum'
+    plugged ? 'Click a string · click the body to strum · keys 1–6 / space'
     : plugStage === 'armed' ? 'Click a glowing jack to grab the cable'
-    : plugStage === 'drag-guitar' ? 'Now plug it into the amp'
-    : plugStage === 'drag-amp' ? 'Now plug it into the guitar'
-    : 'Activate the cable to play'
+    : plugStage === 'drag-guitar' ? 'Now click the amp’s INPUT jack'
+    : plugStage === 'drag-amp' ? 'Now click the guitar’s jack'
+    : '' // unplugged: the pill already says "Plug in to play"
 
   return (
     <div className="riff-root flex min-h-svh flex-col bg-riff-bg text-riff-ink">
@@ -163,7 +166,7 @@ export default function RiffPage() {
           className="hero-in relative h-[26rem] self-start overflow-hidden rounded-xl border border-riff-line bg-riff-card sm:h-[30rem] lg:h-[34rem]"
           style={d(120)}
           role="img"
-          aria-label="A solid 3D electric guitar beside an amp. Activate the cable, plug both jacks, then click the strings to play open notes."
+          aria-label="A solid 3D electric guitar beside an amp. Plug in, then click the strings to play open notes."
         >
           {glOk && !lost ? (
             <SceneBoundary>
@@ -175,8 +178,10 @@ export default function RiffPage() {
                     tone={tone}
                     plugStage={plugStage}
                     capo={capo}
-                    onPluck={(i) => riff.current!.pluck(i)}
-                    onStrum={() => riff.current!.strum()}
+                    reduce={reduce}
+                    apiRef={sceneApi}
+                    onPluck={pluck}
+                    onStrum={strum}
                     onAmpClick={cycleTone}
                     onJackClick={onJackClick}
                     onCapoDrag={changeCapo}
@@ -187,9 +192,36 @@ export default function RiffPage() {
               </div>
               {!ready && <p className="riff-label absolute inset-0 grid place-items-center">tuning up…</p>}
               {ready && (
-                <p className="riff-label pointer-events-none absolute bottom-3 left-4">
-                  {stageHint}
-                </p>
+                <>
+                  {/* reset view */}
+                  <button
+                    onClick={() => sceneApi.current?.resetView()}
+                    title="Reset view"
+                    aria-label="Reset view"
+                    className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-md border border-riff-line bg-riff-bg/70 text-riff-muted backdrop-blur transition-colors hover:text-riff-ink"
+                  >
+                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8" /><path d="M3 3v5h5" /></svg>
+                  </button>
+                  {/* in-scene primary action, reachable without scrolling on mobile */}
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col items-center gap-2 p-3">
+                    {stageHint && <p className="riff-label rounded bg-riff-bg/60 px-2 py-0.5 backdrop-blur">{stageHint}</p>}
+                    {(plugStage === 'unplugged' || plugged) && (
+                      <button
+                        onClick={quickPlug}
+                        className={`pointer-events-auto rounded-full border px-5 py-2 text-sm font-semibold shadow-lg backdrop-blur transition-colors ${
+                          plugged ? 'border-riff-hot/60 bg-riff-hot/20 text-riff-ink' : 'border-riff-hot/60 bg-riff-hot/90 text-white hover:bg-riff-hot'
+                        }`}
+                      >
+                        {plugged ? '● Plugged in — tap to unplug' : '⚡ Plug in to play'}
+                      </button>
+                    )}
+                    {(plugStage === 'armed' || plugStage === 'drag-guitar' || plugStage === 'drag-amp') && (
+                      <button onClick={() => setPlugStage('unplugged')} className="pointer-events-auto rounded-full border border-riff-line bg-riff-bg/80 px-4 py-1.5 text-xs text-riff-muted backdrop-blur">
+                        Cancel
+                      </button>
+                    )}
+                  </div>
+                </>
               )}
             </SceneBoundary>
           ) : (
@@ -202,20 +234,30 @@ export default function RiffPage() {
           <div className="rounded-xl border border-riff-line bg-riff-card p-4">
             <h2 className="riff-label !text-riff-ink-2">Amp</h2>
             <button
-              onClick={cableButton}
+              onClick={quickPlug}
               className={`mt-3 w-full rounded-md border px-3 py-2 text-sm font-semibold transition-colors ${
-                plugged || plugStage !== 'unplugged' ? 'border-riff-hot/60 bg-riff-hot/12 text-riff-ink' : 'border-riff-line text-riff-ink-2 hover:border-riff-line-strong hover:text-riff-ink'
+                plugged ? 'border-riff-hot/60 bg-riff-hot/12 text-riff-ink' : 'border-riff-hot/60 bg-riff-hot/90 text-white hover:bg-riff-hot'
               }`}
             >
-              {cableLabel}
+              {plugged ? '● Plugged in — unplug' : '⚡ Plug in'}
             </button>
+            {!plugged && plugStage === 'unplugged' && (
+              <button onClick={armCable} className="mt-2 w-full text-center font-mono text-[0.66rem] text-riff-muted underline decoration-riff-line-strong underline-offset-2 hover:text-riff-ink">
+                …or plug the cable in by hand
+              </button>
+            )}
+            {(plugStage === 'armed' || plugStage === 'drag-guitar' || plugStage === 'drag-amp') && (
+              <button onClick={() => setPlugStage('unplugged')} className="mt-2 w-full rounded-md border border-riff-line px-3 py-1.5 text-xs text-riff-muted hover:text-riff-ink">
+                Cancel hand-plugging
+              </button>
+            )}
             <div className="mt-3">
               <span className="font-mono text-[0.66rem] text-riff-muted">tone (or click the amp)</span>
               <div className="mt-1.5 grid grid-cols-3 gap-1.5">
                 {TONES.map((t) => (
                   <button
                     key={t}
-                    onClick={() => { void riff.current!.click(); riff.current!.setTone(t); setTone(t) }}
+                    onClick={() => setToneClick(t)}
                     aria-pressed={tone === t}
                     className={`rounded-md border px-2 py-1.5 text-xs transition-colors ${
                       tone === t ? 'border-riff-hot/60 bg-riff-hot/12 text-riff-ink' : 'border-riff-line text-riff-muted hover:text-riff-ink'
@@ -228,36 +270,24 @@ export default function RiffPage() {
             </div>
           </div>
 
-          {/* Capo */}
+          {/* Capo — one slider, 0 = off */}
           <div className="rounded-xl border border-riff-line bg-riff-card p-4">
-            <h2 className="riff-label !text-riff-ink-2">Capo</h2>
-            <div className="mt-3 flex items-center gap-3">
-              <button
-                onClick={() => { void riff.current!.click(); changeCapo(capo === 0 ? 2 : 0) }}
-                aria-pressed={capo > 0}
-                className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
-                  capo > 0 ? 'border-riff-hot/60 bg-riff-hot/12 text-riff-ink' : 'border-riff-line text-riff-muted hover:text-riff-ink'
-                }`}
-              >
-                {capo > 0 ? 'On' : 'Off'}
-              </button>
-              <input
-                type="range"
-                min={1}
-                max={7}
-                step={1}
-                value={capo === 0 ? 1 : capo}
-                disabled={capo === 0}
-                onChange={(e) => changeCapo(Number(e.target.value))}
-                className="w-full accent-[var(--color-riff-hot)] disabled:opacity-30"
-                aria-label="Capo fret"
-              />
-              <span className="w-14 shrink-0 text-right font-mono text-[0.66rem] text-riff-muted">
-                {capo > 0 ? `fret ${capo}` : 'off'}
-              </span>
+            <div className="flex items-baseline justify-between">
+              <h2 className="riff-label !text-riff-ink-2">Capo</h2>
+              <span className="font-mono text-[0.66rem] text-riff-muted">{capo > 0 ? `fret ${capo}` : 'off'}</span>
             </div>
+            <input
+              type="range"
+              min={0}
+              max={7}
+              step={1}
+              value={capo}
+              onChange={(e) => changeCapo(Number(e.target.value))}
+              className="mt-3 w-full accent-[var(--color-riff-hot)]"
+              aria-label="Capo fret (0 = off)"
+            />
             <p className="mt-2 font-mono text-[0.62rem] leading-relaxed text-riff-muted">
-              Or drag the capo bar along the neck.
+              0 = off. Or drag the capo along the neck.
             </p>
           </div>
 
@@ -269,11 +299,15 @@ export default function RiffPage() {
                 <button
                   key={f.name}
                   onClick={() => { void riff.current!.click(); setBodyColor(f.color) }}
-                  title={f.name}
-                  aria-label={f.name}
-                  className={`aspect-square rounded-md border-2 transition-transform hover:scale-105 ${bodyColor === f.color ? 'border-riff-ink' : 'border-transparent'}`}
-                  style={{ background: f.color === 'original' ? 'linear-gradient(135deg, #58c437 0%, #58c437 55%, #b9c437 55%, #b9c437 100%)' : f.color }}
-                />
+                  title={f.name === 'Reset' ? 'Reset to original' : f.name}
+                  aria-label={f.name === 'Reset' ? 'Reset to original' : f.name}
+                  className={`grid aspect-square place-items-center rounded-md border-2 transition-transform hover:scale-105 ${bodyColor === f.color ? 'border-riff-ink' : 'border-transparent'}`}
+                  style={{ background: f.color === 'original' ? '#2a2a2e' : f.color }}
+                >
+                  {f.color === 'original' && (
+                    <svg viewBox="0 0 24 24" className="h-4 w-4 text-riff-ink-2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8" /><path d="M3 3v5h5" /></svg>
+                  )}
+                </button>
               ))}
             </div>
             <label className="mt-3 flex items-center gap-2 font-mono text-[0.66rem] text-riff-muted">
@@ -291,11 +325,15 @@ export default function RiffPage() {
                 <button
                   key={f.name}
                   onClick={() => { void riff.current!.click(); setAccentColor(f.color) }}
-                  title={f.name}
-                  aria-label={f.name}
-                  className={`aspect-square rounded-md border-2 transition-transform hover:scale-105 ${accentColor === f.color ? 'border-riff-ink' : 'border-transparent'}`}
-                  style={{ background: f.color === 'original' ? '#b1ba3f' : f.color }}
-                />
+                  title={f.name === 'Reset' ? 'Reset to original' : f.name}
+                  aria-label={f.name === 'Reset' ? 'Reset to original' : f.name}
+                  className={`grid aspect-square place-items-center rounded-md border-2 transition-transform hover:scale-105 ${accentColor === f.color ? 'border-riff-ink' : 'border-transparent'}`}
+                  style={{ background: f.color === 'original' ? '#2a2a2e' : f.color }}
+                >
+                  {f.color === 'original' && (
+                    <svg viewBox="0 0 24 24" className="h-4 w-4 text-riff-ink-2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8" /><path d="M3 3v5h5" /></svg>
+                  )}
+                </button>
               ))}
             </div>
             <label className="mt-3 flex items-center gap-2 font-mono text-[0.66rem] text-riff-muted">
