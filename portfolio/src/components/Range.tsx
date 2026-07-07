@@ -67,6 +67,14 @@ const COMMISSIONS = [
       '80,000 points baked from the BodyParts3D anatomical atlas — every structure its own mesh, area-weighted sampled and tagged with a region id, shipped as one 548 KB binary (not 100 MB of models). Pick the hippocampus, amygdala, thalamus… and the cortex ghosts to a blue haze while that structure glows red from inside the folds, rotating. Same particle engine as Terra, after cortiz2894’s hologram-particles.',
     href: '#/demos/cortex',
   },
+  {
+    n: '08',
+    skill: 'GPU particles & rigged interaction',
+    title: 'Skull — a particle skull with a working jaw',
+    caption:
+      '61,000 points baked from the BodyParts3D atlas — every bone its own mesh, tagged and shipped as one 417 KB binary. Pick a bone (frontal, sphenoid, mandible…) and it lights up; the jaw swings on its real temporomandibular hinge, computed from the condyle points at bake time and applied in the vertex shader so 60,000 other points never move on the CPU. Same particle engine as Terra and Cortex, after cortiz2894’s hologram-particles.',
+    href: '#/demos/skull',
+  },
 ]
 
 /** A miniature of the watch — warm dark, brass ring, ten past ten. */
@@ -294,7 +302,32 @@ function CortexThumb() {
   )
 }
 
-const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb, '06': TerraThumb, '07': CortexThumb }
+/** A miniature of the skull — dotted ivory cranium, ember eye, jaw strip. */
+function SkullThumb() {
+  const dots: Array<[number, number]> = []
+  for (let i = 0; i < 130; i++) {
+    const a = (i * 2.399963) % (Math.PI * 2)
+    const r = 1 - ((i * 0.61803) % 1) * 0.38
+    dots.push([140 + Math.cos(a) * 60 * r, 72 + Math.sin(a) * 52 * r])
+  }
+  return (
+    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
+      <rect width="280" height="160" rx="10" fill="#0a0908" />
+      {dots.map(([x, y], i) => (
+        <circle key={i} cx={x.toFixed(1)} cy={y.toFixed(1)} r={1.4} fill="#d8ccb4" opacity={0.45} />
+      ))}
+      <circle cx="120" cy="76" r="11" fill="#0a0908" />
+      <circle cx="160" cy="76" r="11" fill="#0a0908" />
+      <circle cx="120" cy="76" r="4" fill="#ff6a3d" opacity="0.9" />
+      {/* jaw strip, dropped a touch (open) */}
+      {Array.from({ length: 22 }, (_, i) => (
+        <circle key={`j${i}`} cx={108 + i * 2.9} cy={128 + (i % 2) * 2} r={1.5} fill="#ff6a3d" opacity={0.7} />
+      ))}
+    </svg>
+  )
+}
+
+const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb, '06': TerraThumb, '07': CortexThumb, '08': SkullThumb }
 
 /**
  * The Meridian card's live slot. The heavy three.js chunk loads only when

@@ -1,0 +1,103 @@
+{
+  "count": 61058,
+  "quantScale": 1.2,
+  "mandibleId": 13,
+  "hinge": [
+    -0.0168,
+    -0.1541,
+    -0.2791
+  ],
+  "regions": [
+    {
+      "id": 0,
+      "key": "frontal",
+      "label": "Frontal bone",
+      "group": "cranium"
+    },
+    {
+      "id": 1,
+      "key": "parietal",
+      "label": "Parietal bone",
+      "group": "cranium"
+    },
+    {
+      "id": 2,
+      "key": "temporal",
+      "label": "Temporal bone",
+      "group": "cranium"
+    },
+    {
+      "id": 3,
+      "key": "occipital",
+      "label": "Occipital bone",
+      "group": "cranium"
+    },
+    {
+      "id": 4,
+      "key": "sphenoid",
+      "label": "Sphenoid bone",
+      "group": "cranium"
+    },
+    {
+      "id": 5,
+      "key": "ethmoid",
+      "label": "Ethmoid bone",
+      "group": "cranium"
+    },
+    {
+      "id": 6,
+      "key": "maxilla",
+      "label": "Maxilla",
+      "group": "face"
+    },
+    {
+      "id": 7,
+      "key": "zygomatic",
+      "label": "Zygomatic bone",
+      "group": "face"
+    },
+    {
+      "id": 8,
+      "key": "nasal",
+      "label": "Nasal bone",
+      "group": "face"
+    },
+    {
+      "id": 9,
+      "key": "lacrimal",
+      "label": "Lacrimal bone",
+      "group": "face"
+    },
+    {
+      "id": 10,
+      "key": "palatine",
+      "label": "Palatine bone",
+      "group": "face"
+    },
+    {
+      "id": 11,
+      "key": "concha",
+      "label": "Inferior concha",
+      "group": "face"
+    },
+    {
+      "id": 12,
+      "key": "vomer",
+      "label": "Vomer",
+      "group": "face"
+    },
+    {
+      "id": 13,
+      "key": "mandible",
+      "label": "Mandible (jaw)",
+      "group": "jaw"
+    },
+    {
+      "id": 14,
+      "key": "hyoid",
+      "label": "Hyoid bone",
+      "group": "jaw"
+    }
+  ],
+  "source": "BodyParts3D, \u00a9 The Database Center for Life Science, CC BY-SA 2.1 JP"
+}

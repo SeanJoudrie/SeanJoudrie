@@ -1,0 +1,27 @@
+/* Skull — demo-scoped warm-dark chrome. Color tokens live in index.css
+   @theme (skull-*); this sheet carries what utilities can't. A warm near-black
+   so the ivory bone reads like it's lit in a specimen case. */
+.skull-root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+}
+.skull-root ::selection {
+  background: var(--color-skull-hot);
+  color: var(--color-skull-bg);
+}
+.skull-root :focus-visible {
+  outline-color: var(--color-skull-hot);
+}
+
+body.skull-page {
+  background-color: var(--color-skull-bg);
+}
+
+.skull-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-skull-muted);
+}

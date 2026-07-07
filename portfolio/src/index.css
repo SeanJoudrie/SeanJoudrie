@@ -137,6 +137,17 @@
   --color-cortex-muted: #7c8496;
   --color-cortex-dot: #5b8fd6;
   --color-cortex-hot: #ff4d43;
+
+  /* Skull (particle skull demo) — warm specimen dark, ivory bone, ember highlight */
+  --color-skull-bg: #0a0908;
+  --color-skull-card: #12100c;
+  --color-skull-line: rgb(255 255 255 / 0.08);
+  --color-skull-line-strong: rgb(255 255 255 / 0.2);
+  --color-skull-ink: #f1ebdb;
+  --color-skull-ink-2: #cdc4b0;
+  --color-skull-muted: #8f8672;
+  --color-skull-dot: #d8ccb4;
+  --color-skull-hot: #ff6a3d;
 }
 
 :root {

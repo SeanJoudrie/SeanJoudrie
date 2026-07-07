@@ -140,6 +140,11 @@ export const commands: Command[] = [
     keywords: ['brain', 'cortex', 'anatomy', 'hippocampus', 'neuro', 'particles', 'webgl', '3d'],
     perform: (ctx) => { ctx.close(); navigate('#/demos/cortex') },
   },
+  {
+    id: 'demo-skull', title: 'Open Skull particle demo', group: 'Demos', hint: 'demo',
+    keywords: ['skull', 'bones', 'anatomy', 'jaw', 'mandible', 'cranium', 'particles', 'webgl', '3d'],
+    perform: (ctx) => { ctx.close(); navigate('#/demos/skull') },
+  },
 
   // ---- Actions ----
   {
