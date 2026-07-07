@@ -194,7 +194,7 @@ export default function RiffPage() {
       <footer className="border-t border-riff-line">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-8">
           <p className="max-w-3xl font-mono text-xs leading-relaxed text-riff-muted">
-            Sound is hand-rolled Web Audio — Karplus-Strong plucked strings, a waveshaper drive and a synthesized reverb, no samples. Models (CC BY, via Poly Pizza): guitar by jeremy, amp by Poly by Google. A cousin of the series after{' '}
+The guitar is modelled from scratch — its body traced from a real Stratocaster, everything else procedural, no downloaded mesh. Sound is hand-rolled Web Audio — Karplus-Strong plucked strings, a waveshaper drive and a synthesized reverb, no samples. Amp model CC BY, via Poly Pizza (Poly by Google). A cousin of the series after{' '}
             <a href="https://github.com/cortiz2894/hologram-particles" target="_blank" rel="noreferrer" className="underline decoration-riff-line-strong underline-offset-2 hover:text-riff-ink">cortiz2894</a>.
           </p>
           <button onClick={() => navigate('#range')} className="font-mono text-xs text-riff-muted transition-colors hover:text-riff-ink">Back to the portfolio →</button>
