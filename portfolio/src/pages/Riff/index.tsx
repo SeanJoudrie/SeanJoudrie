@@ -8,6 +8,7 @@ import './theme.css'
 const Scene = lazy(() => import('./Scene'))
 
 const FINISHES = [
+  { name: 'Original', color: 'original' },
   { name: 'Cherry', color: '#7c1c22' },
   { name: 'Sunburst', color: '#b9741f' },
   { name: 'Surf Green', color: '#5cae94' },
@@ -54,7 +55,7 @@ export default function RiffPage() {
   const [glOk] = useState(webglAvailable)
   const [lost, setLost] = useState(false)
   const [ready, setReady] = useState(false)
-  const [bodyColor, setBodyColor] = useState('#7c1c22')
+  const [bodyColor, setBodyColor] = useState('original')
   const [tone, setTone] = useState<Tone>('clean')
   const [plugged, setPlugged] = useState(false)
   const riff = useRef<Riff | null>(null)
@@ -178,14 +179,14 @@ export default function RiffPage() {
                   title={f.name}
                   aria-label={f.name}
                   className={`aspect-square rounded-md border-2 transition-transform hover:scale-105 ${bodyColor === f.color ? 'border-riff-ink' : 'border-transparent'}`}
-                  style={{ background: f.color }}
+                  style={{ background: f.color === 'original' ? 'linear-gradient(135deg, #8f1f24 0%, #c4353a 55%, #e9e3d4 55%, #d9d2c2 100%)' : f.color }}
                 />
               ))}
             </div>
             <label className="mt-3 flex items-center gap-2 font-mono text-[0.66rem] text-riff-muted">
               custom
-              <input type="color" value={bodyColor} onChange={(e) => setBodyColor(e.target.value)} className="h-6 w-10 cursor-pointer rounded border border-riff-line bg-transparent" />
-              <span>{bodyColor}</span>
+              <input type="color" value={bodyColor === 'original' ? '#7c1c22' : bodyColor} onChange={(e) => setBodyColor(e.target.value)} className="h-6 w-10 cursor-pointer rounded border border-riff-line bg-transparent" />
+              <span>{bodyColor === 'original' ? 'textured' : bodyColor}</span>
             </label>
           </div>
         </aside>
@@ -194,7 +195,7 @@ export default function RiffPage() {
       <footer className="border-t border-riff-line">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-8">
           <p className="max-w-3xl font-mono text-xs leading-relaxed text-riff-muted">
-The guitar is modelled from scratch — its body traced from a real Stratocaster, everything else procedural, no downloaded mesh. Sound is hand-rolled Web Audio — Karplus-Strong plucked strings, a waveshaper drive and a synthesized reverb, no samples. Amp model CC BY, via Poly Pizza (Poly by Google). A cousin of the series after{' '}
+The sound is hand-rolled Web Audio — Karplus-Strong plucked strings, a waveshaper drive and a synthesized reverb, no samples, no audio library. Models (CC BY): guitar “Fender Stratocaster” by Peak_Creation (via Sketchfab), amp by Poly by Google (via Poly Pizza). A cousin of the series after{' '}
             <a href="https://github.com/cortiz2894/hologram-particles" target="_blank" rel="noreferrer" className="underline decoration-riff-line-strong underline-offset-2 hover:text-riff-ink">cortiz2894</a>.
           </p>
           <button onClick={() => navigate('#range')} className="font-mono text-xs text-riff-muted transition-colors hover:text-riff-ink">Back to the portfolio →</button>
