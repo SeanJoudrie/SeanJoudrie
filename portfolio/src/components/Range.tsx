@@ -88,7 +88,7 @@ const COMMISSIONS = [
     skill: 'Solid 3D config + real-time audio',
     title: 'Riff — a playable guitar & amp',
     caption:
-'A solid 3D electric guitar and amp you can actually play. A real Fender Stratocaster (“Fender Stratocaster” by Peak_Creation, CC BY via Sketchfab), re-lit and web-optimized — recolour the body with finish swatches, plug the cable into the amp, then click the strings. The sound, though, is hand-rolled Web Audio: Karplus-Strong plucked strings, a waveshaper overdrive and a synthesized convolution reverb, no samples and no audio library. Click the amp to switch tone. Amp model CC BY via Poly Pizza.',
+'A solid 3D electric guitar and amp you can actually play. A real electric guitar (“Electric guitar” by maxkorkiat, CC BY via Sketchfab), re-lit — recolour the body with finish swatches, plug the cable into the amp, then click the strings. The sound, though, is hand-rolled Web Audio: Karplus-Strong plucked strings, a waveshaper overdrive and a synthesized convolution reverb, no samples and no audio library. Click the amp to switch tone. Amp model CC BY via Poly Pizza.',
     href: '#/demos/riff',
   },
 ]

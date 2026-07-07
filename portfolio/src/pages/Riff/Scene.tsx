@@ -6,56 +6,44 @@ import { ACESFilmicToneMapping } from 'three'
 import { StudioEnvironment } from '../../lib/meridianScene'
 
 /**
- * Riff's stage — a real Fender Stratocaster (Peak_Creation, CC BY via
- * Sketchfab; FBX converted to GLB, textures re-bound and web-optimized) beside
- * a solid amp, lit like Meridian. The body finish recolours live, the six
- * strings are clickable hit-zones, and a cable joins to the amp when plugged.
+ * Riff's stage — a real, complete electric guitar ("Electric guitar" by
+ * maxkorkiat / Maximusx0077, CC BY via Sketchfab; OBJ converted to GLB, its
+ * own materials untouched) beside a solid amp, lit like Meridian. Shown as
+ * downloaded; the body finish can recolour and the neck area is clickable.
  */
 
-const GUITAR = `${import.meta.env.BASE_URL}riff/guitar.glb`
+const GUITAR = `${import.meta.env.BASE_URL}riff/ibanez.glb`
 const AMP = `${import.meta.env.BASE_URL}riff/amp.glb`
 useGLTF.preload(GUITAR)
 useGLTF.preload(AMP)
 
-// Six string hit-zones over the fretboard, tuned to the fitted model by eye.
 const DEBUG_HITZONES = false
-const STRING_SPREAD = 0.13
-const NECK_TOP = 1.02
-const NECK_BOT = 0.05
-const STRING_X = 0.16
-const STRING_Z = 0.42
+const GUITAR_POS: [number, number, number] = [-1.0, -0.1, 0.4]
+const GUITAR_YAW = -0.35
+const GUITAR_HEIGHT = 3.0
 
-// The model ships on a wooden stand (material 'wood_holder') with a coiled
-// cable + disc base (material 'wires2') and a cable end ('end_holder').
-// Hiding by MATERIAL is robust — it never touches the neck/hardware.
-const HIDE_MAT = /wood_holder|wires2|end_holder/i
-// Two-stage orientation: FACE turns the model to the camera; SPIN (an outer
-// group, so it's a clean screen-plane rotation) stands it upright.
-const FACE_ROT: [number, number, number] = [0, Math.PI / 2, 0]
-const SPIN_Z = -1.12
-
-function effectivelyVisible(o: THREE.Object3D): boolean {
-  let n: THREE.Object3D | null = o
-  while (n) { if (!n.visible) return false; n = n.parent }
-  return true
-}
-
-/** Bounding box over only the visible meshes (so a hidden stand doesn't count). */
+/** Bounding box over an object's meshes → scale to a target height + centre. */
 function fit(object: THREE.Object3D, targetHeight: number) {
   object.updateWorldMatrix(true, true)
-  const box = new THREE.Box3()
-  object.traverse((o) => {
-    const m = o as THREE.Mesh
-    if (m.isMesh && m.geometry && effectivelyVisible(m)) {
-      m.geometry.computeBoundingBox()
-      box.union(m.geometry.boundingBox!.clone().applyMatrix4(m.matrixWorld))
-    }
-  })
+  const box = new THREE.Box3().setFromObject(object)
   const size = new THREE.Vector3()
   const center = new THREE.Vector3()
   box.getSize(size)
   box.getCenter(center)
-  return { scale: targetHeight / Math.max(size.x, size.y, size.z), center, size }
+  return { scale: targetHeight / size.y, center, size }
+}
+
+/** Rotation that stands any model upright: longest axis → Y, thinnest → Z. */
+function autoOrient(object: THREE.Object3D): THREE.Matrix4 {
+  const s = new THREE.Box3().setFromObject(object).getSize(new THREE.Vector3())
+  const ax = [new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 1)]
+  const sz = [s.x, s.y, s.z]
+  const [thin, , long] = [0, 1, 2].sort((a, b) => sz[a] - sz[b])
+  const mid = [0, 1, 2].find((i) => i !== thin && i !== long)!
+  const [t, m, l] = [ax[thin], ax[mid], ax[long]]
+  const M = new THREE.Matrix4().set(m.x, m.y, m.z, 0, l.x, l.y, l.z, 0, t.x, t.y, t.z, 0, 0, 0, 0, 1)
+  if (M.determinant() < 0) { M.elements[0] *= -1; M.elements[4] *= -1; M.elements[8] *= -1 }
+  return M
 }
 
 function Guitar({
@@ -68,67 +56,66 @@ function Guitar({
   onStrum: () => void
 }) {
   const { scene } = useGLTF(GUITAR)
-  const { root, f, bodyMat } = useMemo(() => {
+  const { group, f, bodyMat, zones, strumZone } = useMemo(() => {
     const root = scene.clone(true)
+    // Largest mesh = the body, so the finish can recolour it later.
     let bodyMat: THREE.MeshStandardMaterial | null = null
+    let bodyVol = 0
     root.traverse((o) => {
-      const m = o as THREE.Mesh
-      if (!m.isMesh) return
-      const mat = m.material as THREE.MeshStandardMaterial
-      if (mat && HIDE_MAT.test(mat.name)) { m.visible = false; return }
-      m.castShadow = true
-      if (mat && /guitar_main/i.test(mat.name)) {
-        const clone = mat.clone()
-        m.material = clone
-        bodyMat = clone
-      }
+      const mesh = o as THREE.Mesh
+      if (!mesh.isMesh) return
+      mesh.castShadow = true
+      const mat = mesh.material as THREE.MeshStandardMaterial
+      if (mat) mat.side = THREE.DoubleSide
+      mesh.geometry.computeBoundingBox()
+      const s = mesh.geometry.boundingBox!.getSize(new THREE.Vector3())
+      const vol = s.x * s.y * s.z
+      if (vol > bodyVol && mat) { bodyVol = vol; bodyMat = mat }
     })
-    // Re-fit on only the visible instrument.
-    return { root, f: fit(root, 2.7), bodyMat: bodyMat as THREE.MeshStandardMaterial | null }
+    const group = new THREE.Group()
+    group.add(root)
+    group.setRotationFromMatrix(autoOrient(root))
+    const f = fit(group, GUITAR_HEIGHT)
+    const c = f.center, half = f.size.clone().multiplyScalar(0.5)
+    const frontZ = c.z + half.z + 0.02
+    const zones = [...Array(6)].map((_, i) => ({
+      x: c.x + (i / 5 - 0.5) * 2 * half.x * 0.16,
+      y: c.y + half.y * 0.18,
+      z: frontZ,
+      h: half.y * 0.62,
+      w: half.x * 0.055,
+    }))
+    const strumZone = { x: c.x, y: c.y - half.y * 0.42, z: frontZ, w: half.x * 1.1, h: half.y * 0.5, d: half.z }
+    return { group, f, bodyMat: bodyMat as THREE.MeshStandardMaterial | null, zones, strumZone }
   }, [scene])
 
-  // Recolour the body finish. 'original' keeps the textured red; a hex paints
-  // a clean flat finish (drop the map so the colour reads true).
+  // Body finish. 'original' leaves the model exactly as downloaded.
   useEffect(() => {
     if (!bodyMat) return
     if (bodyColor === 'original') {
-      bodyMat.map = bodyMat.userData.origMap ?? bodyMat.map
-      bodyMat.color.set('#ffffff')
+      if (bodyMat.userData.origColor) bodyMat.color.copy(bodyMat.userData.origColor)
     } else {
-      if (!bodyMat.userData.origMap) bodyMat.userData.origMap = bodyMat.map
-      bodyMat.map = null
+      if (!bodyMat.userData.origColor) bodyMat.userData.origColor = bodyMat.color.clone()
       bodyMat.color.set(bodyColor)
     }
     bodyMat.needsUpdate = true
   }, [bodyColor, bodyMat])
 
   return (
-    <group>
-      <group rotation={[0, 0, SPIN_Z]}>
-        <group rotation={FACE_ROT}>
-          <group scale={f.scale} position={[-f.center.x * f.scale, -f.center.y * f.scale, -f.center.z * f.scale]}>
-            <primitive object={root} />
-          </group>
-        </group>
-      </group>
-      {/* strum + six string hit-zones (invisible in prod) */}
-      <mesh onPointerDown={(e) => { e.stopPropagation(); onStrum() }} visible={false} position={[0, -0.9, STRING_Z]}>
-        <boxGeometry args={[1.2, 0.5, 0.4]} />
-      </mesh>
-      {[...Array(6)].map((_, i) => {
-        const x = STRING_X + STRING_SPREAD * (i / 5 - 0.5) * 2
-        return (
-          <mesh
-            key={i}
-            position={[x, (NECK_TOP + NECK_BOT) / 2, STRING_Z]}
-            visible={DEBUG_HITZONES}
-            onPointerDown={(e) => { e.stopPropagation(); onPluck(i) }}
-          >
-            <boxGeometry args={[0.06, NECK_TOP - NECK_BOT, 0.05]} />
+    <group position={GUITAR_POS} rotation={[0, GUITAR_YAW, 0]}>
+      <group scale={f.scale} position={[-f.center.x * f.scale, -f.center.y * f.scale, -f.center.z * f.scale]}>
+        <primitive object={group} />
+        <mesh onPointerDown={(e) => { e.stopPropagation(); onStrum() }} visible={DEBUG_HITZONES} position={[strumZone.x, strumZone.y, strumZone.z]}>
+          <boxGeometry args={[strumZone.w, strumZone.h, strumZone.d]} />
+          <meshBasicMaterial color="#3bff6b" />
+        </mesh>
+        {zones.map((z, i) => (
+          <mesh key={i} position={[z.x, z.y, z.z]} visible={DEBUG_HITZONES} onPointerDown={(e) => { e.stopPropagation(); onPluck(i) }}>
+            <boxGeometry args={[z.w, z.h, 0.06]} />
             <meshBasicMaterial color="#ff3b3b" />
           </mesh>
-        )
-      })}
+        ))}
+      </group>
     </group>
   )
 }
@@ -155,8 +142,8 @@ function Amp({ tone, onClick }: { tone: string; onClick: () => void }) {
 
 function Cable({ plugged }: { plugged: boolean }) {
   const geo = useMemo(() => new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-1.4, -1.15, 0.3), new THREE.Vector3(-0.6, -1.55, 0.5),
-    new THREE.Vector3(0.8, -1.35, 0.6), new THREE.Vector3(1.6, -0.5, 0.6),
+    new THREE.Vector3(-1.1, -1.45, 0.5), new THREE.Vector3(-0.2, -1.75, 0.6),
+    new THREE.Vector3(1.0, -1.4, 0.7), new THREE.Vector3(1.7, -0.5, 0.7),
   ]), 40, 0.035, 8, false), [])
   if (!plugged) return null
   return <mesh geometry={geo}><meshStandardMaterial color="#141414" roughness={0.6} metalness={0.2} /></mesh>
@@ -182,9 +169,7 @@ export default function Scene({
       }}
     >
       <StudioEnvironment />
-      <group position={[-1.4, -0.15, 0.2]}>
-        <Guitar bodyColor={bodyColor} onPluck={onPluck} onStrum={onStrum} />
-      </group>
+      <Guitar bodyColor={bodyColor} onPluck={onPluck} onStrum={onStrum} />
       <Amp tone={tone} onClick={onAmpClick} />
       <Cable plugged={plugged} />
       <ContactShadows position={[0, -1.7, 0]} opacity={0.4} scale={12} blur={3} far={3} resolution={1024} frames={1} />
