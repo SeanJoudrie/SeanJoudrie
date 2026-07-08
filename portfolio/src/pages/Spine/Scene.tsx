@@ -34,7 +34,9 @@ const COL = {
 
 // Flexion tuning. Per-unit-mobility radians at each joint; cumulative up the
 // chain, so C1 (top) swings the most. FLEX_SIGN aims the bend anteriorly.
-const FLEX_PER_UNIT = 0.085
+// Cranked so a full slider curls the column into a deep C — each vertebra
+// visibly rotating on its neighbour, the way a real spine folds forward.
+const FLEX_PER_UNIT = 0.2
 const FLEX_SIGN = -1
 
 // Relative joint mobility by spinal region — cervical & lumbar flex freely,
