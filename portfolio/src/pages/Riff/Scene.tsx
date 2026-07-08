@@ -70,24 +70,20 @@ function fretAtY(y: number): number {
   return Math.max(0, Math.min(MAX_FRET, Math.ceil(-12 * Math.log2(1 - t) - 0.001)))
 }
 
-// Shared FX state, driven from clicks / strum / keyboard: per-string shiver
-// timestamps + a single "finger" dot at the last fretted position.
+// Shared FX state, driven from clicks / strum / keyboard / chords: per-string
+// shiver timestamps + a per-string "finger" dot at the fretted position (so a
+// whole chord shape lights up).
 const pluckFx = {
   t: [0, 0, 0, 0, 0, 0],
-  finger: { x: 0, y: 0, z: 0, t: -1e9, on: false },
+  fret: [0, 0, 0, 0, 0, 0],
+  fretT: [-1e9, -1e9, -1e9, -1e9, -1e9, -1e9],
 }
 export function flashString(i: number, fret = 0) {
   if (i < 0 || i >= 6) return
-  pluckFx.t[i] = performance.now()
-  if (fret > 0) {
-    pluckFx.finger = {
-      x: STRINGS[i].x,
-      y: (fretPosY(fret) + fretPosY(fret - 1)) / 2,
-      z: STRINGS[i].z + STRING_FRONT + 0.02,
-      t: performance.now(),
-      on: true,
-    }
-  }
+  const now = performance.now()
+  pluckFx.t[i] = now
+  pluckFx.fret[i] = fret
+  pluckFx.fretT[i] = fret > 0 ? now : -1e9
 }
 
 const setCursor = (v: string) => { document.body.style.cursor = v }
@@ -182,7 +178,7 @@ function Guitar({
   const outer = useRef<THREE.Group>(null)
   const inner = useRef<THREE.Group>(null)
   const fxRefs = useRef<(THREE.Mesh | null)[]>([])
-  const finger = useRef<THREE.Mesh>(null)
+  const fingerRefs = useRef<(THREE.Mesh | null)[]>([])
   const draggingCapo = useRef(false)
 
   // Fret a string from where it was clicked (y along the neck → fret number).
@@ -244,14 +240,15 @@ function Guitar({
         m.scale.x = 1 + k * 1.4
       } else if (mat.opacity !== 0) { mat.opacity = 0; m.position.x = STRINGS[i].x; m.scale.x = 1 }
     }
-    // finger dot at the fretted position
-    if (finger.current) {
-      const g = pluckFx.finger
-      const dt = (now - g.t) / 1000
-      const mat = finger.current.material as THREE.MeshBasicMaterial
-      if (g.on && dt >= 0 && dt < 0.6) {
-        finger.current.position.set(g.x, g.y, g.z)
-        mat.opacity = 0.85 * (1 - dt / 0.6)
+    // finger dots at each fretted position (a chord lights up several)
+    for (let i = 0; i < 6; i++) {
+      const dot = fingerRefs.current[i]; if (!dot) continue
+      const fret = pluckFx.fret[i]
+      const dt = (now - pluckFx.fretT[i]) / 1000
+      const mat = dot.material as THREE.MeshBasicMaterial
+      if (fret > 0 && dt >= 0 && dt < 0.7) {
+        dot.position.set(STRINGS[i].x, (fretPosY(fret) + fretPosY(fret - 1)) / 2, STRINGS[i].z + STRING_FRONT + 0.03)
+        mat.opacity = 0.9 * (1 - dt / 0.7)
       } else if (mat.opacity !== 0) mat.opacity = 0
     }
   })
@@ -279,11 +276,13 @@ function Guitar({
             </mesh>
           </group>
         ))}
-        {/* finger dot at the fretted position */}
-        <mesh ref={finger} renderOrder={1000}>
-          <sphereGeometry args={[0.05, 16, 16]} />
-          <meshBasicMaterial color="#57c8ff" transparent opacity={0} depthWrite={false} depthTest={false} />
-        </mesh>
+        {/* finger dots at the fretted positions (a chord lights up several) */}
+        {STRINGS.map((_, i) => (
+          <mesh key={i} ref={(m) => { fingerRefs.current[i] = m }} renderOrder={1000}>
+            <sphereGeometry args={[0.05, 16, 16]} />
+            <meshBasicMaterial color="#57c8ff" transparent opacity={0} depthWrite={false} depthTest={false} />
+          </mesh>
+        ))}
         {capo > 0 && <Capo fret={capo} onGrab={() => { draggingCapo.current = true }} />}
         {capo > 0 && (
           <mesh visible={false} position={[-0.006, (NUT_Y + capoY(MAX_CAPO)) / 2, 0.08]}

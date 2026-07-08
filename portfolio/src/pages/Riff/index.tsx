@@ -34,6 +34,24 @@ const ACCENTS = [
 
 const TONE_LABEL: Record<Tone, string> = { clean: 'Clean', drive: 'Drive', reverb: 'Reverb' }
 
+// Standard tuning open-string MIDI numbers (low E → high e) for note readout.
+const OPEN_MIDI = [40, 45, 50, 55, 59, 64]
+const NOTE_NAMES = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B']
+const noteName = (i: number, semis: number) => {
+  const m = OPEN_MIDI[i] + semis
+  return NOTE_NAMES[((m % 12) + 12) % 12] + (Math.floor(m / 12) - 1)
+}
+
+// Open-position chord shapes, low E → high e; -1 = don't play that string.
+const CHORDS: { name: string; frets: number[] }[] = [
+  { name: 'Em', frets: [0, 2, 2, 0, 0, 0] },
+  { name: 'G', frets: [3, 2, 0, 0, 0, 3] },
+  { name: 'C', frets: [-1, 3, 2, 0, 1, 0] },
+  { name: 'D', frets: [-1, -1, 0, 2, 3, 2] },
+  { name: 'A', frets: [-1, 0, 2, 2, 2, 0] },
+  { name: 'E', frets: [0, 2, 2, 1, 0, 0] },
+]
+
 function webglAvailable(): boolean {
   try {
     const c = document.createElement('canvas')
@@ -74,10 +92,21 @@ export default function RiffPage() {
   const [tone, setTone] = useState<Tone>('clean')
   const [plugStage, setPlugStage] = useState<PlugStage>('unplugged')
   const [capo, setCapo] = useState(0)
+  const [note, setNote] = useState<{ n: string; id: number } | null>(null)
   const riff = useRef<Riff | null>(null)
   const sceneApi = useRef<SceneApi | null>(null)
+  const noteTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const noteId = useRef(0)
+  const capoRef = useRef(0)
   if (!riff.current) riff.current = new Riff()
   const plugged = plugStage === 'plugged'
+  capoRef.current = capo
+
+  const showNote = (n: string) => {
+    setNote({ n, id: ++noteId.current })
+    clearTimeout(noteTimer.current)
+    noteTimer.current = setTimeout(() => setNote(null), 900)
+  }
 
   useEffect(() => {
     document.title = 'Riff — a playable guitar · Sean Joudrie'
@@ -90,8 +119,22 @@ export default function RiffPage() {
     }
   }, [])
 
-  const pluck = (i: number, fret = 0) => { riff.current!.pluck(i, fret); flashString(i, fret) }
+  const playNote = (i: number, fret = 0, showName = true) => {
+    riff.current!.pluck(i, fret)
+    flashString(i, fret)
+    if (showName) showNote(noteName(i, Math.max(fret, capoRef.current)))
+  }
   const strum = () => { riff.current!.strum(); for (let i = 0; i < 6; i++) setTimeout(() => flashString(i), i * 45) }
+  const strumChord = (c: { name: string; frets: number[] }) => {
+    let k = 0
+    for (let i = 0; i < 6; i++) {
+      const f = c.frets[i]
+      if (f < 0) continue
+      setTimeout(() => playNote(i, f, false), k * 40)
+      k++
+    }
+    showNote(c.name)
+  }
 
   // Keyboard play: 1–6 pluck a string, space strums (once plugged in).
   useEffect(() => {
@@ -99,7 +142,7 @@ export default function RiffPage() {
       const tag = (e.target as HTMLElement)?.tagName
       if (tag === 'INPUT' || tag === 'TEXTAREA') return
       if (!plugged) return
-      if (e.key >= '1' && e.key <= '6') { pluck(Number(e.key) - 1) }
+      if (e.key >= '1' && e.key <= '6') { playNote(Number(e.key) - 1) }
       else if (e.key === ' ') { e.preventDefault(); strum() }
     }
     window.addEventListener('keydown', onKey)
@@ -185,7 +228,7 @@ export default function RiffPage() {
                     capo={capo}
                     reduce={reduce}
                     apiRef={sceneApi}
-                    onPluck={pluck}
+                    onPluck={playNote}
                     onStrum={strum}
                     onAmpClick={cycleTone}
                     onJackClick={onJackClick}
@@ -196,6 +239,12 @@ export default function RiffPage() {
                 </Suspense>
               </div>
               {!ready && <p className="riff-label absolute inset-0 grid place-items-center">tuning up…</p>}
+              {/* note-name readout */}
+              {note && (
+                <div key={note.id} className="riff-note pointer-events-none absolute left-1/2 top-6 -translate-x-1/2 font-mono text-3xl font-bold text-riff-ink">
+                  {note.n}
+                </div>
+              )}
               {ready && (
                 <>
                   {/* reset view */}
@@ -293,6 +342,26 @@ export default function RiffPage() {
             />
             <p className="mt-2 font-mono text-[0.62rem] leading-relaxed text-riff-muted">
               0 = off. Or drag the capo along the neck.
+            </p>
+          </div>
+
+          {/* Chords */}
+          <div className="rounded-xl border border-riff-line bg-riff-card p-4">
+            <h2 className="riff-label !text-riff-ink-2">Chords</h2>
+            <div className="mt-3 grid grid-cols-3 gap-1.5">
+              {CHORDS.map((c) => (
+                <button
+                  key={c.name}
+                  onClick={() => plugged ? strumChord(c) : undefined}
+                  disabled={!plugged}
+                  className="rounded-md border border-riff-line px-2 py-2 text-sm font-semibold text-riff-ink-2 transition-colors hover:border-riff-hot/60 hover:text-riff-ink disabled:opacity-40 disabled:hover:border-riff-line disabled:hover:text-riff-ink-2"
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 font-mono text-[0.62rem] leading-relaxed text-riff-muted">
+              {plugged ? 'Tap a chord to strum it — the shape lights up on the neck.' : 'Plug in to strum chords.'}
             </p>
           </div>
 

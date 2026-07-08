@@ -25,3 +25,17 @@ body.riff-page {
   text-transform: uppercase;
   color: var(--color-riff-muted);
 }
+
+@keyframes riff-note-pop {
+  0% { opacity: 0; transform: translateX(-50%) translateY(6px) scale(0.9); }
+  18% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-14px) scale(1); }
+}
+.riff-note {
+  animation: riff-note-pop 0.9s var(--ease-out, ease-out) forwards;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+@media (prefers-reduced-motion: reduce) {
+  .riff-note { animation-duration: 0.9s; animation-name: riff-note-fade; }
+}
+@keyframes riff-note-fade { 0%,80% { opacity: 1; } 100% { opacity: 0; } }
