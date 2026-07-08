@@ -61,13 +61,17 @@ export default function Spine() {
   const [selected, setSelected] = useState(-1)
   const [auto, setAuto] = useState(true)
   const [pos, setPos] = useState(0)
+  const [bend, setBend] = useState(0)
   // Live values the render loop reads without re-instantiating the scene.
   const pulseRef = useRef({ pos: 0, auto: true })
+  const bendRef = useRef({ val: 0 })
 
   useEffect(() => {
     pulseRef.current.auto = auto
     pulseRef.current.pos = pos
   }, [auto, pos])
+
+  useEffect(() => { bendRef.current.val = bend }, [bend])
 
   useEffect(() => {
     document.title = 'Spine — a particle vertebral column · Sean Joudrie'
@@ -141,7 +145,9 @@ export default function Spine() {
                   <Scene
                     selected={selected}
                     cordId={manifest.cordId}
+                    regions={manifest.regions}
                     pulseRef={pulseRef}
+                    bendRef={bendRef}
                     onReady={() => setReady(true)}
                     onFail={() => setLost(true)}
                   />
@@ -160,6 +166,30 @@ export default function Spine() {
         </div>
 
         <aside className="hero-in space-y-4" style={d(180)}>
+          {/* Posture — articulated flexion */}
+          <div className="rounded-xl border border-spine-line bg-spine-card p-4">
+            <div className="flex items-baseline justify-between">
+              <h2 className="spine-label !text-spine-ink-2">Posture</h2>
+              <span className="font-mono text-[0.66rem] text-spine-muted">{bend === 0 ? 'neutral' : `${Math.round(bend * 100)}% flexed`}</span>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              value={Math.round(bend * 100)}
+              onChange={(e) => setBend(Number(e.target.value) / 100)}
+              aria-label="Spine flexion, straight to bent"
+              className="mt-3 w-full accent-spine-hot"
+            />
+            <div className="mt-1 flex justify-between font-mono text-[0.62rem] text-spine-muted">
+              <span>straight</span>
+              <span>bent</span>
+            </div>
+            <p className="mt-2 font-mono text-[0.62rem] leading-relaxed text-spine-muted">
+              Each vertebra hinges at its own joint — the neck and lower back bend, the rib-caged thoracic stays stiff.
+            </p>
+          </div>
+
           {/* Nerve signal */}
           <div className="rounded-xl border border-spine-line bg-spine-card p-4">
             <div className="flex items-center justify-between">

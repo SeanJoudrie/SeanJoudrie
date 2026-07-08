@@ -8,13 +8,20 @@ import { CameraControls } from '@react-three/drei'
  * BodyParts3D atlas: every vertebra (C1..C7, T1..T12, L1..L5, sacrum) its own
  * mesh, area-weighted sampled and tagged with a region id. Select one and it
  * glows. The spinal cord isn't in the bone atlas, so it's synthesized at bake
- * time as a tube threaded through the vertebral canal — a Catmull-Rom spline
- * through the vertebra centroids — and a nerve signal travels down it in the
- * vertex shader.
+ * time as a tube threaded through the vertebral canal, and a nerve signal runs
+ * down it in the vertex shader.
+ *
+ * The bend is an articulated skeleton computed here at load: one bone per
+ * vertebra, chained sacrum→C1, with a per-vertebra inter-vertebral joint. A
+ * bend slider drives forward-kinematics on the CPU (25 tiny matrices) each
+ * frame; the vertex shader skins each point to its bone by region id, so the
+ * vertebrae stay rigid and hinge at real joints while the cord blends between
+ * neighbours. Cervical and lumbar joints are mobile, the thoracic (rib) region
+ * stiff — the way a real spine flexes.
  *
  * Particle treatment after cortiz2894's hologram-particles (concept:
- * igloo.inc), rebuilt in plain GLSL. Meshes: BodyParts3D, © The Database
- * Center for Life Science, CC BY-SA 2.1 Japan.
+ * igloo.inc). Meshes: BodyParts3D, © The Database Center for Life Science,
+ * CC BY-SA 2.1 Japan.
  */
 
 const BIN_URL = `${import.meta.env.BASE_URL}spine/spine.bin`
@@ -25,17 +32,37 @@ const COL = {
   hot: new THREE.Color('#33d1e6'),
 }
 
-type Loaded = { positions: Float32Array; region: Float32Array; cordH: Float32Array; count: number }
+// Flexion tuning. Per-unit-mobility radians at each joint; cumulative up the
+// chain, so C1 (top) swings the most. FLEX_SIGN aims the bend anteriorly.
+const FLEX_PER_UNIT = 0.085
+const FLEX_SIGN = -1
+
+// Relative joint mobility by spinal region — cervical & lumbar flex freely,
+// the thoracic segments barely move (locked by the rib cage), sacrum is fixed.
+const MOBILITY: Record<string, number> = { cervical: 1.0, thoracic: 0.32, lumbar: 1.15, sacral: 0, cord: 0 }
+
+type Bone = { region: number; mobility: number; z: number; pivot: THREE.Vector3; parent: number }
+type Region = { id: number; group: string }
+type Loaded = {
+  positions: Float32Array
+  region: Float32Array
+  cordH: Float32Array
+  bone: Float32Array
+  bones: Bone[]
+  count: number
+}
 
 const VERT = /* glsl */ `
   attribute float aRegion;
   attribute float aSeed;
   attribute float aCordH;    // 0 at cord top (C1) → 1 at cord tip; 0 for bone
+  attribute float aBone;     // bone index; fractional on the cord (blends two)
   uniform float uSelected;
   uniform float uCord;       // cord region id
   uniform float uTime;
   uniform float uPixelRatio;
   uniform float uPulse;      // signal position down the cord, 0..1
+  uniform mat4  uBones[BONE_COUNT];
   varying vec3 vColor;
   varying float vAlpha;
   varying float vHot;
@@ -58,8 +85,15 @@ const VERT = /* glsl */ `
       vAlpha = max(vAlpha, band * 0.9 + 0.1);
     }
 
+    // Skin the point to its vertebra bone (rigid); the cord blends two.
+    int i0 = int(floor(aBone));
+    int i1 = int(min(float(BONE_COUNT - 1), ceil(aBone)));
+    float bf = aBone - float(i0);
+    vec3 sp = mix((uBones[i0] * vec4(position, 1.0)).xyz,
+                  (uBones[i1] * vec4(position, 1.0)).xyz, bf);
+
     float pulse = isSel ? (0.9 + 0.1 * sin(uTime * 3.0 + aSeed * 6.2832)) : 1.0;
-    vec4 mv = modelViewMatrix * vec4(position, 1.0);
+    vec4 mv = modelViewMatrix * vec4(sp, 1.0);
     gl_Position = projectionMatrix * mv;
     gl_PointSize = 1.7 * pulse * uPixelRatio * (3.2 / -mv.z);
   }
@@ -79,9 +113,10 @@ const FRAG = /* glsl */ `
   }
 `
 
-function inject(src: string) {
+function inject(src: string, boneCount: number) {
   const c = (col: THREE.Color) => `vec3(${col.r.toFixed(4)}, ${col.g.toFixed(4)}, ${col.b.toFixed(4)})`
   return src
+    .replace(/BONE_COUNT/g, String(boneCount))
     .replace(/COL_HOT/g, c(COL.hot))
     .replace(/COL_CORD/g, c(COL.cord))
     .replace(/COL_BONE/g, c(COL.bone))
@@ -95,25 +130,32 @@ function Column({
   selected,
   cordId,
   pulseRef,
+  bendRef,
 }: {
   data: Loaded
   selected: number
   cordId: number
   pulseRef: React.MutableRefObject<{ pos: number; auto: boolean }>
+  bendRef: React.MutableRefObject<{ val: number }>
 }) {
   const spin = useRef<THREE.Group>(null)
   const reduced = useMemo(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches, [])
+
+  // One world matrix per bone — the uniform array the shader skins against.
+  const world = useMemo(() => data.bones.map(() => new THREE.Matrix4()), [data.bones])
+  const fk = useMemo(() => ({ T: new THREE.Matrix4(), R: new THREE.Matrix4(), Ti: new THREE.Matrix4(), local: new THREE.Matrix4() }), [])
 
   const { geometry, material } = useMemo(() => {
     const geometry = new THREE.BufferGeometry()
     geometry.setAttribute('position', new THREE.BufferAttribute(data.positions, 3))
     geometry.setAttribute('aRegion', new THREE.BufferAttribute(data.region, 1))
     geometry.setAttribute('aCordH', new THREE.BufferAttribute(data.cordH, 1))
+    geometry.setAttribute('aBone', new THREE.BufferAttribute(data.bone, 1))
     const seed = new Float32Array(data.count)
     for (let i = 0; i < data.count; i++) seed[i] = (i * 0.61803398) % 1
     geometry.setAttribute('aSeed', new THREE.BufferAttribute(seed, 1))
     const material = new THREE.ShaderMaterial({
-      vertexShader: inject(VERT),
+      vertexShader: inject(VERT, data.bones.length),
       fragmentShader: FRAG,
       transparent: true,
       depthWrite: false,
@@ -124,10 +166,11 @@ function Column({
         uTime: { value: 0 },
         uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
         uPulse: { value: 0 },
+        uBones: { value: world },
       },
     })
     return { geometry, material }
-  }, [data, cordId])
+  }, [data, cordId, world])
 
   useEffect(() => () => { geometry.dispose(); material.dispose() }, [geometry, material])
   useEffect(() => { material.uniforms.uSelected.value = selected }, [material, selected])
@@ -138,6 +181,22 @@ function Column({
     const p = pulseRef.current
     // Auto mode runs the signal down the cord on a loop; manual holds the slider.
     u.uPulse.value = p.auto ? (u.uTime.value * 0.22) % 1 : p.pos
+
+    // Forward kinematics: each bone = parent × (rotate about its rest joint).
+    const bend = bendRef.current.val
+    const bones = data.bones
+    for (let k = 0; k < bones.length; k++) {
+      const b = bones[k]
+      if (b.parent < 0) { world[k].identity(); continue }
+      const ang = bend * FLEX_PER_UNIT * b.mobility * FLEX_SIGN
+      fk.R.makeRotationX(ang)
+      fk.T.makeTranslation(b.pivot.x, b.pivot.y, b.pivot.z)
+      fk.Ti.makeTranslation(-b.pivot.x, -b.pivot.y, -b.pivot.z)
+      fk.local.copy(fk.T).multiply(fk.R).multiply(fk.Ti)
+      world[k].copy(world[b.parent]).multiply(fk.local)
+    }
+    material.uniformsNeedUpdate = true
+
     if (spin.current && !reduced) spin.current.rotation.y += delta * 0.12
   })
 
@@ -153,16 +212,75 @@ function Column({
   )
 }
 
+/** Build the articulation skeleton from the loaded points: one bone per
+ *  vertebra, chained low→high, joint pivots at the mid-points between adjacent
+ *  vertebra centroids. Returns bones plus a per-point bone index (fractional on
+ *  the cord so it blends smoothly between the two vertebrae it spans). */
+function buildSkeleton(
+  positions: Float32Array,
+  region: Float32Array,
+  count: number,
+  cordId: number,
+  groupOf: Map<number, string>,
+): { bones: Bone[]; bone: Float32Array } {
+  // Per-vertebra centroid (skip the cord).
+  const acc = new Map<number, { x: number; y: number; z: number; n: number }>()
+  for (let i = 0; i < count; i++) {
+    const r = region[i]
+    if (r === cordId) continue
+    const a = acc.get(r) ?? { x: 0, y: 0, z: 0, n: 0 }
+    a.x += positions[i * 3]; a.y += positions[i * 3 + 1]; a.z += positions[i * 3 + 2]; a.n++
+    acc.set(r, a)
+  }
+  const cents = [...acc.entries()].map(([r, a]) => ({
+    region: r, x: a.x / a.n, y: a.y / a.n, z: a.z / a.n,
+  }))
+  cents.sort((p, q) => p.z - q.z) // base (sacrum, low z) → top (C1, high z)
+
+  const bones: Bone[] = cents.map((c, k) => {
+    const parent = k - 1 // linear chain; -1 for the root
+    const prev = cents[k - 1]
+    const pivot = parent < 0
+      ? new THREE.Vector3(c.x, c.y, c.z)
+      : new THREE.Vector3((c.x + prev.x) / 2, (c.y + prev.y) / 2, (c.z + prev.z) / 2)
+    return { region: c.region, mobility: MOBILITY[groupOf.get(c.region) ?? ''] ?? 0, z: c.z, pivot, parent }
+  })
+
+  const regionToBone = new Map<number, number>()
+  bones.forEach((b, i) => regionToBone.set(b.region, i))
+  const boneZ = bones.map((b) => b.z)
+  const last = bones.length - 1
+
+  const bone = new Float32Array(count)
+  for (let i = 0; i < count; i++) {
+    const r = region[i]
+    if (r !== cordId) { bone[i] = regionToBone.get(r) ?? 0; continue }
+    // Cord: fractional bone index by height, blending the two bracketing bones.
+    const z = positions[i * 3 + 2]
+    if (z <= boneZ[0]) { bone[i] = 0; continue }
+    if (z >= boneZ[last]) { bone[i] = last; continue }
+    let k = 0
+    while (k < last && boneZ[k + 1] < z) k++
+    const span = boneZ[k + 1] - boneZ[k] || 1
+    bone[i] = k + (z - boneZ[k]) / span
+  }
+  return { bones, bone }
+}
+
 export default function Scene({
   selected,
   cordId,
+  regions,
   pulseRef,
+  bendRef,
   onReady,
   onFail,
 }: {
   selected: number
   cordId: number
+  regions: Region[]
   pulseRef: React.MutableRefObject<{ pos: number; auto: boolean }>
+  bendRef: React.MutableRefObject<{ val: number }>
   onReady: () => void
   onFail: () => void
 }) {
@@ -180,7 +298,6 @@ export default function Scene({
         const region = new Float32Array(count)
         const Q = 1.2 / 32767
         let o = 4
-        // First pass: positions + region; track the cord's vertical extent.
         let cordMin = Infinity, cordMax = -Infinity
         for (let i = 0; i < count; i++) {
           const z = dv.getInt16(o + 4, true) * Q
@@ -198,7 +315,9 @@ export default function Scene({
         for (let i = 0; i < count; i++) {
           cordH[i] = region[i] === cordId ? (cordMax - positions[i * 3 + 2]) / span : 0
         }
-        setData({ positions, region, cordH, count })
+        const groupOf = new Map(regions.map((r) => [r.id, r.group]))
+        const { bones, bone } = buildSkeleton(positions, region, count, cordId, groupOf)
+        setData({ positions, region, cordH, bone, bones, count })
         onReady()
       })
       .catch(() => alive && onFail())
@@ -217,7 +336,7 @@ export default function Scene({
         gl.domElement.addEventListener('webglcontextlost', (e) => { e.preventDefault(); onFail() })
       }}
     >
-      <Column data={data} selected={selected} cordId={cordId} pulseRef={pulseRef} />
+      <Column data={data} selected={selected} cordId={cordId} pulseRef={pulseRef} bendRef={bendRef} />
       <CameraControls minDistance={1.4} maxDistance={5} />
     </Canvas>
   )
