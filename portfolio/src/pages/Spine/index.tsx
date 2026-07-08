@@ -186,7 +186,7 @@ export default function Spine() {
               <span>bent</span>
             </div>
             <p className="mt-2 font-mono text-[0.62rem] leading-relaxed text-spine-muted">
-              Each vertebra hinges at its own joint — the neck and lower back bend, the rib-caged thoracic stays stiff.
+              Every vertebra hinges at its own joint, so the whole column curls evenly into a C — only the fused sacrum stays put.
             </p>
           </div>
 

@@ -32,16 +32,16 @@ const COL = {
   hot: new THREE.Color('#33d1e6'),
 }
 
-// Flexion tuning. Per-unit-mobility radians at each joint; cumulative up the
-// chain, so C1 (top) swings the most. FLEX_SIGN aims the bend anteriorly.
-// Cranked so a full slider curls the column into a deep C — each vertebra
-// visibly rotating on its neighbour, the way a real spine folds forward.
-const FLEX_PER_UNIT = 0.2
+// Flexion tuning. Radians per joint; cumulative up the chain, so C1 (top)
+// swings the most. FLEX_SIGN aims the bend anteriorly. Every vertebra hinges
+// by the same amount, so the column sweeps a smooth circular arc — a full C at
+// 100% (~24 joints × ~8.6° ≈ 200°) rather than folding at one spot.
+const FLEX_PER_UNIT = 0.15
 const FLEX_SIGN = -1
 
-// Relative joint mobility by spinal region — cervical & lumbar flex freely,
-// the thoracic segments barely move (locked by the rib cage), sacrum is fixed.
-const MOBILITY: Record<string, number> = { cervical: 1.0, thoracic: 0.32, lumbar: 1.15, sacral: 0, cord: 0 }
+// Joint mobility per region. Uniform across every mobile vertebra so the whole
+// column curls evenly into a C; only the sacrum (fused) stays fixed.
+const MOBILITY: Record<string, number> = { cervical: 1.0, thoracic: 1.0, lumbar: 1.0, sacral: 0, cord: 0 }
 
 type Bone = { region: number; mobility: number; z: number; pivot: THREE.Vector3; parent: number }
 type Region = { id: number; group: string }
