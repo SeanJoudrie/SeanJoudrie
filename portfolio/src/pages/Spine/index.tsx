@@ -145,7 +145,6 @@ export default function Spine() {
                   <Scene
                     selected={selected}
                     cordId={manifest.cordId}
-                    regions={manifest.regions}
                     pulseRef={pulseRef}
                     bendRef={bendRef}
                     onReady={() => setReady(true)}

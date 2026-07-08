@@ -32,19 +32,18 @@ const COL = {
   hot: new THREE.Color('#33d1e6'),
 }
 
-// Flexion tuning. Radians per joint; cumulative up the chain, so C1 (top)
-// swings the most. FLEX_SIGN aims the bend anteriorly. Every vertebra hinges
-// by the same amount, so the column sweeps a smooth circular arc — a full C at
-// 100% (~24 joints × ~8.6° ≈ 200°) rather than folding at one spot.
-const FLEX_PER_UNIT = 0.15
+// Flexion tuning. Each joint's angle is proportional to that vertebra's height
+// (its gap to the one below), so the column bends at CONSTANT CURVATURE — a
+// true circular arc where every vertebra contributes the same amount of curve,
+// not a tight kink at the short neck bones. FLEX_RADIANS is the total sweep at
+// full flex (~200° → a deep C); FLEX_SIGN aims it anteriorly.
+const FLEX_RADIANS = 3.5
 const FLEX_SIGN = -1
-
-// Joint mobility per region. Uniform across every mobile vertebra so the whole
-// column curls evenly into a C; only the sacrum (fused) stays fixed.
-const MOBILITY: Record<string, number> = { cervical: 1.0, thoracic: 1.0, lumbar: 1.0, sacral: 0, cord: 0 }
+// The lumbosacral gap is inflated (the sacrum's centroid sits deep in its
+// triangle), so cap each segment length before weighting to avoid a base kink.
+const GAP_CAP = 0.1
 
 type Bone = { region: number; mobility: number; z: number; pivot: THREE.Vector3; parent: number }
-type Region = { id: number; group: string }
 type Loaded = {
   positions: Float32Array
   region: Float32Array
@@ -190,7 +189,7 @@ function Column({
     for (let k = 0; k < bones.length; k++) {
       const b = bones[k]
       if (b.parent < 0) { world[k].identity(); continue }
-      const ang = bend * FLEX_PER_UNIT * b.mobility * FLEX_SIGN
+      const ang = bend * FLEX_RADIANS * b.mobility * FLEX_SIGN
       fk.R.makeRotationX(ang)
       fk.T.makeTranslation(b.pivot.x, b.pivot.y, b.pivot.z)
       fk.Ti.makeTranslation(-b.pivot.x, -b.pivot.y, -b.pivot.z)
@@ -223,7 +222,6 @@ function buildSkeleton(
   region: Float32Array,
   count: number,
   cordId: number,
-  groupOf: Map<number, string>,
 ): { bones: Bone[]; bone: Float32Array } {
   // Per-vertebra centroid (skip the cord).
   const acc = new Map<number, { x: number; y: number; z: number; n: number }>()
@@ -245,8 +243,13 @@ function buildSkeleton(
     const pivot = parent < 0
       ? new THREE.Vector3(c.x, c.y, c.z)
       : new THREE.Vector3((c.x + prev.x) / 2, (c.y + prev.y) / 2, (c.z + prev.z) / 2)
-    return { region: c.region, mobility: MOBILITY[groupOf.get(c.region) ?? ''] ?? 0, z: c.z, pivot, parent }
+    // Weight each joint by its (capped) segment length → constant curvature.
+    const gap = prev ? Math.min(GAP_CAP, Math.hypot(c.x - prev.x, c.y - prev.y, c.z - prev.z)) : 0
+    return { region: c.region, mobility: gap, z: c.z, pivot, parent }
   })
+  // Normalise the weights so they sum to 1 — total sweep is exactly FLEX_RADIANS.
+  const wSum = bones.reduce((s, b) => s + b.mobility, 0) || 1
+  bones.forEach((b) => { b.mobility /= wSum })
 
   const regionToBone = new Map<number, number>()
   bones.forEach((b, i) => regionToBone.set(b.region, i))
@@ -272,7 +275,6 @@ function buildSkeleton(
 export default function Scene({
   selected,
   cordId,
-  regions,
   pulseRef,
   bendRef,
   onReady,
@@ -280,7 +282,6 @@ export default function Scene({
 }: {
   selected: number
   cordId: number
-  regions: Region[]
   pulseRef: React.MutableRefObject<{ pos: number; auto: boolean }>
   bendRef: React.MutableRefObject<{ val: number }>
   onReady: () => void
@@ -317,8 +318,7 @@ export default function Scene({
         for (let i = 0; i < count; i++) {
           cordH[i] = region[i] === cordId ? (cordMax - positions[i * 3 + 2]) / span : 0
         }
-        const groupOf = new Map(regions.map((r) => [r.id, r.group]))
-        const { bones, bone } = buildSkeleton(positions, region, count, cordId, groupOf)
+        const { bones, bone } = buildSkeleton(positions, region, count, cordId)
         setData({ positions, region, cordH, bone, bones, count })
         onReady()
       })
