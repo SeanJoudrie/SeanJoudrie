@@ -91,6 +91,14 @@ const COMMISSIONS = [
 'A solid 3D electric guitar and amp you can actually play. A real electric guitar (“Electric guitar” by maxkorkiat, CC BY via Sketchfab), re-lit — recolour the body with finish swatches, plug the cable into the amp, then click the strings. The sound, though, is hand-rolled Web Audio: Karplus-Strong plucked strings, a waveshaper overdrive and a synthesized convolution reverb, no samples and no audio library. Click the amp to switch tone. Amp model CC BY via Poly Pizza.',
     href: '#/demos/riff',
   },
+  {
+    n: '11',
+    skill: 'GPU particles & data pipeline',
+    title: 'Spine — a particle vertebral column',
+    caption:
+      '64,000 points baked from the BodyParts3D atlas — all 25 vertebrae (C1 atlas through the sacrum), each its own mesh, area-weighted sampled and tagged with a region id, shipped as one 437 KB binary. Pick any vertebra and it lights up. The spinal cord isn’t in the bone atlas, so it’s synthesized as a tube threaded through the vertebral canal — a spline through the vertebra centroids — with a nerve signal running down it in the vertex shader. Same particle engine as Terra, Cortex and Skull, after cortiz2894’s hologram-particles.',
+    href: '#/demos/spine',
+  },
 ]
 
 /** A miniature of the watch — warm dark, brass ring, ten past ten. */
@@ -394,7 +402,37 @@ function RiffThumb() {
   )
 }
 
-const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb, '06': TerraThumb, '07': CortexThumb, '08': SkullThumb, '09': BloomThumb, '10': RiffThumb }
+/** A miniature of the spine — a stack of ivory vertebrae with an amber cord. */
+function SpineThumb() {
+  const verts: Array<[number, number, number]> = []
+  for (let i = 0; i < 15; i++) {
+    const t = i / 14
+    verts.push([140 + Math.sin(t * Math.PI * 2 - 0.6) * 14, 18 + t * 128, 12 - t * 3])
+  }
+  return (
+    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
+      <rect width="280" height="160" rx="10" fill="#08090b" />
+      {verts.map(([x, y, w], i) => (
+        <g key={i}>
+          <rect x={x - w} y={y - 3} width={w * 2} height={5} rx={2} fill="none" stroke="#d9d3c3" strokeWidth="1.1" opacity={0.55} />
+          <circle cx={x - w - 5} cy={y} r={1.6} fill="#d9d3c3" opacity={0.5} />
+        </g>
+      ))}
+      {/* amber cord threading through */}
+      <path
+        d={verts.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`).join(' ')}
+        fill="none"
+        stroke="#e8b24c"
+        strokeWidth="3"
+        opacity={0.85}
+      />
+      {/* signal spark */}
+      <circle cx={verts[9][0]} cy={verts[9][1]} r={4} fill="#33d1e6" />
+    </svg>
+  )
+}
+
+const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb, '06': TerraThumb, '07': CortexThumb, '08': SkullThumb, '09': BloomThumb, '10': RiffThumb, '11': SpineThumb }
 
 /**
  * The Meridian card's live slot. The heavy three.js chunk loads only when

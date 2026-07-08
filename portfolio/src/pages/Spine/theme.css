@@ -1,0 +1,27 @@
+/* Spine — demo-scoped cool-dark chrome. Color tokens live in index.css
+   @theme (spine-*); this sheet carries what utilities can't. A cool near-black
+   so the ivory vertebrae and the amber cord read like a lit specimen. */
+.spine-root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+}
+.spine-root ::selection {
+  background: var(--color-spine-hot);
+  color: var(--color-spine-bg);
+}
+.spine-root :focus-visible {
+  outline-color: var(--color-spine-hot);
+}
+
+body.spine-page {
+  background-color: var(--color-spine-bg);
+}
+
+.spine-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-spine-muted);
+}

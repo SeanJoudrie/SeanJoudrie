@@ -155,6 +155,11 @@ export const commands: Command[] = [
     keywords: ['guitar', 'amp', 'music', 'audio', 'sound', 'play', 'web audio', 'riff', 'electric'],
     perform: (ctx) => { ctx.close(); navigate('#/demos/riff') },
   },
+  {
+    id: 'demo-spine', title: 'Open Spine particle vertebral column', group: 'Demos', hint: 'demo',
+    keywords: ['spine', 'spinal cord', 'vertebra', 'vertebrae', 'backbone', 'anatomy', 'cervical', 'lumbar', 'particles', 'webgl', '3d'],
+    perform: (ctx) => { ctx.close(); navigate('#/demos/spine') },
+  },
 
   // ---- Actions ----
   {

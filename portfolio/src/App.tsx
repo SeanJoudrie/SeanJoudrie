@@ -24,6 +24,7 @@ const Cortex = lazy(() => import('./pages/Cortex'))
 const Skull = lazy(() => import('./pages/Skull'))
 const Bloom = lazy(() => import('./pages/Bloom'))
 const Riff = lazy(() => import('./pages/Riff'))
+const Spine = lazy(() => import('./pages/Spine'))
 
 const CASE_PAGES: Record<string, React.LazyExoticComponent<() => React.JSX.Element>> = {
   globalio: GlobalioCaseStudy,
@@ -92,6 +93,12 @@ const DEMO_PAGES: Record<
     label: 'Riff playable guitar demo',
     shell: 'bg-riff-bg',
     spinner: 'text-riff-muted',
+  },
+  spine: {
+    Page: Spine,
+    label: 'Spine particle vertebral column demo',
+    shell: 'bg-spine-bg',
+    spinner: 'text-spine-muted',
   },
 }
 

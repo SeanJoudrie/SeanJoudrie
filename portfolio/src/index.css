@@ -169,6 +169,18 @@
   --color-riff-ink-2: #ccc4b8;
   --color-riff-muted: #8c8377;
   --color-riff-hot: #e0563a;
+
+  /* Spine (particle vertebral column demo) — cool specimen dark, ivory bone, amber cord, cyan signal */
+  --color-spine-bg: #08090b;
+  --color-spine-card: #0e1013;
+  --color-spine-line: rgb(255 255 255 / 0.08);
+  --color-spine-line-strong: rgb(255 255 255 / 0.2);
+  --color-spine-ink: #eaeef2;
+  --color-spine-ink-2: #c2cad2;
+  --color-spine-muted: #828d98;
+  --color-spine-dot: #d9d3c3;
+  --color-spine-cord: #e8b24c;
+  --color-spine-hot: #33d1e6;
 }
 
 :root {
