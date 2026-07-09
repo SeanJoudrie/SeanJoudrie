@@ -1,0 +1,124 @@
+{
+  "count": 53270,
+  "quantScale": 1.2,
+  "regions": [
+    {
+      "id": 0,
+      "key": "lv",
+      "label": "Left ventricle",
+      "group": "red",
+      "centroid": [
+        0.2914,
+        -0.2426,
+        -0.1131
+      ],
+      "amp": 0.2,
+      "phase": 0.16
+    },
+    {
+      "id": 1,
+      "key": "rv",
+      "label": "Right ventricle",
+      "group": "blue",
+      "centroid": [
+        -0.1544,
+        -0.2109,
+        -0.1279
+      ],
+      "amp": 0.15,
+      "phase": 0.16
+    },
+    {
+      "id": 2,
+      "key": "la",
+      "label": "Left atrium",
+      "group": "red",
+      "centroid": [
+        0.2415,
+        -0.0178,
+        0.2061
+      ],
+      "amp": 0.1,
+      "phase": 0.0
+    },
+    {
+      "id": 3,
+      "key": "ra",
+      "label": "Right atrium",
+      "group": "blue",
+      "centroid": [
+        -0.2035,
+        0.0064,
+        0.1965
+      ],
+      "amp": 0.1,
+      "phase": 0.0
+    },
+    {
+      "id": 4,
+      "key": "aorta",
+      "label": "Aorta",
+      "group": "red",
+      "centroid": [
+        0.0187,
+        -0.0519,
+        0.5607
+      ],
+      "amp": 0.0,
+      "phase": 0.0
+    },
+    {
+      "id": 5,
+      "key": "pa",
+      "label": "Pulmonary artery",
+      "group": "blue",
+      "centroid": [
+        0.074,
+        0.1217,
+        0.1927
+      ],
+      "amp": 0.0,
+      "phase": 0.0
+    },
+    {
+      "id": 6,
+      "key": "svc",
+      "label": "Superior vena cava",
+      "group": "blue",
+      "centroid": [
+        -0.2185,
+        -0.1165,
+        0.526
+      ],
+      "amp": 0.0,
+      "phase": 0.0
+    },
+    {
+      "id": 7,
+      "key": "ivc",
+      "label": "Inferior vena cava",
+      "group": "blue",
+      "centroid": [
+        -0.2282,
+        -0.1067,
+        -0.4136
+      ],
+      "amp": 0.0,
+      "phase": 0.0
+    },
+    {
+      "id": 8,
+      "key": "pv",
+      "label": "Pulmonary veins",
+      "group": "red",
+      "centroid": [
+        -0.0087,
+        0.1113,
+        0.0918
+      ],
+      "amp": 0.0,
+      "phase": 0.0
+    }
+  ],
+  "source": "BodyParts3D, \u00a9 The Database Center for Life Science, CC BY-SA 2.1 JP"
+}

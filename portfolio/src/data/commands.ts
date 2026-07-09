@@ -160,6 +160,11 @@ export const commands: Command[] = [
     keywords: ['spine', 'spinal cord', 'vertebra', 'vertebrae', 'backbone', 'anatomy', 'cervical', 'lumbar', 'particles', 'webgl', '3d'],
     perform: (ctx) => { ctx.close(); navigate('#/demos/spine') },
   },
+  {
+    id: 'demo-pulse', title: 'Open Pulse beating heart', group: 'Demos', hint: 'demo',
+    keywords: ['heart', 'pulse', 'beat', 'cardiac', 'anatomy', 'ventricle', 'atrium', 'aorta', 'blood', 'particles', 'webgl', '3d'],
+    perform: (ctx) => { ctx.close(); navigate('#/demos/pulse') },
+  },
 
   // ---- Actions ----
   {

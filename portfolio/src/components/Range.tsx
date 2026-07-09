@@ -99,6 +99,14 @@ const COMMISSIONS = [
       '64,000 points baked from the BodyParts3D atlas — all 25 vertebrae (C1 atlas through the sacrum), each its own mesh, area-weighted sampled and tagged with a region id, shipped as one 437 KB binary. Pick any vertebra and it lights up. The spinal cord isn’t in the bone atlas, so it’s synthesized as a tube threaded through the vertebral canal — a spline through the vertebra centroids — with a nerve signal running down it in the vertex shader. Same particle engine as Terra, Cortex and Skull, after cortiz2894’s hologram-particles.',
     href: '#/demos/spine',
   },
+  {
+    n: '12',
+    skill: 'GPU particles & rigged interaction',
+    title: 'Pulse — a beating particle heart',
+    caption:
+      '53,000 points from the BodyParts3D atlas — but the atlas ships the heart as one wall mesh, so the four chambers are split out procedurally (superior/inferior for atria vs ventricles, a vessel-defined axis for left vs right) and each beats on its own phase of the cardiac cycle in the vertex shader: atria squeeze first, ventricles follow and squeeze hardest, and a bright surge of blood is ejected up the aorta and pulmonary artery on every systole. Set the heart rate; oxygenated left runs red, deoxygenated right blue. Same particle engine as Cortex, Skull and Spine.',
+    href: '#/demos/pulse',
+  },
 ]
 
 /** A miniature of the watch — warm dark, brass ring, ten past ten. */
@@ -432,7 +440,29 @@ function SpineThumb() {
   )
 }
 
-const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb, '06': TerraThumb, '07': CortexThumb, '08': SkullThumb, '09': BloomThumb, '10': RiffThumb, '11': SpineThumb }
+/** A miniature of the heart — a dotted heart, red left / blue right, mid-beat. */
+function PulseThumb() {
+  const pts: Array<[number, number, boolean]> = []
+  for (let i = 0; i < 150; i++) {
+    const t = (i / 150) * Math.PI * 2
+    const x = 16 * Math.pow(Math.sin(t), 3)
+    const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)
+    const r = 0.5 + ((i * 0.61803) % 1) * 0.5
+    pts.push([140 + x * r * 2.2, 78 - y * r * 2.2, x < 0])
+  }
+  return (
+    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
+      <rect width="280" height="160" rx="10" fill="#0a0607" />
+      {pts.map(([x, y, blue], i) => (
+        <circle key={i} cx={x.toFixed(1)} cy={y.toFixed(1)} r={1.5} fill={blue ? '#3f74d6' : '#e0463a'} opacity={0.55} />
+      ))}
+      {/* aorta stump + ejection spark */}
+      <circle cx="150" cy="30" r="3.5" fill="#ffd24a" />
+    </svg>
+  )
+}
+
+const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb, '06': TerraThumb, '07': CortexThumb, '08': SkullThumb, '09': BloomThumb, '10': RiffThumb, '11': SpineThumb, '12': PulseThumb }
 
 /**
  * The Meridian card's live slot. The heavy three.js chunk loads only when

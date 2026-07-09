@@ -181,6 +181,18 @@
   --color-spine-dot: #d9d3c3;
   --color-spine-cord: #e8b24c;
   --color-spine-hot: #33d1e6;
+
+  /* Pulse (beating heart demo) — cardiac maroon-dark, oxygenated red, deoxygenated blue */
+  --color-pulse-bg: #0a0607;
+  --color-pulse-card: #140b0d;
+  --color-pulse-line: rgb(255 255 255 / 0.08);
+  --color-pulse-line-strong: rgb(255 255 255 / 0.2);
+  --color-pulse-ink: #f3e9e9;
+  --color-pulse-ink-2: #d3bfbf;
+  --color-pulse-muted: #9a8080;
+  --color-pulse-red: #e0463a;
+  --color-pulse-blue: #3f74d6;
+  --color-pulse-hot: #ffd24a;
 }
 
 :root {

@@ -1,0 +1,27 @@
+/* Pulse — demo-scoped cardiac dark. Color tokens live in index.css @theme
+   (pulse-*); this sheet carries what utilities can't. A deep maroon-black so
+   the oxygenated red and deoxygenated blue read like a lit specimen. */
+.pulse-root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+}
+.pulse-root ::selection {
+  background: var(--color-pulse-hot);
+  color: var(--color-pulse-bg);
+}
+.pulse-root :focus-visible {
+  outline-color: var(--color-pulse-hot);
+}
+
+body.pulse-page {
+  background-color: var(--color-pulse-bg);
+}
+
+.pulse-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-pulse-muted);
+}
