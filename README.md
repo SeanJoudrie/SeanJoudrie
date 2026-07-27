@@ -8,7 +8,7 @@ Most recently: [Globalio](https://globalio.app), a geography game with 50+ modes
 - 🎖️ Officer Candidate, U.S. Army National Guard · B.A. Psychology
 - 📫 Reach me: **sjoudrie@gmail.com**
 
-**Work:** [Globalio](https://globalio.app) · [REX](https://seanjoudrie.github.io/REX/) · Flexyn (private beta) · Rap Sheet
+**Work:** [Globalio](https://globalio.app) · [REX](https://seanjoudrie.github.io/REX/) · Flexyn (private beta) · Rap Sheet · [AAR](https://github.com/SeanJoudrie/AARpublic)
 
 <!--
 The portfolio site lives in /portfolio (React + Vite + TypeScript + Tailwind)
