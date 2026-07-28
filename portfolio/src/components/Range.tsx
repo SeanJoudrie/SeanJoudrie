@@ -2,6 +2,8 @@ import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Reveal } from './Reveal'
 import { navigate } from '../lib/router'
+import { DemoPreview } from './DemoPreview'
+import { CortexPreview, SkullPreview, TerraPreview, PulsePreview, SpinePreview } from './previews'
 
 const MeridianLive = lazy(() => import('./MeridianLive'))
 
@@ -464,6 +466,21 @@ function PulseThumb() {
 
 const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb, '06': TerraThumb, '07': CortexThumb, '08': SkullThumb, '09': BloomThumb, '10': RiffThumb, '11': SpineThumb, '12': PulseThumb }
 
+// Display order (by original commission number): brain, dashboard, skull, then
+// the coolest of the rest.
+const ORDER = ['07', '01', '08', '12', '06', '11', '02', '09', '10', '03', '04', '05']
+const byN: Record<string, (typeof COMMISSIONS)[number]> = Object.fromEntries(COMMISSIONS.map((c) => [c.n, c]))
+
+// Cards that show a live, auto-rotating WebGL scene instead of a static SVG
+// (Meridian is handled by its own MeridianLiveThumb below).
+const PREVIEWS: Record<string, (p: { onFail: () => void }) => ReactNode> = {
+  '07': CortexPreview,
+  '08': SkullPreview,
+  '06': TerraPreview,
+  '12': PulsePreview,
+  '11': SpinePreview,
+}
+
 /**
  * The Meridian card's live slot. The heavy three.js chunk loads only when
  * the card nears the viewport; until then (and on devices without WebGL, or
@@ -597,54 +614,79 @@ export function Range() {
         </Reveal>
 
         <div className="mt-10 space-y-6">
-          {COMMISSIONS.map((c, i) => (
-            <Reveal key={c.n} delay={i * 60}>
-              <article className="grid items-center gap-6 rounded-xl border border-line bg-paper-2/60 p-5 sm:grid-cols-[1fr_16rem] sm:p-8">
-                <div>
-                  <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                    <span className="coord">Commission {c.n}</span>
-                    <span className="annotation text-gold">{c.skill}</span>
-                  </div>
-                  <h3 className="mt-2 font-display text-2xl font-semibold tracking-tight text-ink">{c.title}</h3>
-                  <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-ink-2">{c.caption}</p>
-                  <div className="mt-5">
-                    <button
-                      onClick={() => navigate(c.href)}
-                      className="springy rounded-lg bg-accent px-5 py-2.5 font-semibold text-paper hover:bg-accent-deep"
-                    >
-                      Open the live demo →
-                    </button>
-                  </div>
-                </div>
-                {c.n === '02' ? (
-                  <div className="parallax-1 flex flex-col gap-2">
-                    <div
-                      className="plate-lift h-40 overflow-hidden rounded-xl border border-line"
-                      style={{ background: '#0e0d0b' }}
-                    >
-                      <MeridianLiveThumb />
+          {ORDER.map((key, i) => {
+            const c = byN[key]
+            const n = String(i + 1).padStart(2, '0')
+            const Preview = PREVIEWS[key]
+            return (
+              <Reveal key={key} delay={i * 60}>
+                <article className="grid items-center gap-6 rounded-xl border border-line bg-paper-2/60 p-5 sm:grid-cols-[1fr_16rem] sm:p-8">
+                  <div>
+                    <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                      <span className="coord">Commission {n}</span>
+                      <span className="annotation text-gold">{c.skill}</span>
                     </div>
-                    <button
-                      onClick={() => navigate(c.href)}
-                      className="coord text-left text-accent transition-colors hover:text-accent-deep"
-                    >
-                      Click to customize — swap the case, dial, and strap →
-                    </button>
+                    <h3 className="mt-2 font-display text-2xl font-semibold tracking-tight text-ink">{c.title}</h3>
+                    <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-ink-2">{c.caption}</p>
+                    <div className="mt-5">
+                      <button
+                        onClick={() => navigate(c.href)}
+                        className="springy rounded-lg bg-accent px-5 py-2.5 font-semibold text-paper hover:bg-accent-deep"
+                      >
+                        Open the live demo →
+                      </button>
+                    </div>
                   </div>
-                ) : (
-                  <div className="parallax-1">
-                    <button
-                      onClick={() => navigate(c.href)}
-                      aria-label={`Open ${c.title}`}
-                      className="plate-lift block h-40 w-full overflow-hidden rounded-xl border border-line"
-                    >
-                      {THUMBS[c.n]()}
-                    </button>
-                  </div>
-                )}
-              </article>
-            </Reveal>
-          ))}
+                  {key === '02' ? (
+                    <div className="parallax-1 flex flex-col gap-2">
+                      <div
+                        className="plate-lift h-40 overflow-hidden rounded-xl border border-line"
+                        style={{ background: '#0e0d0b' }}
+                      >
+                        <MeridianLiveThumb />
+                      </div>
+                      <button
+                        onClick={() => navigate(c.href)}
+                        className="coord text-left text-accent transition-colors hover:text-accent-deep"
+                      >
+                        Click to customize — swap the case, dial, and strap →
+                      </button>
+                    </div>
+                  ) : Preview ? (
+                    <div className="parallax-1 flex flex-col gap-2">
+                      <div
+                        className="plate-lift h-40 overflow-hidden rounded-xl border border-line"
+                        style={{ background: '#06070b' }}
+                      >
+                        <DemoPreview
+                          href={c.href}
+                          label={c.title}
+                          thumb={THUMBS[key]()}
+                          render={(onFail) => <Preview onFail={onFail} />}
+                        />
+                      </div>
+                      <button
+                        onClick={() => navigate(c.href)}
+                        className="coord text-left text-accent transition-colors hover:text-accent-deep"
+                      >
+                        Live 3D — drag to orbit, click to open →
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="parallax-1">
+                      <button
+                        onClick={() => navigate(c.href)}
+                        aria-label={`Open ${c.title}`}
+                        className="plate-lift block h-40 w-full overflow-hidden rounded-xl border border-line"
+                      >
+                        {THUMBS[key]()}
+                      </button>
+                    </div>
+                  )}
+                </article>
+              </Reveal>
+            )
+          })}
         </div>
       </div>
     </section>

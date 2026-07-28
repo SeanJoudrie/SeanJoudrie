@@ -4,7 +4,7 @@ export function Hero() {
   return (
     <section id="top" className="paper-wash border-b border-line">
       <div className="mx-auto max-w-6xl px-5 pb-10 pt-24 sm:px-8 sm:pb-24 sm:pt-36">
-        <div className="grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
+        <div className="max-w-3xl">
           <div>
             <div
               className="hero-in flex items-center gap-4"
@@ -60,29 +60,6 @@ export function Hero() {
               </a>
             </div>
           </div>
-
-          {/* Lead straight into the story — a compact card that opens About. */}
-          <a
-            href="#about"
-            className="hero-in group block"
-            style={{ '--d': '260ms' } as React.CSSProperties}
-            aria-label="About Sean Joudrie"
-          >
-            <div className="parallax-1 mx-auto max-w-[320px] rounded-xl border border-line bg-paper-2/60 p-6 transition-colors group-hover:border-accent/50">
-              <span className="annotation">About</span>
-              <p className="mt-4 font-display text-2xl font-semibold leading-snug tracking-tight text-ink">
-                Taste, systems, and the discipline to ship.
-              </p>
-              <p className="mt-3 text-sm leading-relaxed text-ink-2">
-                Self-taught designer-builder with a psychology degree and an Army standard —
-                I design for how people behave, then ship it solo.
-              </p>
-              <span className="coord mt-5 inline-flex items-center gap-2 text-accent">
-                Read about me
-                <span className="transition-transform group-hover:translate-y-0.5">↓</span>
-              </span>
-            </div>
-          </a>
         </div>
       </div>
     </section>
