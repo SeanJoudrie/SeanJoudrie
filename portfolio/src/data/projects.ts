@@ -171,6 +171,7 @@ export const projects: Project[] = [
     stack: ['React', 'TypeScript', 'Tailwind', 'PWA'],
     status: 'Live · prototype',
     liveUrl: 'https://seanjoudrie.github.io/birb/',
+    repoUrl: 'https://github.com/SeanJoudrie/birb',
     facts: ['All 420 MA species', 'Effort-adjusted seasonality', 'Three-tap quick-log', 'Generated card art'],
     caseStudy: {
       problem:
