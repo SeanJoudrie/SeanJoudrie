@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 import { Reveal } from './Reveal'
 import { navigate } from '../lib/router'
 import { DemoPreview } from './DemoPreview'
-import { CortexPreview, SkullPreview, TerraPreview, PulsePreview, SpinePreview } from './previews'
+import { CortexPreview, SkullPreview, TerraPreview, PulsePreview, SpinePreview, RiffPreview } from './previews'
 
 const MeridianLive = lazy(() => import('./MeridianLive'))
 
@@ -244,7 +244,7 @@ function SkeinThumb() {
         <line x1="120" y1="104" x2="188" y2="112" />
       </g>
       {/* the highlighted "thread" — a selected relationship */}
-      <line x1="150" y1="40" x2="120" y2="104" stroke="#e8635f" strokeWidth="2.5" />
+      <line className="skein-thread" x1="150" y1="40" x2="120" y2="104" stroke="#e8635f" strokeWidth="2.5" />
       {/* nodes, one per type color */}
       {[
         { x: 96, y: 52, c: '#6aa9f0', r: 11 },  /* person */
@@ -264,9 +264,11 @@ function SkeinThumb() {
       {[22, 40, 58, 92, 120, 150, 176, 210, 236].map((x, i) => (
         <rect key={i} x={x} y={140 - (i % 3) * 2} width="4" height={4 + (i % 3) * 2} rx="1" fill="#928aa6" />
       ))}
-      {/* the brush window */}
-      <rect x="86" y="134" width="86" height="16" rx="3" fill="none" stroke="#e8635f" strokeWidth="1.5" />
-      <rect x="86" y="134" width="86" height="16" fill="#e8635f" fillOpacity="0.14" />
+      {/* the brush window — sweeps to hint the timeline scrubber */}
+      <g className="skein-brush">
+        <rect x="86" y="134" width="86" height="16" rx="3" fill="none" stroke="#e8635f" strokeWidth="1.5" />
+        <rect x="86" y="134" width="86" height="16" fill="#e8635f" fillOpacity="0.14" />
+      </g>
     </svg>
   )
 }
@@ -479,6 +481,7 @@ const PREVIEWS: Record<string, (p: { onFail: () => void }) => ReactNode> = {
   '06': TerraPreview,
   '12': PulsePreview,
   '11': SpinePreview,
+  '10': RiffPreview,
 }
 
 /**
@@ -560,6 +563,7 @@ function AeroThumb() {
         <line key={y} x1="24" x2="256" y1={y} y2={y} stroke="#26303e" strokeWidth="1" />
       ))}
       <polyline
+        className="aero-line"
         points="24,126 60,118 96,108 132,96 168,86 204,74 240,64 256,60"
         fill="none"
         stroke="#e8eefc"
@@ -583,7 +587,7 @@ function AeroThumb() {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="256" cy="60" r="3.5" fill="#e8eefc" stroke="#131a26" strokeWidth="1.5" />
+      <circle className="aero-blip" cx="256" cy="60" r="3.5" fill="#e8eefc" stroke="#131a26" strokeWidth="1.5" />
     </svg>
   )
 }
