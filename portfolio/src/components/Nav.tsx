@@ -6,8 +6,9 @@ import { ThemeSwitcher } from './ThemeSwitcher'
 import { site } from '../data/site'
 
 const links = [
-  { id: 'work', label: 'Work' },
   { id: 'about', label: 'About' },
+  { id: 'range', label: 'Range' },
+  { id: 'work', label: 'Work' },
   { id: 'skills', label: 'Lab' },
   { id: 'contact', label: 'Contact' },
 ]

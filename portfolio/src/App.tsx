@@ -5,6 +5,7 @@ import { Work } from './components/Work'
 import { About } from './components/About'
 import { Lab } from './components/Lab'
 import { Range } from './components/Range'
+import { FlagBreak } from './components/FlagBreak'
 import { Now } from './components/Now'
 import { Contact } from './components/Contact'
 import { Footer } from './components/Footer'
@@ -174,12 +175,13 @@ export default function App() {
         Skip to the work
       </a>
       <Nav />
-      {/* Range-first: the demo shelf is the fastest proof of breadth, so it
-          leads; the deeper case studies and Lab follow. */}
+      {/* Hero leads into About (who), then Range (the commissioned proofs of
+          skill), a flag-game breather, then the full Index of works. */}
       <main aria-label="Portfolio">
         <Hero />
-        <Range />
         <About />
+        <Range />
+        <FlagBreak />
         <Work />
         <Lab />
         <Now />

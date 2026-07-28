@@ -1,5 +1,4 @@
 import { site } from '../data/site'
-import { FlagGame } from './FlagGame'
 
 export function Hero() {
   return (
@@ -31,8 +30,7 @@ export function Hero() {
             >
               Self-taught, from first sketch to shipped code. Most recently: a
               geography game with 50+ ways to play and a 4,000-entry codex —
-              designed, built, and live in a week. Warm up with today’s flag
-              while you’re here.
+              designed, built, and live in a week.
             </p>
 
             <p
@@ -63,9 +61,28 @@ export function Hero() {
             </div>
           </div>
 
-          <div className="hero-in" style={{ '--d': '260ms' } as React.CSSProperties}>
-            <FlagGame />
-          </div>
+          {/* Lead straight into the story — a compact card that opens About. */}
+          <a
+            href="#about"
+            className="hero-in group block"
+            style={{ '--d': '260ms' } as React.CSSProperties}
+            aria-label="About Sean Joudrie"
+          >
+            <div className="parallax-1 mx-auto max-w-[320px] rounded-xl border border-line bg-paper-2/60 p-6 transition-colors group-hover:border-accent/50">
+              <span className="annotation">About</span>
+              <p className="mt-4 font-display text-2xl font-semibold leading-snug tracking-tight text-ink">
+                Taste, systems, and the discipline to ship.
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-ink-2">
+                Self-taught designer-builder with a psychology degree and an Army standard —
+                I design for how people behave, then ship it solo.
+              </p>
+              <span className="coord mt-5 inline-flex items-center gap-2 text-accent">
+                Read about me
+                <span className="transition-transform group-hover:translate-y-0.5">↓</span>
+              </span>
+            </div>
+          </a>
         </div>
       </div>
     </section>
