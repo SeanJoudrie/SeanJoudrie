@@ -141,4 +141,24 @@ export const projects: Project[] = [
         'A calm, anti-doomscroll daily habit — one small thing, done in the real world and kept — live and installable at seanjoudrie.github.io/Curio.',
     },
   },
+  {
+    name: 'AAR',
+    plate: '06',
+    hook: 'Turns military experience into a civilian résumé for one specific job.',
+    description:
+      'Paste a service record and a job posting: every line comes back in recruiter-ready language, with an honest 0–100 fit score, the keyword gaps that posting exposes, and STAR interview answers. Files and photos are parsed on-device; the AI backend deploys separately with your own key.',
+    role: 'Solo — product, design, full-stack + edge functions',
+    stack: ['React', 'TypeScript', 'Tailwind', 'Supabase Edge', 'Claude API'],
+    status: 'In build',
+    repoUrl: 'https://github.com/SeanJoudrie/AARpublic',
+    facts: ['On-device file & photo OCR', 'Streaming Claude backend', 'Never invents unverified facts'],
+    caseStudy: {
+      problem:
+        'A résumé is only good relative to a job — and a service record is written in a language civilian recruiters don’t read. The failure mode isn’t an awkward sentence; it’s a résumé claiming something the veteran didn’t do, discovered in an interview.',
+      built:
+        'A guided translator that rewrites each line against the pasted job description, scores fit honestly, flags missing keywords, and drafts STAR answers — with a hard rule never to invent a number or award. PDF / DOCX / photo intake is parsed in the browser (self-hosted OCR, no upload); the Anthropic key is held server-side in a rate-limited, Turnstile-gated Supabase Edge Function that streams the result.',
+      outcome:
+        'A complete, accessible product — guided wizard, on-device OCR, DOCX/PDF export, and a plain-language interface built for a non-technical user. Public source on GitHub; the live backend deploys with an API key.',
+    },
+  },
 ]

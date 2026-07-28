@@ -113,7 +113,7 @@ export default function MeridianLive({
           enableZoom={false}
           enablePan={false}
           autoRotate={!reducedMotion()}
-          autoRotateSpeed={0.8}
+          autoRotateSpeed={2.0}
           minPolarAngle={0.3}
           maxPolarAngle={Math.PI / 2 + 0.2}
           onStart={onStart}
