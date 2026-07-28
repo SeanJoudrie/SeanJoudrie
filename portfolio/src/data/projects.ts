@@ -161,4 +161,24 @@ export const projects: Project[] = [
         'A complete, accessible product — guided wizard, on-device OCR, DOCX/PDF export, and a plain-language interface built for a non-technical user. Public source on GitHub; the live backend deploys with an API key.',
     },
   },
+  {
+    name: 'Birdwatch',
+    plate: '07',
+    hook: 'A seasonal birding deck — twenty-four birds, and a calendar.',
+    description:
+      'An interactive birding prototype on real Massachusetts data: all 420 state species with authentic rarity and effort-adjusted seasonality. Tap a card for a species profile, three-tap quick-log a sighting, and scrub the calendar to watch the roster shift month to month.',
+    role: 'Solo — product, design, build',
+    stack: ['React', 'TypeScript', 'Tailwind', 'PWA'],
+    status: 'Live · prototype',
+    liveUrl: 'https://seanjoudrie.github.io/birb/',
+    facts: ['All 420 MA species', 'Effort-adjusted seasonality', 'Three-tap quick-log', 'Generated card art'],
+    caseStudy: {
+      problem:
+        'Birding apps are either exhaustive field references or gamified toys — neither makes the year itself the thing you come back to. The design question was whether a small, seasonal deck could carry both real data and a reason to return each month.',
+      built:
+        'A card-based prototype driven entirely by real Massachusetts birding data — 420 species tagged with rarity and effort-adjusted seasonality — rather than hard-coded content. A calendar governs which birds are in season, a three-tap quick-log records a sighting, and card art is generated algorithmically from each species name instead of relying on photos.',
+      outcome:
+        'A focused proof-of-concept — “twenty-four birds, and a calendar” — that shows the core loop: a seasonal roster, fast logging, and a retention hook built from the year itself.',
+    },
+  },
 ]
