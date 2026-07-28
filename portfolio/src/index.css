@@ -703,3 +703,16 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .seed-swap, .seed-swap li, .fade-in, .result-link, .hero-in { animation: none; opacity: 1; }
 }
+
+/* Range thumbnail micro-motion — enough to read as "this is animated/live",
+   killed under reduced-motion. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes aero-draw { from { stroke-dashoffset: 300; } to { stroke-dashoffset: 0; } }
+  .aero-line { stroke-dasharray: 300; animation: aero-draw 2.4s ease-in-out infinite alternate; }
+  @keyframes aero-blip { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+  .aero-blip { animation: aero-blip 1.6s ease-in-out infinite; }
+  @keyframes skein-flow { to { stroke-dashoffset: -16; } }
+  .skein-thread { stroke-dasharray: 4 4; animation: skein-flow 0.9s linear infinite; }
+  @keyframes skein-sweep { 0%, 100% { transform: translateX(-22px); } 50% { transform: translateX(22px); } }
+  .skein-brush { animation: skein-sweep 4.5s ease-in-out infinite; }
+}

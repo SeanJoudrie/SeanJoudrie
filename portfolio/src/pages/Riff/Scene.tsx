@@ -167,9 +167,10 @@ function Capo({ fret, onGrab }: { fret: number; onGrab: () => void }) {
 }
 
 function Guitar({
-  bodyColor, accentColor, capo, plugStage, reduce, onPluck, onStrum, onJackClick, onCapoDrag, jackAnchor,
+  bodyColor, accentColor, capo, plugStage, reduce, spin, onPluck, onStrum, onJackClick, onCapoDrag, jackAnchor,
 }: {
   bodyColor: string; accentColor: string; capo: number; plugStage: PlugStage; reduce: boolean
+  spin?: boolean
   onPluck: (i: number, fret: number) => void; onStrum: () => void; onJackClick: () => void
   onCapoDrag: (fret: number) => void
   jackAnchor: React.MutableRefObject<THREE.Object3D | null>
@@ -224,8 +225,13 @@ function Guitar({
   useFrame(({ clock }) => {
     // gentle idle sway invites interaction; frozen once plugged / reduced-motion
     if (outer.current) {
-      const idle = plugStage === 'unplugged' && !reduce
-      outer.current.rotation.y = GUITAR_YAW + (idle ? Math.sin(clock.elapsedTime * 0.5) * 0.05 : 0)
+      if (spin && !reduce) {
+        // Range-card preview: a full slow turntable rotation.
+        outer.current.rotation.y = GUITAR_YAW + clock.elapsedTime * 0.6
+      } else {
+        const idle = plugStage === 'unplugged' && !reduce
+        outer.current.rotation.y = GUITAR_YAW + (idle ? Math.sin(clock.elapsedTime * 0.5) * 0.05 : 0)
+      }
     }
     // string shiver + flash on pluck
     const now = performance.now()
@@ -439,10 +445,11 @@ function Rig({ apiRef }: { apiRef?: React.MutableRefObject<SceneApi | null> }) {
 }
 
 export default function Scene({
-  bodyColor, accentColor, tone, plugStage, capo, reduce, apiRef,
+  bodyColor, accentColor, tone, plugStage, capo, reduce, spin, apiRef,
   onPluck, onStrum, onAmpClick, onJackClick, onCapoDrag, onReady, onFail,
 }: {
   bodyColor: string; accentColor: string; tone: string; plugStage: PlugStage; capo: number; reduce: boolean
+  spin?: boolean
   apiRef?: React.MutableRefObject<SceneApi | null>
   onPluck: (i: number, fret: number) => void; onStrum: () => void; onAmpClick: () => void
   onJackClick: (which: 'guitar' | 'amp') => void
@@ -468,7 +475,7 @@ export default function Scene({
       <directionalLight position={[3.5, 4, 3]} intensity={0.7} color="#fff4e6" />
       <directionalLight position={[-4, 2, -2]} intensity={0.35} color="#bcd3ff" />
       <Guitar
-        bodyColor={bodyColor} accentColor={accentColor} capo={capo} plugStage={plugStage} reduce={reduce}
+        bodyColor={bodyColor} accentColor={accentColor} capo={capo} plugStage={plugStage} reduce={reduce} spin={spin}
         onPluck={onPluck} onStrum={onStrum} onJackClick={() => onJackClick('guitar')} onCapoDrag={onCapoDrag} jackAnchor={guitarJack}
       />
       <Amp tone={tone} plugStage={plugStage} reduce={reduce} onClick={onAmpClick} onJackClick={() => onJackClick('amp')} jackAnchor={ampJack} />

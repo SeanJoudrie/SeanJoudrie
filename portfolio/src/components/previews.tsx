@@ -62,6 +62,29 @@ export function PulsePreview({ onFail }: { onFail: () => void }) {
   return <PulseScene regions={regions as any} selected={-1} bpmRef={bpmRef} onReady={noop} onFail={onFail} />
 }
 
+// ── Riff (guitar) ───────────────────────────────────────────────────────────
+const RiffScene = lazy(() => import('../pages/Riff/Scene'))
+export function RiffPreview({ onFail }: { onFail: () => void }) {
+  return (
+    <RiffScene
+      bodyColor="original"
+      accentColor="original"
+      tone="clean"
+      plugStage="unplugged"
+      capo={0}
+      reduce={false}
+      spin
+      onPluck={noop}
+      onStrum={noop}
+      onAmpClick={noop}
+      onJackClick={noop}
+      onCapoDrag={noop}
+      onReady={noop}
+      onFail={onFail}
+    />
+  )
+}
+
 // ── Spine ─────────────────────────────────────────────────────────────────
 const SpineScene = lazy(() => import('../pages/Spine/Scene'))
 export function SpinePreview({ onFail }: { onFail: () => void }) {
