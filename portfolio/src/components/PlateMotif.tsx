@@ -10,6 +10,7 @@ export function PlateMotif({ name }: { name: string }) {
     name === 'Curio' ? <CurioMotif /> :
     name === 'AAR' ? <AarMotif /> :
     name === 'Birdwatch' ? <BirdwatchMotif /> :
+    name === 'DroneDome' ? <DroneDomeMotif /> :
     <RapSheetMotif />
 
   return (
@@ -198,6 +199,53 @@ function BirdwatchMotif() {
             fill={i === 4 ? 'var(--color-accent)' : 'var(--color-paper-3)'}
             stroke="var(--color-ink)" strokeOpacity="0.18" />
         ))}
+      </g>
+    </svg>
+  )
+}
+
+/** DroneDome — a quadcopter bodged from mismatched parts, beside a spec sheet
+    with one failing readout. */
+function DroneDomeMotif() {
+  const rotors: Array<[number, number]> = [
+    [64, 66], [156, 66], [64, 134], [156, 134],
+  ]
+  return (
+    <svg viewBox="0 0 320 200" className="h-full w-full" aria-hidden>
+      {/* the drone */}
+      <g transform="translate(0, 0)">
+        {/* arms */}
+        <g stroke="var(--color-ink)" strokeOpacity="0.4" strokeWidth="4" strokeLinecap="round">
+          <line x1="64" y1="66" x2="156" y2="134" />
+          <line x1="156" y1="66" x2="64" y2="134" />
+        </g>
+        {/* rotors — dashed rings read as spinning */}
+        {rotors.map(([x, y], i) => (
+          <circle key={i} cx={x} cy={y} r="16" fill="none" stroke="var(--color-ink)" strokeOpacity="0.35" strokeWidth="2.5" strokeDasharray="4 5" />
+        ))}
+        {/* a salvaged wing bolted on — the mismatched part, in accent */}
+        <path d="M40 96 l-30 -6 l0 20 l30 -6 z" fill="var(--color-accent)" opacity="0.85" />
+        {/* body */}
+        <rect x="94" y="84" width="32" height="32" rx="7" fill="var(--color-paper-3)" stroke="var(--color-ink)" strokeOpacity="0.4" />
+        <circle cx="110" cy="100" r="4" fill="var(--color-accent)" />
+      </g>
+      {/* spec sheet — thrust / lift / range, last one failing red */}
+      <g transform="translate(214, 40)">
+        <rect width="90" height="120" rx="6" fill="var(--color-paper)" stroke="var(--color-ink)" strokeOpacity="0.28" />
+        <text x="14" y="24" fontFamily="var(--font-mono)" fontSize="9" letterSpacing="2" fill="var(--color-faint)">SPEC</text>
+        {[
+          { y: 40, w: 58, c: 'var(--color-paper-3)' },
+          { y: 60, w: 44, c: 'var(--color-paper-3)' },
+          { y: 80, w: 62, c: 'var(--color-paper-3)' },
+        ].map((b) => (
+          <g key={b.y}>
+            <rect x="14" y={b.y} width="12" height="6" rx="2" fill="var(--color-faint)" opacity="0.5" />
+            <rect x="30" y={b.y} width={b.w} height="6" rx="3" fill={b.c} />
+          </g>
+        ))}
+        {/* the failing readout */}
+        <rect x="14" y="100" width="62" height="10" rx="3" fill="none" stroke="var(--color-accent)" strokeWidth="1.5" />
+        <text x="45" y="108" textAnchor="middle" fontFamily="var(--font-mono)" fontWeight="700" fontSize="8" letterSpacing="1" fill="var(--color-accent)">WON’T FLY</text>
       </g>
     </svg>
   )
