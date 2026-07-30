@@ -182,4 +182,25 @@ export const projects: Project[] = [
         'A focused proof-of-concept — “twenty-four birds, and a calendar” — that shows the core loop: a seasonal roster, fast logging, and a retention hook built from the year itself.',
     },
   },
+  {
+    name: 'DroneDome',
+    plate: '08',
+    hook: 'Build a drone from parts salvaged off 35 real aircraft — then get told exactly how badly it flies.',
+    description:
+      'A 3D drone-building sandbox. Pick a real airframe — an MQ-9 Reaper, an RQ-4 Global Hawk, NASA’s Ingenuity — strip its wings off, bolt a quadcopter’s rotors on, scale it 4× and fly it on Mars. A live spec sheet computes thrust, lift, range and endurance from real formulas and tells you why the thing won’t get off the ground. Nothing is forbidden; an unflyable abomination is a valid build.',
+    role: 'Solo — product, 3D, physics, asset pipeline',
+    stack: ['React', 'TypeScript', 'three.js', 'Vite'],
+    status: 'Live · beta',
+    liveUrl: 'https://seanjoudrie.github.io/DroneDome/',
+    repoUrl: 'https://github.com/SeanJoudrie/DroneDome',
+    facts: ['35 real airframes', '4 environments — sea level → Mars', 'Every part hot-swappable', 'Presets within 2× of published specs'],
+    caseStudy: {
+      problem:
+        'Treat aircraft as Lego: no “quadcopter mode” vs “aeroplane mode”, just a body plus slots for wings, tail, rotors, gear, hardpoints and payload — any slot fillable from any aircraft in the catalog. The hard part was the models: every mesh is someone else’s published export (NASA 3D Resources, Gazebo Fuel, PX4, Sketchfab), and a Sketchfab export typically arrives as thirty nodes all named defaultMaterial — nothing says which one is a wing.',
+      built:
+        'A geometric classifier works it out — the bounding box gives span/length/vertical axes, mirrored meshes get paired, and symmetric pairs plus position identify tails, gear and pylons. Where a model is welded (the Global Hawk’s wings are fused into the fuselage) the part is defined as a clipping box and cut away at runtime, which is also what lets it be moved and angled like a real part. Borrowed parts are rescaled to fit and the physics shares the scale factor, so the render and the numbers always agree. The physics is real but deliberately simple: momentum theory inverted for static rotor thrust with a figure of merit that decays in thin air, a parabolic drag polar with top speed solved by bisection, and Breguet range/endurance so the craft lightens as it burns fuel.',
+      outcome:
+        'A zero-backend browser sandbox — 35 airframes across 4 environments, every part hot-swappable across the whole catalog — with an automated asset pipeline (four upstream sources, geometric classification, decimation: 31 MB → 3.1 MB) and six CI gates, three of which drive the built app with Playwright. Every preset is checked against its manufacturer’s published figures in CI and lands within 2×.',
+    },
+  },
 ]
