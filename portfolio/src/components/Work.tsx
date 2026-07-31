@@ -53,9 +53,9 @@ export function Work() {
         </Reveal>
 
         {/* Every shipped product at equal weight — the Range shelf above
-            carries the spotlight; this is the index. */}
+            carries the spotlight; this is the index. Ordered by plate number. */}
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {projects.map((p, i) => (
+          {[...projects].sort((a, b) => a.plate.localeCompare(b.plate)).map((p, i) => (
             <Reveal key={p.name} delay={i * 60} as="div" className="reveal-settle">
               <Plate project={p} onOpen={open} />
             </Reveal>

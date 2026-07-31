@@ -470,7 +470,10 @@ const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': Meridia
 
 // Display order (by original commission number): brain, dashboard, skull, then
 // the coolest of the rest.
-const ORDER = ['07', '01', '08', '12', '06', '11', '02', '09', '10', '03', '04', '05']
+// brain → watch → skull → guitar → earth → rose → heart → dashboard → spine →
+// skein → ledger → palisade: open on the biggest wow, alternate particle/solid
+// so nothing clumps, and land the from-scratch UI/data demos as the closer.
+const ORDER = ['07', '02', '08', '10', '06', '09', '12', '01', '11', '05', '03', '04']
 const byN: Record<string, (typeof COMMISSIONS)[number]> = Object.fromEntries(COMMISSIONS.map((c) => [c.n, c]))
 
 // Cards that show a live, auto-rotating WebGL scene instead of a static SVG

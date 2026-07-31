@@ -59,13 +59,13 @@ export const projects: Project[] = [
   },
   {
     name: 'Flexyn',
-    plate: '02',
+    plate: '03',
     hook: 'A social fitness app that turns training into a progression loop.',
     description:
       'A 5,000+ exercise database, nutrition scanning, progress tracking, and a live social feed — every workout earns XP and climbs leaderboards. The next flagship; in private beta now.',
     role: 'Co-founder — product & design',
     stack: ['React', 'Supabase', 'Tailwind', 'PWA'],
-    status: 'In build · private beta',
+    status: 'Private beta',
     facts: ['5,000+ exercise database', 'Row-level security throughout', 'Web-push from DB triggers'],
     screenshot: 'shots/flexyn-plate.webp',
     caseStudy: {
@@ -79,13 +79,13 @@ export const projects: Project[] = [
   },
   {
     name: 'REX',
-    plate: '03',
+    plate: '04',
     hook: 'Swipe to decide what to watch — then go watch it.',
     description:
       'A swipe-first movie & TV picker on live TMDB data. Every swipe teaches an on-device taste model; the goal is a fast, confident pick, not endless scrolling.',
     role: 'Solo — product, recommendation engine, frontend',
     stack: ['React', 'TypeScript', 'Supabase', 'Tailwind'],
-    status: 'Live beta',
+    status: 'Beta',
     liveUrl: 'https://seanjoudrie.github.io/REX/',
     repoUrl: 'https://github.com/SeanJoudrie/REX',
     facts: ['On-device taste model', 'Two-phone match sessions', 'Keys proxied server-side'],
@@ -102,7 +102,7 @@ export const projects: Project[] = [
   },
   {
     name: 'Rap Sheet',
-    plate: '04',
+    plate: '07',
     hook: 'A party card game that keeps a criminal record on the table.',
     description:
       'Pass-the-phone party chaos — players draw charges, rack up priors, and end on a shareable WANTED-poster recap. Peer-to-peer multiplayer with no server at all.',
@@ -122,13 +122,13 @@ export const projects: Project[] = [
   },
   {
     name: 'Curio',
-    plate: '05',
+    plate: '06',
     hook: 'One small real-world skill a day — do it, stamp how it felt, collect it.',
     description:
       'A daily cabinet of curiosities: each day serves one tiny hands-on challenge — beatbox a rhythm, roll an omelette, learn a phrase, palm a coin — most with optional level-ups. Do it in the real world, stamp how it went, and add it to your cabinet. Swipe less, do more. Installable PWA, works offline.',
     role: 'Solo — product, design, build',
     stack: ['React', 'TypeScript', 'Tailwind', 'PWA'],
-    status: 'Live',
+    status: 'Beta',
     liveUrl: 'https://seanjoudrie.github.io/Curio/',
     repoUrl: 'https://github.com/SeanJoudrie/Curio',
     facts: ['A new challenge every day', 'Skills across many crafts', 'Stamp-and-collect ritual', 'Installable · offline'],
@@ -143,7 +143,7 @@ export const projects: Project[] = [
   },
   {
     name: 'AAR',
-    plate: '06',
+    plate: '05',
     hook: 'Turns military experience into a civilian résumé for one specific job.',
     description:
       'Paste a service record and a job posting: every line comes back in recruiter-ready language, with an honest 0–100 fit score, the keyword gaps that posting exposes, and STAR interview answers. Files and photos are parsed on-device; the AI backend deploys separately with your own key.',
@@ -163,13 +163,13 @@ export const projects: Project[] = [
   },
   {
     name: 'Birdwatch',
-    plate: '07',
+    plate: '08',
     hook: 'A seasonal birding deck — twenty-four birds, and a calendar.',
     description:
       'An interactive birding prototype on real Massachusetts data: all 420 state species with authentic rarity and effort-adjusted seasonality. Tap a card for a species profile, three-tap quick-log a sighting, and scrub the calendar to watch the roster shift month to month.',
     role: 'Solo — product, design, build',
     stack: ['React', 'TypeScript', 'Tailwind', 'PWA'],
-    status: 'Live · prototype',
+    status: 'Prototype',
     liveUrl: 'https://seanjoudrie.github.io/birb/',
     repoUrl: 'https://github.com/SeanJoudrie/birb',
     facts: ['All 420 MA species', 'Effort-adjusted seasonality', 'Three-tap quick-log', 'Generated card art'],
@@ -184,13 +184,13 @@ export const projects: Project[] = [
   },
   {
     name: 'DroneDome',
-    plate: '08',
+    plate: '02',
     hook: 'Build a drone from parts salvaged off 35 real aircraft — then get told exactly how badly it flies.',
     description:
       'A 3D drone-building sandbox. Pick a real airframe — an MQ-9 Reaper, an RQ-4 Global Hawk, NASA’s Ingenuity — strip its wings off, bolt a quadcopter’s rotors on, scale it 4× and fly it on Mars. A live spec sheet computes thrust, lift, range and endurance from real formulas and tells you why the thing won’t get off the ground. Nothing is forbidden; an unflyable abomination is a valid build.',
     role: 'Solo — product, 3D, physics, asset pipeline',
     stack: ['React', 'TypeScript', 'three.js', 'Vite'],
-    status: 'Live · beta',
+    status: 'Beta',
     liveUrl: 'https://seanjoudrie.github.io/DroneDome/',
     repoUrl: 'https://github.com/SeanJoudrie/DroneDome',
     facts: ['35 real airframes', '4 environments — sea level → Mars', 'Every part hot-swappable', 'Presets within 2× of published specs'],
