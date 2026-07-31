@@ -181,9 +181,9 @@ export default function App() {
         <Hero />
         <About />
         <Range />
-        <FlagBreak />
         <Work />
         <Lab />
+        <FlagBreak />
         <Now />
         <Contact />
       </main>
