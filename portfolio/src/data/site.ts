@@ -17,6 +17,28 @@ export const site = {
   // Résumé lives at public/resume.pdf.
   hasResume: true,
   resumeUrl: 'resume.pdf',
+
+  /* ---- Prose ------------------------------------------------------------
+     The page is a client-rendered SPA, so anything that only exists inside
+     JSX is invisible to crawlers, link previews, and AI assistants — they
+     fetch the HTML and never run React. Copy lives here instead so the
+     no-JavaScript summary baked into index.html at build time
+     (plugins/static-fallback.ts) and the React UI always say the same thing.
+     ---------------------------------------------------------------------- */
+
+  // Plain-text twin of the Hero's stylized <h1>; keep the two in step.
+  headline: 'I design interfaces you can play.',
+  intro:
+    'Self-taught, from first sketch to shipped code. Most recently: a geography game with 50+ ways to play and a 4,000-entry codex — designed, built, and live in a week.',
+  seeking:
+    'Looking for: product / UI design & design-engineer roles — full-time or contract.',
+  bio: [
+    "I'm a self-taught designer-builder with a psychology degree — I design for how people actually behave, then measure whether it worked. Everything in the index above I conceived, designed, and shipped myself, from the first sketch to the deployed build.",
+    "I build with AI agents the way a director works a crew: the architecture, the taste, and the quality bar are mine — the typing is negotiable. That workflow took Globalio from an empty repo to a live game with 50+ modes in a week, and it's how the next dozen apps on this index will get built.",
+    "The standard comes from the Army — I'm a National Guard officer candidate, and “good enough” isn't a phrase that survives there.",
+  ],
+  contactBlurb:
+    'Design, front-end, and product-build roles or freelance work. One email reaches me — I reply within 24–48 hours.',
 }
 
 /**

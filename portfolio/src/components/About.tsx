@@ -46,26 +46,9 @@ export function About() {
                 </figcaption>
               </figure>
               <div className="space-y-5">
-                <p>
-                  I&apos;m a self-taught designer-builder with a psychology
-                  degree — I design for how people actually behave, then measure
-                  whether it worked. Everything in the index above I conceived,
-                  designed, and shipped myself, from the first sketch to the
-                  deployed build.
-                </p>
-                <p>
-                  I build with AI agents the way a director works a crew: the
-                  architecture, the taste, and the quality bar are mine — the
-                  typing is negotiable. That workflow took Globalio from an
-                  empty repo to a live game with 50+ modes in a week, and
-                  it&apos;s how the next dozen apps on this index will get
-                  built.
-                </p>
-                <p>
-                  The standard comes from the Army — I&apos;m a National Guard
-                  officer candidate, and &ldquo;good enough&rdquo; isn&apos;t a
-                  phrase that survives there.
-                </p>
+                {site.bio.map((paragraph) => (
+                  <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+                ))}
               </div>
             </div>
           </Reveal>

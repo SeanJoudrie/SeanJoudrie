@@ -26,8 +26,7 @@ export function Contact() {
             <em className="text-accent">well</em>?
           </h2>
           <p className="mx-auto mt-5 max-w-md text-lg text-ink-2">
-            Design, front-end, and product-build roles or freelance work. One
-            email reaches me — I reply within 24–48 hours.
+            {site.contactBlurb}
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
