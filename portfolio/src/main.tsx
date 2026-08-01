@@ -3,7 +3,14 @@ import { createRoot } from 'react-dom/client'
 import App from './App'
 import './index.css'
 
-createRoot(document.getElementById('root')!).render(
+const container = document.getElementById('root')!
+
+// #root ships with a static, crawlable text version of the site inside it
+// (see plugins/static-fallback.ts) so the page is readable without JavaScript.
+// Drop it before React takes over the container.
+container.replaceChildren()
+
+createRoot(container).render(
   <StrictMode>
     <App />
   </StrictMode>,

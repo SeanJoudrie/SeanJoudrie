@@ -15,6 +15,8 @@ export function Hero() {
               <span className="annotation hidden whitespace-nowrap sm:block">{site.availability}</span>
             </div>
 
+            {/* Set as display type here, in plain text as site.headline —
+                change one, change the other. */}
             <h1
               className="hero-in mt-8 font-display text-[2.6rem] font-semibold leading-[1.04] tracking-tight text-ink sm:text-6xl"
               style={{ '--d': '60ms' } as React.CSSProperties}
@@ -28,17 +30,14 @@ export function Hero() {
               className="hero-in mt-6 max-w-xl text-lg leading-relaxed text-ink-2"
               style={{ '--d': '120ms' } as React.CSSProperties}
             >
-              Self-taught, from first sketch to shipped code. Most recently: a
-              geography game with 50+ ways to play and a 4,000-entry codex —
-              designed, built, and live in a week.
+              {site.intro}
             </p>
 
             <p
               className="hero-in mt-4 text-sm font-medium text-faint"
               style={{ '--d': '160ms' } as React.CSSProperties}
             >
-              Looking for: product / UI design &amp; design-engineer roles —
-              full-time or contract.
+              {site.seeking}
             </p>
 
             <div
