@@ -31,8 +31,14 @@ const SEG_DESKTOP = 512
 const SEG_MOBILE = 256
 const VIEWSHED_DESKTOP = 1024
 const VIEWSHED_MOBILE = 512
-const STEPS_DESKTOP = 256
-const STEPS_MOBILE = 128
+/**
+ * March steps. Deliberately NOT reduced on mobile: step count is the accuracy
+ * knob, and halving it made the phone report 12.7% visible where the desktop
+ * said 11.1% — a coarser march steps over small occluders and over-reports.
+ * Target *resolution* is the thing that scales down instead, which costs
+ * boundary sharpness rather than correctness.
+ */
+const STEPS = 256
 
 /** Minor contour interval, metres. Index (heavy) contours every 5th. */
 const CONTOUR_M = 100
@@ -447,7 +453,7 @@ function Content({
       new Viewshed(heightTex, meta, {
         size: small ? VIEWSHED_MOBILE : VIEWSHED_DESKTOP,
         statsSize: 256,
-        steps: small ? STEPS_MOBILE : STEPS_DESKTOP,
+        steps: STEPS,
       }),
     [heightTex, meta, small],
   )
@@ -537,10 +543,18 @@ export default function Scene({
 
   const diag = Math.hypot(meta.widthM, meta.heightM) * M_TO_WORLD
 
+  // A portrait viewport has a narrow horizontal FOV, so the same camera that
+  // frames well on a laptop leaves a third of a phone screen as empty sky.
+  // Dolly in and flatten the angle when the viewport is taller than it is wide.
+  const portrait = typeof window !== 'undefined' && window.innerHeight > window.innerWidth
+  const camStart: [number, number, number] = portrait
+    ? [0, diag * 0.30, diag * 0.42]
+    : [0, diag * 0.45, diag * 0.62]
+
   return (
     <Canvas
       dpr={[1, 1.75]}
-      camera={{ position: [0, diag * 0.45, diag * 0.62], fov: 42, near: 0.05, far: diag * 6 }}
+      camera={{ position: camStart, fov: 42, near: 0.05, far: diag * 6 }}
       gl={{ antialias: true, powerPreference: 'high-performance' }}
       onCreated={({ gl }) => gl.setClearColor('#0b0d10')}
     >

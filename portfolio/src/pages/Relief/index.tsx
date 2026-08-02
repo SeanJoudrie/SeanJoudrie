@@ -68,6 +68,26 @@ function Mark() {
   )
 }
 
+/** Method and attribution, shared by the mobile disclosure and the desktop block. */
+function Notes() {
+  return (
+    <>
+      <p>
+        <span className="text-relief-ink-2">Method.</span> A viewshed marks every cell whose
+        vertical angle from the observer exceeds the maximum angle of all ground between them —
+        computed here as a GPU reference-angle pass, corrected for Earth curvature (d²/2R) and
+        atmospheric refraction. This is a bare-earth surface model: vegetation, structures and
+        haze are not accounted for.
+      </p>
+      <p>
+        Elevation data: Copernicus GLO-30 DEM, © European Space Agency / Copernicus Programme,
+        accessed via the AWS open-data mirror. Terrain rendering and the viewshed algorithm are
+        original.
+      </p>
+    </>
+  )
+}
+
 function Stat({ label, value, unit }: { label: string; value: string; unit?: string }) {
   return (
     <div className="flex items-baseline justify-between gap-4">
@@ -199,7 +219,7 @@ export default function Relief() {
                   {/* Control panel — a side card on desktop, a bottom sheet on
                       phones so it never covers the terrain it describes. */}
                   <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 p-3 sm:inset-auto sm:left-4 sm:top-4 sm:w-72 sm:p-0">
-                    <div className="pointer-events-auto rounded-xl border border-relief-line bg-relief-card/92 p-4 backdrop-blur">
+                    <div className="pointer-events-auto rounded-xl border border-relief-line bg-relief-card/92 p-3 backdrop-blur sm:p-4">
                       <div className="flex items-center justify-between">
                         <span className="relief-label">Observer</span>
                         <button
@@ -213,7 +233,7 @@ export default function Relief() {
                         </button>
                       </div>
 
-                      <label className="mt-4 block">
+                      <label className="mt-3 block sm:mt-4">
                         <span className="flex items-baseline justify-between">
                           <span className="text-sm text-relief-ink-2">Height above ground</span>
                           <span className="relief-num text-sm text-relief-visible">
@@ -244,7 +264,7 @@ export default function Relief() {
                         </span>
                       </label>
 
-                      <label className="mt-4 flex items-center justify-between gap-3">
+                      <label className="mt-3 flex items-center justify-between gap-3 sm:mt-4">
                         <span className="text-sm text-relief-ink-2">
                           Refraction correction
                           <span className="ml-1 text-relief-muted">(k = 0.13)</span>
@@ -257,13 +277,13 @@ export default function Relief() {
                         />
                       </label>
 
-                      <div className="mt-4 space-y-1.5 border-t border-relief-line pt-3">
+                      <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 border-t border-relief-line pt-3 sm:mt-4 sm:block sm:space-y-1.5">
                         {observer && (
-                          <Stat label="Ground elev." value={Math.round(observer.ground).toLocaleString()} unit="m" />
+                          <Stat label="Elev." value={Math.round(observer.ground).toLocaleString()} unit="m" />
                         )}
                         {stats && (
                           <>
-                            <Stat label="Visible area" value={stats.visibleKm2.toFixed(1)} unit="km²" />
+                            <Stat label="Visible" value={stats.visibleKm2.toFixed(1)} unit="km²" />
                             <Stat
                               label="Of frame"
                               value={(stats.visibleFraction * 100).toFixed(1)}
@@ -274,7 +294,7 @@ export default function Relief() {
                         )}
                       </div>
 
-                      <p className="mt-3 text-[0.68rem] leading-relaxed text-relief-muted">
+                      <p className="mt-3 hidden text-[0.68rem] leading-relaxed text-relief-muted sm:block">
                         Click the terrain to move the observer, or drag the marker. Drag
                         elsewhere to orbit, scroll to zoom. Arrow keys nudge; +/− change height.
                       </p>
@@ -291,19 +311,19 @@ export default function Relief() {
         )}
       </main>
 
-      <footer className="z-10 border-t border-relief-line px-4 py-3 text-xs leading-relaxed text-relief-muted sm:px-6">
-        <p>
-          <span className="text-relief-ink-2">Method.</span> A viewshed marks every cell whose
-          vertical angle from the observer exceeds the maximum angle of all ground between them
-          — computed here as a GPU reference-angle pass, corrected for Earth curvature
-          (d²/2R) and atmospheric refraction. This is a bare-earth surface model: vegetation,
-          structures and haze are not accounted for.
-        </p>
-        <p className="mt-1.5">
-          Elevation data: Copernicus GLO-30 DEM, © European Space Agency / Copernicus
-          Programme, accessed via the AWS open-data mirror. Terrain rendering and the viewshed
-          algorithm are original.
-        </p>
+      {/* On a phone this note runs to roughly 400 px and squeezed the scene it
+          describes down to a sliver, so it collapses behind a disclosure there
+          and stays open from sm up. */}
+      <footer className="z-10 border-t border-relief-line px-4 py-2.5 text-xs leading-relaxed text-relief-muted sm:px-6 sm:py-3">
+        <details className="sm:hidden">
+          <summary className="cursor-pointer font-medium text-relief-ink-2">Method &amp; sources</summary>
+          <div className="mt-2 space-y-1.5">
+            <Notes />
+          </div>
+        </details>
+        <div className="hidden space-y-1.5 sm:block">
+          <Notes />
+        </div>
       </footer>
     </div>
   )
