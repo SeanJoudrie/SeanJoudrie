@@ -89,6 +89,23 @@ function Notes() {
   )
 }
 
+/** The elevation model is ~3 MB; a bare spinner reads as broken on a phone. */
+function Loading({ progress }: { progress: number }) {
+  return (
+    <div className="w-52 text-center">
+      <span className="relief-label">
+        {progress > 0 && progress < 1 ? `loading elevation — ${Math.round(progress * 100)}%` : 'loading terrain…'}
+      </span>
+      <span className="mt-2 block h-px w-full bg-relief-line">
+        <span
+          className="block h-px bg-relief-visible transition-[width] duration-150"
+          style={{ width: `${Math.max(progress, 0.02) * 100}%` }}
+        />
+      </span>
+    </div>
+  )
+}
+
 function Stat({ label, value, unit }: { label: string; value: string; unit?: string }) {
   return (
     <div className="flex items-baseline justify-between gap-4">
@@ -112,6 +129,7 @@ export default function Relief() {
   const [height, setHeight] = useState(25)
   const [refraction, setRefraction] = useState(true)
   const [stats, setStats] = useState<ViewshedStats | null>(null)
+  const [progress, setProgress] = useState(0)
 
   const handleFail = useCallback(() => setLost(true), [])
 
@@ -252,7 +270,7 @@ export default function Relief() {
             <Suspense
               fallback={
                 <div className="grid flex-1 place-items-center">
-                  <span className="relief-label">loading terrain…</span>
+                  <Loading progress={progress} />
                 </div>
               }
             >
@@ -269,6 +287,7 @@ export default function Relief() {
                       onStats={setStats}
                       onReady={handleReady}
                       onFail={handleFail}
+                      onProgress={setProgress}
                     />
                   </div>
 
@@ -423,7 +442,7 @@ export default function Relief() {
                 </>
               ) : (
                 <div className="grid flex-1 place-items-center">
-                  <span className="relief-label">loading terrain…</span>
+                  <Loading progress={progress} />
                 </div>
               )}
             </Suspense>

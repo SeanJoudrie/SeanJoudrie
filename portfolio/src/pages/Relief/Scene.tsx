@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { CameraControls } from '@react-three/drei'
 import type { ReliefMeta } from './meta'
-import { loadHeightfield } from './heightfield'
+import { loadHeightmap } from './heightfield'
 import type { Heightfield } from './heightfield'
 import { Viewshed } from './viewshed'
 import type { ViewshedStats } from './viewshed'
@@ -503,6 +503,7 @@ export default function Scene({
   onStats,
   onReady,
   onFail,
+  onProgress,
 }: {
   meta: ReliefMeta
   observers: Observer[]
@@ -513,6 +514,7 @@ export default function Scene({
   onStats: (s: ViewshedStats) => void
   onReady?: (field: Heightfield) => void
   onFail?: () => void
+  onProgress?: (fraction: number) => void
 }) {
   const controls = useRef<CameraControls | null>(null)
   const [heightTex, setHeightTex] = useState<THREE.Texture | null>(null)
@@ -532,32 +534,14 @@ export default function Scene({
     if (loadedRef.current) return
     loadedRef.current = true
     let cancelled = false
-    const loader = new THREE.TextureLoader()
-    loader.load(
-      HEIGHTMAP_URL,
-      (tex) => {
+    loadHeightmap(HEIGHTMAP_URL, meta, (loaded, total) => {
+      if (!cancelled) onProgress?.(total ? loaded / total : 0)
+    })
+      .then(({ texture, field }) => {
         if (cancelled) return
-        // NearestFilter + NoColorSpace: the viewshed march and the normal
-        // differences both need the raw sample. Interpolating or sRGB-decoding
-        // a Terrarium triple across a G-channel wrap yields a garbage
-        // elevation spike of hundreds of metres.
-        tex.magFilter = THREE.NearestFilter
-        tex.minFilter = THREE.NearestFilter
-        tex.generateMipmaps = false
-        tex.wrapS = THREE.ClampToEdgeWrapping
-        tex.wrapT = THREE.ClampToEdgeWrapping
-        tex.colorSpace = THREE.NoColorSpace
-        tex.needsUpdate = true
-        setHeightTex(tex)
-      },
-      undefined,
-      () => !cancelled && onFail?.(),
-    )
-    loadHeightfield(HEIGHTMAP_URL, meta)
-      .then((f) => {
-        if (cancelled) return
-        setField(f)
-        onReady?.(f)
+        setHeightTex(texture)
+        setField(field)
+        onReady?.(field)
       })
       .catch(() => !cancelled && onFail?.())
     return () => {
