@@ -27,6 +27,7 @@ const Bloom = lazy(() => import('./pages/Bloom'))
 const Riff = lazy(() => import('./pages/Riff'))
 const Spine = lazy(() => import('./pages/Spine'))
 const Pulse = lazy(() => import('./pages/Pulse'))
+const Relief = lazy(() => import('./pages/Relief'))
 
 const CASE_PAGES: Record<string, React.LazyExoticComponent<() => React.JSX.Element>> = {
   globalio: GlobalioCaseStudy,
@@ -107,6 +108,12 @@ const DEMO_PAGES: Record<
     label: 'Pulse beating particle heart demo',
     shell: 'bg-pulse-bg',
     spinner: 'text-pulse-muted',
+  },
+  relief: {
+    Page: Relief,
+    label: 'Relief Grand Canyon viewshed demo',
+    shell: 'bg-relief-bg',
+    spinner: 'text-relief-muted',
   },
 }
 

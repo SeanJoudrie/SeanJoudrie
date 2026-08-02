@@ -1,0 +1,39 @@
+/* Relief — demo-scoped survey chrome. Colour tokens live in index.css
+   @theme (relief-*); this sheet carries what utilities can't. Cooler and
+   flatter than Terra: this should read as a measuring instrument, not a
+   spectacle, so the only saturated colour on the page is the visibility
+   signal. */
+.relief-root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+}
+.relief-root ::selection {
+  background: var(--color-relief-visible);
+  color: var(--color-relief-bg);
+}
+.relief-root :focus-visible {
+  outline: 2px solid var(--color-relief-visible);
+  outline-offset: 2px;
+}
+
+/* The demo owns the whole viewport — the body swap covers overscroll. */
+body.relief-page {
+  background-color: var(--color-relief-bg);
+}
+
+/* Small-caps label — sibling of .terra-label. */
+.relief-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-relief-muted);
+}
+
+/* Tabular numerics so live readouts don't jitter as digits change. */
+.relief-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}

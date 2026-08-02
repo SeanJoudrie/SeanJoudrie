@@ -5,3 +5,6 @@ dist-ssr
 .DS_Store
 .vscode/*
 !.vscode/extensions.json
+
+# Cached DEM source tiles for scripts/bake-relief.mjs (re-downloadable)
+scripts/.cache/

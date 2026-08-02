@@ -127,6 +127,19 @@
   --color-terra-sea: #3a6fc4;
   --color-terra-land: #7fd7a1;
 
+  /* Relief (Grand Canyon viewshed demo) — survey instrument: slate ground,
+     warm rock, a single signal colour for visible terrain */
+  --color-relief-bg: #0b0d10;
+  --color-relief-card: #12161b;
+  --color-relief-line: rgb(255 255 255 / 0.09);
+  --color-relief-line-strong: rgb(255 255 255 / 0.22);
+  --color-relief-ink: #e9edf1;
+  --color-relief-ink-2: #b4bfc9;
+  --color-relief-muted: #788593;
+  --color-relief-rock: #8a7f72;
+  --color-relief-visible: #ffb95c;
+  --color-relief-hidden: #4a5560;
+
   /* Cortex (particle brain demo) — clinical dark, blue tissue, red signal */
   --color-cortex-bg: #080a0f;
   --color-cortex-card: #0d1018;
