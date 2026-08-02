@@ -109,7 +109,43 @@ const COMMISSIONS = [
       '53,000 points from the BodyParts3D atlas — but the atlas ships the heart as one wall mesh, so the four chambers are split out procedurally (superior/inferior for atria vs ventricles, a vessel-defined axis for left vs right) and each beats on its own phase of the cardiac cycle in the vertex shader: atria squeeze first, ventricles follow and squeeze hardest, and a bright surge of blood is ejected up the aorta and pulmonary artery on every systole. Set the heart rate; oxygenated left runs red, deoxygenated right blue. Same particle engine as Cortex, Skull and Spine.',
     href: '#/demos/pulse',
   },
+  {
+    n: '13',
+    skill: 'Terrain analysis & GPU line-of-sight',
+    title: 'Relief — a Grand Canyon viewshed',
+    caption:
+      'Drop an observer on the rim and see exactly what they can see. Real terrain — two Copernicus GLO-30 tiles baked into a 45 x 44 km heightmap — with visibility solved on the GPU by the reference-angle method: a cell is visible when its vertical angle exceeds the maximum angle of all ground between. Corrected for Earth curvature and atmospheric refraction, both of which matter at 45 km. Raise the observer from eye level to 400 m and watch the footprint spill over the ridgelines. Every viewshed tool in the world is GDAL, R or a QGIS plugin; this one runs in a browser.',
+    href: '#/demos/relief',
+  },
 ]
+
+/** Relief — a section through a canyon with the visible ground picked out. */
+function ReliefThumb() {
+  return (
+    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
+      <rect width="280" height="160" rx="10" fill="#0b0d10" />
+      {/* hidden ground */}
+      <path
+        d="M0 118 L40 112 L58 62 L92 56 L120 106 L152 132 L188 136 L212 96 L238 44 L268 40 L280 96 L280 160 L0 160 Z"
+        fill="#4a5560"
+        fillOpacity="0.45"
+      />
+      {/* the lit, visible stretch: rim down to where the far wall cuts the ray */}
+      <path d="M58 62 L92 56 L120 106 L152 132 L188 136 L212 96 L238 44 L238 160 L58 160 Z" fill="#ffb95c" fillOpacity="0.16" />
+      <path d="M58 62 L92 56 L120 106 L152 132 L188 136 L212 96 L238 44" fill="none" stroke="#ffb95c" strokeWidth="1.6" />
+      {/* contours on the plateau */}
+      <g stroke="#8a7f72" strokeOpacity="0.4" strokeWidth="0.8">
+        <path d="M0 128 L36 122" fill="none" />
+        <path d="M246 56 L280 50" fill="none" />
+        <path d="M0 138 L34 133" fill="none" />
+      </g>
+      {/* observer stem and sight line grazing the far rim */}
+      <line x1="92" y1="56" x2="92" y2="30" stroke="#ffb95c" strokeWidth="1.4" />
+      <circle cx="92" cy="28" r="3.4" fill="#ffe0b0" />
+      <line x1="92" y1="28" x2="238" y2="44" stroke="#ffb95c" strokeWidth="1" strokeDasharray="3 3" />
+    </svg>
+  )
+}
 
 /** A miniature of the watch — warm dark, brass ring, ten past ten. */
 function MeridianThumb() {
@@ -466,14 +502,14 @@ function PulseThumb() {
   )
 }
 
-const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb, '06': TerraThumb, '07': CortexThumb, '08': SkullThumb, '09': BloomThumb, '10': RiffThumb, '11': SpineThumb, '12': PulseThumb }
+const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb, '06': TerraThumb, '07': CortexThumb, '08': SkullThumb, '09': BloomThumb, '10': RiffThumb, '11': SpineThumb, '12': PulseThumb, '13': ReliefThumb }
 
 // Display order (by original commission number): brain, dashboard, skull, then
 // the coolest of the rest.
 // brain → watch → skull → guitar → earth → rose → heart → dashboard → spine →
 // skein → ledger → palisade: open on the biggest wow, alternate particle/solid
 // so nothing clumps, and land the from-scratch UI/data demos as the closer.
-const ORDER = ['07', '02', '08', '10', '06', '09', '12', '01', '11', '05', '03', '04']
+const ORDER = ['07', '02', '13', '08', '10', '06', '09', '12', '01', '11', '05', '03', '04']
 const byN: Record<string, (typeof COMMISSIONS)[number]> = Object.fromEntries(COMMISSIONS.map((c) => [c.n, c]))
 
 // Cards that show a live, auto-rotating WebGL scene instead of a static SVG

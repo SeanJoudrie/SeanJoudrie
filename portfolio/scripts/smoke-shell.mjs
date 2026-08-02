@@ -28,9 +28,12 @@ const order = await p.evaluate(() =>
   Array.from(document.querySelectorAll('main section')).map((s) => s.id || s.getAttribute('aria-label') || ''),
 )
 const pos = (id) => order.indexOf(id)
+// Hero leads into About (who), then Range (the commissioned proofs), then the
+// Index of works, then the Lab. This assertion predated that reordering and
+// still expected Range before About.
 check(
-  'section order is Range → About → Work → Lab',
-  pos('range') !== -1 && pos('range') < pos('about') && pos('about') < pos('work') && pos('work') < pos('skills'),
+  'section order is About → Range → Work → Lab',
+  pos('about') !== -1 && pos('about') < pos('range') && pos('range') < pos('work') && pos('work') < pos('skills'),
   order.join(' → '),
 )
 
@@ -46,9 +49,14 @@ check('Lab has 2 experiments, no Codex Explorer', labArticles === 2 && codex ===
 // 4. Meridian Range card goes live: scroll it into view → canvas mounts.
 await p.locator('#range').scrollIntoViewIfNeeded()
 await p.waitForTimeout(300)
+const meridianCard = p.locator('#range article').filter({ hasText: 'Meridian' }).first()
+// Previews only mount within ~350 px of the viewport, so bring the card itself
+// into view rather than relying on where the section top happens to land.
+await meridianCard.scrollIntoViewIfNeeded()
+await p.waitForTimeout(400)
 let canvasOk = false
 try {
-  await p.waitForSelector('#range canvas', { timeout: 15000 })
+  await meridianCard.locator('canvas').waitFor({ timeout: 15000 })
   canvasOk = true
 } catch {
   canvasOk = false
@@ -56,7 +64,7 @@ try {
 check('Meridian card mounts a live canvas', canvasOk)
 
 if (canvasOk) {
-  const box = await p.locator('#range canvas').boundingBox()
+  const box = await meridianCard.locator('canvas').first().boundingBox()
   // Drag to orbit — must NOT navigate.
   await p.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
   await p.mouse.down()

@@ -1,0 +1,19 @@
+{
+  "source": "Copernicus GLO-30 DEM (ESA / Copernicus Programme), AWS open-data mirror",
+  "encoding": "terrarium-rgb: elev_m = (R*256 + G + B/256) - 32768",
+  "quantisationM": 0.5,
+  "bbox": {
+    "north": 36.4,
+    "south": 36,
+    "west": -112.4,
+    "east": -111.9
+  },
+  "width": 1536,
+  "height": 1536,
+  "minElev": 652.57,
+  "maxElev": 2810.42,
+  "widthM": 44968,
+  "heightM": 44385,
+  "metersPerPixelX": 29.276,
+  "metersPerPixelY": 28.897
+}
