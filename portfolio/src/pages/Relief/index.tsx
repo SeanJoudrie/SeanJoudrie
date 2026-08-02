@@ -1,4 +1,4 @@
-import { Component, Suspense, lazy, useCallback, useEffect, useMemo, useState } from 'react'
+import { Component, Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { navigate } from '../../lib/router'
 import { Fallback } from './Fallback'
@@ -7,6 +7,7 @@ import type { ReliefMeta } from './meta'
 import type { Observer } from './Scene'
 import type { Heightfield } from './heightfield'
 import type { ViewshedStats } from './viewshed'
+import { MAX_OBSERVERS } from './viewshed'
 import './theme.css'
 
 const Scene = lazy(() => import('./Scene'))
@@ -106,10 +107,13 @@ export default function Relief() {
   const [meta, setMeta] = useState<ReliefMeta | null>(null)
   const [metaFailed, setMetaFailed] = useState(false)
 
-  const [observer, setObserver] = useState<Observer | null>(null)
+  const [observers, setObservers] = useState<Observer[]>([])
+  const [active, setActive] = useState(0)
   const [height, setHeight] = useState(25)
   const [refraction, setRefraction] = useState(true)
   const [stats, setStats] = useState<ViewshedStats | null>(null)
+
+  const handleFail = useCallback(() => setLost(true), [])
 
   const radius = useMemo(
     () => (meta ? Math.hypot(meta.widthM, meta.heightM) : 60000),
@@ -134,16 +138,66 @@ export default function Relief() {
 
   /** Seed the observer so the page shows a real result before anything is
    *  touched. See SEED above for how the position was chosen. */
+  const fieldRef = useRef<Heightfield | null>(null)
   const handleReady = useCallback((field: Heightfield) => {
-    setObserver({ u: SEED.u, v: SEED.v, ground: field.elevAt(SEED.u, SEED.v), height: 25 })
+    fieldRef.current = field
+    setObservers([{ u: SEED.u, v: SEED.v, ground: field.elevAt(SEED.u, SEED.v), height: 25 }])
   }, [])
 
+  const moveActive = useCallback(
+    (u: number, v: number, ground: number) =>
+      setObservers((os) => os.map((o, i) => (i === active ? { ...o, u, v, ground } : o))),
+    [active],
+  )
+
+  /**
+   * Place a new observer a short way off the last one, on real ground.
+   * Computed from current state rather than inside a setState updater — calling
+   * setActive from within one is a side effect during the update phase, and the
+   * add silently did nothing.
+   */
+  const addObserver = useCallback(() => {
+    const field = fieldRef.current
+    if (!field || observers.length === 0 || observers.length >= MAX_OBSERVERS) return
+    const from = observers[observers.length - 1]
+    // Fan successive observers around the previous one, clamped inside the raster.
+    const angle = (observers.length * 2 * Math.PI) / MAX_OBSERVERS + 0.6
+    const cu = Math.min(Math.max(from.u + Math.cos(angle) * 0.16, 0.04), 0.96)
+    const cv = Math.min(Math.max(from.v + Math.sin(angle) * 0.16, 0.04), 0.96)
+
+    // Settle onto the highest ground within a short walk of that point. Dropped
+    // blind, the fan tends to land in the gorge — an observer on the canyon
+    // floor sees almost nothing, so adding one barely moved the coverage.
+    let best = { u: cu, v: cv, e: -Infinity }
+    for (let dv = -4; dv <= 4; dv++) {
+      for (let du = -4; du <= 4; du++) {
+        const u = Math.min(Math.max(cu + du * 0.008, 0.02), 0.98)
+        const v = Math.min(Math.max(cv + dv * 0.008, 0.02), 0.98)
+        const e = field.elevAt(u, v)
+        if (e > best.e) best = { u, v, e }
+      }
+    }
+    setObservers([...observers, { u: best.u, v: best.v, ground: best.e, height: from.height }])
+    setActive(observers.length)
+  }, [observers])
+
+  const removeObserver = useCallback((i: number) => {
+    setObservers((os) => (os.length <= 1 ? os : os.filter((_, k) => k !== i)))
+    setActive((a) => (a >= i && a > 0 ? a - 1 : a))
+  }, [])
+
+  /** Arrow-key nudge of the active observer, re-sampling the ground it lands on. */
   const move = useCallback(
     (du: number, dv: number) =>
-      setObserver((o) =>
-        o ? { ...o, u: Math.min(Math.max(o.u + du, 0), 1), v: Math.min(Math.max(o.v + dv, 0), 1) } : o,
+      setObservers((os) =>
+        os.map((o, i) => {
+          if (i !== active) return o
+          const u = Math.min(Math.max(o.u + du, 0), 1)
+          const v = Math.min(Math.max(o.v + dv, 0), 1)
+          return { ...o, u, v, ground: fieldRef.current?.elevAt(u, v) ?? o.ground }
+        }),
       ),
-    [],
+    [active],
   )
 
   // Keyboard: arrows nudge the observer, +/- adjust height.
@@ -167,8 +221,9 @@ export default function Relief() {
 
   // Height lives in its own state so the slider stays responsive; fold it into
   // the observer whenever it changes.
+  // Height is shared by every observer — they model the same kind of sensor.
   useEffect(() => {
-    setObserver((o) => (o && o.height !== height ? { ...o, height } : o))
+    setObservers((os) => (os.length && os[0].height !== height ? os.map((o) => ({ ...o, height })) : os))
   }, [height])
 
   const broken = !glOk || lost || metaFailed
@@ -206,13 +261,14 @@ export default function Relief() {
                   <div className="absolute inset-0">
                     <Scene
                       meta={meta}
-                      observer={observer}
-                      setObserver={setObserver}
+                      observers={observers}
+                      active={active}
+                      moveActive={moveActive}
                       radius={radius}
                       refraction={refraction}
                       onStats={setStats}
                       onReady={handleReady}
-                      onFail={() => setLost(true)}
+                      onFail={handleFail}
                     />
                   </div>
 
@@ -221,16 +277,65 @@ export default function Relief() {
                   <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 p-3 sm:inset-auto sm:left-4 sm:top-4 sm:w-72 sm:p-0">
                     <div className="pointer-events-auto rounded-xl border border-relief-line bg-relief-card/92 p-3 backdrop-blur sm:p-4">
                       <div className="flex items-center justify-between">
-                        <span className="relief-label">Observer</span>
+                        <span className="relief-label">
+                          {observers.length > 1 ? `${observers.length} observers` : 'Observer'}
+                        </span>
                         <button
                           onClick={() => {
                             setHeight(25)
                             setRefraction(true)
+                            setObservers((os) => os.slice(0, 1))
+                            setActive(0)
                           }}
                           className="text-xs font-medium text-relief-muted underline decoration-relief-line underline-offset-4 hover:text-relief-ink"
                         >
                           Reset
                         </button>
+                      </div>
+
+                      {/* Selecting a chip decides which observer the terrain
+                          click moves; with more than one, the shading becomes a
+                          coverage depth rather than plain visible/hidden. */}
+                      <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+                        {observers.map((o, i) => (
+                          <span
+                            key={i}
+                            className={`inline-flex items-center overflow-hidden rounded-md border text-xs ${
+                              i === active
+                                ? 'border-relief-visible/60 text-relief-visible'
+                                : 'border-relief-line text-relief-muted'
+                            }`}
+                          >
+                            <button
+                              onClick={() => setActive(i)}
+                              className="px-2 py-1 font-medium hover:text-relief-ink"
+                              aria-pressed={i === active}
+                              aria-label={`Select observer ${i + 1}`}
+                            >
+                              {i + 1}
+                              <span className="relief-num ml-1.5 text-relief-muted">
+                                {Math.round(o.ground).toLocaleString()} m
+                              </span>
+                            </button>
+                            {observers.length > 1 && (
+                              <button
+                                onClick={() => removeObserver(i)}
+                                className="border-l border-relief-line px-1.5 py-1 text-relief-muted hover:text-relief-ink"
+                                aria-label={`Remove observer ${i + 1}`}
+                              >
+                                ×
+                              </button>
+                            )}
+                          </span>
+                        ))}
+                        {observers.length < MAX_OBSERVERS && (
+                          <button
+                            onClick={addObserver}
+                            className="rounded-md border border-dashed border-relief-line px-2 py-1 text-xs font-medium text-relief-muted hover:border-relief-line-strong hover:text-relief-ink"
+                          >
+                            + Add
+                          </button>
+                        )}
                       </div>
 
                       <label className="mt-3 block sm:mt-4">
@@ -278,18 +383,33 @@ export default function Relief() {
                       </label>
 
                       <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 border-t border-relief-line pt-3 sm:mt-4 sm:block sm:space-y-1.5">
-                        {observer && (
-                          <Stat label="Elev." value={Math.round(observer.ground).toLocaleString()} unit="m" />
+                        {observers[active] && (
+                          <Stat
+                            label="Elev."
+                            value={Math.round(observers[active].ground).toLocaleString()}
+                            unit="m"
+                          />
                         )}
                         {stats && (
                           <>
-                            <Stat label="Visible" value={stats.visibleKm2.toFixed(1)} unit="km²" />
+                            <Stat
+                              label={observers.length > 1 ? 'Covered' : 'Visible'}
+                              value={stats.visibleKm2.toFixed(1)}
+                              unit="km²"
+                            />
                             <Stat
                               label="Of frame"
                               value={(stats.visibleFraction * 100).toFixed(1)}
                               unit="%"
                             />
                             <Stat label="Furthest" value={stats.furthestKm.toFixed(1)} unit="km" />
+                            {observers.length > 1 && (
+                              <Stat
+                                label="Seen by all"
+                                value={(stats.overlapFraction * 100).toFixed(1)}
+                                unit="%"
+                              />
+                            )}
                           </>
                         )}
                       </div>

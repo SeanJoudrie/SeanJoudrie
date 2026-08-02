@@ -148,7 +148,15 @@ const FRAG = /* glsl */ `
     // Visibility overlay. Hidden ground is desaturated and darkened but never
     // crushed to black — the shape of what the observer cannot see is as much
     // of the result as the shape of what they can.
-    float vis = texture2D(uViewshed, vUv).r * uHasViewshed;
+    // R holds the share of observers that can see this cell. Mixing by that
+    // share directly would render ground seen by one of four at 0.25 — i.e.
+    // nearly hidden — when it is in fact covered. Any coverage at all lights
+    // the ground; additional overlap adds the rest. smoothstep rather than a
+    // threshold keeps the boundary soft, which is what the linear filter on the
+    // viewshed target is there for.
+    float cov = texture2D(uViewshed, vUv).r * uHasViewshed;
+    float vis = smoothstep(0.0, 0.12, cov) * mix(0.62, 1.0, cov);
+
     float lum = dot(col, vec3(0.299, 0.587, 0.114));
     vec3 hidden  = mix(vec3(lum), col, 0.34) * 0.60;
     vec3 visible = col * 1.04 + uVisible * 0.26 * (0.45 + 0.55 * key);
@@ -224,7 +232,7 @@ function Terrain({
 }
 
 /** Observer marker: a stem from the ground up to eye height, capped by a bead. */
-function Marker({ meta, obs }: { meta: ReliefMeta; obs: Observer }) {
+function Marker({ meta, obs, dim = false }: { meta: ReliefMeta; obs: Observer; dim?: boolean }) {
   const widthW = meta.widthM * M_TO_WORLD
   const heightW = meta.heightM * M_TO_WORLD
   const x = (obs.u - 0.5) * widthW
@@ -237,11 +245,11 @@ function Marker({ meta, obs }: { meta: ReliefMeta; obs: Observer }) {
     <group position={[x, groundY, z]}>
       <mesh position={[0, stem / 2, 0]}>
         <cylinderGeometry args={[widthW * 0.0009, widthW * 0.0009, stem, 6]} />
-        <meshBasicMaterial color="#ffb95c" />
+        <meshBasicMaterial color={dim ? '#a8794a' : '#ffb95c'} />
       </mesh>
       <mesh position={[0, stem, 0]}>
-        <sphereGeometry args={[bead, 12, 10]} />
-        <meshBasicMaterial color="#ffe0b0" />
+        <sphereGeometry args={[bead * (dim ? 0.8 : 1), 12, 10]} />
+        <meshBasicMaterial color={dim ? '#c9a071' : '#ffe0b0'} />
       </mesh>
     </group>
   )
@@ -263,8 +271,9 @@ function Idle({ controls, active }: { controls: React.RefObject<CameraControls |
 function Interaction({
   meta,
   field,
-  observer,
-  setObserver,
+  observers,
+  active,
+  moveActive,
   radius,
   refraction,
   onStats,
@@ -274,8 +283,9 @@ function Interaction({
 }: {
   meta: ReliefMeta
   field: Heightfield
-  observer: Observer | null
-  setObserver: (o: Observer) => void
+  observers: Observer[]
+  active: number
+  moveActive: (u: number, v: number, ground: number) => void
   radius: number
   refraction: boolean
   onStats: (s: ViewshedStats) => void
@@ -346,10 +356,11 @@ function Interaction({
   useEffect(() => {
     const el = gl.domElement
 
+    const cur = observers[active]
     const near = (x: number, y: number) => {
-      if (!observer) return false
+      if (!cur) return false
       const hit = pick(x, y)
-      return !!hit && Math.hypot(hit.u - observer.u, hit.v - observer.v) < 0.035
+      return !!hit && Math.hypot(hit.u - cur.u, hit.v - cur.v) < 0.035
     }
 
     const onDown = (e: PointerEvent) => {
@@ -366,7 +377,7 @@ function Interaction({
     const onMove = (e: PointerEvent) => {
       if (!dragging.current) return
       const hit = pick(e.clientX, e.clientY)
-      if (hit) setObserver({ ...hit, height: observer?.height ?? 2 })
+      if (hit) moveActive(hit.u, hit.v, hit.ground)
     }
 
     const onUp = (e: PointerEvent) => {
@@ -386,7 +397,7 @@ function Interaction({
       if (!start) return
       if (Math.hypot(e.clientX - start.x, e.clientY - start.y) > 6) return
       const hit = pick(e.clientX, e.clientY)
-      if (hit) setObserver({ ...hit, height: observer?.height ?? 2 })
+      if (hit) moveActive(hit.u, hit.v, hit.ground)
     }
 
     el.addEventListener('pointerdown', onDown)
@@ -397,22 +408,20 @@ function Interaction({
       el.removeEventListener('pointermove', onMove)
       el.removeEventListener('pointerup', onUp)
     }
-  }, [gl, pick, observer, setObserver, controls, onUserInput])
+  }, [gl, pick, observers, active, moveActive, controls, onUserInput])
 
   // Recompute whenever the observer or the corrections change. This is the only
   // place the viewshed runs — never per frame.
   useEffect(() => {
-    if (!observer) return
+    if (!observers.length) return
     const { stats } = viewshed.compute(gl, {
-      u: observer.u,
-      v: observer.v,
-      ground: observer.ground,
-      height: observer.height,
+      observers: observers.map((o) => ({ u: o.u, v: o.v, ground: o.ground })),
+      height: observers[0].height,
       radius,
       refraction,
     })
     onStats(stats)
-  }, [viewshed, gl, observer, radius, refraction, onStats])
+  }, [viewshed, gl, observers, radius, refraction, onStats])
 
   return null
 }
@@ -426,8 +435,9 @@ function Content({
   meta,
   heightTex,
   field,
-  observer,
-  setObserver,
+  observers,
+  active,
+  moveActive,
   radius,
   refraction,
   onStats,
@@ -437,8 +447,9 @@ function Content({
   meta: ReliefMeta
   heightTex: THREE.Texture
   field: Heightfield
-  observer: Observer | null
-  setObserver: (o: Observer) => void
+  observers: Observer[]
+  active: number
+  moveActive: (u: number, v: number, ground: number) => void
   radius: number
   refraction: boolean
   onStats: (s: ViewshedStats) => void
@@ -461,12 +472,13 @@ function Content({
 
   return (
     <>
-      <Terrain meta={meta} texture={heightTex} viewshed={viewshed} hasObserver={!!observer} />
+      <Terrain meta={meta} texture={heightTex} viewshed={viewshed} hasObserver={observers.length > 0} />
       <Interaction
         meta={meta}
         field={field}
-        observer={observer}
-        setObserver={setObserver}
+        observers={observers}
+        active={active}
+        moveActive={moveActive}
         radius={radius}
         refraction={refraction}
         onStats={onStats}
@@ -474,15 +486,18 @@ function Content({
         controls={controls}
         onUserInput={onUserInput}
       />
-      {observer && <Marker meta={meta} obs={observer} />}
+      {observers.map((o, i) => (
+        <Marker key={i} meta={meta} obs={o} dim={i !== active} />
+      ))}
     </>
   )
 }
 
 export default function Scene({
   meta,
-  observer,
-  setObserver,
+  observers,
+  active,
+  moveActive,
   radius,
   refraction,
   onStats,
@@ -490,8 +505,9 @@ export default function Scene({
   onFail,
 }: {
   meta: ReliefMeta
-  observer: Observer | null
-  setObserver: (o: Observer) => void
+  observers: Observer[]
+  active: number
+  moveActive: (u: number, v: number, ground: number) => void
   radius: number
   refraction: boolean
   onStats: (s: ViewshedStats) => void
@@ -506,7 +522,15 @@ export default function Scene({
   const reduce =
     typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
 
+  // The heightmap costs ~3 MB and a full CPU decode, and onReady seeds page
+  // state — so this must run exactly once. It previously listed the callbacks
+  // as dependencies; onFail was an inline arrow, so every render re-ran the
+  // load and re-fired onReady, silently resetting the observers the user had
+  // just added.
+  const loadedRef = useRef(false)
   useEffect(() => {
+    if (loadedRef.current) return
+    loadedRef.current = true
     let cancelled = false
     const loader = new THREE.TextureLoader()
     loader.load(
@@ -539,7 +563,8 @@ export default function Scene({
     return () => {
       cancelled = true
     }
-  }, [meta, onReady, onFail])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [meta])
 
   const diag = Math.hypot(meta.widthM, meta.heightM) * M_TO_WORLD
 
@@ -567,14 +592,15 @@ export default function Scene({
         maxPolarAngle={Math.PI * 0.49}
         minPolarAngle={0.05}
       />
-      <Idle controls={controls} active={idle && !reduce && !observer} />
+      <Idle controls={controls} active={idle && !reduce && !observers.length} />
       {heightTex && field && (
         <Content
           meta={meta}
           heightTex={heightTex}
           field={field}
-          observer={observer}
-          setObserver={setObserver}
+          observers={observers}
+          active={active}
+          moveActive={moveActive}
           radius={radius}
           refraction={refraction}
           onStats={onStats}

@@ -40,9 +40,10 @@ const VIEWSHED_FRAG = /* glsl */ `
   precision highp float;
 
   uniform sampler2D uHeight;
-  uniform vec2  uObserver;    // uv
-  uniform float uObsGround;   // ground elevation at the observer, m
-  uniform float uObsHeight;   // observer height above ground, m
+  uniform vec2  uObs[4];      // observer positions, uv
+  uniform float uObsGround[4];// ground elevation under each, m
+  uniform int   uCount;       // observers in use, 1..4
+  uniform float uObsHeight;   // shared height above ground, m
   uniform vec2  uExtentM;     // ground extent of the raster, m
   uniform float uMaxRadius;   // m
   uniform float uRefractK;    // 0.13, or 0 with the correction off
@@ -62,42 +63,59 @@ const VIEWSHED_FRAG = /* glsl */ `
   }
 
   void main() {
-    vec2 dUv = vUv - uObserver;
-    vec2 dM  = dUv * uExtentM;
-    float dist = length(dM);
+    int seen = 0;
+    // Distance to the NEAREST observer that can see this cell. For one
+    // observer this is just its distance; for several it is what "how far out
+    // does coverage reach" actually means.
+    float nearest = 1.0;
 
-    // The observer's own cell is trivially visible; guard the divide too.
-    if (dist < 1.0) { gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0); return; }
-    if (dist > uMaxRadius) { gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0); return; }
+    for (int o = 0; o < 4; o++) {
+      if (o >= uCount) break;
 
-    float eye = uObsGround + uObsHeight;
-    float maxAngle = -1e9;
+      vec2 dUv = vUv - uObs[o];
+      float dist = length(dUv * uExtentM);
+      if (dist > uMaxRadius) continue;
+      if (dist < 1.0) { seen++; nearest = 0.0; continue; }
 
-    // March from the observer outward, stopping one step short of the target —
-    // a cell must not occlude itself.
-    for (int i = 1; i < ${MAX_STEPS}; i++) {
-      if (i >= uSteps) break;
-      float t = float(i) / float(uSteps);
-      float d = dist * t;
-      float e = apparent(elevAt(uObserver + dUv * t), d);
-      maxAngle = max(maxAngle, (e - eye) / d);
+      float eye = uObsGround[o] + uObsHeight;
+      float maxAngle = -1e9;
+
+      // March outward, stopping one step short of the target — a cell must not
+      // occlude itself.
+      for (int i = 1; i < ${MAX_STEPS}; i++) {
+        if (i >= uSteps) break;
+        float t = float(i) / float(uSteps);
+        float d = dist * t;
+        maxAngle = max(maxAngle, (apparent(elevAt(uObs[o] + dUv * t), d) - eye) / d);
+      }
+
+      if ((apparent(elevAt(vUv), dist) - eye) / dist >= maxAngle) {
+        seen++;
+        nearest = min(nearest, dist / uMaxRadius);
+      }
     }
 
-    float eT = apparent(elevAt(vUv), dist);
-    float angT = (eT - eye) / dist;
-
-    float vis = angT >= maxAngle ? 1.0 : 0.0;
-    gl_FragColor = vec4(vis, dist / uMaxRadius, 0.0, 1.0);
+    // R carries the share of observers that can see this cell, so the terrain
+    // shades by coverage depth for free and reduces to plain visible/hidden
+    // when there is only one.
+    gl_FragColor = vec4(float(seen) / float(uCount), nearest, float(seen) / 4.0, 1.0);
   }
 `
 
-export type ViewshedParams = {
-  /** Observer position in raster uv. */
+export type ViewshedObserver = {
+  /** Position in raster uv. */
   u: number
   v: number
-  /** Ground elevation under the observer, metres. */
+  /** Ground elevation beneath, metres. */
   ground: number
-  /** Height above ground, metres. */
+}
+
+export const MAX_OBSERVERS = 4
+
+export type ViewshedParams = {
+  /** One to MAX_OBSERVERS observers. Extras are ignored. */
+  observers: ViewshedObserver[]
+  /** Shared height above ground, metres. */
   height: number
   /** Maximum radius considered, metres. */
   radius: number
@@ -106,11 +124,14 @@ export type ViewshedParams = {
 }
 
 export type ViewshedStats = {
-  /** Visible ground area within the frame, km². */
+  /** Ground seen by at least one observer, km². */
   visibleKm2: number
-  /** Visible share of the frame, 0..1. */
+  /** Share of the frame seen by at least one observer, 0..1. */
   visibleFraction: number
-  /** Distance to the furthest visible cell, km. */
+  /** Share seen by every observer, 0..1. Equals visibleFraction when there
+   *  is only one, so callers can show it only when it says something new. */
+  overlapFraction: number
+  /** Furthest any covered cell sits from its nearest seeing observer, km. */
   furthestKm: number
 }
 
@@ -170,8 +191,9 @@ export class Viewshed {
       depthWrite: false,
       uniforms: {
         uHeight: { value: heightTexture },
-        uObserver: { value: new THREE.Vector2(0.5, 0.5) },
-        uObsGround: { value: 0 },
+        uObs: { value: Array.from({ length: MAX_OBSERVERS }, () => new THREE.Vector2(0.5, 0.5)) },
+        uObsGround: { value: new Array(MAX_OBSERVERS).fill(0) },
+        uCount: { value: 1 },
         uObsHeight: { value: 2 },
         uExtentM: { value: new THREE.Vector2(meta.widthM, meta.heightM) },
         uMaxRadius: { value: Math.hypot(meta.widthM, meta.heightM) },
@@ -196,8 +218,14 @@ export class Viewshed {
     p: ViewshedParams,
   ): { stats: ViewshedStats; texture: THREE.Texture } {
     const u = this.material.uniforms
-    ;(u.uObserver.value as THREE.Vector2).set(p.u, p.v)
-    u.uObsGround.value = p.ground
+    const obs = p.observers.slice(0, MAX_OBSERVERS)
+    const positions = u.uObs.value as THREE.Vector2[]
+    const grounds = u.uObsGround.value as number[]
+    obs.forEach((o, i) => {
+      positions[i].set(o.u, o.v)
+      grounds[i] = o.ground
+    })
+    u.uCount.value = Math.max(obs.length, 1)
     u.uObsHeight.value = p.height
     u.uMaxRadius.value = p.radius
     u.uRefractK.value = p.refraction ? 0.13 : 0
@@ -227,24 +255,33 @@ export class Viewshed {
     return { stats: this.reduce(p.radius), texture: this.texture }
   }
 
-  /** Count visible cells and find the furthest, from the small readback. */
+  /**
+   * Reduce the small readback. R holds seen/count, so any non-zero value means
+   * at least one observer sees the cell and a saturated value means all of them
+   * do. The threshold sits at 4/255 rather than 0 to stay clear of the linear
+   * filter's edge blending.
+   */
   private reduce(radius: number): ViewshedStats {
     const n = this.statsTarget.width * this.statsTarget.height
-    let visible = 0
+    let covered = 0
+    let overlap = 0
     let furthestNorm = 0
     for (let i = 0; i < n; i++) {
       const o = i * 4
-      if (this.readback[o] > 127) {
-        visible++
+      const cov = this.readback[o]
+      if (cov > 4) {
+        covered++
+        if (cov > 250) overlap++
         const d = this.readback[o + 1]
         if (d > furthestNorm) furthestNorm = d
       }
     }
     const frameKm2 = (this.meta.widthM / 1000) * (this.meta.heightM / 1000)
-    const fraction = visible / n
+    const fraction = covered / n
     return {
       visibleKm2: fraction * frameKm2,
       visibleFraction: fraction,
+      overlapFraction: overlap / n,
       // The distance channel is quantised to 8 bits over uMaxRadius.
       furthestKm: ((furthestNorm / 255) * radius) / 1000,
     }

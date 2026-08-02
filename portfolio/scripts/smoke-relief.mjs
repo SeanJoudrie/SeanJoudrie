@@ -45,10 +45,28 @@ const gl = await p.evaluate(() => {
 check('canvas present with a live GL context', !!gl && !gl.lost, gl ? `${gl.w}×${gl.h}` : 'no canvas')
 check('static fallback not shown', !(await p.locator('svg[role="img"]').count()))
 
+/**
+ * Read the statistics by their labels rather than by position. Indexing into
+ * `.relief-num` broke the moment the observer chips added their own readouts,
+ * and a smoke test that silently compares the wrong two numbers is worse than
+ * one that fails.
+ */
 const readStats = async () => {
-  const nums = await p.$$eval('.relief-num', (els) => els.map((e) => e.textContent.trim()))
-  const num = (s) => Number(String(s).replace(/[^0-9.]/g, ''))
-  return { height: num(nums[0]), ground: num(nums[1]), area: num(nums[2]), pct: num(nums[3]), far: num(nums[4]) }
+  const map = await p.$$eval('.relief-label', (labels) => {
+    const out = {}
+    for (const l of labels) {
+      const num = l.parentElement && l.parentElement.querySelector('.relief-num')
+      if (num) out[l.textContent.trim().toLowerCase()] = num.textContent.trim()
+    }
+    return out
+  })
+  const num = (v) => Number(String(v ?? '').replace(/[^0-9.]/g, ''))
+  return {
+    ground: num(map['elev.']),
+    area: num(map['visible'] ?? map['covered']),
+    pct: num(map['of frame']),
+    far: num(map['furthest']),
+  }
 }
 
 const before = await readStats()
@@ -85,6 +103,20 @@ check(
   brightAfter > brightBefore * 1.05,
   `mean brightness ${brightBefore.toFixed(1)} → ${brightAfter.toFixed(1)}`,
 )
+
+// Cumulative coverage: adding an observer must grow the covered area and
+// removing it must give the ground back. Adding silently did nothing at first
+// — the numbers simply did not move — so this is worth asserting.
+const covBefore = (await readStats()).area
+await p.getByRole('button', { name: '+ Add' }).click()
+await p.waitForTimeout(3500)
+const covTwo = (await readStats()).area
+check('adding an observer grows coverage', covTwo > covBefore, `${covBefore} → ${covTwo} km²`)
+
+await p.getByRole('button', { name: 'Remove observer 2' }).click()
+await p.waitForTimeout(3000)
+const covBack = (await readStats()).area
+check('removing it restores coverage', Math.abs(covBack - covBefore) < 0.5, `${covTwo} → ${covBack} km²`)
 
 check('no page errors', pageErrors.length === 0, pageErrors.slice(0, 2).join(' | '))
 
