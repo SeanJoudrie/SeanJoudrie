@@ -3,8 +3,28 @@
  *
  * Reimplements the reference-angle method against the same baked heightmap,
  * with the same curvature and refraction corrections, so the shader's output
- * can be checked against something that was written separately. Run:
+ * can be checked against something written separately. Three modes:
+ *
  *   node scripts/check-viewshed.mjs
+ *     Compute the viewshed for one observer and print visible area, share of
+ *     the frame, and the furthest visible cell. Compare against the figures the
+ *     page reports — they agreed to within rounding when this was written
+ *     (2.71% here vs 2.7% on the GPU).
+ *
+ *   VS_SELFTEST=1 node scripts/check-viewshed.mjs
+ *     Run the same code over a perfectly flat plane, where the horizon has a
+ *     closed form: sqrt(2Rh/(1-k)). This is the check that matters — it says
+ *     whether the ALGORITHM is right, independently of any terrain. It was what
+ *     established the maths was correct while the rendered picture was still
+ *     wrong, which pointed at the plumbing instead of the geometry.
+ *
+ *   VS_SEARCH=1 node scripts/check-viewshed.mjs
+ *     Score candidate observer positions by the area each actually sees, and
+ *     print the best. Used to choose the page's SEED: the highest ground in the
+ *     frame is ringed by taller plateau and sees only 2.7%, while a rim position
+ *     372 m lower sees 12.4%.
+ *
+ * VS_HEIGHT overrides the observer height (default 25 m) in every mode.
  */
 
 import { readFile } from 'node:fs/promises'
@@ -46,12 +66,24 @@ function elevAt(u, v) {
   return (a * (1 - tx) + b * tx) * (1 - ty) + (c * (1 - tx) + d * tx) * ty
 }
 
-// Same seeding rule as the page: highest ground in the central band.
+// The observer under test: highest ground in the central band.
+//
+// NOTE this is deliberately NOT the position the page seeds. The page uses the
+// winner of VS_SEARCH (u 0.30, v 0.50), because this rule — take the highest
+// point — turns out to be a trap: it lands on a 2,638 m high point ringed by
+// taller plateau that sees only 2.7% of the frame. Keeping the bad position
+// here is useful, since a pathological viewshed is a sharper test of the
+// algorithm than a generous one. Override with VS_OBS_U / VS_OBS_V.
 let obs = { u: 0.5, v: 0.45, e: -Infinity }
-for (let vi = 30; vi <= 62; vi++) {
-  for (let ui = 8; ui <= 92; ui++) {
-    const e = elevAt(ui / 100, vi / 100)
-    if (e > obs.e) obs = { u: ui / 100, v: vi / 100, e }
+if (process.env.VS_OBS_U && process.env.VS_OBS_V) {
+  obs = { u: Number(process.env.VS_OBS_U), v: Number(process.env.VS_OBS_V), e: 0 }
+  obs.e = elevAt(obs.u, obs.v)
+} else {
+  for (let vi = 30; vi <= 62; vi++) {
+    for (let ui = 8; ui <= 92; ui++) {
+      const e = elevAt(ui / 100, vi / 100)
+      if (e > obs.e) obs = { u: ui / 100, v: vi / 100, e }
+    }
   }
 }
 const HEIGHT = Number(process.env.VS_HEIGHT ?? 25)
@@ -114,7 +146,8 @@ if (process.env.VS_SEARCH) {
           const a = (apparent(elevAt(ou + du * t, ov + dv * t), d) - ey) / d
           if (a > mx) mx = a
         }
-        if ((apparent(elevAt(ou, ov) * 0 + elevAt((xi + 0.5) / G, (yi + 0.5) / G), dist) - ey) / dist >= mx) vis++
+        const target = elevAt((xi + 0.5) / G, (yi + 0.5) / G)
+        if ((apparent(target, dist) - ey) / dist >= mx) vis++
       }
     }
     return { vis, frac: vis / (G * G), ground: og }
@@ -168,7 +201,55 @@ if (process.env.VS_SELFTEST) {
   console.log(`  furthest visible      ${(maxVisD / 1000).toFixed(2)} km`)
   console.log(`  nearest hidden        ${(minHidD / 1000).toFixed(2)} km`)
   console.log(`  visible cells         ${((vis / (GRID * GRID)) * 100).toFixed(2)}%`)
-  process.exit(0)
+
+  // Assert, don't just report. A self-test that prints its result and exits 0
+  // regardless tells you nothing on the day it starts disagreeing.
+  //
+  // Tolerance is 1% of the horizon distance. The march samples the ray at a
+  // finite number of steps and the evaluation grid is finite, so exact equality
+  // is not expected — but the two must not drift apart. The visible/hidden
+  // boundary must also be sharp: everything inside the horizon visible,
+  // everything beyond it hidden, with no overlap between the two.
+  let bad = 0
+
+  // Pin the physical constants to an independently computed value.
+  //
+  // Without this, the test is self-consistent but hollow: the analytic horizon
+  // is derived from the same EARTH_R and K the algorithm uses, so changing
+  // either moves both sides together and the comparison still passes. Verified
+  // by mutation — k = 0.13 -> 0.5 moved the horizon from 19.1 km to 25.2 km and
+  // the test happily reported PASS. This figure is worked out by hand:
+  //   sqrt(2 * 6371000 * 25 / (1 - 0.13)) = 19135 m
+  if (h === 25) {
+    const EXPECTED_HORIZON_M = 19135
+    const ok = Math.abs(horizon - EXPECTED_HORIZON_M) <= 5
+    if (!ok) bad++
+    console.log(
+      `  ${ok ? 'PASS' : 'FAIL'}  constants give the expected horizon: ` +
+        `${horizon.toFixed(0)} m vs ${EXPECTED_HORIZON_M} m expected for R=6371 km, k=0.13`,
+    )
+  }
+
+  const near = (label, got, want, tol) => {
+    const ok = Math.abs(got - want) <= tol
+    if (!ok) bad++
+    console.log(
+      `  ${ok ? 'PASS' : 'FAIL'}  ${label}: ${(got / 1000).toFixed(3)} km vs ${(want / 1000).toFixed(3)} km ` +
+        `(tolerance ${(tol / 1000).toFixed(3)} km)`,
+    )
+  }
+  const tol = horizon * 0.01
+  near('furthest visible matches the analytic horizon', maxVisD, horizon, tol)
+  near('nearest hidden matches the analytic horizon', minHidD, horizon, tol)
+  if (minHidD < maxVisD) {
+    bad++
+    console.log('  FAIL  boundary is not sharp: hidden ground found nearer than the furthest visible')
+  } else {
+    console.log('  PASS  boundary is sharp')
+  }
+
+  console.log(bad ? `\nSELFTEST: ${bad} assertion(s) failed` : '\nSELFTEST: passed')
+  process.exit(bad ? 1 : 0)
 }
 
 const n = GRID * GRID
