@@ -39,7 +39,7 @@ const FIELD_KIT: { label: string; items: string }[] = [
 export function Lab() {
   return (
     <section id="skills" className="border-b border-line bg-paper-2/40">
-      <div className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-24">
+      <div className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
         <Reveal>
           <div className="flex items-center gap-4">
             <span className="annotation whitespace-nowrap">The Lab</span>

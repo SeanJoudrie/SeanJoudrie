@@ -1,16 +1,16 @@
-import { Suspense, lazy, useEffect } from 'react'
+import { Suspense, lazy, useEffect, useRef } from 'react'
 import { Nav } from './components/Nav'
 import { Hero } from './components/Hero'
 import { Work } from './components/Work'
 import { About } from './components/About'
 import { Lab } from './components/Lab'
 import { Range } from './components/Range'
-import { FlagBreak } from './components/FlagBreak'
 import { Now } from './components/Now'
 import { Contact } from './components/Contact'
 import { Footer } from './components/Footer'
 import { CommandPalette } from './components/CommandPalette'
 import { useRoute } from './lib/router'
+import { pageview } from './lib/analytics'
 
 const GlobalioCaseStudy = lazy(() => import('./pages/GlobalioCaseStudy'))
 const RexCaseStudy = lazy(() => import('./pages/RexCaseStudy'))
@@ -120,6 +120,15 @@ const DEMO_PAGES: Record<
 export default function App() {
   const { caseSlug, demoSlug } = useRoute()
 
+  // Hash routes never reload the page, so each case study and demo has to be
+  // counted by hand or the whole site reads as a single pageview. Skips the
+  // first render — main.tsx already counted the landing view.
+  const landed = useRef(false)
+  useEffect(() => {
+    if (landed.current) pageview()
+    landed.current = true
+  }, [caseSlug, demoSlug])
+
   // Landing back on home with a plain section hash (#work, #about…):
   // scroll to it once the sections exist.
   useEffect(() => {
@@ -183,14 +192,13 @@ export default function App() {
       </a>
       <Nav />
       {/* Hero leads into About (who), then Range (the commissioned proofs of
-          skill), a flag-game breather, then the full Index of works. */}
+          skill), then the full Index of works. */}
       <main aria-label="Portfolio">
         <Hero />
         <About />
         <Range />
         <Work />
         <Lab />
-        <FlagBreak />
         <Now />
         <Contact />
       </main>

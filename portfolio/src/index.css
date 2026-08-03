@@ -336,37 +336,51 @@ body {
   --t-emph: 400ms;     /* one-shot emphasis: stamp, pop, shake */
 }
 
-/* Scroll-scrubbed reveal — driven by --reveal (0..1), written by
-   useScrollProgress on IntersectionObserver ratio steps. Transform-led,
-   proportional to how far into view the block is, and it reverses smoothly
-   when you scroll back out — a scrubbed dial, not a one-shot fade. The
-   short transition eases between the observer's 5% steps. */
+/* Scroll reveal — a one-way latch, deliberately.
+   ---------------------------------------------------------------------------
+   This used to be a continuous scrub: an IntersectionObserver wrote a
+   `--reveal` dial (0..1) on every ratio step and the CSS interpolated opacity
+   from it. IntersectionObserver does not guarantee a callback at an element's
+   final resting position, so a fast scroll could leave the last-delivered
+   ratio stale and strand whole sections at 12% opacity until a reload.
+   Recruiters scroll fast.
+
+   Now an element fades in once, when it is first seen, and `.reveal-on` is
+   never removed — so no amount of scrolling, in any direction, at any speed,
+   can take it back out of view. The observer only latches a boolean, which is
+   robust in a way that reading a live ratio is not. The cost is that the fade
+   no longer reverses on the way back up; a scrub that can strand content is
+   not worth a reversible fade.
+
+   Note the base rule sits OUTSIDE the motion media query at full opacity, so
+   reduced-motion users get readable content rather than a 12% ghost. */
 .reveal {
-  --reveal: 0;
-  opacity: calc(0.12 + var(--reveal) * 0.88);
-  transform: translateY(calc((1 - var(--reveal)) * 26px)) scale(calc(0.985 + var(--reveal) * 0.015));
-  transition: opacity 0.45s var(--ease-out), transform 0.45s var(--ease-out);
-  will-change: opacity, transform;
-}
-@media (prefers-reduced-motion: reduce) {
-  .reveal { --reveal: 1; opacity: 1; transform: none; transition: none; }
+  opacity: 1;
 }
 
-/* Parallax layers — children of a .reveal inherit its --reveal and drift at
-   their own multiplier, so backgrounds settle at a different rate than the
-   text beside them. Two speeds only; subtle by design. */
-.parallax-1 {
-  transform: translateY(calc((1 - var(--reveal, 1)) * 34px));
-  transition: transform 0.6s var(--ease-out);
-  will-change: transform;
-}
-.parallax-2 {
-  transform: translateY(calc((1 - var(--reveal, 1)) * -18px));
-  transition: transform 0.6s var(--ease-out);
-  will-change: transform;
-}
-@media (prefers-reduced-motion: reduce) {
-  .parallax-1, .parallax-2 { transform: none; transition: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0.12;
+    transform: translateY(26px) scale(0.985);
+    transition:
+      opacity var(--t-reveal) var(--ease-out),
+      transform var(--t-reveal) var(--ease-out);
+  }
+
+  /* Small plates settle in with a hint of rotation. */
+  .reveal.reveal-settle { transform: translateY(26px) rotate(0.8deg) scale(0.985); }
+
+  /* Parallax layers drift at their own multiplier, so backgrounds settle at a
+     different rate than the text beside them. Two speeds only; subtle. */
+  .parallax-1 { transform: translateY(34px); transition: transform 0.6s var(--ease-out); }
+  .parallax-2 { transform: translateY(-18px); transition: transform 0.6s var(--ease-out); }
+
+  /* The latch. Nothing ever removes .reveal-on, so once a block has been seen
+     it is permanently, unconditionally visible. */
+  .reveal.reveal-on,
+  .reveal.reveal-on.reveal-settle { opacity: 1; transform: none; }
+  .reveal.reveal-on .parallax-1,
+  .reveal.reveal-on .parallax-2 { transform: none; }
 }
 
 /* Theme switcher popover — same enter language as the palette/menu sheet. */
@@ -497,14 +511,8 @@ body {
 
 /* ---- Scroll choreography ---- */
 
-/* Small plates settle in with a hint of rotation — same --reveal dial as
-   the base scrub, so the tilt unwinds proportionally with scroll. */
-.reveal.reveal-settle {
-  transform:
-    translateY(calc((1 - var(--reveal)) * 26px))
-    rotate(calc((1 - var(--reveal)) * 0.8deg))
-    scale(calc(0.985 + var(--reveal) * 0.015));
-}
+/* (.reveal-settle's rotation now lives in the reveal-settle-in keyframes,
+   beside the other scroll-driven reveals.) */
 
 /* Dimension lines draw across when their section reveals. */
 .reveal .dim-draw {

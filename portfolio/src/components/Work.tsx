@@ -43,7 +43,7 @@ export function Work() {
 
   return (
     <section id="work" className="border-b border-line">
-      <div className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-28">
+      <div className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
         <Reveal>
           <div className="flex items-center gap-4">
             <span className="annotation whitespace-nowrap">Index of works</span>

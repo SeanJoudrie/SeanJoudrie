@@ -2,6 +2,7 @@
 import { navigate } from '../lib/router'
 import { site } from './site'
 import { toggleSurveyGrid } from '../lib/surveyGrid'
+import { track } from '../lib/analytics'
 
 export type CommandGroup = 'Pages' | 'Demos' | 'Actions'
 
@@ -44,6 +45,7 @@ function downloadResume() {
 async function copyEmail(ctx: CommandContext) {
   try {
     await navigator.clipboard.writeText(site.email)
+    track('email: copied')
     ctx.toast(`Copied ${site.email} ✓`)
   } catch {
     // Clipboard blocked (insecure context / permissions) — fall back to mailto.

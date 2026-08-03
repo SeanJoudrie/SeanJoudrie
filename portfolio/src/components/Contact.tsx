@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Reveal } from './Reveal'
 import { site } from '../data/site'
+import { track } from '../lib/analytics'
 
 export function Contact() {
   const [copied, setCopied] = useState(false)
@@ -8,6 +9,7 @@ export function Contact() {
   const copyEmail = async () => {
     try {
       await navigator.clipboard.writeText(site.email)
+      track('email: copied')
       setCopied(true)
       setTimeout(() => setCopied(false), 1800)
     } catch {
@@ -17,7 +19,7 @@ export function Contact() {
 
   return (
     <section id="contact" className="paper-wash">
-      <div className="mx-auto max-w-6xl px-5 py-16 text-center sm:px-8 sm:py-32">
+      <div className="mx-auto max-w-6xl px-5 py-16 text-center sm:px-8 sm:py-24">
         <Reveal>
           <p className="annotation mb-4">Contact</p>
           <h2 className="mx-auto max-w-2xl font-display text-4xl font-semibold leading-tight tracking-tight text-ink sm:text-5xl">

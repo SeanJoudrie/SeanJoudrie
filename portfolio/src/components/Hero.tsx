@@ -3,7 +3,7 @@ import { site } from '../data/site'
 export function Hero() {
   return (
     <section id="top" className="paper-wash border-b border-line">
-      <div className="mx-auto max-w-6xl px-5 pb-10 pt-24 sm:px-8 sm:pb-24 sm:pt-36">
+      <div className="mx-auto max-w-6xl px-5 pb-10 pt-24 sm:px-8 sm:pb-20 sm:pt-32">
         <div className="max-w-3xl">
           <div>
             <div

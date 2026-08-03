@@ -20,16 +20,18 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>() {
       return
     }
 
+    // threshold 0 — latch as soon as ANY pixel of the block is on screen.
+    // A higher threshold means a block taller than the viewport, or one you
+    // fly past, can fail to qualify and stay faded. Only the boolean is read,
+    // never a ratio, and it is latched once and never cleared.
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setShown(true)
-            observer.disconnect()
-          }
-        })
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setShown(true)
+          observer.disconnect()
+        }
       },
-      { threshold: 0.15, rootMargin: '0px 0px -8% 0px' },
+      { threshold: 0, rootMargin: '0px 0px -5% 0px' },
     )
 
     observer.observe(el)
