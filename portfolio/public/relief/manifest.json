@@ -1,0 +1,164 @@
+{
+  "sites": [
+    {
+      "id": "grand-canyon",
+      "name": "Grand Canyon",
+      "subtitle": "South Rim · Arizona",
+      "note": "Re-cropped from the original 45 km frame, which measured 1:20.8 — the tighter window nearly halves the ratio with no new data.",
+      "sun": {
+        "azimuth": 190,
+        "elevation": 20
+      },
+      "contourM": 100,
+      "seed": {
+        "u": 0.3,
+        "v": 0.3
+      },
+      "palette": {
+        "low": "#60564b",
+        "high": "#ad9f8e"
+      },
+      "meta": {
+        "id": "grand-canyon",
+        "source": "Copernicus GLO-30 DEM (ESA / Copernicus Programme), AWS open-data mirror",
+        "encoding": "terrarium-rgb: elev_m = (R*256 + G + B/256) - 32768",
+        "quantisationM": 0.5,
+        "bbox": {
+          "north": 36.19,
+          "south": 36.02,
+          "west": -112.22,
+          "east": -112
+        },
+        "width": 1024,
+        "height": 1024,
+        "previewWidth": 256,
+        "minElev": 713,
+        "maxElev": 2522.53,
+        "widthM": 19810,
+        "heightM": 18863,
+        "metersPerPixelX": 19.345,
+        "metersPerPixelY": 18.421
+      }
+    },
+    {
+      "id": "matterhorn",
+      "name": "Matterhorn",
+      "subtitle": "Zermatt · Switzerland",
+      "note": "The best ratio measured anywhere on the shortlist, and the proof that the flatness was framing rather than rendering — it needs no exaggeration at all.",
+      "sun": {
+        "azimuth": 250,
+        "elevation": 32
+      },
+      "contourM": 150,
+      "seed": {
+        "u": 0.8,
+        "v": 0.2
+      },
+      "palette": {
+        "low": "#6b6f75",
+        "high": "#e8edf2"
+      },
+      "meta": {
+        "id": "matterhorn",
+        "source": "Copernicus GLO-30 DEM (ESA / Copernicus Programme), AWS open-data mirror",
+        "encoding": "terrarium-rgb: elev_m = (R*256 + G + B/256) - 32768",
+        "quantisationM": 0.5,
+        "bbox": {
+          "north": 46.05,
+          "south": 45.92,
+          "west": 7.6,
+          "east": 7.79
+        },
+        "width": 1024,
+        "height": 1024,
+        "previewWidth": 256,
+        "minElev": 1471.63,
+        "maxElev": 4329.49,
+        "widthM": 14722,
+        "heightM": 14450,
+        "metersPerPixelX": 14.377,
+        "metersPerPixelY": 14.111
+      }
+    },
+    {
+      "id": "crater-lake",
+      "name": "Crater Lake",
+      "subtitle": "Caldera · Oregon",
+      "note": "The minimum elevation here is exactly 1,883 m — the published lake surface. The DEM carries the real water plane as a perfectly flat surface, which is also why it costs a third of the other sites.",
+      "sun": {
+        "azimuth": 300,
+        "elevation": 20
+      },
+      "contourM": 50,
+      "seed": {
+        "u": 0.2,
+        "v": 0.8
+      },
+      "palette": {
+        "low": "#2b4763",
+        "high": "#8f8578"
+      },
+      "meta": {
+        "id": "crater-lake",
+        "source": "Copernicus GLO-30 DEM (ESA / Copernicus Programme), AWS open-data mirror",
+        "encoding": "terrarium-rgb: elev_m = (R*256 + G + B/256) - 32768",
+        "quantisationM": 0.5,
+        "bbox": {
+          "north": 42.98,
+          "south": 42.905,
+          "west": -122.17,
+          "east": -122.07
+        },
+        "width": 1024,
+        "height": 1024,
+        "previewWidth": 256,
+        "minElev": 1882.67,
+        "maxElev": 2469.46,
+        "widthM": 8162,
+        "heightM": 8332,
+        "metersPerPixelX": 7.97,
+        "metersPerPixelY": 8.137
+      }
+    },
+    {
+      "id": "death-valley",
+      "name": "Death Valley",
+      "subtitle": "Badwater Basin · California",
+      "note": "Reaches 91 m below sea level in the same frame as 1,744 m of mountain — the only site here that goes negative.",
+      "sun": {
+        "azimuth": 270,
+        "elevation": 15
+      },
+      "contourM": 100,
+      "seed": {
+        "u": 0.1,
+        "v": 0.3
+      },
+      "palette": {
+        "low": "#b9ae95",
+        "high": "#8a6f52"
+      },
+      "meta": {
+        "id": "death-valley",
+        "source": "Copernicus GLO-30 DEM (ESA / Copernicus Programme), AWS open-data mirror",
+        "encoding": "terrarium-rgb: elev_m = (R*256 + G + B/256) - 32768",
+        "quantisationM": 0.5,
+        "bbox": {
+          "north": 36.35,
+          "south": 36.15,
+          "west": -116.9,
+          "east": -116.7
+        },
+        "width": 1024,
+        "height": 1024,
+        "previewWidth": 256,
+        "minElev": -90.58,
+        "maxElev": 1743.94,
+        "widthM": 17976,
+        "heightM": 22193,
+        "metersPerPixelX": 17.554,
+        "metersPerPixelY": 21.673
+      }
+    }
+  ]
+}

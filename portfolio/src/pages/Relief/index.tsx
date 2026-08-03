@@ -2,8 +2,8 @@ import { Component, Suspense, lazy, useCallback, useEffect, useMemo, useRef, use
 import type { ReactNode } from 'react'
 import { navigate } from '../../lib/router'
 import { Fallback } from './Fallback'
-import { loadReliefMeta } from './meta'
-import type { ReliefMeta } from './meta'
+import { loadManifest, defaultExaggeration, EXAG_MIN, EXAG_MAX } from './meta'
+import type { ReliefSite } from './meta'
 import type { Observer } from './Scene'
 import type { Heightfield } from './heightfield'
 import type { ViewshedStats } from './viewshed'
@@ -18,40 +18,6 @@ const H_MIN = 2
 const H_MAX = 500
 const toHeight = (t: number) => H_MIN * Math.pow(H_MAX / H_MIN, t)
 const fromHeight = (h: number) => Math.log(h / H_MIN) / Math.log(H_MAX / H_MIN)
-
-/**
- * Seed position for the observer.
- *
- * Chosen by `VS_SEARCH=1 node scripts/check-viewshed.mjs`, which scores
- * candidates by the area they actually see. Seeding the *highest* ground is a
- * trap: the 2,638 m high point mid-frame is ringed by higher plateau to the
- * north and sees only 2.7% of the map. This point is 372 m lower but sits on
- * the rim looking out over the gorge, and sees 12.4%.
- */
-const SEED = { u: 0.3, v: 0.5 }
-
-/**
- * Vertical exaggeration.
- *
- * At true scale this frame is 45 km wide with 2,158 m of relief — a ratio of
- * about 1:21, which is geometrically a cracker. Cartography has exaggerated
- * relief for as long as it has drawn it; the dishonest version is the one that
- * does not say so, which is why the factor stays on screen.
- *
- * The default is derived from the site's own measured geometry rather than
- * hard-coded, so any future site gets a sensible figure for free: aim for an
- * effective ratio near 1:7, never reduce below true scale. The Matterhorn
- * measures 1:5.2 and would correctly come out at 1.0x.
- */
-const EXAG_TARGET_RATIO = 7
-const EXAG_MIN = 1
-const EXAG_MAX = 4
-const defaultExaggeration = (m: ReliefMeta) => {
-  const relief = m.maxElev - m.minElev
-  if (relief <= 0) return 1
-  const ratio = m.widthM / relief
-  return Math.min(Math.max(ratio / EXAG_TARGET_RATIO, EXAG_MIN), EXAG_MAX)
-}
 
 const HEIGHT_STOPS = [
   { h: 2, label: 'eye level' },
@@ -93,9 +59,14 @@ function Mark() {
 }
 
 /** Method and attribution, shared by the mobile disclosure and the desktop block. */
-function Notes() {
+function Notes({ site }: { site: ReliefSite | null }) {
   return (
     <>
+      {site && (
+        <p>
+          <span className="text-relief-ink-2">{site.name}.</span> {site.note}
+        </p>
+      )}
       <p>
         <span className="text-relief-ink-2">Method.</span> A viewshed marks every cell whose
         vertical angle from the observer exceeds the maximum angle of all ground between them —
@@ -145,7 +116,8 @@ function Stat({ label, value, unit }: { label: string; value: string; unit?: str
 export default function Relief() {
   const [glOk] = useState(webglAvailable)
   const [lost, setLost] = useState(false)
-  const [meta, setMeta] = useState<ReliefMeta | null>(null)
+  const [sites, setSites] = useState<ReliefSite[] | null>(null)
+  const [siteId, setSiteId] = useState<string | null>(null)
   const [metaFailed, setMetaFailed] = useState(false)
 
   const [observers, setObservers] = useState<Observer[]>([])
@@ -156,40 +128,81 @@ export default function Relief() {
   const [progress, setProgress] = useState(0)
   const [exaggeration, setExaggeration] = useState<number | null>(null)
 
+  const site = useMemo(
+    () => sites?.find((s) => s.id === siteId) ?? null,
+    [sites, siteId],
+  )
+
   const handleFail = useCallback(() => setLost(true), [])
 
-  useEffect(() => {
-    if (meta) setExaggeration((e) => e ?? defaultExaggeration(meta))
-  }, [meta])
-
   const radius = useMemo(
-    () => (meta ? Math.hypot(meta.widthM, meta.heightM) : 60000),
-    [meta],
+    () => (site ? Math.hypot(site.meta.widthM, site.meta.heightM) : 60000),
+    [site],
   )
 
   useEffect(() => {
-    document.title = 'Relief — a Grand Canyon viewshed · Sean Joudrie'
+    document.title = site
+      ? `Relief — a viewshed over the ${site.name} · Sean Joudrie`
+      : 'Relief — a real-time viewshed · Sean Joudrie'
+  }, [site])
+
+  useEffect(() => {
     document.body.classList.add('relief-page')
     return () => document.body.classList.remove('relief-page')
   }, [])
 
   useEffect(() => {
     let cancelled = false
-    loadReliefMeta()
-      .then((m) => !cancelled && setMeta(m))
+    loadManifest()
+      .then((s) => {
+        if (cancelled) return
+        setSites(s)
+        setSiteId(s[0].id)
+        setExaggeration(defaultExaggeration(s[0].meta))
+      })
       .catch(() => !cancelled && setMetaFailed(true))
     return () => {
       cancelled = true
     }
   }, [])
 
+  /**
+   * Switch sites.
+   *
+   * The observers have to go: their ground elevations belong to the terrain that
+   * is being replaced, and leaving them in place would have the viewshed
+   * computed against the new raster from positions measured on the old one. The
+   * scene re-seeds from the new site's own searched position as soon as its
+   * elevation model has decoded.
+   */
+  const selectSite = useCallback(
+    (next: ReliefSite) => {
+      if (next.id === siteId) return
+      setSiteId(next.id)
+      setObservers([])
+      setActive(0)
+      setStats(null)
+      setProgress(0)
+      setExaggeration(defaultExaggeration(next.meta))
+    },
+    [siteId],
+  )
+
   /** Seed the observer so the page shows a real result before anything is
-   *  touched. See SEED above for how the position was chosen. */
+   *  touched. The position is per-site and measured — see relief-sites.mjs. */
   const fieldRef = useRef<Heightfield | null>(null)
-  const handleReady = useCallback((field: Heightfield) => {
-    fieldRef.current = field
-    setObservers([{ u: SEED.u, v: SEED.v, ground: field.elevAt(SEED.u, SEED.v), height: 25 }])
-  }, [])
+  const seed = site?.seed
+  const handleReady = useCallback(
+    (field: Heightfield) => {
+      if (!seed) return
+      fieldRef.current = field
+      setObservers([{ u: seed.u, v: seed.v, ground: field.elevAt(seed.u, seed.v), height }])
+    },
+    // `height` is read, not tracked: re-seeding because the slider moved would
+    // throw away wherever the observer had been placed.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [seed],
+  )
 
   const moveActive = useCallback(
     (u: number, v: number, ground: number) =>
@@ -273,6 +286,33 @@ export default function Relief() {
     setObservers((os) => (os.length && os[0].height !== height ? os.map((o) => ({ ...o, height })) : os))
   }, [height])
 
+  /**
+   * Same sensor, different world.
+   *
+   * The point of four sites is not four pictures. Hold the sensor fixed and the
+   * numbers say something the pictures cannot: a 25 m mast sees a fifth of the
+   * Grand Canyon and three quarters of Badwater Basin, because flat ground hides
+   * nothing. Recorded only for a single observer at the seed height, so the
+   * comparison is between terrains rather than between setups.
+   */
+  const [measured, setMeasured] = useState<Record<string, { name: string; pct: number; height: number }>>({})
+  useEffect(() => {
+    if (!site || !stats || observers.length !== 1) return
+    setMeasured((m) => ({
+      ...m,
+      [site.id]: { name: site.name, pct: stats.visibleFraction * 100, height: observers[0].height },
+    }))
+  }, [site, stats, observers])
+
+  const comparison = useMemo(() => {
+    const at = observers[0]?.height
+    if (at === undefined) return []
+    return Object.entries(measured)
+      .filter(([, m]) => Math.abs(m.height - at) < 0.05)
+      .map(([id, m]) => ({ id, ...m }))
+      .sort((a, b) => b.pct - a.pct)
+  }, [measured, observers])
+
   const broken = !glOk || lost || metaFailed
 
   return (
@@ -281,7 +321,9 @@ export default function Relief() {
         <div className="flex items-center gap-2.5">
           <Mark />
           <span className="font-semibold tracking-tight">Relief</span>
-          <span className="relief-label hidden sm:inline">Grand Canyon · viewshed</span>
+          <span className="relief-label hidden sm:inline">
+            {site ? `${site.name} · ${site.subtitle}` : 'viewshed'}
+          </span>
         </div>
         <button
           onClick={() => navigate('#/')}
@@ -303,11 +345,11 @@ export default function Relief() {
                 </div>
               }
             >
-              {meta ? (
+              {site && sites ? (
                 <>
                   <div className="absolute inset-0">
                     <Scene
-                      meta={meta}
+                      site={site}
                       observers={observers}
                       active={active}
                       moveActive={moveActive}
@@ -325,7 +367,29 @@ export default function Relief() {
                       phones so it never covers the terrain it describes. */}
                   <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 p-3 sm:inset-auto sm:left-4 sm:top-4 sm:w-72 sm:p-0">
                     <div className="pointer-events-auto rounded-xl border border-relief-line bg-relief-card/92 p-3 backdrop-blur sm:p-4">
-                      <div className="flex items-center justify-between">
+                      {/* Site picker. One elevation model per site, swapped in
+                          place — the sensor, its height and the overlay colour
+                          stay exactly as they are, which is what makes the
+                          readings below comparable across terrains. */}
+                      <div className="flex flex-wrap gap-1.5">
+                        {sites.map((s) => (
+                          <button
+                            key={s.id}
+                            onClick={() => selectSite(s)}
+                            aria-pressed={s.id === site.id}
+                            title={s.subtitle}
+                            className={`rounded-md border px-2 py-1 text-xs font-medium transition-colors ${
+                              s.id === site.id
+                                ? 'border-relief-line-strong bg-relief-line/40 text-relief-ink'
+                                : 'border-relief-line text-relief-muted hover:border-relief-line-strong hover:text-relief-ink'
+                            }`}
+                          >
+                            {s.name}
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="mt-3 flex items-center justify-between border-t border-relief-line pt-3">
                         <span className="relief-label">
                           {observers.length > 1 ? `${observers.length} observers` : 'Observer'}
                         </span>
@@ -335,7 +399,7 @@ export default function Relief() {
                             setRefraction(true)
                             setObservers((os) => os.slice(0, 1))
                             setActive(0)
-                            if (meta) setExaggeration(defaultExaggeration(meta))
+                            setExaggeration(defaultExaggeration(site.meta))
                           }}
                           className="text-xs font-medium text-relief-muted underline decoration-relief-line underline-offset-4 hover:text-relief-ink"
                         >
@@ -486,6 +550,34 @@ export default function Relief() {
                         )}
                       </div>
 
+                      {/* Appears only once a second site has been measured at
+                          the same height — until then there is nothing to
+                          compare and a one-row table would just be the number
+                          above it, repeated. */}
+                      {comparison.length > 1 && (
+                        <div className="mt-3 border-t border-relief-line pt-3 sm:mt-4">
+                          <span className="relief-label">
+                            Same sensor, different world
+                            <span className="ml-1 text-relief-muted">
+                              · at {Math.round(observers[0].height)} m
+                            </span>
+                          </span>
+                          <div className="mt-1.5 space-y-1">
+                            {comparison.map((c) => (
+                              <div
+                                key={c.id}
+                                className={`flex items-baseline justify-between gap-3 text-xs ${
+                                  c.id === site.id ? 'text-relief-ink' : 'text-relief-muted'
+                                }`}
+                              >
+                                <span className="truncate">{c.name}</span>
+                                <span className="relief-num shrink-0">{c.pct.toFixed(1)}%</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
                       <p className="mt-3 hidden text-[0.68rem] leading-relaxed text-relief-muted sm:block">
                         Click the terrain to move the observer, or drag the marker. Drag
                         elsewhere to orbit, scroll to zoom. Arrow keys nudge; +/− change height.
@@ -510,11 +602,11 @@ export default function Relief() {
         <details className="sm:hidden">
           <summary className="cursor-pointer font-medium text-relief-ink-2">Method &amp; sources</summary>
           <div className="mt-2 space-y-1.5">
-            <Notes />
+            <Notes site={site} />
           </div>
         </details>
         <div className="hidden space-y-1.5 sm:block">
-          <Notes />
+          <Notes site={site} />
         </div>
       </footer>
     </div>

@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { CameraControls } from '@react-three/drei'
-import type { ReliefMeta } from './meta'
+import type { ReliefMeta, ReliefSite } from './meta'
+import { heightmapUrl, previewUrl, previewMeta } from './meta'
 import { loadHeightmap } from './heightfield'
 import type { Heightfield } from './heightfield'
 import { Viewshed } from './viewshed'
@@ -10,7 +11,7 @@ import { Shadow, sunVector } from './shadow'
 import type { ViewshedStats } from './viewshed'
 
 /**
- * Relief — real-time viewshed over the Grand Canyon.
+ * Relief — a real-time viewshed, over any of four sites.
  *
  * Terrain is one plane displaced in the vertex shader from a Terrarium-encoded
  * heightmap baked out of the Copernicus GLO-30 DEM (scripts/bake-relief.mjs).
@@ -26,8 +27,6 @@ import type { ViewshedStats } from './viewshed'
  * everything here is plain GLSL.
  */
 
-const HEIGHTMAP_URL = `${import.meta.env.BASE_URL}relief/heightmap.png`
-
 const SEG_DESKTOP = 512
 const SEG_MOBILE = 256
 const VIEWSHED_DESKTOP = 1024
@@ -40,14 +39,6 @@ const VIEWSHED_MOBILE = 512
  * boundary sharpness rather than correctness.
  */
 const STEPS = 256
-
-/** Sun for this site: compass azimuth, elevation. Low, for long shadows. */
-const SUN_AZIMUTH = 190
-const SUN_ELEVATION = 20
-const SUN = sunVector(SUN_AZIMUTH, SUN_ELEVATION)
-
-/** Minor contour interval, metres. Index (heavy) contours every 5th. */
-const CONTOUR_M = 100
 
 /** World units are kilometres — keeps camera near/far in a sane range. */
 const M_TO_WORLD = 0.001
@@ -134,11 +125,13 @@ const FRAG = /* glsl */ `
   uniform vec2  uMetresPerPx;
   uniform float uContour;
   uniform vec3  uSun;
-  uniform vec3  uRock;
+  uniform vec3  uLow;
+  uniform vec3  uHigh;
   uniform vec3  uVisible;
   uniform float uMinElev;
   uniform float uMaxElev;
   uniform float uHasViewshed;
+  uniform float uViewshedTexel;
   uniform float uHazeDensity;
   uniform float uEdgeFade;
   uniform float uExag;
@@ -183,9 +176,13 @@ const FRAG = /* glsl */ `
   void main() {
     vec3 n = terrainNormal(vUv);
 
-    // Standard shaded relief: sun from the north-west at ~40°, plus a sky fill
-    // proportional to how much sky the facet sees so slopes facing away stay
-    // readable rather than going to black.
+    // Shaded relief from the SAME sun the cast-shadow pass marches toward.
+    // These were two different suns until the sites went in — hillshade lit from
+    // the cartographic north-west while shadows fell from wherever the site's
+    // sun was — so shadows landed across brightly lit slopes. The north-west
+    // convention exists to defeat the relief-inversion illusion on a flat map;
+    // in an oblique perspective view with real cast shadows there is no illusion
+    // to defeat, and coherence is worth more.
     float key   = max(dot(n, normalize(uSun)), 0.0);
 
     // Cast shadow only attenuates light that would otherwise arrive. Facets
@@ -202,8 +199,12 @@ const FRAG = /* glsl */ `
     float skyLight = 0.55 + 0.45 * max(n.z, 0.0); // hemisphere the facet can see
     float direct = key;                            // sun, already shadow-attenuated
 
+    // Hypsometric tint across the site's own elevation range: two stops, lowest
+    // ground in the frame to highest. Two is enough for all four sites because
+    // the ramp is free to run either way — Death Valley's salt is the brightest
+    // thing in its frame and also the lowest, so its ramp descends.
     float t = clamp((vElev - uMinElev) / max(uMaxElev - uMinElev, 1.0), 0.0, 1.0);
-    vec3 base = mix(uRock * 0.70, uRock * 1.25, t);
+    vec3 base = mix(uLow, uHigh, t);
     vec3 col = base * (0.30 * skyLight + 0.62 * direct) * 1.0;
 
     // Contours: minor thin, index (every 5th) heavier. Faded on steep faces
@@ -233,12 +234,35 @@ const FRAG = /* glsl */ `
     float haze = 1.0 - exp(-vDepth * uHazeDensity);
     col = mix(col, sky, clamp(haze, 0.0, 0.92));
 
-    float cov = texture2D(uViewshed, vUv).r * uHasViewshed;
+    // Five taps, not one. At a grazing sight line the reference angle and the
+    // cell's own angle differ by less than the noise in a 30 m posting, so the
+    // result flips cell to cell and the boundary breaks into a dither — real,
+    // and at this camera distance one viewshed cell is about five pixels, so it
+    // reads as compression noise across the whole near plateau. Averaging over
+    // roughly 90 m of ground costs nothing structurally on a 20 km frame.
+    //
+    // This is the DISPLAY only. Every reported figure comes from the separate
+    // statistics pass in viewshed.ts, which samples the unfiltered result.
+    float e = uViewshedTexel * 0.75;
+    float cov = (
+      texture2D(uViewshed, vUv).r * 2.0 +
+      texture2D(uViewshed, vUv + vec2( e,  e)).r +
+      texture2D(uViewshed, vUv + vec2(-e,  e)).r +
+      texture2D(uViewshed, vUv + vec2( e, -e)).r +
+      texture2D(uViewshed, vUv + vec2(-e, -e)).r
+    ) / 6.0 * uHasViewshed;
     float vis = smoothstep(0.0, 0.12, cov) * mix(0.62, 1.0, cov);
 
     float lum = dot(col, vec3(0.299, 0.587, 0.114));
     vec3 hidden  = mix(vec3(lum), col, 0.34) * 0.72;
-    vec3 visible = col * 1.04 + uVisible * 0.26 * (0.45 + 0.55 * key);
+    // The warm tint scales with how bright the ground already is. A flat additive
+    // term swamps anything dark: Crater Lake's water sits at the very bottom of
+    // its own palette, the whole lake is inside the viewshed, and the overlay
+    // painted it the same sand colour as the rim. Brightness still separates
+    // visible from hidden — 1.10 against 0.72 — so nothing is lost by letting
+    // dark ground keep its own colour.
+    float tint = 0.30 * (0.45 + 0.55 * key) * (0.15 + 0.85 * smoothstep(0.0, 0.25, lum));
+    vec3 visible = col * 1.10 + uVisible * tint;
     col = mix(hidden, visible, vis);
 
     // Dissolve the frame edge into the sky, LAST, so nothing paints over it.
@@ -309,14 +333,20 @@ function Sky({ top, horizon }: { top: THREE.Color; horizon: THREE.Color }) {
 
 function Terrain({
   meta,
+  site,
   texture,
+  sun,
+  viewshedSize,
   viewshed,
   shadow,
   hasObserver,
   exaggeration,
 }: {
   meta: ReliefMeta
+  site: ReliefSite
   texture: THREE.Texture
+  sun: THREE.Vector3
+  viewshedSize: number
   viewshed: Viewshed | null
   shadow: Shadow | null
   hasObserver: boolean
@@ -333,16 +363,19 @@ function Terrain({
       uElevScale: { value: M_TO_WORLD },
       uTexel: { value: new THREE.Vector2(1 / meta.width, 1 / meta.height) },
       uMetresPerPx: { value: new THREE.Vector2(meta.metersPerPixelX, meta.metersPerPixelY) },
-      uContour: { value: CONTOUR_M },
-      // Cartographic convention: sun from the north-west at 40° elevation.
+      uContour: { value: site.contourM },
       // Local +Y is north (the texture is flipped on upload, so v=1 is the
       // first raster row, which the bake wrote as the northern edge).
-      uSun: { value: new THREE.Vector3(-0.542, 0.542, 0.643).normalize() },
-      uRock: { value: new THREE.Color('#8a7f72') },
+      uSun: { value: sun.clone() },
+      uLow: { value: new THREE.Color(site.palette.low) },
+      uHigh: { value: new THREE.Color(site.palette.high) },
+      // NOT per site. The terrain changes; the instrument does not. Holding the
+      // overlay colour fixed across all four is what makes them comparable.
       uVisible: { value: new THREE.Color('#ffb95c') },
       uMinElev: { value: meta.minElev },
       uMaxElev: { value: meta.maxElev },
       uHasViewshed: { value: 0 },
+      uViewshedTexel: { value: 1 / VIEWSHED_DESKTOP },
       uHazeDensity: { value: 0.007 },
       uShadow: { value: null as THREE.Texture | null },
       uHasShadow: { value: 0 },
@@ -357,6 +390,29 @@ function Terrain({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   )
+
+  // The height texture is swapped, not rebuilt: the preview tier renders first
+  // and the full raster replaces it in place a moment later. Everything derived
+  // from the raster's DIMENSIONS has to follow it across that swap — a 1024²
+  // texel size on a 256² preview would sample a sixteenth of the intended
+  // footprint and the hillshade would turn to noise.
+  useEffect(() => {
+    const m = matRef.current
+    if (!m) return
+    m.uniforms.uHeight.value = texture
+    ;(m.uniforms.uTexel.value as THREE.Vector2).set(1 / meta.width, 1 / meta.height)
+    ;(m.uniforms.uMetresPerPx.value as THREE.Vector2).set(
+      meta.metersPerPixelX,
+      meta.metersPerPixelY,
+    )
+    m.uniforms.uMinElev.value = meta.minElev
+    m.uniforms.uMaxElev.value = meta.maxElev
+    m.uniforms.uContour.value = site.contourM
+    m.uniforms.uViewshedTexel.value = 1 / viewshedSize
+    ;(m.uniforms.uSun.value as THREE.Vector3).copy(sun)
+    ;(m.uniforms.uLow.value as THREE.Color).set(site.palette.low)
+    ;(m.uniforms.uHigh.value as THREE.Color).set(site.palette.high)
+  }, [texture, meta, site, sun, viewshedSize])
 
   // Pull the current texture straight off the Viewshed each frame rather than
   // routing it through React state. The instance swaps between two ping-pong
@@ -461,9 +517,30 @@ function applyFraming(
   const d = widthW * (portrait ? CAM_DIST_FRAC_PORTRAIT : CAM_DIST_FRAC)
   const elev = portrait ? CAM_ELEV_DEG_PORTRAIT : CAM_ELEV_DEG
   const h = d * Math.tan((elev * Math.PI) / 180)
-  // Stand south of the subject looking north across it: local +Y is north, and
-  // the plane's rotation puts north at negative world Z.
-  controls.setLookAt(tx, ty + h, tz + d, tx, ty, tz, false)
+
+  /**
+   * Stand OUTWARD from the frame centre, behind the observer, looking back
+   * across the terrain.
+   *
+   * A fixed bearing — always south of the subject, looking north — composes well
+   * only when the subject happens to sit south of centre. It does not: the seed
+   * positions are chosen for what they can see, and what can see the most is
+   * usually near an edge. Framing the Matterhorn's seed that way put the camera
+   * off the north-east corner with the massif behind it, and a fifth of the
+   * frame was empty sky. Badwater Basin's put half the frame off the map.
+   *
+   * Taking the bearing from the centre-to-observer vector instead means the bulk
+   * of the terrain is always the thing being looked at, whichever corner the
+   * observer landed in, and the longest sight lines in the frame — the diagonals
+   * — are the ones the camera looks down.
+   */
+  const len = Math.hypot(tx, tz)
+  // An observer at the exact centre has no outward direction; face south, which
+  // is where the fixed bearing used to point.
+  const dirX = len < 1e-3 ? 0 : tx / len
+  const dirZ = len < 1e-3 ? 1 : tz / len
+
+  controls.setLookAt(tx + dirX * d, ty + h, tz + dirZ * d, tx, ty, tz, false)
 }
 
 /**
@@ -471,11 +548,32 @@ function applyFraming(
  * the centre. Parallax between near and far ridges as the camera slides is the
  * cheapest convincing depth cue there is; orbiting the centre gives almost none
  * because everything rotates together.
+ *
+ * BOUNDED, and it starts only once the site has fully loaded. Unbounded, it ran
+ * during the load window — between the opening framing and the observer being
+ * seeded — and trucked the camera a few kilometres sideways by however long the
+ * download happened to take. Every site opened on a different composition, and
+ * the same site opened differently on every visit; two runs of probe-look.mjs
+ * disagreed by 15% of mean brightness on a frame nothing had changed in.
  */
-function Idle({ controls, active }: { controls: React.RefObject<CameraControls | null>; active: boolean }) {
+const IDLE_TRAVEL_FRAC = 0.04
+const IDLE_SECONDS = 5
+
+function Idle({
+  controls,
+  active,
+  limit,
+}: {
+  controls: React.RefObject<CameraControls | null>
+  active: boolean
+  limit: number
+}) {
+  const travelled = useRef(0)
   useFrame((_, dt) => {
-    if (!active || document.hidden) return
-    controls.current?.truck(dt * 0.55, 0, false)
+    if (!active || document.hidden || travelled.current >= limit) return
+    const step = Math.min((dt * limit) / IDLE_SECONDS, limit - travelled.current)
+    travelled.current += step
+    controls.current?.truck(step, 0, false)
   })
   return null
 }
@@ -712,18 +810,55 @@ function useOcclusionProbe(
 }
 
 /**
+ * Live GPU allocation counts, for the smoke suite.
+ *
+ * Four sites, each holding two viewshed targets, a shadow pair and a heightmap
+ * texture, is enough that "we call dispose somewhere" is not good enough — a
+ * missed one is invisible until the tab is minutes old. This makes the count
+ * assertable: cycle every site and come back, and the totals should return to
+ * where they started.
+ */
+function useAllocationProbe() {
+  const { gl } = useThree()
+  useEffect(() => {
+    const w = window as unknown as {
+      __reliefInfo?: () => { textures: number; geometries: number }
+    }
+    w.__reliefInfo = () => ({
+      textures: gl.info.memory.textures,
+      geometries: gl.info.memory.geometries,
+    })
+    return () => {
+      delete w.__reliefInfo
+    }
+  }, [gl])
+}
+
+/**
  * Owns the single Viewshed instance and wires it to both the terrain that
  * samples it and the interaction that recomputes it. Lives inside the Canvas
  * so it can reach the renderer.
  */
-/** Sets the opening pose once, as soon as there is something to aim at. */
+/**
+ * Sets the opening pose once, as soon as there is something to aim at.
+ *
+ * "Something" is the seed position, not the seeded observer — the preview tier
+ * renders before the full raster has decoded and therefore before any observer
+ * exists, and waiting for one would open on the default overview and then snap
+ * to the low oblique a second later. Both tiers aim at the same point, so the
+ * pose that gets set first is already the right one and the swap is invisible.
+ */
 function Framing({
   meta,
+  field,
+  seed,
   observers,
   exaggeration,
   controls,
 }: {
   meta: ReliefMeta
+  field: Heightfield
+  seed: { u: number; v: number }
   observers: Observer[]
   exaggeration: number
   controls: React.RefObject<CameraControls | null>
@@ -731,20 +866,16 @@ function Framing({
   const { size } = useThree()
   const done = useRef(false)
   useFrame(() => {
-    if (done.current || !controls.current || !observers.length) return
+    if (done.current || !controls.current) return
     done.current = true
-    applyFraming(
-      controls.current,
-      meta,
-      observers[0],
-      exaggeration,
-      size.height > size.width,
-    )
+    const target = observers[0] ?? { ...seed, ground: field.elevAt(seed.u, seed.v) }
+    applyFraming(controls.current, meta, target, exaggeration, size.height > size.width)
   })
   return null
 }
 
 function Content({
+  site,
   meta,
   heightTex,
   field,
@@ -758,6 +889,7 @@ function Content({
   onUserInput,
   exaggeration,
 }: {
+  site: ReliefSite
   meta: ReliefMeta
   heightTex: THREE.Texture
   field: Heightfield
@@ -774,15 +906,28 @@ function Content({
   const { size, camera } = useThree()
   const small = size.width < 768
   useOcclusionProbe(field, meta, exaggeration, camera)
+  useAllocationProbe()
 
+  // The most site-specific value there is. A caldera wants a low sun to cast its
+  // rim across the water; a peak at the same angle turns its own faces black.
+  const sun = useMemo(
+    () => sunVector(site.sun.azimuth, site.sun.elevation),
+    [site.sun.azimuth, site.sun.elevation],
+  )
+
+  // Both of these hold GPU render targets, and both are keyed on the height
+  // texture — so the preview→full swap and a change of site each retire the old
+  // pair through the disposal effects below. Four sites' worth of undisposed
+  // targets is a real leak, not a theoretical one.
+  const viewshedSize = small ? VIEWSHED_MOBILE : VIEWSHED_DESKTOP
   const viewshed = useMemo(
     () =>
       new Viewshed(heightTex, meta, {
-        size: small ? VIEWSHED_MOBILE : VIEWSHED_DESKTOP,
+        size: viewshedSize,
         statsSize: 256,
         steps: STEPS,
       }),
-    [heightTex, meta, small],
+    [heightTex, meta, viewshedSize],
   )
   useEffect(() => () => viewshed.dispose(), [viewshed])
 
@@ -796,16 +941,26 @@ function Content({
   // on demand and never in the render loop.
   const { gl } = useThree()
   useEffect(() => {
-    shadow.compute(gl, SUN, exaggeration)
-  }, [shadow, gl, exaggeration])
+    shadow.compute(gl, sun, exaggeration)
+  }, [shadow, gl, sun, exaggeration])
 
   return (
     <>
-      <Framing meta={meta} observers={observers} exaggeration={exaggeration} controls={controls} />
+      <Framing
+        meta={meta}
+        field={field}
+        seed={site.seed}
+        observers={observers}
+        exaggeration={exaggeration}
+        controls={controls}
+      />
       <Sky top={SKY_TOP} horizon={SKY_HORIZON} />
       <Terrain
         meta={meta}
+        site={site}
+        sun={sun}
         texture={heightTex}
+        viewshedSize={viewshedSize}
         viewshed={viewshed}
         shadow={shadow}
         hasObserver={observers.length > 0}
@@ -832,8 +987,17 @@ function Content({
   )
 }
 
+/** Whichever elevation model is currently on screen, and which tier it is. */
+type Tier = {
+  siteId: string
+  full: boolean
+  texture: THREE.Texture
+  field: Heightfield
+  meta: ReliefMeta
+}
+
 export default function Scene({
-  meta,
+  site,
   observers,
   active,
   moveActive,
@@ -845,7 +1009,7 @@ export default function Scene({
   onProgress,
   exaggeration,
 }: {
-  meta: ReliefMeta
+  site: ReliefSite
   observers: Observer[]
   active: number
   moveActive: (u: number, v: number, ground: number) => void
@@ -858,38 +1022,74 @@ export default function Scene({
   exaggeration: number
 }) {
   const controls = useRef<CameraControls | null>(null)
-  const [heightTex, setHeightTex] = useState<THREE.Texture | null>(null)
-  const [field, setField] = useState<Heightfield | null>(null)
+  const [tier, setTier] = useState<Tier | null>(null)
   const [idle, setIdle] = useState(true)
 
+  const meta = site.meta
   const reduce =
     typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
 
-  // The heightmap costs ~3 MB and a full CPU decode, and onReady seeds page
-  // state — so this must run exactly once. It previously listed the callbacks
-  // as dependencies; onFail was an inline arrow, so every render re-ran the
-  // load and re-fired onReady, silently resetting the observers the user had
-  // just added.
-  const loadedRef = useRef(false)
+  /**
+   * Load a site in two tiers.
+   *
+   * The full raster is up to 1.2 MB and costs a full CPU decode on top of the
+   * download, which is a long blank second on a phone and a long blank second
+   * every time the site changes. The 256² preview is the same elevation model at
+   * a sixteenth the samples and a tenth the bytes, so terrain appears almost
+   * immediately and the full raster replaces it in place.
+   *
+   * Keyed on site.id rather than a bare once-only guard: the old guard was there
+   * to stop an unstable callback dependency from re-firing onReady and wiping
+   * the user's observers, but as written it would also have refused to load any
+   * second site at all.
+   */
+  const loadedFor = useRef<string | null>(null)
+  const haveFull = useRef(false)
   useEffect(() => {
-    if (loadedRef.current) return
-    loadedRef.current = true
+    if (loadedFor.current === site.id) return
+    loadedFor.current = site.id
+    haveFull.current = false
     let cancelled = false
-    loadHeightmap(HEIGHTMAP_URL, meta, (loaded, total) => {
+    setTier(null)
+    onProgress?.(0)
+
+    const pmeta = previewMeta(meta)
+    loadHeightmap(previewUrl(site.id), pmeta)
+      .then(({ texture, field }) => {
+        // Losing the race to the full raster is the normal outcome on a fast
+        // connection. Dispose out here rather than inside a state updater —
+        // side effects during the update phase are how the observer "+ Add"
+        // button came to silently do nothing.
+        if (cancelled || haveFull.current) return texture.dispose()
+        setTier({ siteId: site.id, full: false, texture, field, meta: pmeta })
+      })
+      // The preview is an optimisation. Its failure must not take the page down
+      // — the full raster is still coming, and onFail belongs to that one.
+      .catch(() => {})
+
+    loadHeightmap(heightmapUrl(site.id), meta, (loaded, total) => {
       if (!cancelled) onProgress?.(total ? loaded / total : 0)
     })
       .then(({ texture, field }) => {
-        if (cancelled) return
-        setHeightTex(texture)
-        setField(field)
+        if (cancelled) return texture.dispose()
+        haveFull.current = true
+        setTier({ siteId: site.id, full: true, texture, field, meta })
         onReady?.(field)
       })
       .catch(() => !cancelled && onFail?.())
+
     return () => {
       cancelled = true
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [meta])
+  }, [site.id])
+
+  // Retire the texture a tier leaves behind — on the preview→full swap, on a
+  // change of site, and on unmount. Each holds a decoded 1024² RGBA upload.
+  useEffect(() => {
+    const t = tier
+    return () => t?.texture.dispose()
+  }, [tier])
 
   const diag = Math.hypot(meta.widthM, meta.heightM) * M_TO_WORLD
 
@@ -917,12 +1117,25 @@ export default function Scene({
         maxPolarAngle={Math.PI * 0.49}
         minPolarAngle={0.05}
       />
-      <Idle controls={controls} active={idle && !reduce && !observers.length} />
-      {heightTex && field && (
+      {/* Keyed by site: the travel budget is per opening frame, and without the
+          key the second site onward would inherit a spent one. */}
+      <Idle
+        key={site.id}
+        controls={controls}
+        active={idle && !reduce && !!tier?.full}
+        limit={diag * IDLE_TRAVEL_FRAC}
+      />
+      {tier && (
+        // Keyed by site so a switch tears the whole subtree down: render targets
+        // disposed, and the once-only opening framing armed again for the new
+        // terrain. Within a site the key holds steady, so the preview→full swap
+        // reuses the mesh and the camera never moves.
         <Content
-          meta={meta}
-          heightTex={heightTex}
-          field={field}
+          key={tier.siteId}
+          site={site}
+          meta={tier.meta}
+          heightTex={tier.texture}
+          field={tier.field}
           observers={observers}
           active={active}
           moveActive={moveActive}

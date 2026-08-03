@@ -1,0 +1,21 @@
+{
+  "id": "grand-canyon",
+  "source": "Copernicus GLO-30 DEM (ESA / Copernicus Programme), AWS open-data mirror",
+  "encoding": "terrarium-rgb: elev_m = (R*256 + G + B/256) - 32768",
+  "quantisationM": 0.5,
+  "bbox": {
+    "north": 36.19,
+    "south": 36.02,
+    "west": -112.22,
+    "east": -112
+  },
+  "width": 1024,
+  "height": 1024,
+  "previewWidth": 256,
+  "minElev": 713,
+  "maxElev": 2522.53,
+  "widthM": 19810,
+  "heightM": 18863,
+  "metersPerPixelX": 19.345,
+  "metersPerPixelY": 18.421
+}

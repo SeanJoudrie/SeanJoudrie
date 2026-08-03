@@ -1,0 +1,21 @@
+{
+  "id": "death-valley",
+  "source": "Copernicus GLO-30 DEM (ESA / Copernicus Programme), AWS open-data mirror",
+  "encoding": "terrarium-rgb: elev_m = (R*256 + G + B/256) - 32768",
+  "quantisationM": 0.5,
+  "bbox": {
+    "north": 36.35,
+    "south": 36.15,
+    "west": -116.9,
+    "east": -116.7
+  },
+  "width": 1024,
+  "height": 1024,
+  "previewWidth": 256,
+  "minElev": -90.58,
+  "maxElev": 1743.94,
+  "widthM": 17976,
+  "heightM": 22193,
+  "metersPerPixelX": 17.554,
+  "metersPerPixelY": 21.673
+}

@@ -1,0 +1,21 @@
+{
+  "id": "crater-lake",
+  "source": "Copernicus GLO-30 DEM (ESA / Copernicus Programme), AWS open-data mirror",
+  "encoding": "terrarium-rgb: elev_m = (R*256 + G + B/256) - 32768",
+  "quantisationM": 0.5,
+  "bbox": {
+    "north": 42.98,
+    "south": 42.905,
+    "west": -122.17,
+    "east": -122.07
+  },
+  "width": 1024,
+  "height": 1024,
+  "previewWidth": 256,
+  "minElev": 1882.67,
+  "maxElev": 2469.46,
+  "widthM": 8162,
+  "heightM": 8332,
+  "metersPerPixelX": 7.97,
+  "metersPerPixelY": 8.137
+}

@@ -25,6 +25,9 @@
  *     372 m lower sees 12.4%.
  *
  * VS_HEIGHT overrides the observer height (default 25 m) in every mode.
+ * VS_SITE picks the site (default grand-canyon) — the same ids as
+ * scripts/relief-sites.mjs. Each site needs its own seed: a position chosen on
+ * the canyon rim means nothing on a caldera.
  */
 
 import { readFile } from 'node:fs/promises'
@@ -38,8 +41,11 @@ const GRID = 256 // evaluation grid, matching the GPU stats target
 const STEPS = 256
 const K = 0.13
 
-const meta = JSON.parse(await readFile(path.join(ROOT, 'public/relief/meta.json'), 'utf8'))
-const png = PNG.sync.read(await readFile(path.join(ROOT, 'public/relief/heightmap.png')))
+const SITE = process.env.VS_SITE ?? 'grand-canyon'
+const DIR = path.join(ROOT, 'public/relief', SITE)
+const meta = JSON.parse(await readFile(path.join(DIR, 'meta.json'), 'utf8'))
+const png = PNG.sync.read(await readFile(path.join(DIR, 'heightmap.png')))
+console.log(`site      ${SITE}  ${(meta.widthM / 1000).toFixed(1)}x${(meta.heightM / 1000).toFixed(1)} km  ${meta.minElev}–${meta.maxElev} m`)
 
 const W = png.width
 const H = png.height
@@ -152,12 +158,19 @@ if (process.env.VS_SEARCH) {
     }
     return { vis, frac: vis / (G * G), ground: og }
   }
+  // VS_MIN_GROUND rejects candidates below an elevation. Crater Lake needs it:
+  // the DEM carries the lake as a perfectly flat 1,883 m plane, and every one of
+  // the top eight candidates was an observer standing on the water, seeing 82%
+  // of the caldera. True of the raster, useless as a demonstration — the point
+  // is a sensor somewhere a sensor could be.
+  const minGround = Number(process.env.VS_MIN_GROUND ?? -Infinity)
   const results = []
   for (let vi = 1; vi < 10; vi++) {
     for (let ui = 1; ui < 10; ui++) {
       const u = ui / 10
       const v = vi / 10
       const r = score(u, v, 25)
+      if (r.ground < minGround) continue
       results.push({ u, v, ...r })
     }
   }
@@ -175,14 +188,34 @@ if (process.env.VS_SEARCH) {
 if (process.env.VS_SELFTEST) {
   const h = HEIGHT
   const horizon = Math.sqrt((2 * EARTH_R * h) / (1 - K))
+
+  /**
+   * The plane is synthetic, so its EXTENT must be too.
+   *
+   * This used to borrow the site's frame size, which worked only for as long as
+   * the frame happened to be bigger than the horizon. Re-cropping the Grand
+   * Canyon to 19.8 km — against a 19.1 km horizon for a 25 m eye — put the
+   * entire raster inside the horizon: no cell could be hidden, "nearest hidden"
+   * came back Infinity, and an assertion about where visibility ENDS had nothing
+   * left to measure. A test of the algorithm has no business depending on which
+   * bounding box someone chose.
+   *
+   * Sized at 2.5x the horizon so the boundary falls well inside the grid, and
+   * evaluated at 512 rather than 256 so a cell (93 m) stays comfortably below
+   * the 1% tolerance (191 m) the assertions use.
+   */
+  const extent = horizon * 2.5
+  const grid = 512
+  const centre = { u: 0.5, v: 0.5 }
+
   let vis = 0
   let maxVisD = 0
   let minHidD = Infinity
-  for (let yi = 0; yi < GRID; yi++) {
-    for (let xi = 0; xi < GRID; xi++) {
-      const du = (xi + 0.5) / GRID - obs.u
-      const dv = (yi + 0.5) / GRID - obs.v
-      const dist = Math.hypot(du * meta.widthM, dv * meta.heightM)
+  for (let yi = 0; yi < grid; yi++) {
+    for (let xi = 0; xi < grid; xi++) {
+      const du = (xi + 0.5) / grid - centre.u
+      const dv = (yi + 0.5) / grid - centre.v
+      const dist = Math.hypot(du * extent, dv * extent)
       if (dist < 1) { vis++; continue }
       let maxA = -Infinity
       for (let i = 1; i < STEPS; i++) {
@@ -196,11 +229,11 @@ if (process.env.VS_SELFTEST) {
       else if (dist < minHidD) minHidD = dist
     }
   }
-  console.log(`SELFTEST flat plane, eye ${h} m`)
+  console.log(`SELFTEST flat plane, eye ${h} m, ${(extent / 1000).toFixed(1)} km square at ${grid}²`)
   console.log(`  analytic horizon      ${(horizon / 1000).toFixed(2)} km`)
   console.log(`  furthest visible      ${(maxVisD / 1000).toFixed(2)} km`)
   console.log(`  nearest hidden        ${(minHidD / 1000).toFixed(2)} km`)
-  console.log(`  visible cells         ${((vis / (GRID * GRID)) * 100).toFixed(2)}%`)
+  console.log(`  visible cells         ${((vis / (grid * grid)) * 100).toFixed(2)}%`)
 
   // Assert, don't just report. A self-test that prints its result and exits 0
   // regardless tells you nothing on the day it starts disagreeing.

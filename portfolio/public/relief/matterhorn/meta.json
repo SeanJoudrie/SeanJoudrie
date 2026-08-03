@@ -1,0 +1,21 @@
+{
+  "id": "matterhorn",
+  "source": "Copernicus GLO-30 DEM (ESA / Copernicus Programme), AWS open-data mirror",
+  "encoding": "terrarium-rgb: elev_m = (R*256 + G + B/256) - 32768",
+  "quantisationM": 0.5,
+  "bbox": {
+    "north": 46.05,
+    "south": 45.92,
+    "west": 7.6,
+    "east": 7.79
+  },
+  "width": 1024,
+  "height": 1024,
+  "previewWidth": 256,
+  "minElev": 1471.63,
+  "maxElev": 4329.49,
+  "widthM": 14722,
+  "heightM": 14450,
+  "metersPerPixelX": 14.377,
+  "metersPerPixelY": 14.111
+}

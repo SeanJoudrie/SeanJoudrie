@@ -60,7 +60,10 @@ const readStats = async () => {
     }
     return out
   })
-  const num = (v) => Number(String(v ?? '').replace(/[^0-9.]/g, ''))
+  // Keep the sign. Badwater Basin seeds at -49 m, and stripping the minus read
+  // it as +49 — a number that looks plausible enough to sail through a check
+  // asserting the observer had moved to the new terrain.
+  const num = (v) => Number(String(v ?? '').replace(/[^0-9.-]/g, ''))
   return {
     ground: num(map['elev.']),
     area: num(map['visible'] ?? map['covered']),
@@ -73,6 +76,30 @@ const before = await readStats()
 check('observer seeded on real ground', before.ground > 500, `${before.ground} m`)
 check('visible area is non-zero', before.area > 0, `${before.area} km²`)
 check('furthest visible is non-zero', before.far > 0, `${before.far} km`)
+
+/**
+ * Occlusion — the reason the terrain used to read flat.
+ *
+ * The old camera sat ~40 km out and high, from which nothing hid anything, so
+ * the scene had no occlusion cue at all and looked like a texture map. Assert
+ * the fix numerically rather than trusting a screenshot: what share of the
+ * terrain is hidden from the default camera by other terrain.
+ *
+ * Measured HERE, on the opening frame, and not at the end of the run: the probe
+ * reads the live camera and the live exaggeration, and the exaggeration test
+ * below leaves the terrain at 3x under a camera framed for 1.6x. That reported
+ * 99.4% — true, and a measurement of a pose no visitor ever sees.
+ */
+const openingOcclusion = await p.evaluate(() =>
+  window.__reliefOcclusion ? window.__reliefOcclusion() : null,
+)
+check(
+  'the default camera produces real occlusion',
+  openingOcclusion !== null && openingOcclusion >= 0.2,
+  openingOcclusion === null
+    ? 'probe missing'
+    : `${(openingOcclusion * 100).toFixed(1)}% of terrain hidden from camera`,
+)
 
 /** Mean brightness of the terrain region, ignoring near-black sky. */
 const brightness = async () => {
@@ -183,20 +210,82 @@ check(
 )
 
 /**
- * Occlusion — the reason the terrain used to read flat.
+ * Site switching.
  *
- * The old camera sat ~40 km out and high, from which nothing hid anything, so
- * the scene had no occlusion cue at all and looked like a texture map. Assert
- * the fix numerically rather than trusting a screenshot: what share of the
- * terrain is hidden from the default camera by other terrain.
+ * Four sites share one scene, one sensor and one set of controls; the elevation
+ * model underneath is swapped. Three things can go wrong silently and all three
+ * are asserted here: the terrain does not actually change, the observer is
+ * re-seeded from a position measured on the previous raster, or the GPU
+ * allocations from the previous site are never released.
  */
-const occlusion = await p.evaluate(() =>
-  window.__reliefOcclusion ? window.__reliefOcclusion() : null,
+const allocations = () => p.evaluate(() => (window.__reliefInfo ? window.__reliefInfo() : null))
+const baseline = await allocations()
+check('allocation probe present', baseline !== null, baseline ? `${baseline.textures} textures` : '')
+
+// Back to the seed height so the comparison table has something to compare.
+await p.getByTitle('25 m').click()
+await p.waitForTimeout(2500)
+const canyon = await readStats()
+
+const gotoSite = async (name) => {
+  await p.getByRole('button', { name, exact: true }).click()
+  await p.waitForTimeout(7000)
+  return readStats()
+}
+
+const valley = await gotoSite('Death Valley')
+check(
+  'switching site re-seeds on the new terrain',
+  // Badwater Basin seeds below sea level. If the observer were carried over
+  // from the canyon it would still be reading ~2,148 m.
+  valley.ground < 0,
+  `${canyon.ground} m → ${valley.ground} m`,
 )
 check(
-  'the default camera produces real occlusion',
-  occlusion !== null && occlusion >= 0.2,
-  occlusion === null ? 'probe missing' : `${(occlusion * 100).toFixed(1)}% of terrain hidden from camera`,
+  'the new site reports its own visibility',
+  valley.area > 0 && Math.abs(valley.pct - canyon.pct) > 5,
+  `${canyon.pct}% of the canyon vs ${valley.pct}% of the basin, same 25 m sensor`,
+)
+
+// Both tiers must be requested: the preview is what puts terrain on screen
+// while the full raster is still downloading.
+const requested = await p.evaluate(() =>
+  performance
+    .getEntriesByType('resource')
+    .filter((e) => e.name.includes('/relief/death-valley/'))
+    .map((e) => e.name.split('/').pop()),
+)
+check(
+  'the site loads preview first, then the full raster',
+  requested.includes('preview.png') && requested.includes('heightmap.png'),
+  requested.join(', ') || 'nothing requested',
+)
+
+const comparisonRows = await p.evaluate(() => {
+  const label = [...document.querySelectorAll('.relief-label')].find((l) =>
+    l.textContent.includes('Same sensor'),
+  )
+  return label ? label.parentElement.querySelectorAll('.relief-num').length : 0
+})
+check('the cross-site comparison appears', comparisonRows >= 2, `${comparisonRows} sites listed`)
+
+await gotoSite('Matterhorn')
+await gotoSite('Crater Lake')
+const backToCanyon = await gotoSite('Grand Canyon')
+check(
+  'returning to a site reproduces its numbers',
+  Math.abs(backToCanyon.area - canyon.area) < 0.5,
+  `${canyon.area} → ${backToCanyon.area} km²`,
+)
+
+const allocAfter = await allocations()
+check(
+  'cycling every site releases what it allocated',
+  // A tolerance rather than equality: three.js allocates lazily and the count
+  // legitimately drifts by a texture or two. A missed dispose would leave five
+  // per site behind, not one.
+  allocAfter !== null && baseline !== null && allocAfter.textures - baseline.textures <= 2,
+  allocAfter && baseline ? `${baseline.textures} → ${allocAfter.textures} textures` : 'probe missing',
 )
 
 check('no page errors', pageErrors.length === 0, pageErrors.slice(0, 2).join(' | '))
