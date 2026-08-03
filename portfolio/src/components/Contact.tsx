@@ -17,7 +17,7 @@ export function Contact() {
 
   return (
     <section id="contact" className="paper-wash">
-      <div className="mx-auto max-w-6xl px-5 py-16 text-center sm:px-8 sm:py-32">
+      <div className="mx-auto max-w-6xl px-5 py-16 text-center sm:px-8 sm:py-24">
         <Reveal>
           <p className="annotation mb-4">Contact</p>
           <h2 className="mx-auto max-w-2xl font-display text-4xl font-semibold leading-tight tracking-tight text-ink sm:text-5xl">

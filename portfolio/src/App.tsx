@@ -5,7 +5,6 @@ import { Work } from './components/Work'
 import { About } from './components/About'
 import { Lab } from './components/Lab'
 import { Range } from './components/Range'
-import { FlagBreak } from './components/FlagBreak'
 import { Now } from './components/Now'
 import { Contact } from './components/Contact'
 import { Footer } from './components/Footer'
@@ -183,14 +182,13 @@ export default function App() {
       </a>
       <Nav />
       {/* Hero leads into About (who), then Range (the commissioned proofs of
-          skill), a flag-game breather, then the full Index of works. */}
+          skill), then the full Index of works. */}
       <main aria-label="Portfolio">
         <Hero />
         <About />
         <Range />
         <Work />
         <Lab />
-        <FlagBreak />
         <Now />
         <Contact />
       </main>

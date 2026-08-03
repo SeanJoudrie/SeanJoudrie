@@ -4,7 +4,7 @@ import { createElement as h } from 'react'
 /**
  * The daily-round engine — the same idea Globalio's Daily Challenge runs on:
  * a tiny PRNG seeded from the date alone, so every visitor on Earth gets the
- * same puzzle today with zero backend. Shared by the hero FlagGame and the
+ * same puzzle today with zero backend. Drives the Lab's Seed Scrubber and the
  * Lab's Seed Scrubber.
  */
 

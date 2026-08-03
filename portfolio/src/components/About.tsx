@@ -25,7 +25,7 @@ function Portrait({ className = '' }: { className?: string }) {
 export function About() {
   return (
     <section id="about" className="border-b border-line">
-      <div className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-28">
+      <div className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
         <div className="grid gap-8 md:grid-cols-[1.2fr_0.8fr] md:gap-16">
           <Reveal>
             <div className="flex items-center gap-4">
