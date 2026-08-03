@@ -72,7 +72,13 @@ const readStats = async () => {
   }
 }
 
-const before = await readStats()
+// Same race as gotoSite: under the full suite the decode takes longer than any
+// fixed wait worth writing. Poll for the first real result.
+let before = await readStats()
+for (let i = 0; i < 40 && !(before.area > 0); i++) {
+  await p.waitForTimeout(500)
+  before = await readStats()
+}
 check('observer seeded on real ground', before.ground > 500, `${before.ground} m`)
 check('visible area is non-zero', before.area > 0, `${before.area} km²`)
 check('furthest visible is non-zero', before.far > 0, `${before.far} km`)
@@ -227,10 +233,24 @@ await p.getByTitle('25 m').click()
 await p.waitForTimeout(2500)
 const canyon = await readStats()
 
+/**
+ * Switch site and wait for the result, rather than for a duration.
+ *
+ * A fixed timeout passed alone and failed inside the full suite, where the
+ * machine is busy and the raster takes longer to decode: the site had changed,
+ * the observer had not been seeded yet, and the read came back 0% — reported as
+ * "Badwater Basin sees 0% of itself", which is a false failure describing a real
+ * race. Poll for a non-zero area instead.
+ */
 const gotoSite = async (name) => {
   await p.getByRole('button', { name, exact: true }).click()
-  await p.waitForTimeout(7000)
-  return readStats()
+  const deadline = Date.now() + 30000
+  for (;;) {
+    await p.waitForTimeout(500)
+    const s = await readStats()
+    if (s.area > 0) return s
+    if (Date.now() > deadline) return s
+  }
 }
 
 const valley = await gotoSite('Death Valley')
@@ -289,6 +309,65 @@ check(
 )
 
 check('no page errors', pageErrors.length === 0, pageErrors.slice(0, 2).join(' | '))
+
+/**
+ * Phone layout.
+ *
+ * The desktop panel is a side card and costs nothing. The same card on a 375 px
+ * screen measured 415 px tall — 51% of the viewport, with the observer marker
+ * underneath it and 28% of the screen left for the terrain the controls
+ * describe. Everything below is about that not coming back.
+ */
+const phone = await browser.newPage({
+  viewport: { width: 375, height: 812 },
+  deviceScaleFactor: 2,
+  isMobile: true,
+  hasTouch: true,
+})
+const phoneErrors = []
+phone.on('pageerror', (e) => phoneErrors.push(String(e)))
+await phone.goto(URL, { waitUntil: 'networkidle' })
+await phone.waitForTimeout(12000)
+
+const panelHeight = () =>
+  phone.evaluate(() => {
+    const el = document.querySelector('main .absolute.inset-x-0 > div')
+    return el ? el.getBoundingClientRect().height : null
+  })
+
+const collapsed = await panelHeight()
+check('the phone panel collapses to a bar', collapsed !== null && collapsed < 90, `${collapsed} px of 812`)
+
+// The stepper is the phone's way between sites — the nearest thing to swiping
+// without a gesture handler fighting the camera for the same drag.
+const phoneSite = () =>
+  phone.evaluate(() => {
+    const el = document.querySelector('main .absolute.inset-x-0 [aria-expanded]')
+    return el ? el.textContent.trim() : null
+  })
+const firstSite = await phoneSite()
+await phone.getByLabel('Next site').click()
+await phone.waitForTimeout(7000)
+const steppedSite = await phoneSite()
+check('the site stepper moves between sites', !!steppedSite && steppedSite !== firstSite, `${firstSite} → ${steppedSite}`)
+
+await phone.getByLabel('Show controls', { exact: true }).click()
+await phone.waitForTimeout(500)
+const opened = await panelHeight()
+check(
+  'opening the panel reveals the controls without covering the screen',
+  opened !== null && opened > collapsed && opened < 812 * 0.72,
+  `${collapsed} → ${opened} px`,
+)
+check(
+  'the exaggeration control is reachable on a phone',
+  await phone.getByLabel('Vertical exaggeration').isVisible(),
+)
+
+await phone.getByLabel('Hide controls', { exact: true }).click()
+await phone.waitForTimeout(300)
+check('closing it returns the screen to the terrain', (await panelHeight()) === collapsed)
+check('no page errors on a phone', phoneErrors.length === 0, phoneErrors.slice(0, 2).join(' | '))
 
 await browser.close()
 console.log(failed ? `\nrelief: ${failed} check(s) failed` : '\nrelief: all checks passed')

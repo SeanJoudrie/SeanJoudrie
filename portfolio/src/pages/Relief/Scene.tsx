@@ -495,11 +495,16 @@ function Marker({
  */
 const CAM_ELEV_DEG = 17
 /** Portrait looks down harder — a tall frame at 17 degrees is mostly sky. */
-const CAM_ELEV_DEG_PORTRAIT = 26
+const CAM_ELEV_DEG_PORTRAIT = 24
 /** Distance back from the look-at point, as a share of frame width. */
 const CAM_DIST_FRAC = 0.42
 /** Portrait has a narrow horizontal field of view, so pull in closer. */
 const CAM_DIST_FRAC_PORTRAIT = 0.3
+
+/** How far back the opening camera stands. Shared by the framing and by the
+ *  idle dolly, which needs it to size its travel — see Idle. */
+const framingDistance = (meta: ReliefMeta, portrait: boolean) =>
+  meta.widthM * M_TO_WORLD * (portrait ? CAM_DIST_FRAC_PORTRAIT : CAM_DIST_FRAC)
 
 function applyFraming(
   controls: CameraControls,
@@ -514,7 +519,7 @@ function applyFraming(
   const tz = -(target.v - 0.5) * heightW
   const ty = target.ground * M_TO_WORLD * exaggeration
 
-  const d = widthW * (portrait ? CAM_DIST_FRAC_PORTRAIT : CAM_DIST_FRAC)
+  const d = framingDistance(meta, portrait)
   const elev = portrait ? CAM_ELEV_DEG_PORTRAIT : CAM_ELEV_DEG
   const h = d * Math.tan((elev * Math.PI) / 180)
 
@@ -555,8 +560,14 @@ function applyFraming(
  * download happened to take. Every site opened on a different composition, and
  * the same site opened differently on every visit; two runs of probe-look.mjs
  * disagreed by 15% of mean brightness on a frame nothing had changed in.
+ *
+ * The budget is a share of the CAMERA DISTANCE, not of the frame. Sized against
+ * the frame it was an angle that depended on how close the camera happened to
+ * stand: the same 4% swept 2.3 degrees on a laptop and 5.7 on a phone, where the
+ * horizontal field of view is only 23 degrees to begin with — a quarter of the
+ * frame, enough to carry the observer marker to the very edge of the screen.
  */
-const IDLE_TRAVEL_FRAC = 0.04
+const IDLE_TRAVEL_FRAC = 0.06
 const IDLE_SECONDS = 5
 
 function Idle({
@@ -1123,7 +1134,7 @@ export default function Scene({
         key={site.id}
         controls={controls}
         active={idle && !reduce && !!tier?.full}
-        limit={diag * IDLE_TRAVEL_FRAC}
+        limit={framingDistance(meta, portrait) * IDLE_TRAVEL_FRAC}
       />
       {tier && (
         // Keyed by site so a switch tears the whole subtree down: render targets

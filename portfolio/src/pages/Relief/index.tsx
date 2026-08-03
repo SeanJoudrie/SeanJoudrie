@@ -127,6 +127,8 @@ export default function Relief() {
   const [stats, setStats] = useState<ViewshedStats | null>(null)
   const [progress, setProgress] = useState(0)
   const [exaggeration, setExaggeration] = useState<number | null>(null)
+  /** Phones only — from sm up the panel is a side card and always open. */
+  const [panelOpen, setPanelOpen] = useState(false)
 
   const site = useMemo(
     () => sites?.find((s) => s.id === siteId) ?? null,
@@ -186,6 +188,18 @@ export default function Relief() {
       setExaggeration(defaultExaggeration(next.meta))
     },
     [siteId],
+  )
+
+  /** Step to the next or previous site. The phone bar's arrows — the nearest
+   *  thing to swiping between them without a gesture handler fighting the
+   *  camera for the same drag. */
+  const stepSite = useCallback(
+    (d: number) => {
+      if (!sites || !siteId) return
+      const i = sites.findIndex((s) => s.id === siteId)
+      selectSite(sites[(i + d + sites.length) % sites.length])
+    },
+    [sites, siteId, selectSite],
   )
 
   /** Seed the observer so the page shows a real result before anything is
@@ -363,10 +377,67 @@ export default function Relief() {
                     />
                   </div>
 
-                  {/* Control panel — a side card on desktop, a bottom sheet on
-                      phones so it never covers the terrain it describes. */}
+                  {/* Control panel — a side card from sm up, where it costs
+                      nothing. On a phone the same card measured 415 px of an
+                      812 px screen: the controls took 51% of the viewport and
+                      the terrain they describe got 28%, with the observer
+                      marker itself underneath them. So on a phone it collapses
+                      to a bar, and opening it is a deliberate act. */}
                   <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 p-3 sm:inset-auto sm:left-4 sm:top-4 sm:w-72 sm:p-0">
-                    <div className="pointer-events-auto rounded-xl border border-relief-line bg-relief-card/92 p-3 backdrop-blur sm:p-4">
+                    <div className="pointer-events-auto overflow-hidden rounded-xl border border-relief-line bg-relief-card/92 backdrop-blur">
+                      {/* Summary bar, phones only. Carries the two things worth
+                          a permanent 44 px — which site, and what it sees —
+                          plus the fastest way between sites. */}
+                      <div className="flex items-center gap-0.5 px-1.5 py-1.5 sm:hidden">
+                        <button
+                          onClick={() => stepSite(-1)}
+                          aria-label="Previous site"
+                          className="shrink-0 rounded-md px-2.5 py-2 text-relief-muted hover:text-relief-ink"
+                        >
+                          ‹
+                        </button>
+                        <button
+                          onClick={() => setPanelOpen((o) => !o)}
+                          /* The accessible name deliberately differs from the
+                             site chip's, so "the Death Valley button" stays
+                             unambiguous to a test even while this one is
+                             display:none on a laptop. */
+                          aria-label={`${site.name} — ${panelOpen ? 'hide' : 'show'} controls`}
+                          aria-expanded={panelOpen}
+                          className="min-w-0 flex-1 truncate px-1 py-2 text-center text-sm font-medium text-relief-ink"
+                        >
+                          {site.name}
+                        </button>
+                        <button
+                          onClick={() => stepSite(1)}
+                          aria-label="Next site"
+                          className="shrink-0 rounded-md px-2.5 py-2 text-relief-muted hover:text-relief-ink"
+                        >
+                          ›
+                        </button>
+                        <span className="relief-num shrink-0 px-1 text-sm text-relief-visible">
+                          {stats ? `${(stats.visibleFraction * 100).toFixed(1)}%` : '—'}
+                        </span>
+                        <button
+                          onClick={() => setPanelOpen((o) => !o)}
+                          aria-label={panelOpen ? 'Hide controls' : 'Show controls'}
+                          aria-expanded={panelOpen}
+                          className="shrink-0 rounded-md border border-relief-line px-2 py-1.5 text-[0.7rem] font-medium text-relief-muted"
+                        >
+                          {panelOpen ? 'Close' : 'Controls'}
+                        </button>
+                      </div>
+
+                      {/* Scrolls rather than growing: expanded, this is taller
+                          than a phone, and a panel that pushes its own bottom
+                          off the screen loses the statistics. */}
+                      <div
+                        className={`${
+                          panelOpen
+                            ? 'block max-h-[62svh] overflow-y-auto border-t border-relief-line'
+                            : 'hidden'
+                        } p-3 sm:block sm:max-h-none sm:overflow-visible sm:border-t-0 sm:p-4`}
+                      >
                       {/* Site picker. One elevation model per site, swapped in
                           place — the sensor, its height and the overlay colour
                           stay exactly as they are, which is what makes the
@@ -581,7 +652,8 @@ export default function Relief() {
                       <p className="mt-3 hidden text-[0.68rem] leading-relaxed text-relief-muted sm:block">
                         Click the terrain to move the observer, or drag the marker. Drag
                         elsewhere to orbit, scroll to zoom. Arrow keys nudge; +/− change height.
-                      </p>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </>
