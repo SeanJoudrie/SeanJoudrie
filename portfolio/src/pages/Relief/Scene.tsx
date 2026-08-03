@@ -6,6 +6,7 @@ import type { ReliefMeta } from './meta'
 import { loadHeightmap } from './heightfield'
 import type { Heightfield } from './heightfield'
 import { Viewshed } from './viewshed'
+import { Shadow, sunVector } from './shadow'
 import type { ViewshedStats } from './viewshed'
 
 /**
@@ -40,6 +41,11 @@ const VIEWSHED_MOBILE = 512
  */
 const STEPS = 256
 
+/** Sun for this site: compass azimuth, elevation. Low, for long shadows. */
+const SUN_AZIMUTH = 190
+const SUN_ELEVATION = 20
+const SUN = sunVector(SUN_AZIMUTH, SUN_ELEVATION)
+
 /** Minor contour interval, metres. Index (heavy) contours every 5th. */
 const CONTOUR_M = 100
 
@@ -59,6 +65,21 @@ const SKY_HORIZON = new THREE.Color('#4a4036')
  * visible seam wherever the gradient has moved away from it.
  */
 const SKY_GLSL = /* glsl */ `
+  /**
+   * Linear -> sRGB.
+   *
+   * THREE.Color converts a hex literal to linear on construction, and three
+   * appends its colour-space conversion only to its own materials — a raw
+   * ShaderMaterial writes whatever it computes straight to the framebuffer. So
+   * linear values were being displayed as if they were already sRGB, and the
+   * whole scene rendered far darker than authored: #141a24 arrived on screen as
+   * rgb(2,3,5). Every ambient level tuned before this was compensating for it.
+   */
+  vec3 linearToSRGB(vec3 c) {
+    c = clamp(c, 0.0, 1.0);
+    return mix(c * 12.92, 1.055 * pow(c, vec3(1.0 / 2.4)) - 0.055, step(vec3(0.0031308), c));
+  }
+
   uniform vec3 uSkyTop;
   uniform vec3 uSkyHorizon;
   uniform vec2 uResolution;
@@ -121,6 +142,8 @@ const FRAG = /* glsl */ `
   uniform float uHazeDensity;
   uniform float uEdgeFade;
   uniform float uExag;
+  uniform sampler2D uShadow;
+  uniform float uHasShadow;
 
   varying vec2  vUv;
   varying float vElev;
@@ -163,17 +186,25 @@ const FRAG = /* glsl */ `
     // Standard shaded relief: sun from the north-west at ~40°, plus a sky fill
     // proportional to how much sky the facet sees so slopes facing away stay
     // readable rather than going to black.
-    // Ambient floors are deliberately generous. Exaggeration makes almost every
-    // facet steep, so a model tuned for gentle 1:1 terrain bottoms out and the
-    // whole scene goes to mud — most surfaces end up facing away from the sun at
-    // once. Sky fill carries the shadowed side instead.
     float key   = max(dot(n, normalize(uSun)), 0.0);
-    float fill  = 0.55 + 0.45 * max(n.z, 0.0);
-    float shade = 0.45 + 0.55 * key;
+
+    // Cast shadow only attenuates light that would otherwise arrive. Facets
+    // already turned away from the sun are already dark; multiplying them by
+    // a shadow term as well double-darkens, and it is exactly those grazing
+    // surfaces where a heightmap march is most prone to shadowing itself.
+    float shadow = mix(1.0, texture2D(uShadow, vUv).r, uHasShadow);
+    key *= shadow;
+    // Two separable terms rather than one blended factor, because a cast shadow
+    // removes the SUN and nothing else. Sky light still arrives in shadow, and
+    // it is what keeps the canyon floor readable instead of crushed: measured
+    // at 26.5% of the frame below 12/255 with the previous single-factor model,
+    // and no detail left in the darkest quartile.
+    float skyLight = 0.55 + 0.45 * max(n.z, 0.0); // hemisphere the facet can see
+    float direct = key;                            // sun, already shadow-attenuated
 
     float t = clamp((vElev - uMinElev) / max(uMaxElev - uMinElev, 1.0), 0.0, 1.0);
     vec3 base = mix(uRock * 0.70, uRock * 1.25, t);
-    vec3 col = base * shade * mix(0.82, 1.15, fill) * 1.62;
+    vec3 col = base * (0.30 * skyLight + 0.62 * direct) * 1.0;
 
     // Contours: minor thin, index (every 5th) heavier. Faded on steep faces
     // where 100 m spacing stacks a dozen lines into the same few pixels and
@@ -220,7 +251,7 @@ const FRAG = /* glsl */ `
     float edge = min(toEdge.x, toEdge.y);
     col = mix(sky, col, smoothstep(0.0, uEdgeFade, edge));
 
-    gl_FragColor = vec4(col, 1.0);
+    gl_FragColor = vec4(linearToSRGB(col), 1.0);
   }
 `
 
@@ -269,7 +300,7 @@ function Sky({ top, horizon }: { top: THREE.Color; horizon: THREE.Color }) {
         fragmentShader={/* glsl */ `
           precision highp float;
           ${SKY_GLSL}
-          void main() { gl_FragColor = vec4(skyAtFragment(), 1.0); }
+          void main() { gl_FragColor = vec4(linearToSRGB(skyAtFragment()), 1.0); }
         `}
       />
     </mesh>
@@ -280,12 +311,14 @@ function Terrain({
   meta,
   texture,
   viewshed,
+  shadow,
   hasObserver,
   exaggeration,
 }: {
   meta: ReliefMeta
   texture: THREE.Texture
   viewshed: Viewshed | null
+  shadow: Shadow | null
   hasObserver: boolean
   exaggeration: number
 }) {
@@ -311,6 +344,8 @@ function Terrain({
       uMaxElev: { value: meta.maxElev },
       uHasViewshed: { value: 0 },
       uHazeDensity: { value: 0.007 },
+      uShadow: { value: null as THREE.Texture | null },
+      uHasShadow: { value: 0 },
       uExag: { value: 1 },
       uEdgeFade: { value: 0.1 },
       uSkyTop: { value: SKY_TOP.clone() },
@@ -340,6 +375,9 @@ function Terrain({
     // asserts the statistics are byte-identical across settings.
     m.uniforms.uElevScale.value = M_TO_WORLD * exaggeration
     m.uniforms.uExag.value = exaggeration
+    const sh = shadow ? shadow.texture : null
+    m.uniforms.uShadow.value = sh
+    m.uniforms.uHasShadow.value = sh ? 1 : 0
     ;(m.uniforms.uResolution.value as THREE.Vector2).set(size.width, size.height)
   })
 
@@ -748,6 +786,19 @@ function Content({
   )
   useEffect(() => () => viewshed.dispose(), [viewshed])
 
+  const shadow = useMemo(
+    () => new Shadow(heightTex, meta, small ? 512 : 1024),
+    [heightTex, meta, small],
+  )
+  useEffect(() => () => shadow.dispose(), [shadow])
+
+  // Sun and exaggeration are the only inputs; both change rarely, so this runs
+  // on demand and never in the render loop.
+  const { gl } = useThree()
+  useEffect(() => {
+    shadow.compute(gl, SUN, exaggeration)
+  }, [shadow, gl, exaggeration])
+
   return (
     <>
       <Framing meta={meta} observers={observers} exaggeration={exaggeration} controls={controls} />
@@ -756,6 +807,7 @@ function Content({
         meta={meta}
         texture={heightTex}
         viewshed={viewshed}
+        shadow={shadow}
         hasObserver={observers.length > 0}
         exaggeration={exaggeration}
       />
