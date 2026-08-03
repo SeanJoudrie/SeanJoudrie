@@ -101,7 +101,8 @@ function Notes() {
         vertical angle from the observer exceeds the maximum angle of all ground between them —
         computed here as a GPU reference-angle pass, corrected for Earth curvature (d²/2R) and
         atmospheric refraction. This is a bare-earth surface model: vegetation, structures and
-        haze are not accounted for.
+        haze are not accounted for. Vertical exaggeration applies to the rendering only — all
+        visibility is computed from true elevations.
       </p>
       <p>
         Elevation data: Copernicus GLO-30 DEM, © European Space Agency / Copernicus Programme,
@@ -435,7 +436,7 @@ export default function Relief() {
                           className="mt-2 w-full accent-[var(--color-relief-visible)]"
                           aria-label="Vertical exaggeration"
                         />
-                        <span className="mt-1 block text-[0.62rem] text-relief-muted">
+                        <span className="mt-1 hidden text-[0.62rem] text-relief-muted sm:block">
                           Display only — visibility is computed from true elevations.
                         </span>
                       </label>

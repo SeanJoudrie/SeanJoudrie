@@ -47,7 +47,7 @@ const CONTOUR_M = 100
 const M_TO_WORLD = 0.001
 
 /** Sky gradient. Also what the terrain hazes and dissolves toward. */
-const SKY_TOP = new THREE.Color('#080a0e')
+const SKY_TOP = new THREE.Color('#141a24')
 const SKY_HORIZON = new THREE.Color('#4a4036')
 
 /**
@@ -388,11 +388,56 @@ function Marker({
   )
 }
 
-/** Slow orbit until the user takes control, unless reduced motion is set. */
+/**
+ * Opening framing.
+ *
+ * The old camera sat ~40 km out at about 36 degrees above horizontal, looking
+ * at the centre of the frame. From there nothing hides anything — which is the
+ * single biggest reason the terrain read flat. Occlusion is the strongest depth
+ * cue there is and that pose eliminated it.
+ *
+ * This drops to a low oblique inside the terrain, aimed across the gorge rather
+ * than down at it, so near ridges cut in front of far ones.
+ */
+const CAM_ELEV_DEG = 17
+/** Portrait looks down harder — a tall frame at 17 degrees is mostly sky. */
+const CAM_ELEV_DEG_PORTRAIT = 26
+/** Distance back from the look-at point, as a share of frame width. */
+const CAM_DIST_FRAC = 0.42
+/** Portrait has a narrow horizontal field of view, so pull in closer. */
+const CAM_DIST_FRAC_PORTRAIT = 0.3
+
+function applyFraming(
+  controls: CameraControls,
+  meta: ReliefMeta,
+  target: { u: number; v: number; ground: number },
+  exaggeration: number,
+  portrait: boolean,
+) {
+  const widthW = meta.widthM * M_TO_WORLD
+  const heightW = meta.heightM * M_TO_WORLD
+  const tx = (target.u - 0.5) * widthW
+  const tz = -(target.v - 0.5) * heightW
+  const ty = target.ground * M_TO_WORLD * exaggeration
+
+  const d = widthW * (portrait ? CAM_DIST_FRAC_PORTRAIT : CAM_DIST_FRAC)
+  const elev = portrait ? CAM_ELEV_DEG_PORTRAIT : CAM_ELEV_DEG
+  const h = d * Math.tan((elev * Math.PI) / 180)
+  // Stand south of the subject looking north across it: local +Y is north, and
+  // the plane's rotation puts north at negative world Z.
+  controls.setLookAt(tx, ty + h, tz + d, tx, ty, tz, false)
+}
+
+/**
+ * Idle motion: a slow lateral dolly along the ridge rather than a spin about
+ * the centre. Parallax between near and far ridges as the camera slides is the
+ * cheapest convincing depth cue there is; orbiting the centre gives almost none
+ * because everything rotates together.
+ */
 function Idle({ controls, active }: { controls: React.RefObject<CameraControls | null>; active: boolean }) {
   useFrame((_, dt) => {
-    if (!active) return
-    controls.current?.rotate(dt * 0.045, 0, false)
+    if (!active || document.hidden) return
+    controls.current?.truck(dt * 0.55, 0, false)
   })
   return null
 }
@@ -562,10 +607,105 @@ function Interaction({
 }
 
 /**
+ * Occlusion probe.
+ *
+ * "A ridge is hidden behind another ridge" is a judgement call, and judgement
+ * calls get confirmed under pressure. This measures it instead: for a grid of
+ * cells, march from the cell toward the camera and see whether terrain gets in
+ * the way. The fraction hidden is exactly the depth cue the old framing was
+ * missing — a camera 40 km out and high could see essentially everything, which
+ * is why the terrain read as a texture map rather than a landscape.
+ *
+ * Exposed on window so the smoke suite can assert on it. Cheap, CPU-side, run
+ * on demand — never in the render loop.
+ */
+function useOcclusionProbe(
+  field: Heightfield | null,
+  meta: ReliefMeta,
+  exaggeration: number,
+  camera: THREE.Camera,
+) {
+  useEffect(() => {
+    if (!field) return
+    const widthW = meta.widthM * M_TO_WORLD
+    const heightW = meta.heightM * M_TO_WORLD
+
+    const w = window as unknown as { __reliefOcclusion?: () => number }
+    w.__reliefOcclusion = () => {
+      const scale = M_TO_WORLD * exaggeration
+      const cam = camera.position
+      const N = 96
+      const STEPS = 96
+      let hidden = 0
+      const p = new THREE.Vector3()
+      for (let iy = 0; iy < N; iy++) {
+        for (let ix = 0; ix < N; ix++) {
+          const u = (ix + 0.5) / N
+          const v = (iy + 0.5) / N
+          const cellX = (u - 0.5) * widthW
+          const cellZ = -(v - 0.5) * heightW
+          const cellY = field.elevAt(u, v) * scale
+          let blocked = false
+          // Start slightly along the ray so the cell cannot occlude itself.
+          for (let k = 2; k < STEPS; k++) {
+            const t = k / STEPS
+            p.set(
+              cellX + (cam.x - cellX) * t,
+              cellY + (cam.y - cellY) * t,
+              cellZ + (cam.z - cellZ) * t,
+            )
+            const su = p.x / widthW + 0.5
+            const sv = -p.z / heightW + 0.5
+            if (su < 0 || su > 1 || sv < 0 || sv > 1) continue
+            if (p.y < field.elevAt(su, sv) * scale) {
+              blocked = true
+              break
+            }
+          }
+          if (blocked) hidden++
+        }
+      }
+      return hidden / (N * N)
+    }
+    return () => {
+      delete w.__reliefOcclusion
+    }
+  }, [field, meta, exaggeration, camera])
+}
+
+/**
  * Owns the single Viewshed instance and wires it to both the terrain that
  * samples it and the interaction that recomputes it. Lives inside the Canvas
  * so it can reach the renderer.
  */
+/** Sets the opening pose once, as soon as there is something to aim at. */
+function Framing({
+  meta,
+  observers,
+  exaggeration,
+  controls,
+}: {
+  meta: ReliefMeta
+  observers: Observer[]
+  exaggeration: number
+  controls: React.RefObject<CameraControls | null>
+}) {
+  const { size } = useThree()
+  const done = useRef(false)
+  useFrame(() => {
+    if (done.current || !controls.current || !observers.length) return
+    done.current = true
+    applyFraming(
+      controls.current,
+      meta,
+      observers[0],
+      exaggeration,
+      size.height > size.width,
+    )
+  })
+  return null
+}
+
 function Content({
   meta,
   heightTex,
@@ -593,8 +733,9 @@ function Content({
   onUserInput: () => void
   exaggeration: number
 }) {
-  const { size } = useThree()
+  const { size, camera } = useThree()
   const small = size.width < 768
+  useOcclusionProbe(field, meta, exaggeration, camera)
 
   const viewshed = useMemo(
     () =>
@@ -609,6 +750,7 @@ function Content({
 
   return (
     <>
+      <Framing meta={meta} observers={observers} exaggeration={exaggeration} controls={controls} />
       <Sky top={SKY_TOP} horizon={SKY_HORIZON} />
       <Terrain
         meta={meta}

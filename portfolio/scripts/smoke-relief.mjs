@@ -182,6 +182,23 @@ check(
     `${three.shown}x: ${three.stats.area} km² / ${three.stats.pct}% / ${three.stats.far} km`,
 )
 
+/**
+ * Occlusion — the reason the terrain used to read flat.
+ *
+ * The old camera sat ~40 km out and high, from which nothing hid anything, so
+ * the scene had no occlusion cue at all and looked like a texture map. Assert
+ * the fix numerically rather than trusting a screenshot: what share of the
+ * terrain is hidden from the default camera by other terrain.
+ */
+const occlusion = await p.evaluate(() =>
+  window.__reliefOcclusion ? window.__reliefOcclusion() : null,
+)
+check(
+  'the default camera produces real occlusion',
+  occlusion !== null && occlusion >= 0.2,
+  occlusion === null ? 'probe missing' : `${(occlusion * 100).toFixed(1)}% of terrain hidden from camera`,
+)
+
 check('no page errors', pageErrors.length === 0, pageErrors.slice(0, 2).join(' | '))
 
 await browser.close()
