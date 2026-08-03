@@ -34,7 +34,7 @@ export const site = {
     'Looking for: product / UI design & design-engineer roles — full-time or contract.',
   bio: [
     "I'm a self-taught designer-builder with a psychology degree — I design for how people actually behave, then measure whether it worked. Everything in the index above I conceived, designed, and shipped myself, from the first sketch to the deployed build.",
-    "I build with AI agents the way a director works a crew: the architecture, the taste, and the quality bar are mine — the typing is negotiable. That workflow took Globalio from an empty repo to a live game with 50+ modes in a week, and it's how the next dozen apps on this index will get built.",
+    'I build with AI agents deliberately, and the leverage is real — it is why this index runs a dozen entries deep instead of two. What they do not do is decide. Baking 80,000 anatomical points into a single 548 KB binary instead of shipping 100 MB of models; hinging a jaw on its real temporomandibular axis inside a vertex shader so 60,000 other points never touch the CPU; hand-rolling row virtualization for 10,000 rows rather than reaching for a grid library — those are architecture calls, and they are mine. Working this way took Globalio from an empty repo to a live game with 50+ modes in a week.',
     "The standard comes from the Army — I'm a National Guard officer candidate, and “good enough” isn't a phrase that survives there.",
   ],
   contactBlurb:
