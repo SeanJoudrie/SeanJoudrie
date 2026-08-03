@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Reveal } from './Reveal'
 import { site } from '../data/site'
+import { track } from '../lib/analytics'
 
 export function Contact() {
   const [copied, setCopied] = useState(false)
@@ -8,6 +9,7 @@ export function Contact() {
   const copyEmail = async () => {
     try {
       await navigator.clipboard.writeText(site.email)
+      track('email: copied')
       setCopied(true)
       setTimeout(() => setCopied(false), 1800)
     } catch {

@@ -18,6 +18,13 @@ export const site = {
   hasResume: true,
   resumeUrl: 'resume.pdf',
 
+  /**
+   * GoatCounter site code — the "xxx" in xxx.goatcounter.com, nothing more.
+   * Empty means analytics is completely off: no script, no listeners, no
+   * requests. Sign up free at goatcounter.com and paste the code here.
+   */
+  analyticsId: '',
+
   /* ---- Prose ------------------------------------------------------------
      The page is a client-rendered SPA, so anything that only exists inside
      JSX is invisible to crawlers, link previews, and AI assistants — they
