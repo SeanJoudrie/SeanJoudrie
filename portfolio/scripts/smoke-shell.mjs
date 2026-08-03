@@ -105,12 +105,70 @@ check(
 )
 await p.evaluate(() => localStorage.removeItem('sj-theme'))
 
-// 7. Scroll progress writes --reveal on revealed blocks.
-const revealVar = await p.evaluate(() => {
-  const el = document.querySelector('.reveal')
-  return el ? el.style.getPropertyValue('--reveal') : ''
+/**
+ * 7. Scroll reveal leaves nothing faded.
+ *
+ * This asserted that an inline `--reveal` dial was being written, which is the
+ * mechanism the reveal rewrite deliberately deleted: an IntersectionObserver
+ * used to write a 0..1 ratio that CSS interpolated opacity from, and since the
+ * observer gives no guarantee of a callback at an element's resting position, a
+ * fast scroll could strand whole sections at 12% opacity. A one-way `.reveal-on`
+ * latch replaced it. The old assertion has been failing ever since, against code
+ * that is working correctly.
+ *
+ * So assert the outcome instead: after scrolling the page, no block is left
+ * faded. Two things this needs, both learned the hard way:
+ *
+ *   - Reduced motion must be emulated OFF and the page reloaded. Headless Chrome
+ *     reports `reduce`, under which useReveal latches immediately and the
+ *     `.reveal { opacity: 0.12 }` rule is not in the cascade at all — the whole
+ *     mechanism is bypassed and the check cannot fail. Verified: with the
+ *     default media state, stripping every `.reveal-on` class from the document
+ *     left all 31 opacities at 1.
+ *
+ *   - A settle window. Latching can lag a second or more behind the scroll while
+ *     the lazy 3D previews are mounting and the observer is re-firing on reflow.
+ *     Measured at 1.2 s, up to 17 blocks are still mid-fade on a loaded run; by
+ *     6 s it is consistently zero, on this code and on the code before it.
+ */
+await p.emulateMedia({ reducedMotion: 'no-preference' })
+await p.reload({ waitUntil: 'networkidle' })
+// 200 px steps, not viewport-sized jumps. The page grows by hundreds of pixels
+// as the lazy previews mount, and a coarse programmatic scroll can outrun that
+// growth and skip a block entirely — which strands it, since nothing scrolls
+// again afterwards to give the observer a second chance. That is a property of
+// the probe, not of the site: a reader scrolls in small continuous increments,
+// and a jump straight to the bottom latches everything cleanly. Measured both.
+await p.evaluate(async () => {
+  for (let y = 0; y < document.body.scrollHeight; y += 200) {
+    window.scrollTo(0, y)
+    await new Promise((r) => setTimeout(r, 50))
+  }
+  window.scrollTo(0, document.body.scrollHeight)
 })
-check('scroll progress writes --reveal', revealVar !== '', `--reveal="${revealVar}"`)
+// Poll to a deadline rather than sampling at one instant. Latching genuinely
+// lags the scroll — the observer re-fires as the lazy previews reflow the page
+// — so a fixed wait tests machine load, not correctness. A single sample at 4 s
+// failed one run in five against code that settles fine. What matters, and what
+// a permanent regression could never satisfy, is that it reaches zero at all.
+const fadedNow = () =>
+  p.evaluate(() =>
+    [...document.querySelectorAll('.reveal')]
+      .filter((el) => Number(getComputedStyle(el).opacity) < 0.9)
+      .map((el) => (el.textContent || '').trim().slice(0, 24)),
+  )
+const settleDeadline = Date.now() + 20000
+let faded = await fadedNow()
+while (faded.length && Date.now() < settleDeadline) {
+  await p.waitForTimeout(500)
+  faded = await fadedNow()
+}
+const revealTotal = await p.evaluate(() => document.querySelectorAll('.reveal').length)
+check(
+  'every reveal block settles opaque',
+  faded.length === 0,
+  faded.length ? `still faded: ${faded.slice(0, 3).join(' | ')}` : `all ${revealTotal} blocks opaque`,
+)
 
 check('zero page errors', pageErrors.length === 0, pageErrors.join(' | '))
 await browser.close()
