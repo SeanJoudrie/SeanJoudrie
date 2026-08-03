@@ -112,9 +112,9 @@ const COMMISSIONS = [
   {
     n: '13',
     skill: 'Terrain analysis & GPU line-of-sight',
-    title: 'Relief — a Grand Canyon viewshed',
+    title: 'Relief — a viewshed over four landscapes',
     caption:
-      'Drop an observer on the rim and see exactly what they can see. Real terrain — two Copernicus GLO-30 tiles baked into a 45 x 44 km heightmap — with visibility solved on the GPU by the reference-angle method: a cell is visible when its vertical angle exceeds the maximum angle of all ground between. Corrected for Earth curvature and atmospheric refraction, both of which matter at 45 km. Raise the observer from eye level to 400 m and watch the footprint spill over the ridgelines. Every viewshed tool in the world is GDAL, R or a QGIS plugin; this one runs in a browser.',
+      'Drop an observer on the rim and see exactly what they can see. Real terrain — the Grand Canyon, the Matterhorn, Crater Lake and Badwater Basin, each baked from the Copernicus GLO-30 DEM over HTTP range requests — with visibility solved on the GPU by the reference-angle method: a cell is visible when its vertical angle exceeds the maximum angle of all ground between. Corrected for Earth curvature and atmospheric refraction, which matter because the horizon for a 25 m eye is 19.1 km and these frames are wider than that. Hold the sensor fixed and switch site: 25 m sees a fifth of the Grand Canyon and three quarters of Badwater, because flat ground hides nothing. Every viewshed tool in the world is GDAL, R or a QGIS plugin; this one runs in a browser.',
     href: '#/demos/relief',
   },
 ]

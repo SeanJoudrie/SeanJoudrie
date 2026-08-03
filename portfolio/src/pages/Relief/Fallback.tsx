@@ -30,7 +30,12 @@ export function Fallback() {
         <p className="mt-3 leading-relaxed text-relief-ink-2">
           This demo needs WebGL to compute visibility across the terrain. Your browser
           didn’t provide a graphics context, so here’s the idea in section: everything
-          the observer can see, and the pocket the far rim hides from them.
+          the observer can see, and the pocket the far ridge hides from them.
+        </p>
+        <p className="mt-3 text-sm leading-relaxed text-relief-muted">
+          With a graphics context it solves this over real elevation data at the Grand
+          Canyon, the Matterhorn, Crater Lake and Badwater Basin — the same sensor
+          against four landscapes.
         </p>
       </div>
     </div>

@@ -111,7 +111,7 @@ const DEMO_PAGES: Record<
   },
   relief: {
     Page: Relief,
-    label: 'Relief Grand Canyon viewshed demo',
+    label: 'Relief terrain viewshed demo',
     shell: 'bg-relief-bg',
     spinner: 'text-relief-muted',
   },
