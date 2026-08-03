@@ -118,6 +118,70 @@ await p.waitForTimeout(3000)
 const covBack = (await readStats()).area
 check('removing it restores coverage', Math.abs(covBack - covBefore) < 0.5, `${covTwo} → ${covBack} km²`)
 
+/**
+ * Vertical exaggeration must be a DISPLAY transform only.
+ *
+ * If it ever reaches viewshed.ts, every reported area and distance silently
+ * becomes fiction, and nothing else in the suite would notice —
+ * check-viewshed.mjs runs on the CPU against raw elevations and never sees the
+ * render path. So assert the one property that cannot hold if the wiring is
+ * wrong: the statistics do not move when the exaggeration does.
+ *
+ * Verified to fail: multiplying the observer ground elevation by the
+ * exaggeration factor inside the viewshed uniforms changes visible area by
+ * hundreds of km² and trips this immediately.
+ */
+const exagSlider = p.getByLabel('Vertical exaggeration')
+
+/** The factor as the page reports it — proof the control actually moved. */
+const shownExag = () =>
+  p.evaluate(() => {
+    const el = [...document.querySelectorAll('span')].find((s) =>
+      /^[0-9.]+×$/.test(s.textContent.trim()),
+    )
+    return el ? parseFloat(el.textContent) : null
+  })
+
+const statsAt = async (value) => {
+  // fill() on a range input does not reliably drive React's onChange, and a
+  // silently unmoved slider makes this assertion vacuous — both reads land on
+  // the same setting and trivially match. Set the value through the native
+  // setter, dispatch the event React listens for, then confirm the display
+  // moved before trusting anything downstream.
+  await exagSlider.evaluate((el, v) => {
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set
+    setter.call(el, String(v))
+    el.dispatchEvent(new Event('input', { bubbles: true }))
+  }, value)
+  // Changing exaggeration does not itself trigger a viewshed recompute — and
+  // it correctly should not, since it must not affect the result. But that
+  // means simply re-reading returns the cached numbers, so a leak would sit
+  // here undetected. Force a fresh computation by moving the observer away and
+  // back, landing both samples on the same height.
+  await p.getByTitle('120 m').click()
+  await p.waitForTimeout(1800)
+  await p.getByTitle('25 m').click()
+  await p.waitForTimeout(2500)
+  return { stats: await readStats(), shown: await shownExag() }
+}
+
+const one = await statsAt(1)
+const three = await statsAt(3)
+
+check(
+  'the exaggeration control actually moves',
+  one.shown !== null && three.shown !== null && Math.abs(three.shown - one.shown) > 1,
+  `displayed ${one.shown}x then ${three.shown}x`,
+)
+check(
+  'statistics are independent of vertical exaggeration',
+  one.stats.area === three.stats.area &&
+    one.stats.pct === three.stats.pct &&
+    one.stats.far === three.stats.far,
+  `${one.shown}x: ${one.stats.area} km² / ${one.stats.pct}% / ${one.stats.far} km  vs  ` +
+    `${three.shown}x: ${three.stats.area} km² / ${three.stats.pct}% / ${three.stats.far} km`,
+)
+
 check('no page errors', pageErrors.length === 0, pageErrors.slice(0, 2).join(' | '))
 
 await browser.close()

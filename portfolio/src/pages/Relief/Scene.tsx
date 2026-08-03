@@ -173,11 +173,13 @@ function Terrain({
   texture,
   viewshed,
   hasObserver,
+  exaggeration,
 }: {
   meta: ReliefMeta
   texture: THREE.Texture
   viewshed: Viewshed | null
   hasObserver: boolean
+  exaggeration: number
 }) {
   const { size } = useThree()
   const segments = size.width < 768 ? SEG_MOBILE : SEG_DESKTOP
@@ -218,6 +220,11 @@ function Terrain({
     const tex = viewshed ? viewshed.texture : null
     m.uniforms.uViewshed.value = tex
     m.uniforms.uHasViewshed.value = tex && hasObserver ? 1 : 0
+    // Vertical exaggeration is applied HERE and nowhere that matters. It scales
+    // the displacement the viewer sees; viewshed.ts keeps working from true
+    // elevations in metres and never learns this value exists. smoke-relief
+    // asserts the statistics are byte-identical across settings.
+    m.uniforms.uElevScale.value = M_TO_WORLD * exaggeration
   })
 
   const widthW = meta.widthM * M_TO_WORLD
@@ -232,13 +239,23 @@ function Terrain({
 }
 
 /** Observer marker: a stem from the ground up to eye height, capped by a bead. */
-function Marker({ meta, obs, dim = false }: { meta: ReliefMeta; obs: Observer; dim?: boolean }) {
+function Marker({
+  meta,
+  obs,
+  dim = false,
+  exaggeration,
+}: {
+  meta: ReliefMeta
+  obs: Observer
+  dim?: boolean
+  exaggeration: number
+}) {
   const widthW = meta.widthM * M_TO_WORLD
   const heightW = meta.heightM * M_TO_WORLD
   const x = (obs.u - 0.5) * widthW
   const z = -(obs.v - 0.5) * heightW
-  const groundY = obs.ground * M_TO_WORLD
-  const stem = Math.max(obs.height * M_TO_WORLD, widthW * 0.0015)
+  const groundY = obs.ground * M_TO_WORLD * exaggeration
+  const stem = Math.max(obs.height * M_TO_WORLD * exaggeration, widthW * 0.0015)
   const bead = widthW * 0.0045
 
   return (
@@ -280,6 +297,7 @@ function Interaction({
   viewshed,
   controls,
   onUserInput,
+  exaggeration,
 }: {
   meta: ReliefMeta
   field: Heightfield
@@ -292,6 +310,7 @@ function Interaction({
   viewshed: Viewshed
   controls: React.RefObject<CameraControls | null>
   onUserInput: () => void
+  exaggeration: number
 }) {
   const { gl, camera } = useThree()
   const raycaster = useMemo(() => new THREE.Raycaster(), [])
@@ -328,14 +347,14 @@ function Interaction({
           prev = t
           continue
         }
-        if (s.y <= field.elevAt(s.u, s.v) * M_TO_WORLD) {
+        if (s.y <= field.elevAt(s.u, s.v) * M_TO_WORLD * exaggeration) {
           // Bisect the last interval for a sub-step-accurate hit.
           let lo = prev
           let hi = t
           for (let k = 0; k < 24; k++) {
             const mid = (lo + hi) / 2
             const m = uvAt(mid)
-            if (m.y <= field.elevAt(m.u, m.v) * M_TO_WORLD) hi = mid
+            if (m.y <= field.elevAt(m.u, m.v) * M_TO_WORLD * exaggeration) hi = mid
             else lo = mid
           }
           const h = uvAt(hi)
@@ -347,7 +366,7 @@ function Interaction({
       }
       return null
     },
-    [gl, camera, raycaster, widthW, heightW, diag, field],
+    [gl, camera, raycaster, widthW, heightW, diag, field, exaggeration],
   )
 
   // Pointer handling. Left-drag stays on the camera (the conventional gesture);
@@ -443,6 +462,7 @@ function Content({
   onStats,
   controls,
   onUserInput,
+  exaggeration,
 }: {
   meta: ReliefMeta
   heightTex: THREE.Texture
@@ -455,6 +475,7 @@ function Content({
   onStats: (s: ViewshedStats) => void
   controls: React.RefObject<CameraControls | null>
   onUserInput: () => void
+  exaggeration: number
 }) {
   const { size } = useThree()
   const small = size.width < 768
@@ -472,10 +493,17 @@ function Content({
 
   return (
     <>
-      <Terrain meta={meta} texture={heightTex} viewshed={viewshed} hasObserver={observers.length > 0} />
+      <Terrain
+        meta={meta}
+        texture={heightTex}
+        viewshed={viewshed}
+        hasObserver={observers.length > 0}
+        exaggeration={exaggeration}
+      />
       <Interaction
         meta={meta}
         field={field}
+        exaggeration={exaggeration}
         observers={observers}
         active={active}
         moveActive={moveActive}
@@ -487,7 +515,7 @@ function Content({
         onUserInput={onUserInput}
       />
       {observers.map((o, i) => (
-        <Marker key={i} meta={meta} obs={o} dim={i !== active} />
+        <Marker key={i} meta={meta} obs={o} dim={i !== active} exaggeration={exaggeration} />
       ))}
     </>
   )
@@ -504,6 +532,7 @@ export default function Scene({
   onReady,
   onFail,
   onProgress,
+  exaggeration,
 }: {
   meta: ReliefMeta
   observers: Observer[]
@@ -515,6 +544,7 @@ export default function Scene({
   onReady?: (field: Heightfield) => void
   onFail?: () => void
   onProgress?: (fraction: number) => void
+  exaggeration: number
 }) {
   const controls = useRef<CameraControls | null>(null)
   const [heightTex, setHeightTex] = useState<THREE.Texture | null>(null)
@@ -590,6 +620,7 @@ export default function Scene({
           onStats={onStats}
           controls={controls}
           onUserInput={() => setIdle(false)}
+          exaggeration={exaggeration}
         />
       )}
     </Canvas>

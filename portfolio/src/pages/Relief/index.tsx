@@ -30,6 +30,29 @@ const fromHeight = (h: number) => Math.log(h / H_MIN) / Math.log(H_MAX / H_MIN)
  */
 const SEED = { u: 0.3, v: 0.5 }
 
+/**
+ * Vertical exaggeration.
+ *
+ * At true scale this frame is 45 km wide with 2,158 m of relief — a ratio of
+ * about 1:21, which is geometrically a cracker. Cartography has exaggerated
+ * relief for as long as it has drawn it; the dishonest version is the one that
+ * does not say so, which is why the factor stays on screen.
+ *
+ * The default is derived from the site's own measured geometry rather than
+ * hard-coded, so any future site gets a sensible figure for free: aim for an
+ * effective ratio near 1:7, never reduce below true scale. The Matterhorn
+ * measures 1:5.2 and would correctly come out at 1.0x.
+ */
+const EXAG_TARGET_RATIO = 7
+const EXAG_MIN = 1
+const EXAG_MAX = 4
+const defaultExaggeration = (m: ReliefMeta) => {
+  const relief = m.maxElev - m.minElev
+  if (relief <= 0) return 1
+  const ratio = m.widthM / relief
+  return Math.min(Math.max(ratio / EXAG_TARGET_RATIO, EXAG_MIN), EXAG_MAX)
+}
+
 const HEIGHT_STOPS = [
   { h: 2, label: 'eye level' },
   { h: 25, label: 'watchtower' },
@@ -130,8 +153,13 @@ export default function Relief() {
   const [refraction, setRefraction] = useState(true)
   const [stats, setStats] = useState<ViewshedStats | null>(null)
   const [progress, setProgress] = useState(0)
+  const [exaggeration, setExaggeration] = useState<number | null>(null)
 
   const handleFail = useCallback(() => setLost(true), [])
+
+  useEffect(() => {
+    if (meta) setExaggeration((e) => e ?? defaultExaggeration(meta))
+  }, [meta])
 
   const radius = useMemo(
     () => (meta ? Math.hypot(meta.widthM, meta.heightM) : 60000),
@@ -288,6 +316,7 @@ export default function Relief() {
                       onReady={handleReady}
                       onFail={handleFail}
                       onProgress={setProgress}
+                      exaggeration={exaggeration ?? 1}
                     />
                   </div>
 
@@ -305,6 +334,7 @@ export default function Relief() {
                             setRefraction(true)
                             setObservers((os) => os.slice(0, 1))
                             setActive(0)
+                            if (meta) setExaggeration(defaultExaggeration(meta))
                           }}
                           className="text-xs font-medium text-relief-muted underline decoration-relief-line underline-offset-4 hover:text-relief-ink"
                         >
@@ -385,6 +415,28 @@ export default function Relief() {
                               {s.label}
                             </button>
                           ))}
+                        </span>
+                      </label>
+
+                      <label className="mt-3 block sm:mt-4">
+                        <span className="flex items-baseline justify-between">
+                          <span className="text-sm text-relief-ink-2">Vertical exaggeration</span>
+                          <span className="relief-num text-sm text-relief-visible">
+                            {(exaggeration ?? 1).toFixed(1)}×
+                          </span>
+                        </span>
+                        <input
+                          type="range"
+                          min={EXAG_MIN}
+                          max={EXAG_MAX}
+                          step={0.1}
+                          value={exaggeration ?? 1}
+                          onChange={(e) => setExaggeration(Number(e.target.value))}
+                          className="mt-2 w-full accent-[var(--color-relief-visible)]"
+                          aria-label="Vertical exaggeration"
+                        />
+                        <span className="mt-1 block text-[0.62rem] text-relief-muted">
+                          Display only — visibility is computed from true elevations.
                         </span>
                       </label>
 
