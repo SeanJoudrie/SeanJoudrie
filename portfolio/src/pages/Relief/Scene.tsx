@@ -46,6 +46,33 @@ const CONTOUR_M = 100
 /** World units are kilometres — keeps camera near/far in a sane range. */
 const M_TO_WORLD = 0.001
 
+/** Sky gradient. Also what the terrain hazes and dissolves toward. */
+const SKY_TOP = new THREE.Color('#080a0e')
+const SKY_HORIZON = new THREE.Color('#4a4036')
+
+/**
+ * The sky, as a function of normalised screen height (0 bottom, 1 top).
+ *
+ * Shared verbatim by the backdrop and the terrain shader. The terrain has to
+ * dissolve into *exactly* what the sky is doing at that pixel, so the two must
+ * evaluate the same function — fading toward a single average colour leaves a
+ * visible seam wherever the gradient has moved away from it.
+ */
+const SKY_GLSL = /* glsl */ `
+  uniform vec3 uSkyTop;
+  uniform vec3 uSkyHorizon;
+  uniform vec2 uResolution;
+
+  vec3 skyAt(float t) {
+    // Weighted toward the horizon so the warm band sits low, as it does in a
+    // real sky, rather than washing the whole frame.
+    return mix(uSkyHorizon, uSkyTop, pow(clamp(t, 0.0, 1.0), 0.65));
+  }
+  vec3 skyAtFragment() {
+    return skyAt(gl_FragCoord.y / uResolution.y);
+  }
+`
+
 const DECODE_GLSL = /* glsl */ `
   // elev_m = (R*256 + G + B/256) - 32768   [scripts/bake-relief.mjs]
   float decodeElev(vec3 c) {
@@ -61,6 +88,7 @@ const VERT = /* glsl */ `
   uniform float uElevScale;
   varying vec2 vUv;
   varying float vElev;
+  varying float vDepth;
 
   ${DECODE_GLSL}
 
@@ -70,7 +98,9 @@ const VERT = /* glsl */ `
     vElev = e;
     vec3 p = position;
     p.z = e * uElevScale;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+    vec4 mv = modelViewMatrix * vec4(p, 1.0);
+    vDepth = -mv.z; // distance from the camera, for aerial perspective
+    gl_Position = projectionMatrix * mv;
   }
 `
 
@@ -88,10 +118,15 @@ const FRAG = /* glsl */ `
   uniform float uMinElev;
   uniform float uMaxElev;
   uniform float uHasViewshed;
+  uniform float uHazeDensity;
+  uniform float uEdgeFade;
+  uniform float uExag;
 
   varying vec2  vUv;
   varying float vElev;
+  varying float vDepth;
 
+  ${SKY_GLSL}
   ${DECODE_GLSL}
 
   /**
@@ -104,8 +139,8 @@ const FRAG = /* glsl */ `
     float r = elevAt(uHeight, uv + vec2(uTexel.x, 0.0));
     float d = elevAt(uHeight, uv - vec2(0.0, uTexel.y));
     float u = elevAt(uHeight, uv + vec2(0.0, uTexel.y));
-    float dzdx = (r - l) / (2.0 * uMetresPerPx.x);
-    float dzdy = (u - d) / (2.0 * uMetresPerPx.y);
+    float dzdx = (r - l) * uExag / (2.0 * uMetresPerPx.x);
+    float dzdy = (u - d) * uExag / (2.0 * uMetresPerPx.y);
     return normalize(vec3(-dzdx, -dzdy, 1.0));
   }
 
@@ -128,13 +163,17 @@ const FRAG = /* glsl */ `
     // Standard shaded relief: sun from the north-west at ~40°, plus a sky fill
     // proportional to how much sky the facet sees so slopes facing away stay
     // readable rather than going to black.
+    // Ambient floors are deliberately generous. Exaggeration makes almost every
+    // facet steep, so a model tuned for gentle 1:1 terrain bottoms out and the
+    // whole scene goes to mud — most surfaces end up facing away from the sun at
+    // once. Sky fill carries the shadowed side instead.
     float key   = max(dot(n, normalize(uSun)), 0.0);
-    float fill  = 0.35 + 0.65 * max(n.z, 0.0);
-    float shade = 0.30 + 0.70 * key;
+    float fill  = 0.55 + 0.45 * max(n.z, 0.0);
+    float shade = 0.45 + 0.55 * key;
 
     float t = clamp((vElev - uMinElev) / max(uMaxElev - uMinElev, 1.0), 0.0, 1.0);
     vec3 base = mix(uRock * 0.70, uRock * 1.25, t);
-    vec3 col = base * shade * mix(0.78, 1.12, fill) * 1.45;
+    vec3 col = base * shade * mix(0.82, 1.15, fill) * 1.62;
 
     // Contours: minor thin, index (every 5th) heavier. Faded on steep faces
     // where 100 m spacing stacks a dozen lines into the same few pixels and
@@ -154,19 +193,88 @@ const FRAG = /* glsl */ `
     // the ground; additional overlap adds the rest. smoothstep rather than a
     // threshold keeps the boundary soft, which is what the linear filter on the
     // viewshed target is there for.
+    vec3 sky = skyAtFragment();
+
+    // Aerial perspective, applied BEFORE the visibility treatment. Strictly the
+    // overlay should recede with everything else, but the visible/hidden
+    // boundary is the product and legibility wins — so haze dulls the rock and
+    // the overlay then paints at full strength on top of it.
+    float haze = 1.0 - exp(-vDepth * uHazeDensity);
+    col = mix(col, sky, clamp(haze, 0.0, 0.92));
+
     float cov = texture2D(uViewshed, vUv).r * uHasViewshed;
     float vis = smoothstep(0.0, 0.12, cov) * mix(0.62, 1.0, cov);
 
     float lum = dot(col, vec3(0.299, 0.587, 0.114));
-    vec3 hidden  = mix(vec3(lum), col, 0.34) * 0.60;
+    vec3 hidden  = mix(vec3(lum), col, 0.34) * 0.72;
     vec3 visible = col * 1.04 + uVisible * 0.26 * (0.45 + 0.55 * key);
     col = mix(hidden, visible, vis);
+
+    // Dissolve the frame edge into the sky, LAST, so nothing paints over it.
+    //
+    // Distance to the nearest edge in uv, not a radius: a radial falloff reads
+    // as a lens vignette rather than as atmosphere. This deliberately catches
+    // the NEAR edge too — once the camera is low, the closest data boundary sits
+    // at the bottom of the screen and is the most conspicuous edge in the frame.
+    vec2 toEdge = min(vUv, 1.0 - vUv);
+    float edge = min(toEdge.x, toEdge.y);
+    col = mix(sky, col, smoothstep(0.0, uEdgeFade, edge));
 
     gl_FragColor = vec4(col, 1.0);
   }
 `
 
 export type Observer = { u: number; v: number; ground: number; height: number }
+
+/**
+ * Sky backdrop. A full-screen quad pinned to the far plane, drawn before
+ * everything else — the terrain fades into this exact gradient at the frame
+ * edge, so the two must agree pixel for pixel.
+ *
+ * Replaces a flat black clear colour, which gave the terrain nothing to recede
+ * into and left it reading as an object on a table rather than a landscape.
+ */
+function Sky({ top, horizon }: { top: THREE.Color; horizon: THREE.Color }) {
+  const { size } = useThree()
+  const ref = useRef<THREE.ShaderMaterial>(null)
+
+  const uniforms = useMemo(
+    () => ({
+      uSkyTop: { value: top.clone() },
+      uSkyHorizon: { value: horizon.clone() },
+      uResolution: { value: new THREE.Vector2(1, 1) },
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  )
+
+  useFrame(() => {
+    if (ref.current) (ref.current.uniforms.uResolution.value as THREE.Vector2).set(size.width, size.height)
+  })
+
+  return (
+    <mesh frustumCulled={false} renderOrder={-1}>
+      <planeGeometry args={[2, 2]} />
+      <shaderMaterial
+        ref={ref}
+        uniforms={uniforms}
+        depthTest={false}
+        depthWrite={false}
+        vertexShader={/* glsl */ `
+          void main() {
+            // z = 1 places it on the far plane regardless of the camera.
+            gl_Position = vec4(position.xy, 1.0, 1.0);
+          }
+        `}
+        fragmentShader={/* glsl */ `
+          precision highp float;
+          ${SKY_GLSL}
+          void main() { gl_FragColor = vec4(skyAtFragment(), 1.0); }
+        `}
+      />
+    </mesh>
+  )
+}
 
 function Terrain({
   meta,
@@ -202,6 +310,12 @@ function Terrain({
       uMinElev: { value: meta.minElev },
       uMaxElev: { value: meta.maxElev },
       uHasViewshed: { value: 0 },
+      uHazeDensity: { value: 0.007 },
+      uExag: { value: 1 },
+      uEdgeFade: { value: 0.1 },
+      uSkyTop: { value: SKY_TOP.clone() },
+      uSkyHorizon: { value: SKY_HORIZON.clone() },
+      uResolution: { value: new THREE.Vector2(1, 1) },
     }),
     // Intentionally built once — later changes are pushed imperatively below so
     // the material is never rebuilt mid-interaction.
@@ -225,6 +339,8 @@ function Terrain({
     // elevations in metres and never learns this value exists. smoke-relief
     // asserts the statistics are byte-identical across settings.
     m.uniforms.uElevScale.value = M_TO_WORLD * exaggeration
+    m.uniforms.uExag.value = exaggeration
+    ;(m.uniforms.uResolution.value as THREE.Vector2).set(size.width, size.height)
   })
 
   const widthW = meta.widthM * M_TO_WORLD
@@ -493,6 +609,7 @@ function Content({
 
   return (
     <>
+      <Sky top={SKY_TOP} horizon={SKY_HORIZON} />
       <Terrain
         meta={meta}
         texture={heightTex}
@@ -595,7 +712,7 @@ export default function Scene({
       dpr={[1, 1.75]}
       camera={{ position: camStart, fov: 42, near: 0.05, far: diag * 6 }}
       gl={{ antialias: true, powerPreference: 'high-performance' }}
-      onCreated={({ gl }) => gl.setClearColor('#0b0d10')}
+      onCreated={({ gl }) => gl.setClearColor(SKY_TOP)}
     >
       <CameraControls
         ref={controls}
