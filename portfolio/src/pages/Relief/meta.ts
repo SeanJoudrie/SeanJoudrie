@@ -36,8 +36,29 @@ export type ReliefSite = {
    *  pale to dark: its salt flat is the brightest thing in the frame and the
    *  lowest. */
   palette: { low: string; high: string }
+  /** Flood surface. 'min' means the lowest ground in the frame — see
+   *  relief-sites.mjs for why only two of the four sites name a level. */
+  water: {
+    default: number | 'min' | null
+    presets: { label: string; at: number | 'min' }[]
+  }
   meta: ReliefMeta
 }
+
+/**
+ * Resolve a water level that may be expressed as 'min'.
+ *
+ * 'min' resolves to one quantisation step ABOVE the lowest ground, not to it.
+ * minElev is measured from the resampled floats before encoding, while the
+ * raster the flood test actually reads has been quantised to 0.5 m — so the two
+ * disagree by up to a quarter of a metre in either direction. Using minElev
+ * directly made Crater Lake's lake surface, which is the lowest ground in that
+ * frame and dead flat, land fractionally ABOVE the waterline: the plane
+ * discarded everywhere and the site reported 0.0 km² flooded. Half a metre is
+ * inside the DEM's own precision and puts the surface reliably under.
+ */
+export const waterAt = (at: number | 'min' | null, m: ReliefMeta): number | null =>
+  at === null ? null : at === 'min' ? m.minElev + m.quantisationM : at
 
 /** The preview tier is the same raster at 256² — a real elevation model, not a
  *  thumbnail, so it can carry the terrain while the full map downloads. */

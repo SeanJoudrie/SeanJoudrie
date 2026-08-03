@@ -20,6 +20,12 @@
  * site needs its own — the highest ground is a trap at three of these four, and
  * a position chosen on a canyon rim means nothing on a caldera.
  *
+ * WATER is the flood surface: `default` is where the slider starts (null for dry)
+ * and `presets` are levels worth one tap. Both accept 'min', meaning the lowest
+ * ground in the frame, so nothing here has to repeat a baked number. Only two of
+ * the four sites have a level that means something; the rest just get the
+ * slider, because inventing a landmark elevation would be worse than none.
+ *
  * PALETTE is a two-stop ramp from the lowest ground in the frame to the highest.
  * Two colours cover every case here including the inverted one: Death Valley's
  * salt is the brightest thing in its frame and sits at the BOTTOM of the range,
@@ -39,6 +45,7 @@ export const SITES = [
     // ground 2148 m, sees 20.8% — the rim, not the high point.
     seed: { u: 0.3, v: 0.3 },
     palette: { low: '#60564b', high: '#ad9f8e' },
+    water: { default: null, presets: [] },
     note: 'Re-cropped from the original 45 km frame, which measured 1:20.8 — the tighter window nearly halves the ratio with no new data.',
   },
   {
@@ -54,6 +61,7 @@ export const SITES = [
     // sees more than the summit does.
     seed: { u: 0.8, v: 0.2 },
     palette: { low: '#6b6f75', high: '#e8edf2' },
+    water: { default: null, presets: [] },
     note: 'The best ratio measured anywhere on the shortlist, and the proof that the flatness was framing rather than rendering — it needs no exaggeration at all.',
   },
   {
@@ -69,6 +77,12 @@ export const SITES = [
     // reality does not; VS_MIN_GROUND=1950 excludes the water plane.
     seed: { u: 0.2, v: 0.8 },
     palette: { low: '#2b4763', high: '#8f8578' },
+    // Opens dry like every other site, with the lake reachable in one tap. It
+    // is tempting to start wet — the lowest ground here IS the lake, a flat
+    // plane at the published 1,883 m surface — but the DEM has no bathymetry,
+    // so the tool can only ever show that surface as a film half a metre deep.
+    // Better to let someone press it and see the caveat than to open on it.
+    water: { default: null, presets: [{ label: 'lake surface', at: 'min' }] },
     note: 'The minimum elevation here is exactly 1,883 m — the published lake surface. The DEM carries the real water plane as a perfectly flat surface, which is also why it costs a third of the other sites.',
   },
   {
@@ -84,6 +98,10 @@ export const SITES = [
     // which is the whole point of putting it next to the canyon's 20.8%.
     seed: { u: 0.1, v: 0.3 },
     palette: { low: '#b9ae95', high: '#8a6f52' },
+    // Sea level is not a landmark here, it is a fact: the basin floor is below
+    // it. One tap and the salt flat is underwater while the frame's own minimum
+    // is still 91 m further down.
+    water: { default: null, presets: [{ label: 'sea level', at: 0 }] },
     note: 'Reaches 91 m below sea level in the same frame as 1,744 m of mountain — the only site here that goes negative.',
   },
 ]
@@ -101,5 +119,6 @@ export const manifestEntry = (site, meta) => ({
   contourM: site.contourM,
   seed: site.seed,
   palette: site.palette,
+  water: site.water ?? { default: null, presets: [] },
   meta,
 })

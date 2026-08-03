@@ -18,6 +18,10 @@
         "low": "#60564b",
         "high": "#ad9f8e"
       },
+      "water": {
+        "default": null,
+        "presets": []
+      },
       "meta": {
         "id": "grand-canyon",
         "source": "Copernicus GLO-30 DEM (ESA / Copernicus Programme), AWS open-data mirror",
@@ -57,6 +61,10 @@
       "palette": {
         "low": "#6b6f75",
         "high": "#e8edf2"
+      },
+      "water": {
+        "default": null,
+        "presets": []
       },
       "meta": {
         "id": "matterhorn",
@@ -98,6 +106,15 @@
         "low": "#2b4763",
         "high": "#8f8578"
       },
+      "water": {
+        "default": null,
+        "presets": [
+          {
+            "label": "lake surface",
+            "at": "min"
+          }
+        ]
+      },
       "meta": {
         "id": "crater-lake",
         "source": "Copernicus GLO-30 DEM (ESA / Copernicus Programme), AWS open-data mirror",
@@ -137,6 +154,15 @@
       "palette": {
         "low": "#b9ae95",
         "high": "#8a6f52"
+      },
+      "water": {
+        "default": null,
+        "presets": [
+          {
+            "label": "sea level",
+            "at": 0
+          }
+        ]
       },
       "meta": {
         "id": "death-valley",

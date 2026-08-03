@@ -216,6 +216,56 @@ check(
 )
 
 /**
+ * Water level.
+ *
+ * Two properties. Raising it must flood more ground — the easy one. And the
+ * visibility statistics must NOT move, which is the one worth having: water is a
+ * surface, not an occluder, and a bare-earth viewshed is indifferent to it. If
+ * the level ever reached viewshed.ts, every reported area would quietly become a
+ * different quantity, and nothing else in the suite would notice.
+ */
+const waterSlider = p.getByLabel('Water level, metres')
+const setWater = async (v) => {
+  await waterSlider.evaluate((el, val) => {
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set
+    setter.call(el, String(val))
+    el.dispatchEvent(new Event('input', { bubbles: true }))
+  }, v)
+  await p.waitForTimeout(1500)
+  const map = await p.$$eval('.relief-label', (labels) => {
+    const out = {}
+    for (const l of labels) {
+      const num = l.parentElement && l.parentElement.querySelector('.relief-num')
+      if (num) out[l.textContent.trim().toLowerCase()] = num.textContent.trim()
+    }
+    return out
+  })
+  const num = (v) => Number(String(v ?? '').replace(/[^0-9.-]/g, ''))
+  return { flooded: num(map['flooded']), depth: num(map['max depth']), stats: await readStats() }
+}
+
+const dry = await readStats()
+const low = await setWater(900)
+const high = await setWater(1600)
+
+check(
+  'raising the water floods more ground',
+  low.flooded > 0 && high.flooded > low.flooded * 1.5,
+  `${low.flooded} → ${high.flooded} km²`,
+)
+check(
+  'the flood deepens with the level',
+  high.depth > low.depth,
+  `max depth ${low.depth} → ${high.depth} m`,
+)
+// NOT asserted here. The independence check lives in the Death Valley block
+// below, because it is vacuous on this site: the seeded observer stands at
+// 2,148 m and the slider tops out at 2,070 m, so no water level can reach it.
+// Verified by mutation — floating the observer on the waterline inside
+// viewshed.ts changes nothing at all on the Grand Canyon and sails through.
+await setWater(0) // back to dry before the site-switching checks
+
+/**
  * Site switching.
  *
  * Four sites share one scene, one sensor and one set of controls; the elevation
@@ -265,6 +315,25 @@ check(
   'the new site reports its own visibility',
   valley.area > 0 && Math.abs(valley.pct - canyon.pct) > 5,
   `${canyon.pct}% of the canyon vs ${valley.pct}% of the basin, same 25 m sensor`,
+)
+
+/**
+ * Visibility is independent of the water level — asserted HERE, where it can
+ * actually fail. Badwater seeds 49 m below sea level, so one tap on the preset
+ * puts the observer under the surface. If the level ever reached viewshed.ts,
+ * an observer floated up onto the waterline would see markedly further across
+ * the basin, and every reported area would silently become a different quantity.
+ */
+const basinDry = await readStats()
+await p.getByRole('button', { name: 'sea level' }).click()
+await p.waitForTimeout(2500)
+const basinWet = await readStats()
+check(
+  'visibility is independent of the water level',
+  basinDry.area === basinWet.area &&
+    basinDry.pct === basinWet.pct &&
+    basinDry.far === basinWet.far,
+  `dry ${basinDry.area} km²/${basinDry.far} km vs submerged ${basinWet.area} km²/${basinWet.far} km`,
 )
 
 // Both tiers must be requested: the preview is what puts terrain on screen

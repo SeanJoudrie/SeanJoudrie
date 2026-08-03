@@ -2,8 +2,10 @@ import { Component, Suspense, lazy, useCallback, useEffect, useMemo, useRef, use
 import type { ReactNode } from 'react'
 import { navigate } from '../../lib/router'
 import { Fallback } from './Fallback'
-import { loadManifest, defaultExaggeration, EXAG_MIN, EXAG_MAX } from './meta'
+import { loadManifest, defaultExaggeration, waterAt, EXAG_MIN, EXAG_MAX } from './meta'
 import type { ReliefSite } from './meta'
+import { floodStats, waterRange } from './water'
+import type { FloodStats } from './water'
 import type { Observer } from './Scene'
 import type { Heightfield } from './heightfield'
 import type { ViewshedStats } from './viewshed'
@@ -76,6 +78,14 @@ function Notes({ site }: { site: ReliefSite | null }) {
         visibility is computed from true elevations.
       </p>
       <p>
+        <span className="text-relief-ink-2">Water.</span> A level plane at the chosen elevation, so
+        the coastline is the terrain’s own. A bare fill: no drainage and no connectivity test, so
+        an enclosed hollow floods as soon as the line passes it. The DEM carries no bathymetry —
+        existing lakes are ground at their surface, which is why flooding Crater Lake to its own
+        waterline reports almost no depth. Water does not block line of sight, so the viewshed is
+        unchanged by it.
+      </p>
+      <p>
         Elevation data: Copernicus GLO-30 DEM, © European Space Agency / Copernicus Programme,
         accessed via the AWS open-data mirror. Terrain rendering and the viewshed algorithm are
         original.
@@ -129,6 +139,9 @@ export default function Relief() {
   const [exaggeration, setExaggeration] = useState<number | null>(null)
   /** Phones only — from sm up the panel is a side card and always open. */
   const [panelOpen, setPanelOpen] = useState(false)
+  /** Flood surface elevation in metres, or null for dry. */
+  const [water, setWater] = useState<number | null>(null)
+  const [flood, setFlood] = useState<FloodStats | null>(null)
 
   const site = useMemo(
     () => sites?.find((s) => s.id === siteId) ?? null,
@@ -161,6 +174,7 @@ export default function Relief() {
         setSites(s)
         setSiteId(s[0].id)
         setExaggeration(defaultExaggeration(s[0].meta))
+        setWater(waterAt(s[0].water.default, s[0].meta))
       })
       .catch(() => !cancelled && setMetaFailed(true))
     return () => {
@@ -186,6 +200,10 @@ export default function Relief() {
       setStats(null)
       setProgress(0)
       setExaggeration(defaultExaggeration(next.meta))
+      // A level in metres means something different on every site — 1,883 m is
+      // the lake here and thin air over Badwater. Reset to the site's own.
+      setWater(waterAt(next.water.default, next.meta))
+      setFlood(null)
     },
     [siteId],
   )
@@ -205,11 +223,15 @@ export default function Relief() {
   /** Seed the observer so the page shows a real result before anything is
    *  touched. The position is per-site and measured — see relief-sites.mjs. */
   const fieldRef = useRef<Heightfield | null>(null)
+  /** Bumped when a new elevation model lands, so effects that read the ref —
+   *  which does not itself trigger a render — know to recompute. */
+  const [fieldEpoch, setFieldEpoch] = useState(0)
   const seed = site?.seed
   const handleReady = useCallback(
     (field: Heightfield) => {
       if (!seed) return
       fieldRef.current = field
+      setFieldEpoch((n) => n + 1)
       setObservers([{ u: seed.u, v: seed.v, ground: field.elevAt(seed.u, seed.v), height }])
     },
     // `height` is read, not tracked: re-seeding because the slider moved would
@@ -327,6 +349,17 @@ export default function Relief() {
       .sort((a, b) => b.pct - a.pct)
   }, [measured, observers])
 
+  /**
+   * Flooded area. Counted on the CPU heightfield rather than read back from the
+   * GPU: a million comparisons is well under a millisecond, exact for the
+   * raster, and keeps the number independent of what the renderer is doing.
+   */
+  useEffect(() => {
+    const field = fieldRef.current
+    if (!field || !site || water === null) return setFlood(null)
+    setFlood(floodStats(field, site.meta, water))
+  }, [water, site, fieldEpoch])
+
   const broken = !glOk || lost || metaFailed
 
   return (
@@ -374,6 +407,7 @@ export default function Relief() {
                       onFail={handleFail}
                       onProgress={setProgress}
                       exaggeration={exaggeration ?? 1}
+                      waterLevel={water}
                     />
                   </div>
 
@@ -576,6 +610,51 @@ export default function Relief() {
                         </span>
                       </label>
 
+                      {/* Water level. The slider's far left is dry — one
+                          control rather than a toggle plus a slider, because
+                          "off" is just the lowest level there is. */}
+                      <label className="mt-3 block sm:mt-4">
+                        <span className="flex items-baseline justify-between">
+                          <span className="text-sm text-relief-ink-2">Water level</span>
+                          <span className="relief-num text-sm text-relief-visible">
+                            {water === null
+                              ? 'dry'
+                              : `${Math.round(water).toLocaleString()} m`}
+                          </span>
+                        </span>
+                        <input
+                          type="range"
+                          min={waterRange(site.meta).min}
+                          max={waterRange(site.meta).max}
+                          step={1}
+                          value={water ?? waterRange(site.meta).min}
+                          onChange={(e) => {
+                            const v = Number(e.target.value)
+                            // Below the lowest ground there is nothing to flood,
+                            // so that end of the travel reads as dry rather than
+                            // drawing a surface nobody can see.
+                            setWater(v <= site.meta.minElev ? null : v)
+                          }}
+                          className="mt-2 w-full accent-[var(--color-relief-visible)]"
+                          aria-label="Water level, metres"
+                        />
+                        <span className="mt-1 flex items-center justify-between gap-2 text-[0.62rem] text-relief-muted">
+                          <button onClick={() => setWater(null)} className="hover:text-relief-ink">
+                            dry
+                          </button>
+                          {site.water.presets.map((p) => (
+                            <button
+                              key={p.label}
+                              onClick={() => setWater(waterAt(p.at, site.meta))}
+                              className="hover:text-relief-ink"
+                              title={`${Math.round(waterAt(p.at, site.meta) ?? 0).toLocaleString()} m`}
+                            >
+                              {p.label}
+                            </button>
+                          ))}
+                        </span>
+                      </label>
+
                       <label className="mt-3 flex items-center justify-between gap-3 sm:mt-4">
                         <span className="text-sm text-relief-ink-2">
                           Refraction correction
@@ -619,7 +698,26 @@ export default function Relief() {
                             )}
                           </>
                         )}
+                        {flood && (
+                          <>
+                            <Stat label="Flooded" value={flood.floodedKm2.toFixed(1)} unit="km²" />
+                            <Stat label="Max depth" value={Math.round(flood.maxDepthM).toLocaleString()} unit="m" />
+                          </>
+                        )}
                       </div>
+
+                      {/* An observer standing on ground that is now underwater
+                          is still reporting a viewshed, and should say so rather
+                          than quietly pretending. The visibility figures are
+                          unaffected by design — water is a surface, not an
+                          occluder — so this is about the observer, not the
+                          computation. */}
+                      {flood && observers[active] && observers[active].ground < flood.level && (
+                        <p className="mt-2 text-[0.68rem] leading-relaxed text-relief-visible">
+                          Observer is {Math.round(flood.level - observers[active].ground).toLocaleString()} m
+                          below the waterline.
+                        </p>
+                      )}
 
                       {/* Appears only once a second site has been measured at
                           the same height — until then there is nothing to
