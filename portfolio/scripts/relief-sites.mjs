@@ -15,6 +15,21 @@
  * going below true scale. The Matterhorn correctly lands on 1.0x with no
  * special case, which is the point of deriving rather than hard-coding it.
  *
+ * SUN is a DATE AND A TIME, not an angle. The azimuth and elevation are computed
+ * from the site's own latitude and longitude at that moment (src/pages/Relief/
+ * solar.ts), so every scene is lit by a sun that could actually be there. These
+ * four were found by searching for the moment closest to the angles the sites
+ * were originally hand-authored with (scripts/probe-solar-match.mjs), holding
+ * elevation — which sets shadow length — and letting azimuth move.
+ *
+ * The Grand Canyon's original pair turned out to be impossible: at 36N the sun
+ * is never as low as 20 degrees while due south, because December noon is its
+ * minimum there at 30.5. Computing the sun is what surfaced that.
+ *
+ * Times are local mean solar time, which is UTC plus longitude/15 hours exactly.
+ * No timezone database, and none wanted — noon solar time means the sun is on
+ * your meridian, everywhere, by definition.
+ *
  * SEEDS are measured too: `VS_SEARCH=1 VS_SITE=<id> node scripts/check-viewshed.mjs`
  * scores a grid of candidate observers by the area each actually sees. Every
  * site needs its own — the highest ground is a trap at three of these four, and
@@ -40,7 +55,8 @@ export const SITES = [
     // 19.8 x 18.9 km | 713–2523 m | relief 1810 | 1:10.9
     // Light across the gorge's east–west axis: one wall lights, the other falls
     // away. Straight down the axis would flatten both.
-    sun: { azimuth: 190, elevation: 20 },
+    // Dec solstice 14:26 local solar — 216.2 deg / 21.0 deg.
+    sun: { month: 12, day: 21, hour: 14.433 },
     contourM: 100,
     // ground 2148 m, sees 20.8% — the rim, not the high point.
     seed: { u: 0.3, v: 0.3 },
@@ -55,7 +71,8 @@ export const SITES = [
     bbox: { north: 46.05, south: 45.92, west: 7.6, east: 7.79 },
     // 14.7 x 14.4 km | 1472–4329 m | relief 2858 | 1:5.2
     // A peak wants a higher sun than a canyon does; at 20° its faces go black.
-    sun: { azimuth: 250, elevation: 32 },
+    // Sep equinox 14:42 local solar — 231.8 deg / 31.0 deg.
+    sun: { month: 9, day: 22, hour: 14.700 },
     contourM: 150,
     // ground 3597 m, sees 29.7% — a shoulder, 732 m below the summit, which
     // sees more than the summit does.
@@ -70,7 +87,8 @@ export const SITES = [
     subtitle: 'Caldera · Oregon',
     bbox: { north: 42.98, south: 42.905, west: -122.17, east: -122.07 },
     // 8.2 x 8.3 km | 1883–2469 m | relief 587 | 1:13.9
-    sun: { azimuth: 300, elevation: 20 },
+    // Jun solstice 17:43 local solar — 284.7 deg / 19.1 deg.
+    sun: { month: 6, day: 21, hour: 17.717 },
     contourM: 50,
     // ground 2221 m, sees 80.9% — on the rim. The unfiltered search wanted to
     // stand on the lake itself (1,883 m, 81.9%), which the DEM permits and
@@ -92,7 +110,8 @@ export const SITES = [
     bbox: { north: 36.35, south: 36.15, west: -116.9, east: -116.7 },
     // 18.0 x 22.2 km | -91–1744 m | relief 1835 | 1:9.8
     // Low from the west so the Panamint shadows sweep out across the salt flat.
-    sun: { azimuth: 270, elevation: 15 },
+    // Mar equinox 16:57 local solar — 259.5 deg / 14.2 deg.
+    sun: { month: 3, day: 20, hour: 16.950 },
     contourM: 100,
     // ground -49 m, sees 72.0% — on the basin floor. Flat ground hides nothing,
     // which is the whole point of putting it next to the canyon's 20.8%.

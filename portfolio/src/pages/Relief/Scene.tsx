@@ -931,6 +931,7 @@ function Content({
   onUserInput,
   exaggeration,
   waterLevel,
+  sunAngles,
 }: {
   site: ReliefSite
   meta: ReliefMeta
@@ -947,17 +948,18 @@ function Content({
   exaggeration: number
   /** Water elevation in metres, or null for dry. */
   waterLevel: number | null
+  sunAngles: { azimuth: number; elevation: number }
 }) {
   const { size, camera } = useThree()
   const small = size.width < 768
   useOcclusionProbe(field, meta, exaggeration, camera)
   useAllocationProbe()
 
-  // The most site-specific value there is. A caldera wants a low sun to cast its
-  // rim across the water; a peak at the same angle turns its own faces black.
+  // Supplied, not derived: the sun is a function of where the site is and what
+  // time it is, and the time is a control the page owns.
   const sun = useMemo(
-    () => sunVector(site.sun.azimuth, site.sun.elevation),
-    [site.sun.azimuth, site.sun.elevation],
+    () => sunVector(sunAngles.azimuth, sunAngles.elevation),
+    [sunAngles.azimuth, sunAngles.elevation],
   )
 
   // Both of these hold GPU render targets, and both are keyed on the height
@@ -1063,6 +1065,7 @@ export default function Scene({
   onProgress,
   exaggeration,
   waterLevel,
+  sunAngles,
 }: {
   site: ReliefSite
   observers: Observer[]
@@ -1076,6 +1079,7 @@ export default function Scene({
   onProgress?: (fraction: number) => void
   exaggeration: number
   waterLevel: number | null
+  sunAngles: { azimuth: number; elevation: number }
 }) {
   const controls = useRef<CameraControls | null>(null)
   const [tier, setTier] = useState<Tier | null>(null)
@@ -1202,6 +1206,7 @@ export default function Scene({
           onUserInput={() => setIdle(false)}
           exaggeration={exaggeration}
           waterLevel={waterLevel}
+          sunAngles={sunAngles}
         />
       )}
     </Canvas>

@@ -25,10 +25,10 @@ export type ReliefSite = {
   name: string
   subtitle: string
   note: string
-  /** Compass azimuth and elevation, degrees. The most site-specific value
-   *  there is — a crater wants 15–20°, a peak wants 30°+ or its faces go
-   *  black. */
-  sun: { azimuth: number; elevation: number }
+  /** A moment, not an angle: the azimuth and elevation are computed from the
+   *  site's own latitude and longitude at this local solar time. See
+   *  relief-sites.mjs for how these four were chosen. */
+  sun: { month: number; day: number; hour: number }
   contourM: number
   /** Opening observer position, chosen by VS_SEARCH — see relief-sites.mjs. */
   seed: { u: number; v: number }

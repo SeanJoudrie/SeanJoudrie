@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "smoke": "node scripts/smoke-meridian.mjs && node scripts/smoke-aeroscale.mjs && node scripts/smoke-ledger-lens.mjs && node scripts/smoke-palisade.mjs && node scripts/smoke-skein.mjs && node scripts/smoke-cmdk.mjs && node scripts/smoke-shell.mjs && node scripts/smoke-static-fallback.mjs && node scripts/smoke-relief.mjs",
-    "verify:relief": "node scripts/check-viewshed.mjs && VS_SELFTEST=1 node scripts/check-viewshed.mjs"
+    "verify:relief": "node scripts/check-viewshed.mjs && VS_SELFTEST=1 node scripts/check-viewshed.mjs && npm run verify:solar",
+    "verify:solar": "node --experimental-strip-types scripts/check-solar.mjs"
   },
   "dependencies": {
     "@react-three/drei": "10.7.7",

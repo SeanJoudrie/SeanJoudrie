@@ -6,8 +6,9 @@
       "subtitle": "South Rim · Arizona",
       "note": "Re-cropped from the original 45 km frame, which measured 1:20.8 — the tighter window nearly halves the ratio with no new data.",
       "sun": {
-        "azimuth": 190,
-        "elevation": 20
+        "month": 12,
+        "day": 21,
+        "hour": 14.433
       },
       "contourM": 100,
       "seed": {
@@ -50,8 +51,9 @@
       "subtitle": "Zermatt · Switzerland",
       "note": "The best ratio measured anywhere on the shortlist, and the proof that the flatness was framing rather than rendering — it needs no exaggeration at all.",
       "sun": {
-        "azimuth": 250,
-        "elevation": 32
+        "month": 9,
+        "day": 22,
+        "hour": 14.7
       },
       "contourM": 150,
       "seed": {
@@ -94,8 +96,9 @@
       "subtitle": "Caldera · Oregon",
       "note": "The minimum elevation here is exactly 1,883 m — the published lake surface. The DEM carries the real water plane as a perfectly flat surface, which is also why it costs a third of the other sites.",
       "sun": {
-        "azimuth": 300,
-        "elevation": 20
+        "month": 6,
+        "day": 21,
+        "hour": 17.717
       },
       "contourM": 50,
       "seed": {
@@ -143,8 +146,9 @@
       "subtitle": "Badwater Basin · California",
       "note": "Reaches 91 m below sea level in the same frame as 1,744 m of mountain — the only site here that goes negative.",
       "sun": {
-        "azimuth": 270,
-        "elevation": 15
+        "month": 3,
+        "day": 20,
+        "hour": 16.95
       },
       "contourM": 100,
       "seed": {

@@ -6,6 +6,7 @@ import { loadManifest, defaultExaggeration, waterAt, EXAG_MIN, EXAG_MAX } from '
 import type { ReliefSite } from './meta'
 import { floodStats, waterRange } from './water'
 import type { FloodStats } from './water'
+import { sunPosition, utcFromLocalSolar, siteCentre, DATE_PRESETS, SOLAR_YEAR } from './solar'
 import type { Observer } from './Scene'
 import type { Heightfield } from './heightfield'
 import type { ViewshedStats } from './viewshed'
@@ -78,6 +79,13 @@ function Notes({ site }: { site: ReliefSite | null }) {
         visibility is computed from true elevations.
       </p>
       <p>
+        <span className="text-relief-ink-2">Sun.</span> Position is computed from the site’s own
+        latitude and longitude at the chosen moment, using the standard low-precision solar
+        equations — so the shadows are the ones that would actually fall there, and an impossible
+        sun cannot be dialled up. Times are local mean solar time, which is UTC offset by exactly
+        longitude ÷ 15 hours: noon means the sun is on your meridian, not whatever a clock says.
+      </p>
+      <p>
         <span className="text-relief-ink-2">Water.</span> A level plane at the chosen elevation, so
         the coastline is the terrain’s own. A bare fill: no drainage and no connectivity test, so
         an enclosed hollow floods as soon as the line passes it. The DEM carries no bathymetry —
@@ -111,6 +119,18 @@ function Loading({ progress }: { progress: number }) {
   )
 }
 
+/** Which preset date a site's authored moment falls on. */
+const presetIndex = (s: ReliefSite) =>
+  Math.max(0, DATE_PRESETS.findIndex((d) => d.month === s.sun.month && d.day === s.sun.day))
+
+/** Local solar hours as a clock face. */
+const clock = (h: number) => {
+  const t = ((h % 24) + 24) % 24
+  const hh = Math.floor(t)
+  const mm = Math.round((t - hh) * 60)
+  return `${String(mm === 60 ? hh + 1 : hh).padStart(2, '0')}:${String(mm === 60 ? 0 : mm).padStart(2, '0')}`
+}
+
 function Stat({ label, value, unit }: { label: string; value: string; unit?: string }) {
   return (
     <div className="flex items-baseline justify-between gap-4">
@@ -142,11 +162,26 @@ export default function Relief() {
   /** Flood surface elevation in metres, or null for dry. */
   const [water, setWater] = useState<number | null>(null)
   const [flood, setFlood] = useState<FloodStats | null>(null)
+  /** When the scene is lit. Index into DATE_PRESETS, and local solar hours. */
+  const [dateIdx, setDateIdx] = useState(0)
+  const [hour, setHour] = useState(12)
 
   const site = useMemo(
     () => sites?.find((s) => s.id === siteId) ?? null,
     [sites, siteId],
   )
+
+  /**
+   * Where the sun is, computed rather than chosen — from the centre of the
+   * site's own bounding box at the selected local solar time.
+   */
+  const sunAngles = useMemo(() => {
+    if (!site) return { azimuth: 180, elevation: 45 }
+    const { lat, lon } = siteCentre(site.meta.bbox)
+    const d = DATE_PRESETS[dateIdx]
+    const p = sunPosition(lat, lon, utcFromLocalSolar(SOLAR_YEAR, d.month, d.day, hour, lon))
+    return { azimuth: p.azimuth, elevation: p.elevation }
+  }, [site, dateIdx, hour])
 
   const handleFail = useCallback(() => setLost(true), [])
 
@@ -175,6 +210,8 @@ export default function Relief() {
         setSiteId(s[0].id)
         setExaggeration(defaultExaggeration(s[0].meta))
         setWater(waterAt(s[0].water.default, s[0].meta))
+        setDateIdx(presetIndex(s[0]))
+        setHour(s[0].sun.hour)
       })
       .catch(() => !cancelled && setMetaFailed(true))
     return () => {
@@ -204,6 +241,8 @@ export default function Relief() {
       // the lake here and thin air over Badwater. Reset to the site's own.
       setWater(waterAt(next.water.default, next.meta))
       setFlood(null)
+      setDateIdx(presetIndex(next))
+      setHour(next.sun.hour)
     },
     [siteId],
   )
@@ -408,6 +447,7 @@ export default function Relief() {
                       onProgress={setProgress}
                       exaggeration={exaggeration ?? 1}
                       waterLevel={water}
+                      sunAngles={sunAngles}
                     />
                   </div>
 
@@ -610,6 +650,46 @@ export default function Relief() {
                         </span>
                       </label>
 
+                      {/* Sun. A date and a time, not an angle — the azimuth and
+                          elevation below are computed from this site's own
+                          latitude and longitude, so the shadows are the ones
+                          that would actually be there. */}
+                      <label className="mt-3 block sm:mt-4">
+                        <span className="flex items-baseline justify-between">
+                          <span className="text-sm text-relief-ink-2">Sun</span>
+                          <span className="relief-num text-sm text-relief-visible">
+                            {clock(hour)}
+                            <span className="ml-1.5 text-relief-muted">
+                              {sunAngles.elevation < 0
+                                ? 'below horizon'
+                                : `${Math.round(sunAngles.azimuth)}° / ${Math.round(sunAngles.elevation)}°`}
+                            </span>
+                          </span>
+                        </span>
+                        <input
+                          type="range"
+                          min={0}
+                          max={24}
+                          step={0.05}
+                          value={hour}
+                          onChange={(e) => setHour(Number(e.target.value))}
+                          className="mt-2 w-full accent-[var(--color-relief-visible)]"
+                          aria-label="Time of day, local solar hours"
+                        />
+                        <span className="mt-1 flex justify-between text-[0.62rem] text-relief-muted">
+                          {DATE_PRESETS.map((d, i) => (
+                            <button
+                              key={d.label}
+                              onClick={() => setDateIdx(i)}
+                              className={i === dateIdx ? 'text-relief-ink' : 'hover:text-relief-ink'}
+                              aria-pressed={i === dateIdx}
+                            >
+                              {d.label}
+                            </button>
+                          ))}
+                        </span>
+                      </label>
+
                       {/* Water level. The slider's far left is dry — one
                           control rather than a toggle plus a slider, because
                           "off" is just the lowest level there is. */}
@@ -775,7 +855,10 @@ export default function Relief() {
             <Notes site={site} />
           </div>
         </details>
-        <div className="hidden space-y-1.5 sm:block">
+        {/* Columns from sm up. Four paragraphs stacked cost about 150 px of
+            terrain on a laptop, and the method is worth keeping visible rather
+            than hiding behind a disclosure. */}
+        <div className="hidden sm:block sm:columns-2 sm:gap-6 [&>p]:mb-1.5 [&>p]:break-inside-avoid">
           <Notes site={site} />
         </div>
       </footer>

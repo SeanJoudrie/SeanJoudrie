@@ -216,6 +216,93 @@ check(
 )
 
 /**
+ * The sun is a real sun.
+ *
+ * Moving the time must move the light — and must move it the way the sky does,
+ * not arbitrarily. Two properties: the reported azimuth advances clockwise
+ * through the day as it must in the northern hemisphere, and the render
+ * actually changes, because the angle could be updating in the readout while
+ * the shadow pass keeps its old uniform.
+ */
+const sunReadout = () =>
+  p.evaluate(() => {
+    const l = [...document.querySelectorAll('span')].find((s) => s.textContent.trim() === 'Sun')
+    const t = l ? l.parentElement.querySelector('.relief-num').textContent : ''
+    const m = t.match(/(\d+)°\s*\/\s*(-?\d+)°/)
+    return m ? { azimuth: Number(m[1]), elevation: Number(m[2]) } : null
+  })
+const setHour = async (h) => {
+  await p.getByLabel('Time of day, local solar hours').evaluate((el, v) => {
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set
+    setter.call(el, String(v))
+    el.dispatchEvent(new Event('input', { bubbles: true }))
+  }, h)
+  await p.waitForTimeout(1600)
+  return sunReadout()
+}
+
+/**
+ * Share of pixels that materially changed between two frames.
+ *
+ * Mean brightness cannot see this one. The first version compared 09:00 with
+ * 15:00, which are symmetric about solar noon and therefore have the SAME sun
+ * elevation — the light swings from one side of the terrain to the other while
+ * the average barely moves, and it read 45.0 to 45.6. What changed is which
+ * slopes are lit, so count the pixels that changed.
+ */
+const frame = async () => {
+  const buf = await p.screenshot({ clip: { x: 360, y: 200, width: 1000, height: 600 } })
+  const { PNG } = await import('pngjs')
+  return PNG.sync.read(buf)
+}
+const changedFraction = (a, b) => {
+  let n = 0
+  for (let i = 0; i < a.width * a.height; i++) {
+    const o = i * 4
+    const la = 0.299 * a.data[o] + 0.587 * a.data[o + 1] + 0.114 * a.data[o + 2]
+    const lb = 0.299 * b.data[o] + 0.587 * b.data[o + 1] + 0.114 * b.data[o + 2]
+    if (Math.abs(la - lb) > 12) n++
+  }
+  return n / (a.width * a.height)
+}
+
+// Put the exaggeration back first. The block above leaves it at 3x under a
+// camera framed for 1.6x, which buries the camera in a near wall — 99% of the
+// terrain hidden — and from in there the sun can swing right across the sky
+// and barely 3% of pixels change. Measured: 2.9% at 3x against 12% at default
+// for the same pair of times.
+await exagSlider.evaluate((el) => {
+  const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set
+  setter.call(el, '1.6')
+  el.dispatchEvent(new Event('input', { bubbles: true }))
+})
+await p.waitForTimeout(800)
+
+const morning = await setHour(9)
+const morningFrame = await frame()
+const afternoon = await setHour(15)
+const afternoonFrame = await frame()
+const relit = changedFraction(morningFrame, afternoonFrame)
+
+check(
+  'the sun advances clockwise through the day',
+  morning !== null &&
+    afternoon !== null &&
+    morning.azimuth > 90 &&
+    afternoon.azimuth > morning.azimuth &&
+    afternoon.azimuth < 280,
+  morning && afternoon
+    ? `09:00 ${morning.azimuth}°/${morning.elevation}° → 15:00 ${afternoon.azimuth}°/${afternoon.elevation}°`
+    : 'no readout',
+)
+check(
+  'moving the sun relights the terrain',
+  relit > 0.08,
+  `${(relit * 100).toFixed(1)}% of pixels changed between 09:00 and 15:00`,
+)
+await setHour(14.433) // back to the site's authored moment
+
+/**
  * Water level.
  *
  * Two properties. Raising it must flood more ground — the easy one. And the
