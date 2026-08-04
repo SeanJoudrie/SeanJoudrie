@@ -479,6 +479,85 @@ function Water({
   )
 }
 
+/**
+ * The sight line, drawn in space between the observer's eye and the target.
+ *
+ * Red when the terrain cuts it. The section in the panel says by how much and
+ * where; this says which way you are looking, which a chart cannot.
+ */
+function SightLine({
+  meta,
+  from,
+  to,
+  blocked,
+  exaggeration,
+}: {
+  meta: ReliefMeta
+  from: { u: number; v: number; ground: number; height: number }
+  to: { u: number; v: number; ground: number }
+  blocked: boolean
+  exaggeration: number
+}) {
+  const widthW = meta.widthM * M_TO_WORLD
+  const heightW = meta.heightM * M_TO_WORLD
+  const scale = M_TO_WORLD * exaggeration
+
+  const object = useMemo(() => {
+    const geom = new THREE.BufferGeometry()
+    const mat = new THREE.LineBasicMaterial({ transparent: true, opacity: 0.9 })
+    return new THREE.Line(geom, mat)
+  }, [])
+  useEffect(() => () => {
+    object.geometry.dispose()
+    ;(object.material as THREE.Material).dispose()
+  }, [object])
+
+  useEffect(() => {
+    object.geometry.setFromPoints([
+      new THREE.Vector3(
+        (from.u - 0.5) * widthW,
+        from.ground * scale + from.height * scale,
+        -(from.v - 0.5) * heightW,
+      ),
+      new THREE.Vector3((to.u - 0.5) * widthW, to.ground * scale, -(to.v - 0.5) * heightW),
+    ])
+    ;(object.material as THREE.LineBasicMaterial).color.set(blocked ? '#ff6b57' : '#7ce0a3')
+  }, [object, from, to, blocked, widthW, heightW, scale])
+
+  return <primitive object={object} />
+}
+
+/** Where the sight line is aimed. A ring on the ground, not another bead — it
+ *  is a place being looked at, not a sensor. */
+function TargetMarker({
+  meta,
+  at,
+  blocked,
+  exaggeration,
+}: {
+  meta: ReliefMeta
+  at: { u: number; v: number; ground: number }
+  blocked: boolean
+  exaggeration: number
+}) {
+  const widthW = meta.widthM * M_TO_WORLD
+  const heightW = meta.heightM * M_TO_WORLD
+  const r = widthW * 0.006
+  return (
+    <mesh
+      position={[
+        (at.u - 0.5) * widthW,
+        at.ground * M_TO_WORLD * exaggeration + widthW * 0.001,
+        -(at.v - 0.5) * heightW,
+      ]}
+      rotation={[-Math.PI / 2, 0, 0]}
+    >
+      <ringGeometry args={[r * 0.55, r, 24]} />
+      <meshBasicMaterial color={blocked ? '#ff6b57' : '#7ce0a3'} side={THREE.DoubleSide} />
+    </mesh>
+  )
+}
+
 /** Observer marker: a stem from the ground up to eye height, capped by a bead. */
 function Marker({
   meta,
@@ -637,9 +716,13 @@ function Interaction({
   controls,
   onUserInput,
   exaggeration,
+  targetMode,
+  onPickTarget,
 }: {
   meta: ReliefMeta
   field: Heightfield
+  targetMode: boolean
+  onPickTarget: (u: number, v: number, ground: number) => void
   observers: Observer[]
   active: number
   moveActive: (u: number, v: number, ground: number) => void
@@ -755,7 +838,11 @@ function Interaction({
       if (!start) return
       if (Math.hypot(e.clientX - start.x, e.clientY - start.y) > 6) return
       const hit = pick(e.clientX, e.clientY)
-      if (hit) moveActive(hit.u, hit.v, hit.ground)
+      if (!hit) return
+      // In target mode the click aims the sight line instead of moving the
+      // sensor; dragging the observer's own marker still moves the observer.
+      if (targetMode) onPickTarget(hit.u, hit.v, hit.ground)
+      else moveActive(hit.u, hit.v, hit.ground)
     }
 
     el.addEventListener('pointerdown', onDown)
@@ -766,7 +853,7 @@ function Interaction({
       el.removeEventListener('pointermove', onMove)
       el.removeEventListener('pointerup', onUp)
     }
-  }, [gl, pick, observers, active, moveActive, controls, onUserInput])
+  }, [gl, pick, observers, active, moveActive, controls, onUserInput, targetMode, onPickTarget])
 
   // Recompute whenever the observer or the corrections change. This is the only
   // place the viewshed runs — never per frame.
@@ -932,6 +1019,10 @@ function Content({
   exaggeration,
   waterLevel,
   sunAngles,
+  target,
+  targetMode,
+  onPickTarget,
+  sightBlocked,
 }: {
   site: ReliefSite
   meta: ReliefMeta
@@ -949,6 +1040,10 @@ function Content({
   /** Water elevation in metres, or null for dry. */
   waterLevel: number | null
   sunAngles: { azimuth: number; elevation: number }
+  target: { u: number; v: number; ground: number } | null
+  targetMode: boolean
+  onPickTarget: (u: number, v: number, ground: number) => void
+  sightBlocked: boolean
 }) {
   const { size, camera } = useThree()
   const small = size.width < 768
@@ -1025,6 +1120,8 @@ function Content({
       <Interaction
         meta={meta}
         field={field}
+        targetMode={targetMode}
+        onPickTarget={onPickTarget}
         exaggeration={exaggeration}
         observers={observers}
         active={active}
@@ -1039,6 +1136,18 @@ function Content({
       {observers.map((o, i) => (
         <Marker key={i} meta={meta} obs={o} dim={i !== active} exaggeration={exaggeration} />
       ))}
+      {target && observers[active] && (
+        <>
+          <SightLine
+            meta={meta}
+            from={observers[active]}
+            to={target}
+            blocked={sightBlocked}
+            exaggeration={exaggeration}
+          />
+          <TargetMarker meta={meta} at={target} blocked={sightBlocked} exaggeration={exaggeration} />
+        </>
+      )}
     </>
   )
 }
@@ -1066,6 +1175,10 @@ export default function Scene({
   exaggeration,
   waterLevel,
   sunAngles,
+  target,
+  targetMode,
+  onPickTarget,
+  sightBlocked,
 }: {
   site: ReliefSite
   observers: Observer[]
@@ -1080,6 +1193,10 @@ export default function Scene({
   exaggeration: number
   waterLevel: number | null
   sunAngles: { azimuth: number; elevation: number }
+  target: { u: number; v: number; ground: number } | null
+  targetMode: boolean
+  onPickTarget: (u: number, v: number, ground: number) => void
+  sightBlocked: boolean
 }) {
   const controls = useRef<CameraControls | null>(null)
   const [tier, setTier] = useState<Tier | null>(null)
@@ -1207,6 +1324,10 @@ export default function Scene({
           exaggeration={exaggeration}
           waterLevel={waterLevel}
           sunAngles={sunAngles}
+          target={target}
+          targetMode={targetMode}
+          onPickTarget={onPickTarget}
+          sightBlocked={sightBlocked}
         />
       )}
     </Canvas>

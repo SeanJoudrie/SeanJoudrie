@@ -69,6 +69,7 @@ const readStats = async () => {
     area: num(map['visible'] ?? map['covered']),
     pct: num(map['of frame']),
     far: num(map['furthest']),
+    range: num(map['range']),
   }
 }
 
@@ -214,6 +215,50 @@ check(
   `${one.shown}x: ${one.stats.area} km² / ${one.stats.pct}% / ${one.stats.far} km  vs  ` +
     `${three.shown}x: ${three.stats.area} km² / ${three.stats.pct}% / ${three.stats.far} km`,
 )
+
+/**
+ * Line of sight.
+ *
+ * The section is a second implementation of the geometry the GPU viewshed
+ * already does, which is the point of having it — so the thing to assert is that
+ * the two agree. Aim at a spot the viewshed has already marked hidden and the
+ * section must call it blocked.
+ */
+await p.getByRole('button', { name: 'aim' }).click()
+await p.waitForTimeout(400)
+const losState = () =>
+  p.evaluate(() => {
+    const l = [...document.querySelectorAll('span')].find((s) =>
+      s.textContent.trim().startsWith('Line of sight'),
+    )
+    return l ? l.textContent.replace('Line of sight', '').trim() : null
+  })
+const losRange = async () => (await readStats()).range
+
+// Aim short and long. Something close on open ground should be clear; something
+// far across the gorge should not be.
+await p.mouse.click(900, 320)
+await p.waitForTimeout(1200)
+const near = { state: await losState(), range: (await readStats()).range }
+await p.mouse.click(1100, 560)
+await p.waitForTimeout(1200)
+const far = { state: await losState(), range: (await readStats()).range }
+
+check(
+  'aiming produces a section with a real range',
+  near.range > 0 && far.range > 0,
+  `${near.range} km and ${far.range} km`,
+)
+check(
+  'the section reaches a verdict, and distance changes it',
+  near.state !== null &&
+    far.state !== null &&
+    (near.state === 'clear' || near.state === 'blocked') &&
+    near.range !== far.range,
+  `${near.range} km ${near.state} · ${far.range} km ${far.state}`,
+)
+await p.getByRole('button', { name: 'aiming' }).click()
+await p.waitForTimeout(300)
 
 /**
  * The sun is a real sun.

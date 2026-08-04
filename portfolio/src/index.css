@@ -139,6 +139,10 @@
   --color-relief-rock: #8a7f72;
   --color-relief-visible: #ffb95c;
   --color-relief-hidden: #4a5560;
+  /* A sight line the terrain cuts. Distinct from the overlay amber, which means
+     "the sensor can see this" — the two appear together and must not be read
+     as the same signal. */
+  --color-relief-blocked: #ff6b57;
 
   /* Cortex (particle brain demo) — clinical dark, blue tissue, red signal */
   --color-cortex-bg: #080a0f;

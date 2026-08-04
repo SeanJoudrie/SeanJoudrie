@@ -7,6 +7,8 @@ import type { ReliefSite } from './meta'
 import { floodStats, waterRange } from './water'
 import type { FloodStats } from './water'
 import { sunPosition, utcFromLocalSolar, siteCentre, DATE_PRESETS, SOLAR_YEAR } from './solar'
+import { lineOfSight } from './profile'
+import type { ProfileResult } from './profile'
 import type { Observer } from './Scene'
 import type { Heightfield } from './heightfield'
 import type { ViewshedStats } from './viewshed'
@@ -79,6 +81,14 @@ function Notes({ site }: { site: ReliefSite | null }) {
         visibility is computed from true elevations.
       </p>
       <p>
+        <span className="text-relief-ink-2">Line of sight.</span> The section plots apparent
+        ground — true elevation plus the earth bulge, d₁·d₂ ÷ 2R with the radius inflated by
+        refraction — because that is what the ray meets. The dashed line beneath it is the true
+        profile, so the gap between the two is the curvature correction itself. Checked against the
+        same closed form as the viewshed: over a flat plane a 25 m eye is blocked at 19,143 m
+        against an analytic 19,135 m.
+      </p>
+      <p>
         <span className="text-relief-ink-2">Sun.</span> Position is computed from the site’s own
         latitude and longitude at the chosen moment, using the standard low-precision solar
         equations — so the shadows are the ones that would actually fall there, and an impossible
@@ -131,6 +141,63 @@ const clock = (h: number) => {
   return `${String(mm === 60 ? hh + 1 : hh).padStart(2, '0')}:${String(mm === 60 ? 0 : mm).padStart(2, '0')}`
 }
 
+/**
+ * The terrain section, with the sight line across it.
+ *
+ * Deliberately plots APPARENT ground — true elevation plus the earth bulge —
+ * rather than the raw profile, because that is what the ray actually meets. It
+ * also makes the curvature correction the one thing on this page you can see
+ * rather than read about: the ground arches up between the two ends, and over
+ * twenty-odd kilometres that arch is tens of metres, enough to block a shot that
+ * a flat-earth profile would call clear.
+ */
+function Section({ result, blockedColor }: { result: ProfileResult; blockedColor: string }) {
+  const W = 560
+  const H = 120
+  const PAD = 2
+  const { samples, distanceM, blocked, firstBlockM } = result
+
+  let lo = Infinity
+  let hi = -Infinity
+  for (const s of samples) {
+    lo = Math.min(lo, s.ground, s.apparent, s.sight)
+    hi = Math.max(hi, s.apparent, s.sight)
+  }
+  // A little headroom so the sight line never rides the very top edge.
+  const span = Math.max(hi - lo, 1) * 1.12
+  const x = (d: number) => (distanceM > 0 ? (d / distanceM) * (W - PAD * 2) + PAD : PAD)
+  const y = (m: number) => H - PAD - ((m - lo) / span) * (H - PAD * 2)
+
+  const groundPath =
+    `M ${x(0)} ${y(samples[0].apparent)} ` +
+    samples.map((s) => `L ${x(s.d)} ${y(s.apparent)}`).join(' ') +
+    ` L ${x(distanceM)} ${H} L ${x(0)} ${H} Z`
+  const truePath =
+    `M ${x(0)} ${y(samples[0].ground)} ` + samples.map((s) => `L ${x(s.d)} ${y(s.ground)}`).join(' ')
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Terrain section along the sight line">
+      <path d={groundPath} fill="var(--color-relief-rock)" fillOpacity="0.30" />
+      {/* True elevation under the bulged surface: the gap between the two IS
+          the curvature correction. */}
+      <path d={truePath} fill="none" stroke="var(--color-relief-line-strong)" strokeWidth="1" strokeDasharray="2 3" />
+      <line
+        x1={x(0)}
+        y1={y(result.eyeM)}
+        x2={x(distanceM)}
+        y2={y(result.targetM)}
+        stroke={blocked ? blockedColor : 'var(--color-relief-visible)'}
+        strokeWidth="1.4"
+      />
+      {blocked && firstBlockM !== null && (
+        <line x1={x(firstBlockM)} y1={PAD} x2={x(firstBlockM)} y2={H} stroke={blockedColor} strokeWidth="1" strokeDasharray="2 2" />
+      )}
+      <circle cx={x(0)} cy={y(result.eyeM)} r="3" fill="var(--color-relief-visible)" />
+      <circle cx={x(distanceM)} cy={y(result.targetM)} r="3" fill={blocked ? blockedColor : 'var(--color-relief-visible)'} />
+    </svg>
+  )
+}
+
 function Stat({ label, value, unit }: { label: string; value: string; unit?: string }) {
   return (
     <div className="flex items-baseline justify-between gap-4">
@@ -165,6 +232,9 @@ export default function Relief() {
   /** When the scene is lit. Index into DATE_PRESETS, and local solar hours. */
   const [dateIdx, setDateIdx] = useState(0)
   const [hour, setHour] = useState(12)
+  /** Line-of-sight target, and whether a terrain click aims it. */
+  const [target, setTarget] = useState<{ u: number; v: number; ground: number } | null>(null)
+  const [targetMode, setTargetMode] = useState(false)
 
   const site = useMemo(
     () => sites?.find((s) => s.id === siteId) ?? null,
@@ -243,6 +313,7 @@ export default function Relief() {
       setFlood(null)
       setDateIdx(presetIndex(next))
       setHour(next.sun.hour)
+      setTarget(null)
     },
     [siteId],
   )
@@ -399,6 +470,25 @@ export default function Relief() {
     setFlood(floodStats(field, site.meta, water))
   }, [water, site, fieldEpoch])
 
+  /**
+   * The section. Recomputed whenever either end or the corrections move — a
+   * couple of hundred bilinear samples, far too cheap to be worth memoising
+   * around.
+   */
+  const profile = useMemo(() => {
+    const field = fieldRef.current
+    const obs = observers[active]
+    if (!field || !site || !target || !obs) return null
+    return lineOfSight(field, site.meta, obs, target, obs.height, refraction)
+    // fieldEpoch: the ref does not itself trigger a render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [site, target, observers, active, refraction, fieldEpoch])
+
+  const onPickTarget = useCallback(
+    (u: number, v: number, ground: number) => setTarget({ u, v, ground }),
+    [],
+  )
+
   const broken = !glOk || lost || metaFailed
 
   return (
@@ -448,6 +538,10 @@ export default function Relief() {
                       exaggeration={exaggeration ?? 1}
                       waterLevel={water}
                       sunAngles={sunAngles}
+                      target={target}
+                      targetMode={targetMode}
+                      onPickTarget={onPickTarget}
+                      sightBlocked={profile?.blocked ?? false}
                     />
                   </div>
 
@@ -510,7 +604,7 @@ export default function Relief() {
                           panelOpen
                             ? 'block max-h-[62svh] overflow-y-auto border-t border-relief-line'
                             : 'hidden'
-                        } p-3 sm:block sm:max-h-none sm:overflow-visible sm:border-t-0 sm:p-4`}
+                        } p-3 sm:block sm:max-h-[calc(100svh-9.5rem)] sm:overflow-y-auto sm:border-t-0 sm:p-4`}
                       >
                       {/* Site picker. One elevation model per site, swapped in
                           place — the sensor, its height and the overlay colour
@@ -649,6 +743,58 @@ export default function Relief() {
                           Display only — visibility is computed from true elevations.
                         </span>
                       </label>
+
+                      {/* Line of sight. A mode rather than a modifier key,
+                          because shift-click does not exist on a phone and this
+                          has to work with a thumb. */}
+                      <div className="mt-3 flex items-center justify-between gap-3 sm:mt-4">
+                        <span className="text-sm text-relief-ink-2">
+                          Line of sight
+                          {profile && (
+                            <span
+                              className={`ml-1.5 ${profile.blocked ? 'text-relief-blocked' : 'text-relief-visible'}`}
+                            >
+                              {profile.blocked ? 'blocked' : 'clear'}
+                            </span>
+                          )}
+                        </span>
+                        <button
+                          onClick={() => {
+                            setTargetMode((t) => !t)
+                            if (targetMode) setTarget(null)
+                          }}
+                          aria-pressed={targetMode}
+                          className={`rounded-md border px-2 py-1 text-xs font-medium transition-colors ${
+                            targetMode
+                              ? 'border-relief-visible/60 text-relief-visible'
+                              : 'border-relief-line text-relief-muted hover:border-relief-line-strong hover:text-relief-ink'
+                          }`}
+                        >
+                          {targetMode ? 'aiming' : 'aim'}
+                        </button>
+                      </div>
+                      {targetMode && !target && (
+                        <p className="mt-1.5 text-[0.68rem] leading-relaxed text-relief-muted">
+                          Click the terrain to aim from the observer.
+                        </p>
+                      )}
+                      {profile && (
+                        <div className="mt-2">
+                          <Section result={profile} blockedColor="var(--color-relief-blocked)" />
+                          <div className="mt-1.5 grid grid-cols-2 gap-x-3 gap-y-1">
+                            <Stat label="Range" value={(profile.distanceM / 1000).toFixed(2)} unit="km" />
+                            <Stat
+                              label={profile.blocked ? 'Short by' : 'Clearance'}
+                              value={
+                                Math.abs(profile.minClearanceM) < 10
+                                  ? Math.abs(profile.minClearanceM).toFixed(1)
+                                  : Math.abs(Math.round(profile.minClearanceM)).toLocaleString()
+                              }
+                              unit="m"
+                            />
+                          </div>
+                        </div>
+                      )}
 
                       {/* Sun. A date and a time, not an angle — the azimuth and
                           elevation below are computed from this site's own
