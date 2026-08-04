@@ -565,7 +565,7 @@ export default function Relief() {
         </div>
         <button
           onClick={() => navigate('#/')}
-          className="rounded-lg border border-relief-line px-3 py-1.5 text-sm font-medium text-relief-ink-2 transition-colors hover:border-relief-line-strong hover:text-relief-ink"
+          className="relief-tap rounded-lg border border-relief-line px-3 py-1.5 text-sm font-medium text-relief-ink-2 transition-colors hover:border-relief-line-strong hover:text-relief-ink"
         >
           ← Portfolio
         </button>
@@ -626,7 +626,7 @@ export default function Relief() {
                         <button
                           onClick={() => stepSite(-1)}
                           aria-label="Previous site"
-                          className="shrink-0 rounded-md px-2.5 py-2 text-relief-muted hover:text-relief-ink"
+                          className="relief-tap shrink-0 rounded-md px-2.5 py-2 text-relief-muted hover:text-relief-ink"
                         >
                           ‹
                         </button>
@@ -638,14 +638,14 @@ export default function Relief() {
                              display:none on a laptop. */
                           aria-label={`${site.name} — ${panelOpen ? 'hide' : 'show'} controls`}
                           aria-expanded={panelOpen}
-                          className="min-w-0 flex-1 truncate px-1 py-2 text-center text-sm font-medium text-relief-ink"
+                          className="relief-tap min-w-0 flex-1 truncate px-1 py-2 text-center text-sm font-medium text-relief-ink"
                         >
                           {site.name}
                         </button>
                         <button
                           onClick={() => stepSite(1)}
                           aria-label="Next site"
-                          className="shrink-0 rounded-md px-2.5 py-2 text-relief-muted hover:text-relief-ink"
+                          className="relief-tap shrink-0 rounded-md px-2.5 py-2 text-relief-muted hover:text-relief-ink"
                         >
                           ›
                         </button>
@@ -656,7 +656,7 @@ export default function Relief() {
                           onClick={() => setPanelOpen((o) => !o)}
                           aria-label={panelOpen ? 'Hide controls' : 'Show controls'}
                           aria-expanded={panelOpen}
-                          className="shrink-0 rounded-md border border-relief-line px-2 py-1.5 text-[0.7rem] font-medium text-relief-muted"
+                          className="relief-tap shrink-0 rounded-md border border-relief-line px-2.5 py-1.5 text-[0.7rem] font-medium text-relief-muted"
                         >
                           {panelOpen ? 'Close' : 'Controls'}
                         </button>
@@ -683,7 +683,7 @@ export default function Relief() {
                             onClick={() => selectSite(s)}
                             aria-pressed={s.id === site.id}
                             title={s.subtitle}
-                            className={`rounded-md border px-2 py-1 text-xs font-medium transition-colors ${
+                            className={`relief-tap rounded-md border px-2.5 py-1.5 text-xs font-medium transition-colors ${
                               s.id === site.id
                                 ? 'border-relief-line-strong bg-relief-line/40 text-relief-ink'
                                 : 'border-relief-line text-relief-muted hover:border-relief-line-strong hover:text-relief-ink'
@@ -706,7 +706,7 @@ export default function Relief() {
                             setActive(0)
                             setExaggeration(defaultExaggeration(site.meta))
                           }}
-                          className="text-xs font-medium text-relief-muted underline decoration-relief-line underline-offset-4 hover:text-relief-ink"
+                          className="relief-tap px-1 text-xs font-medium text-relief-muted underline decoration-relief-line underline-offset-4 hover:text-relief-ink"
                         >
                           Reset
                         </button>
@@ -727,7 +727,7 @@ export default function Relief() {
                           >
                             <button
                               onClick={() => setActive(i)}
-                              className="px-2 py-1 font-medium hover:text-relief-ink"
+                              className="relief-tap px-2.5 py-1.5 font-medium hover:text-relief-ink"
                               aria-pressed={i === active}
                               aria-label={`Select observer ${i + 1}`}
                             >
@@ -739,7 +739,7 @@ export default function Relief() {
                             {observers.length > 1 && (
                               <button
                                 onClick={() => removeObserver(i)}
-                                className="border-l border-relief-line px-1.5 py-1 text-relief-muted hover:text-relief-ink"
+                                className="relief-tap border-l border-relief-line px-2 py-1 text-relief-muted hover:text-relief-ink"
                                 aria-label={`Remove observer ${i + 1}`}
                               >
                                 ×
@@ -750,7 +750,7 @@ export default function Relief() {
                         {observers.length < MAX_OBSERVERS && (
                           <button
                             onClick={addObserver}
-                            className="rounded-md border border-dashed border-relief-line px-2 py-1 text-xs font-medium text-relief-muted hover:border-relief-line-strong hover:text-relief-ink"
+                            className="relief-tap rounded-md border border-dashed border-relief-line px-2.5 py-1.5 text-xs font-medium text-relief-muted hover:border-relief-line-strong hover:text-relief-ink"
                           >
                             + Add
                           </button>
@@ -774,12 +774,12 @@ export default function Relief() {
                           className="mt-2 w-full accent-[var(--color-relief-visible)]"
                           aria-label="Observer height above ground, metres"
                         />
-                        <span className="mt-1 flex justify-between text-[0.62rem] text-relief-muted">
+                        <span className="relief-tap-row mt-1 flex justify-between">
                           {HEIGHT_STOPS.map((s) => (
                             <button
                               key={s.h}
                               onClick={() => setHeight(s.h)}
-                              className="hover:text-relief-ink"
+                              className="relief-preset"
                               title={`${s.h} m`}
                             >
                               {s.label}
@@ -830,7 +830,7 @@ export default function Relief() {
                             if (targetMode) setTarget(null)
                           }}
                           aria-pressed={targetMode}
-                          className={`rounded-md border px-2 py-1 text-xs font-medium transition-colors ${
+                          className={`relief-tap rounded-md border px-2.5 py-1.5 text-xs font-medium transition-colors ${
                             targetMode
                               ? 'border-relief-visible/60 text-relief-visible'
                               : 'border-relief-line text-relief-muted hover:border-relief-line-strong hover:text-relief-ink'
@@ -888,12 +888,12 @@ export default function Relief() {
                           className="mt-2 w-full accent-[var(--color-relief-visible)]"
                           aria-label="Time of day, local solar hours"
                         />
-                        <span className="mt-1 flex justify-between text-[0.62rem] text-relief-muted">
+                        <span className="relief-tap-row mt-1 flex justify-between">
                           {DATE_PRESETS.map((d, i) => (
                             <button
                               key={d.label}
                               onClick={() => setDateIdx(i)}
-                              className={i === dateIdx ? 'text-relief-ink' : 'hover:text-relief-ink'}
+                              className={`relief-preset ${i === dateIdx ? 'text-relief-ink' : ''}`}
                               aria-pressed={i === dateIdx}
                             >
                               {d.label}
@@ -930,15 +930,15 @@ export default function Relief() {
                           className="mt-2 w-full accent-[var(--color-relief-visible)]"
                           aria-label="Water level, metres"
                         />
-                        <span className="mt-1 flex items-center justify-between gap-2 text-[0.62rem] text-relief-muted">
-                          <button onClick={() => setWater(null)} className="hover:text-relief-ink">
+                        <span className="relief-tap-row mt-1 flex items-center justify-between gap-2">
+                          <button onClick={() => setWater(null)} className="relief-preset">
                             dry
                           </button>
                           {site.water.presets.map((p) => (
                             <button
                               key={p.label}
                               onClick={() => setWater(waterAt(p.at, site.meta))}
-                              className="hover:text-relief-ink"
+                              className="relief-preset"
                               title={`${Math.round(waterAt(p.at, site.meta) ?? 0).toLocaleString()} m`}
                             >
                               {p.label}
@@ -1040,7 +1040,7 @@ export default function Relief() {
                             })
                             .catch(() => {})
                         }}
-                        className="mt-3 w-full rounded-md border border-relief-line px-2 py-1.5 text-xs font-medium text-relief-muted transition-colors hover:border-relief-line-strong hover:text-relief-ink sm:mt-4"
+                        className="relief-tap mt-3 w-full rounded-md border border-relief-line px-2 py-2 text-xs font-medium text-relief-muted transition-colors hover:border-relief-line-strong hover:text-relief-ink sm:mt-4"
                       >
                         {copied ? 'link copied' : 'Copy link to this view'}
                       </button>
@@ -1099,7 +1099,15 @@ export default function Relief() {
             on a laptop this ran to a third of the screen — the method is worth
             reading, but not at the cost of the thing it describes. */}
         <details>
-          <summary className="cursor-pointer font-medium text-relief-ink-2">Method &amp; sources</summary>
+          <summary className="relief-tap relief-summary inline-flex cursor-pointer items-center gap-1.5 py-1 font-medium text-relief-ink-2">
+            {/* An explicit chevron: making the summary a flex container to give
+                it a tappable height removes the native ::marker, and a
+                disclosure with no affordance is just a heading. */}
+            <svg viewBox="0 0 12 12" aria-hidden="true" className="relief-chev h-3 w-3 shrink-0">
+              <path d="M4 2.5 L8 6 L4 9.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            Method &amp; sources
+          </summary>
           <div className="mt-2 space-y-1.5 sm:columns-2 sm:gap-6 sm:space-y-0 [&>p]:mb-1.5 [&>p]:break-inside-avoid">
             <Notes site={site} />
           </div>

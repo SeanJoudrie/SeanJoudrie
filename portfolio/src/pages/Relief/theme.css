@@ -37,3 +37,64 @@ body.relief-page {
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
 }
+
+/* Touch targets.
+   ---------------------------------------------------------------------------
+   The stepper arrows, the preset words under each slider and the observer's
+   remove button were all laid out for a mouse: 10 px type with a couple of
+   pixels of padding, which is a precise click and an unreliable tap. On a phone
+   several of them were under 30 px in the smaller dimension against the 44 px
+   that fingers actually need.
+
+   Gated on pointer:coarse rather than on a breakpoint, because the thing that
+   decides this is the input device and not the screen width — a touch laptop
+   wants the bigger target at 1440 px, and a mouse on a small window does not.
+   The desktop layout stays exactly as dense as it was. */
+@media (pointer: coarse) {
+  .relief-tap {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  /* For rows of words under a slider. Width matters as much as height here:
+     "dry" is three characters and measured 18 px across. */
+  .relief-tap-row > * {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* The checkbox itself stays small — the whole label is the target, which is
+     what a <label> is for — but 16 px reads as fiddly next to 44 px controls
+     even when it is not the thing being aimed at. */
+  .relief-root input[type='checkbox'] {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* The preset words themselves. 0.62rem is 9.9 px — under the 11 px floor where
+   this typeface stops resolving cleanly, and small enough to read as filler
+   rather than as controls. */
+.relief-preset {
+  font-size: 0.7rem;
+  color: var(--color-relief-muted);
+}
+.relief-preset:hover {
+  color: var(--color-relief-ink);
+}
+
+/* Disclosure chevron. The native marker goes away the moment the summary
+   becomes a flex container, which it has to be to carry a 44 px tap height. */
+.relief-summary {
+  list-style: none;
+}
+.relief-summary::-webkit-details-marker {
+  display: none;
+}
+.relief-chev {
+  transition: transform 150ms var(--ease-out, ease);
+}
+details[open] > .relief-summary .relief-chev {
+  transform: rotate(90deg);
+}

@@ -114,36 +114,39 @@ const COMMISSIONS = [
     skill: 'Terrain analysis & GPU line-of-sight',
     title: 'Relief — terrain analysis over four landscapes',
     caption:
-      'Drop an observer and see exactly what they can see. Real terrain — the Grand Canyon, the Matterhorn, Crater Lake and Badwater Basin, each baked from the Copernicus GLO-30 DEM over HTTP range requests — with visibility solved on the GPU by the reference-angle method, corrected for Earth curvature and atmospheric refraction. Then: aim at a point for a terrain section that plots apparent ground, so the curvature correction is something you watch a sight line graze rather than a footnote; raise a water level and flood the valley, which puts Badwater under the sea while its own floor is still 91 m further down; shade by slope at the thresholds cross-country movement turns on; and drag the sun, whose position is computed from each site’s latitude and longitude — which is how the hand-picked lighting was caught being physically impossible. Hold the sensor fixed and switch site: 25 m sees a fifth of the Grand Canyon and three quarters of Badwater, because flat ground hides nothing. Every tool that does this is GDAL, R or a QGIS plugin; this one runs in a browser, and every figure it reports is pinned to a closed form in CI.',
+      'Drop an observer and see exactly what it can see, over real Copernicus GLO-30 elevation at the Grand Canyon, the Matterhorn, Crater Lake and Badwater Basin. Visibility is solved on the GPU, corrected for Earth curvature and refraction. Aim at a point for a terrain section, raise a water level to flood the valley, drag the sun through a real day. Every tool that does this is GDAL, R or a QGIS plugin; this one runs in a browser, and every figure it reports is pinned to a closed form in CI.',
     href: '#/demos/relief',
   },
 ]
 
 /** Relief — a section through a canyon with the visible ground picked out. */
+/**
+ * The Relief card's thumbnail — a frame from the demo itself.
+ *
+ * This was a hand-drawn SVG schematic: a canyon in section with a dashed sight
+ * line. It read as a placeholder next to cards showing live 3D, because a
+ * diagram standing in for a render is what a placeholder looks like — and the
+ * thing behind this one is the best-looking demo on the page.
+ *
+ * A still rather than a live canvas, deliberately. The other live cards mount a
+ * few hundred KB of procedural geometry; Relief would have to pull a 1.2 MB
+ * elevation raster onto the home page to show anything at all. 42 KB of WebP,
+ * lazily loaded, buys the same first impression for a fortieth of the weight.
+ *
+ * Regenerate with scripts/shot-relief-card.mjs — the frame is addressed by a
+ * share link, so it is reproducible rather than hand-composed.
+ */
 function ReliefThumb() {
   return (
-    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
-      <rect width="280" height="160" rx="10" fill="#0b0d10" />
-      {/* hidden ground */}
-      <path
-        d="M0 118 L40 112 L58 62 L92 56 L120 106 L152 132 L188 136 L212 96 L238 44 L268 40 L280 96 L280 160 L0 160 Z"
-        fill="#4a5560"
-        fillOpacity="0.45"
-      />
-      {/* the lit, visible stretch: rim down to where the far wall cuts the ray */}
-      <path d="M58 62 L92 56 L120 106 L152 132 L188 136 L212 96 L238 44 L238 160 L58 160 Z" fill="#ffb95c" fillOpacity="0.16" />
-      <path d="M58 62 L92 56 L120 106 L152 132 L188 136 L212 96 L238 44" fill="none" stroke="#ffb95c" strokeWidth="1.6" />
-      {/* contours on the plateau */}
-      <g stroke="#8a7f72" strokeOpacity="0.4" strokeWidth="0.8">
-        <path d="M0 128 L36 122" fill="none" />
-        <path d="M246 56 L280 50" fill="none" />
-        <path d="M0 138 L34 133" fill="none" />
-      </g>
-      {/* observer stem and sight line grazing the far rim */}
-      <line x1="92" y1="56" x2="92" y2="30" stroke="#ffb95c" strokeWidth="1.4" />
-      <circle cx="92" cy="28" r="3.4" fill="#ffe0b0" />
-      <line x1="92" y1="28" x2="238" y2="44" stroke="#ffb95c" strokeWidth="1" strokeDasharray="3 3" />
-    </svg>
+    <img
+      src="shots/relief-card.webp"
+      alt="Relief — a flooded Grand Canyon with the viewshed overlay across the near plateau"
+      loading="lazy"
+      decoding="async"
+      width={1120}
+      height={640}
+      className="h-full w-full object-cover"
+    />
   )
 }
 
