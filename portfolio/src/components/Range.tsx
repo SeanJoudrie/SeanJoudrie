@@ -112,9 +112,9 @@ const COMMISSIONS = [
   {
     n: '13',
     skill: 'Terrain analysis & GPU line-of-sight',
-    title: 'Relief — a viewshed over four landscapes',
+    title: 'Relief — terrain analysis over four landscapes',
     caption:
-      'Drop an observer on the rim and see exactly what they can see. Real terrain — the Grand Canyon, the Matterhorn, Crater Lake and Badwater Basin, each baked from the Copernicus GLO-30 DEM over HTTP range requests — with visibility solved on the GPU by the reference-angle method: a cell is visible when its vertical angle exceeds the maximum angle of all ground between. Corrected for Earth curvature and atmospheric refraction, which matter because the horizon for a 25 m eye is 19.1 km and these frames are wider than that. Hold the sensor fixed and switch site: 25 m sees a fifth of the Grand Canyon and three quarters of Badwater, because flat ground hides nothing. Every viewshed tool in the world is GDAL, R or a QGIS plugin; this one runs in a browser.',
+      'Drop an observer and see exactly what they can see. Real terrain — the Grand Canyon, the Matterhorn, Crater Lake and Badwater Basin, each baked from the Copernicus GLO-30 DEM over HTTP range requests — with visibility solved on the GPU by the reference-angle method, corrected for Earth curvature and atmospheric refraction. Then: aim at a point for a terrain section that plots apparent ground, so the curvature correction is something you watch a sight line graze rather than a footnote; raise a water level and flood the valley, which puts Badwater under the sea while its own floor is still 91 m further down; shade by slope at the thresholds cross-country movement turns on; and drag the sun, whose position is computed from each site’s latitude and longitude — which is how the hand-picked lighting was caught being physically impossible. Hold the sensor fixed and switch site: 25 m sees a fifth of the Grand Canyon and three quarters of Badwater, because flat ground hides nothing. Every tool that does this is GDAL, R or a QGIS plugin; this one runs in a browser, and every figure it reports is pinned to a closed form in CI.',
     href: '#/demos/relief',
   },
 ]

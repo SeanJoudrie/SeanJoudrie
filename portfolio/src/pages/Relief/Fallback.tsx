@@ -34,8 +34,9 @@ export function Fallback() {
         </p>
         <p className="mt-3 text-sm leading-relaxed text-relief-muted">
           With a graphics context it solves this over real elevation data at the Grand
-          Canyon, the Matterhorn, Crater Lake and Badwater Basin — the same sensor
-          against four landscapes.
+          Canyon, the Matterhorn, Crater Lake and Badwater Basin — the same sensor against
+          four landscapes — alongside terrain sections, a flood level, slope banding and a
+          computed sun.
         </p>
       </div>
     </div>
