@@ -614,8 +614,11 @@ export default function Relief() {
                       the terrain they describe got 28%, with the observer
                       marker itself underneath them. So on a phone it collapses
                       to a bar, and opening it is a deliberate act. */}
-                  <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 p-3 sm:inset-auto sm:left-4 sm:top-4 sm:w-72 sm:p-0">
-                    <div className="pointer-events-auto overflow-hidden rounded-xl border border-relief-line bg-relief-card/92 backdrop-blur">
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 p-3 sm:inset-auto sm:bottom-4 sm:left-4 sm:top-4 sm:w-72 sm:p-0">
+                    {/* Bounded by main, not by the viewport. Sized against
+                        100svh it ran under the footer, which grew as the method
+                        notes did. */}
+                    <div className="pointer-events-auto flex max-h-full flex-col overflow-hidden rounded-xl border border-relief-line bg-relief-card/92 backdrop-blur">
                       {/* Summary bar, phones only. Carries the two things worth
                           a permanent 44 px — which site, and what it sees —
                           plus the fastest way between sites. */}
@@ -667,7 +670,7 @@ export default function Relief() {
                           panelOpen
                             ? 'block max-h-[62svh] overflow-y-auto border-t border-relief-line'
                             : 'hidden'
-                        } p-3 sm:block sm:max-h-[calc(100svh-9.5rem)] sm:overflow-y-auto sm:border-t-0 sm:p-4`}
+                        } min-h-0 p-3 sm:block sm:flex-1 sm:overflow-y-auto sm:border-t-0 sm:p-4`}
                       >
                       {/* Site picker. One elevation model per site, swapped in
                           place — the sensor, its height and the overlay colour
@@ -1092,18 +1095,15 @@ export default function Relief() {
           describes down to a sliver, so it collapses behind a disclosure there
           and stays open from sm up. */}
       <footer className="z-10 border-t border-relief-line px-4 py-2.5 text-xs leading-relaxed text-relief-muted sm:px-6 sm:py-3">
-        <details className="sm:hidden">
+        {/* One disclosure at every size, and columns once opened. Left expanded
+            on a laptop this ran to a third of the screen — the method is worth
+            reading, but not at the cost of the thing it describes. */}
+        <details>
           <summary className="cursor-pointer font-medium text-relief-ink-2">Method &amp; sources</summary>
-          <div className="mt-2 space-y-1.5">
+          <div className="mt-2 space-y-1.5 sm:columns-2 sm:gap-6 sm:space-y-0 [&>p]:mb-1.5 [&>p]:break-inside-avoid">
             <Notes site={site} />
           </div>
         </details>
-        {/* Columns from sm up. Four paragraphs stacked cost about 150 px of
-            terrain on a laptop, and the method is worth keeping visible rather
-            than hiding behind a disclosure. */}
-        <div className="hidden sm:block sm:columns-2 sm:gap-6 [&>p]:mb-1.5 [&>p]:break-inside-avoid">
-          <Notes site={site} />
-        </div>
       </footer>
     </div>
   )
