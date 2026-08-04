@@ -9,6 +9,7 @@ import type { FloodStats } from './water'
 import { sunPosition, utcFromLocalSolar, siteCentre, DATE_PRESETS, SOLAR_YEAR } from './solar'
 import { lineOfSight } from './profile'
 import type { ProfileResult } from './profile'
+import { encodeShare, decodeShare } from './share'
 import type { Observer } from './Scene'
 import type { Heightfield } from './heightfield'
 import type { ViewshedStats } from './viewshed'
@@ -79,6 +80,12 @@ function Notes({ site }: { site: ReliefSite | null }) {
         atmospheric refraction. This is a bare-earth surface model: vegetation, structures and
         haze are not accounted for. Vertical exaggeration applies to the rendering only — all
         visibility is computed from true elevations.
+      </p>
+      <p>
+        <span className="text-relief-ink-2">Slope.</span> Banded at 10°, 20° and 30° — the
+        thresholds cross-country movement actually turns on, rather than a smooth gradient that
+        looks better and answers nothing. Computed from true gradients: vertical exaggeration is
+        divided back out, so stretching the view for looks cannot silently reclassify the terrain.
       </p>
       <p>
         <span className="text-relief-ink-2">Line of sight.</span> The section plots apparent
@@ -235,6 +242,11 @@ export default function Relief() {
   /** Line-of-sight target, and whether a terrain click aims it. */
   const [target, setTarget] = useState<{ u: number; v: number; ground: number } | null>(null)
   const [targetMode, setTargetMode] = useState(false)
+  /** Shade by steepness instead of elevation. */
+  const [slope, setSlope] = useState(false)
+  /** Whatever the incoming link asked for, read once at mount. */
+  const linkRef = useRef(decodeShare(typeof window === 'undefined' ? '' : window.location.hash))
+  const [copied, setCopied] = useState(false)
 
   const site = useMemo(
     () => sites?.find((s) => s.id === siteId) ?? null,
@@ -276,12 +288,20 @@ export default function Relief() {
     loadManifest()
       .then((s) => {
         if (cancelled) return
+        // A link names a site; anything it does not name falls back to that
+        // site's own defaults, so a partial or stale link still lands somewhere
+        // sensible rather than half-configured.
+        const link = linkRef.current
+        const chosen = s.find((x) => x.id === link.site) ?? s[0]
         setSites(s)
-        setSiteId(s[0].id)
-        setExaggeration(defaultExaggeration(s[0].meta))
-        setWater(waterAt(s[0].water.default, s[0].meta))
-        setDateIdx(presetIndex(s[0]))
-        setHour(s[0].sun.hour)
+        setSiteId(chosen.id)
+        setExaggeration(link.exaggeration ?? defaultExaggeration(chosen.meta))
+        setWater(link.water ?? waterAt(chosen.water.default, chosen.meta))
+        setDateIdx(link.dateIdx ?? presetIndex(chosen))
+        setHour(link.hour ?? chosen.sun.hour)
+        if (link.height !== undefined) setHeight(link.height)
+        if (link.refraction !== undefined) setRefraction(link.refraction)
+        if (link.slope !== undefined) setSlope(link.slope)
       })
       .catch(() => !cancelled && setMetaFailed(true))
     return () => {
@@ -342,7 +362,20 @@ export default function Relief() {
       if (!seed) return
       fieldRef.current = field
       setFieldEpoch((n) => n + 1)
-      setObservers([{ u: seed.u, v: seed.v, ground: field.elevAt(seed.u, seed.v), height }])
+      // A link's positions are normalised, so the ground under them has to be
+      // sampled from the raster that just finished decoding — the link cannot
+      // carry elevations without going stale the moment a site is re-baked.
+      const link = linkRef.current
+      const from = link.observers?.length
+        ? link.observers.slice(0, MAX_OBSERVERS)
+        : [{ u: seed.u, v: seed.v }]
+      setObservers(from.map((o) => ({ u: o.u, v: o.v, ground: field.elevAt(o.u, o.v), height })))
+      if (link.target) {
+        setTarget({ ...link.target, ground: field.elevAt(link.target.u, link.target.v) })
+        setTargetMode(true)
+      }
+      // Consumed: a later site switch must seed normally, not re-apply the link.
+      linkRef.current = {}
     },
     // `height` is read, not tracked: re-seeding because the slider moved would
     // throw away wherever the observer had been placed.
@@ -489,6 +522,35 @@ export default function Relief() {
     [],
   )
 
+  /**
+   * Mirror the state into the hash. replaceState rather than push: dragging a
+   * slider must not fill the back button with a hundred entries.
+   */
+  const shareQuery = useMemo(() => {
+    if (!site) return ''
+    return encodeShare(
+      {
+        site: site.id,
+        observers: observers.map((o) => ({ u: o.u, v: o.v })),
+        height,
+        exaggeration: exaggeration ?? 1,
+        water,
+        hour,
+        dateIdx,
+        refraction,
+        slope,
+        target,
+      },
+      { height: 25, exaggeration: defaultExaggeration(site.meta), refraction: true },
+    )
+  }, [site, observers, height, exaggeration, water, hour, dateIdx, refraction, slope, target])
+
+  useEffect(() => {
+    if (!shareQuery) return
+    const next = `#/demos/relief?${shareQuery}`
+    if (window.location.hash !== next) window.history.replaceState(null, '', next)
+  }, [shareQuery])
+
   const broken = !glOk || lost || metaFailed
 
   return (
@@ -542,6 +604,7 @@ export default function Relief() {
                       targetMode={targetMode}
                       onPickTarget={onPickTarget}
                       sightBlocked={profile?.blocked ?? false}
+                      slope={slope}
                     />
                   </div>
 
@@ -881,6 +944,23 @@ export default function Relief() {
                         </span>
                       </label>
 
+                      {/* Slope layer. The gradients are already computed every
+                          frame for the hillshade, so this is a ramp and an acos
+                          — the cheapest second opinion the terrain can offer. */}
+                      <label className="mt-3 flex items-center justify-between gap-3 sm:mt-4">
+                        <span className="text-sm text-relief-ink-2">
+                          Shade by slope
+                          <span className="ml-1 text-relief-muted">(&lt;10° · 20° · 30°+)</span>
+                        </span>
+                        <input
+                          type="checkbox"
+                          checked={slope}
+                          onChange={(e) => setSlope(e.target.checked)}
+                          className="h-4 w-4 accent-[var(--color-relief-visible)]"
+                          aria-label="Shade by slope"
+                        />
+                      </label>
+
                       <label className="mt-3 flex items-center justify-between gap-3 sm:mt-4">
                         <span className="text-sm text-relief-ink-2">
                           Refraction correction
@@ -944,6 +1024,23 @@ export default function Relief() {
                           below the waterline.
                         </p>
                       )}
+
+                      {/* A link to exactly this. The hash already carries the
+                          state; this is the affordance that says so. */}
+                      <button
+                        onClick={() => {
+                          navigator.clipboard
+                            ?.writeText(window.location.href)
+                            .then(() => {
+                              setCopied(true)
+                              setTimeout(() => setCopied(false), 1600)
+                            })
+                            .catch(() => {})
+                        }}
+                        className="mt-3 w-full rounded-md border border-relief-line px-2 py-1.5 text-xs font-medium text-relief-muted transition-colors hover:border-relief-line-strong hover:text-relief-ink sm:mt-4"
+                      >
+                        {copied ? 'link copied' : 'Copy link to this view'}
+                      </button>
 
                       {/* Appears only once a second site has been measured at
                           the same height — until then there is nothing to

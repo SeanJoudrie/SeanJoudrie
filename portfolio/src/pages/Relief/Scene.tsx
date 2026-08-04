@@ -89,6 +89,7 @@ const FRAG = /* glsl */ `
   uniform float uHazeDensity;
   uniform float uEdgeFade;
   uniform float uExag;
+  uniform float uSlope;   // 0 elevation tint, 1 slope tint
   uniform sampler2D uShadow;
   uniform float uHasShadow;
 
@@ -159,6 +160,28 @@ const FRAG = /* glsl */ `
     // thing in its frame and also the lowest, so its ramp descends.
     float t = clamp((vElev - uMinElev) / max(uMaxElev - uMinElev, 1.0), 0.0, 1.0);
     vec3 base = mix(uLow, uHigh, t);
+
+    /**
+     * Slope layer. The gradient is already in hand — terrainNormal computes it
+     * every fragment for the hillshade — so this costs one acos and a ramp.
+     *
+     * Banded, not continuous, and the bands are the ones cross-country movement
+     * actually turns on: under 10 degrees goes anywhere, 10-20 is work, 20-30 is
+     * tracked-vehicle country, past 30 nothing is driving up it. A smooth
+     * gradient would look prettier and answer no question. Computed from TRUE
+     * gradients: uExag is divided back out, or exaggerating the view for looks
+     * would silently reclassify the whole map.
+     */
+    if (uSlope > 0.0) {
+      vec3 nTrue = normalize(vec3(n.x / max(uExag, 0.001), n.y / max(uExag, 0.001), n.z));
+      float deg = degrees(acos(clamp(nTrue.z, 0.0, 1.0)));
+      vec3 band =
+        deg < 10.0 ? vec3(0.36, 0.52, 0.36) :
+        deg < 20.0 ? vec3(0.62, 0.62, 0.36) :
+        deg < 30.0 ? vec3(0.68, 0.44, 0.26) :
+                     vec3(0.62, 0.26, 0.24);
+      base = mix(base, band, uSlope);
+    }
     vec3 col = base * (0.30 * skyLight + 0.62 * direct) * 1.0;
 
     // Contours: minor thin, index (every 5th) heavier. Faded on steep faces
@@ -291,6 +314,7 @@ function Terrain({
   texture,
   sun,
   viewshedSize,
+  slope,
   viewshed,
   shadow,
   hasObserver,
@@ -301,6 +325,7 @@ function Terrain({
   texture: THREE.Texture
   sun: THREE.Vector3
   viewshedSize: number
+  slope: boolean
   viewshed: Viewshed | null
   shadow: Shadow | null
   hasObserver: boolean
@@ -334,6 +359,7 @@ function Terrain({
       uShadow: { value: null as THREE.Texture | null },
       uHasShadow: { value: 0 },
       uExag: { value: 1 },
+      uSlope: { value: 0 },
       uEdgeFade: { value: 0.1 },
       uSkyTop: { value: SKY_TOP.clone() },
       uSkyHorizon: { value: SKY_HORIZON.clone() },
@@ -385,6 +411,7 @@ function Terrain({
     // asserts the statistics are byte-identical across settings.
     m.uniforms.uElevScale.value = M_TO_WORLD * exaggeration
     m.uniforms.uExag.value = exaggeration
+    m.uniforms.uSlope.value = slope ? 1 : 0
     const sh = shadow ? shadow.texture : null
     m.uniforms.uShadow.value = sh
     m.uniforms.uHasShadow.value = sh ? 1 : 0
@@ -1023,6 +1050,7 @@ function Content({
   targetMode,
   onPickTarget,
   sightBlocked,
+  slope,
 }: {
   site: ReliefSite
   meta: ReliefMeta
@@ -1044,6 +1072,7 @@ function Content({
   targetMode: boolean
   onPickTarget: (u: number, v: number, ground: number) => void
   sightBlocked: boolean
+  slope: boolean
 }) {
   const { size, camera } = useThree()
   const small = size.width < 768
@@ -1103,6 +1132,7 @@ function Content({
         sun={sun}
         texture={heightTex}
         viewshedSize={viewshedSize}
+        slope={slope}
         viewshed={viewshed}
         shadow={shadow}
         hasObserver={observers.length > 0}
@@ -1179,6 +1209,7 @@ export default function Scene({
   targetMode,
   onPickTarget,
   sightBlocked,
+  slope,
 }: {
   site: ReliefSite
   observers: Observer[]
@@ -1197,6 +1228,7 @@ export default function Scene({
   targetMode: boolean
   onPickTarget: (u: number, v: number, ground: number) => void
   sightBlocked: boolean
+  slope: boolean
 }) {
   const controls = useRef<CameraControls | null>(null)
   const [tier, setTier] = useState<Tier | null>(null)
@@ -1328,6 +1360,7 @@ export default function Scene({
           targetMode={targetMode}
           onPickTarget={onPickTarget}
           sightBlocked={sightBlocked}
+          slope={slope}
         />
       )}
     </Canvas>

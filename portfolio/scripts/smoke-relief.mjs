@@ -509,6 +509,68 @@ check(
   allocAfter && baseline ? `${baseline.textures} → ${allocAfter.textures} textures` : 'probe missing',
 )
 
+/**
+ * Shareable state.
+ *
+ * The round trip is the whole point: if a link does not reproduce the view it
+ * was copied from, it is worse than not having one. Change several settings,
+ * take the URL, load it in a clean page, and compare what the page reports.
+ */
+await p.getByRole('button', { name: 'Grand Canyon', exact: true }).click()
+await p.waitForTimeout(6000)
+await p.getByTitle('120 m').click()
+await p.waitForTimeout(2500)
+await p.getByLabel('Shade by slope').check()
+await p.waitForTimeout(600)
+const sharedUrl = await p.evaluate(() => window.location.href)
+const sharedStats = await readStats()
+check(
+  'the hash carries the state',
+  /[?&]site=grand-canyon/.test(sharedUrl) && /[?&]h=120/.test(sharedUrl) && /[?&]s=1/.test(sharedUrl),
+  sharedUrl.split('#')[1] ?? sharedUrl,
+)
+
+const fresh = await browser.newPage({ viewport: { width: 1440, height: 900 } })
+const freshErrors = []
+fresh.on('pageerror', (e) => freshErrors.push(String(e)))
+await fresh.goto(sharedUrl, { waitUntil: 'networkidle' })
+// Poll, do not wait a fixed time. A fresh page re-downloads and re-decodes the
+// raster, and this read landed at 0 km² on a 12 s wait — the same race that
+// made site switching report Badwater as seeing nothing.
+const readFresh = () =>
+  fresh.evaluate(() => {
+    const out = {}
+    for (const l of document.querySelectorAll('.relief-label')) {
+      const n = l.parentElement && l.parentElement.querySelector('.relief-num')
+      if (n) out[l.textContent.trim().toLowerCase()] = n.textContent.trim()
+    }
+    const box = document.querySelector('input[aria-label="Shade by slope"]')
+    return { area: out['visible'] ?? out['covered'], ground: out['elev.'], slope: box ? box.checked : null }
+  })
+let freshProbe = await readFresh()
+for (let i = 0; i < 60 && !(Number(String(freshProbe.area ?? '').replace(/[^0-9.-]/g, '')) > 0); i++) {
+  await fresh.waitForTimeout(500)
+  freshProbe = await readFresh()
+}
+const freshState = await fresh.evaluate(() => {
+  const out = {}
+  for (const l of document.querySelectorAll('.relief-label')) {
+    const n = l.parentElement && l.parentElement.querySelector('.relief-num')
+    if (n) out[l.textContent.trim().toLowerCase()] = n.textContent.trim()
+  }
+  const box = document.querySelector('input[aria-label="Shade by slope"]')
+  return { area: out['visible'] ?? out['covered'], ground: out['elev.'], slope: box ? box.checked : null }
+})
+const freshArea = Number(String(freshState.area ?? '').replace(/[^0-9.-]/g, ''))
+check(
+  'a shared link reproduces the view',
+  Math.abs(freshArea - sharedStats.area) < 0.5 && freshState.slope === true,
+  `${sharedStats.area} km² → ${freshArea} km², slope ${freshState.slope}`,
+)
+check('no page errors on the shared link', freshErrors.length === 0, freshErrors.slice(0, 2).join(' | '))
+await fresh.close()
+await p.getByLabel('Shade by slope').uncheck()
+
 check('no page errors', pageErrors.length === 0, pageErrors.slice(0, 2).join(' | '))
 
 /**
