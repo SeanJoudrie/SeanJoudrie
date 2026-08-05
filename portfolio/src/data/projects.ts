@@ -24,6 +24,11 @@ export type Project = {
   screenshot?: string
   /** Screenshots shown in the case-study drawer gallery. */
   shots?: string[]
+  /**
+   * App icon, square. Optional and rare — only products that actually have one
+   * carry it, so nothing else on the index has to invent a mark to match.
+   */
+  logo?: string
 }
 
 /** URL-safe slug used for deep-linking a project's case study (e.g. #flexyn). */
@@ -177,6 +182,7 @@ export const projects: Project[] = [
       'Deep-linked event pages',
       'One codebase, native + web',
     ],
+    logo: 'shots/eventr-icon.webp',
     screenshot: 'shots/eventr-plate.webp',
     shots: ['shots/eventr-feed.webp', 'shots/eventr-detail.webp'],
     caseStudy: {

@@ -123,13 +123,30 @@ function Plate({
           <StatusChip status={p.status} live={!!p.liveUrl} />
         </div>
 
-        <h3
-          className={`mt-3 font-display text-2xl font-semibold tracking-tight text-ink ${
-            slug(p.name) === 'globalio' ? 'vt-gio-title' : ''
-          }`}
-        >
-          {p.name}
-        </h3>
+        {/* Icon beside the name, the way a store listing does it — present only
+            for products that actually ship one. Decorative: the name is right
+            there, so announcing it twice would only slow a screen reader down. */}
+        <div className="mt-3 flex items-center gap-2.5">
+          {p.logo && (
+            <img
+              src={p.logo}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              width={256}
+              height={256}
+              className="h-8 w-8 shrink-0 rounded-[0.4rem] shadow-sm"
+            />
+          )}
+          <h3
+            className={`font-display text-2xl font-semibold tracking-tight text-ink ${
+              slug(p.name) === 'globalio' ? 'vt-gio-title' : ''
+            }`}
+          >
+            {p.name}
+          </h3>
+        </div>
         <p className="mt-1.5 leading-relaxed text-ink-2">{p.hook}</p>
 
         <div className="mt-auto flex items-center justify-between gap-3 pt-5">
