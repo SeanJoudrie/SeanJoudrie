@@ -162,6 +162,33 @@ export const projects: Project[] = [
     },
   },
   {
+    name: 'Eventr',
+    plate: '09',
+    hook: 'Everything happening near you tonight, sorted by how far you have to walk.',
+    description:
+      'A local events feed built around the only two questions that decide whether you go: is it starting soon, and how far is it. Set your town once and the feed sorts by distance from it — every card carries the time, the walk, the price and how many people are going. Filter to Now, Today or This Weekend, then narrow by radius, price or category. Tap through for the full listing with one-tap RSVP, directions, and add-to-calendar. Expo / React Native, exported to the web from the same codebase as the native app.',
+    role: 'Solo — product, design, build',
+    stack: ['Expo', 'React Native', 'TypeScript', 'Expo Router'],
+    status: 'Beta',
+    liveUrl: 'https://seanjoudrie.github.io/eventr/',
+    facts: [
+      'Distance-sorted feed',
+      'Now / Today / This Weekend',
+      'Deep-linked event pages',
+      'One codebase, native + web',
+    ],
+    screenshot: 'shots/eventr-plate.webp',
+    shots: ['shots/eventr-feed.webp', 'shots/eventr-detail.webp'],
+    caseStudy: {
+      problem:
+        'Finding something to do tonight is a solved problem everywhere except locally. The big platforms optimise for ticketed events in cities, so a town farmers market, a Thursday night run club and a library book sale are invisible — and the things that actually decide whether you go, how soon it starts and how far you have to travel, are buried under images and marketing copy.',
+      built:
+        'A feed with the decision on the front of every card: time, distance, price and attendance, in that order. Location is asked for once and kept on the device, and everything sorts from it. Time filters run Now / Today / This Weekend / All, with facets for radius, price and category on top. Events in progress or about to end are marked in red — "Ends in 1 hr" — and ones close to capacity are flagged rather than left to be discovered on arrival. Each event has its own routed URL, so a listing can be sent to someone. Built in Expo with Expo Router and exported as a static web build, so the same codebase runs as the native app and as the site.',
+      outcome:
+        'A local feed where deciding takes one screen and no reading: live at seanjoudrie.github.io/eventr.',
+    },
+  },
+  {
     name: 'Birdwatch',
     plate: '08',
     hook: 'A seasonal birding deck — twenty-four birds, and a calendar.',
