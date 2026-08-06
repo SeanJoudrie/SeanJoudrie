@@ -289,6 +289,29 @@ const standIns = await page.evaluate(() =>
 if (standIns === 0) ok('no thumbnail ever stands in for a scene')
 else bad(`${standIns} card(s) are showing a stand-in image instead of a scene`)
 
+// Deleting the stand-ins had one obvious way to go wrong: prune one thumbnail
+// too many and a card is simply empty. Six commissions have no 3D scene at all
+// (Aero, Ledger, Palisade, Skein, Bloom, Relief) and their art is the card, not
+// a placeholder for one — so every card must show SOMETHING, a scene or its own
+// artwork. This is the check that would have caught an over-eager delete.
+//
+// All three element types count, and that matters: Relief's card art is a real
+// <img> screenshot rather than a drawing, so a canvas-or-svg test reported it
+// blank when it was fine. Found by mutating a different card's art away and
+// watching the wrong card get named.
+// It must also count the cards, or it is not a check at all: pruning a key out
+// of the THUMBS map throws while rendering and takes the whole shelf with it, and
+// "none of the zero cards is blank" passed cleanly the first time it happened.
+const cards = await page.evaluate(() => document.querySelectorAll('#range article').length)
+const blank = await page.evaluate(() =>
+  [...document.querySelectorAll('#range article')]
+    .filter((a) => !a.querySelector('canvas, svg, img'))
+    .map((a) => (a.querySelector('h3')?.textContent ?? '?').trim()),
+)
+if (cards < 13) bad(`the shelf rendered ${cards} of 13 cards — something threw while rendering`)
+else if (blank.length === 0) ok(`all ${cards} commission cards show a scene or their own artwork`)
+else bad(`${blank.length} card(s) show nothing at all — ${blank.join(', ')}`)
+
 console.log(`[previews] ${results.filter((r) => r.back).length}/${results.length} cards survived the round trip`)
 await browser.close()
 
