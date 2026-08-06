@@ -139,6 +139,11 @@ export type World = {
   wells: Well[]
   winds: Wind[]
   start: { x: number; y: number }
+  /**
+   * Unit tangent of the line under the start flag, oriented toward +x. The rig
+   * is laid along this so it does not nose-plant on its first contact.
+   */
+  startDir: { x: number; y: number }
   /** Level bounds plus GONE_MARGIN, for the off-track test. */
   bounds: { minX: number; minY: number; maxX: number; maxY: number }
 }

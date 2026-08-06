@@ -98,6 +98,36 @@ export function compile(level: Level): World {
 
   const start = { x: level.s[0] * U, y: level.s[1] * U }
 
+  // The start flag adopts the tangent of the nearest collidable line, so the
+  // rig lies along the track instead of being dropped flat onto a slope.
+  let bestD2 = Infinity
+  let dirX = 1
+  let dirY = 0
+  for (const s of segs) {
+    if (!BRUSHES[s.brush].collides) continue
+    const abx = s.bx - s.ax
+    const aby = s.by - s.ay
+    const ab2 = abx * abx + aby * aby
+    if (ab2 < EPS_LEN) continue
+    let t = ((start.x - s.ax) * abx + (start.y - s.ay) * aby) / ab2
+    t = t < 0 ? 0 : t > 1 ? 1 : t
+    const dx = start.x - (s.ax + abx * t)
+    const dy = start.y - (s.ay + aby * t)
+    const d2 = dx * dx + dy * dy
+    if (d2 < bestD2) {
+      bestD2 = d2
+      const inv = 1 / Math.sqrt(ab2)
+      dirX = abx * inv
+      dirY = aby * inv
+    }
+  }
+  // Always face +x, so a line drawn right-to-left does not launch him backwards.
+  if (dirX < 0) {
+    dirX = -dirX
+    dirY = -dirY
+  }
+  const startDir = { x: dirX, y: dirY }
+
   // Bounds over everything placed, so the off-track test has something to
   // measure against even on a level made of one line.
   let minX = start.x
@@ -126,7 +156,7 @@ export function compile(level: Level): World {
     fold(w.bx, w.by)
   }
 
-  return { segs, portals, wells, winds, start, bounds: { minX, minY, maxX, maxY } }
+  return { segs, portals, wells, winds, start, startDir, bounds: { minX, minY, maxX, maxY } }
 }
 
 export function emptyLevel(): Level {

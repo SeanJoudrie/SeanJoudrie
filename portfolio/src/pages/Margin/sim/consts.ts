@@ -25,11 +25,25 @@ export const MAX_TICKS_PER_FRAME = 5
 /** Guard against dividing by a degenerate length. */
 export const EPS_LEN = 1e-9
 
-/** Contact radius of a rig point against a line, px. */
-export const CONTACT_R = 0.5
+/**
+ * Contact radius of a rig point against a line, px.
+ *
+ * Not as thin as it looks like it could be. The swept test catches anything
+ * that *moves* through a line, but the constraint solve and the posture rule
+ * both reposition points without any motion to sweep — and a point nudged to
+ * the far side by more than this radius is then invisible to both tests, so it
+ * sits inside the ground and keeps sinking. The band has to be thicker than
+ * any correction those two can apply in one tick.
+ */
+export const CONTACT_R = 2.0
 
-/** A run ends when the head comes this close to anything solid, px. */
-export const HEAD_CRASH_R = CONTACT_R * 2
+/**
+ * A run ends when the head comes this close to anything solid, px. Held
+ * separately from CONTACT_R rather than derived from it: this one is a
+ * gameplay tolerance, that one is a numerical safety margin, and tuning either
+ * for its own reasons should not silently move the other.
+ */
+export const HEAD_CRASH_R = 2.0
 
 /** Ticks of immunity after a portal transport, so a facing pair can't trap the rig. */
 export const PORTAL_COOLDOWN = 3

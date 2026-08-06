@@ -149,7 +149,7 @@ function fnvF64(h, v) {
 function runChecksum(level, ticks) {
   const world = compile(level)
   const rig = makeRig()
-  spawn(rig, world.start.x, world.start.y)
+  spawn(rig, world)
 
   let h = 0x811c9dc5
   let movedTicks = 0

@@ -10,7 +10,7 @@
  */
 import { AIR, GONE_MARGIN, GRAVITY, ITERATIONS, MAX_RUN_TICKS, MAX_TICKS_PER_FRAME } from './consts.ts'
 import { applyWater, collide, crashed, markWet, WATER_DRAG } from './collide.ts'
-import { N_POINTS, solveConstraints, type Rig } from './rig.ts'
+import { applyPosture, N_POINTS, solveConstraints, type Rig } from './rig.ts'
 import { applyPortals, applyWells, applyWinds } from './stamps.ts'
 import type { World } from './types.ts'
 
@@ -43,6 +43,7 @@ export function step(rig: Rig, world: World): void {
   }
 
   solveConstraints(rig, ITERATIONS)
+  applyPosture(rig)
 
   if (collide(rig, world)) {
     rig.crashed = true
