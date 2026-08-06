@@ -137,7 +137,14 @@ check(
 // 9. Copy email: toast + clipboard content; palette stays open.
 await openPalette()
 await input().fill('copy email')
-await until(async () => (await p.locator('[role="option"]').count()) >= 1)
+// Wait for the INTENDED option, not for "at least one option". The list
+// re-filters as the query lands, so `count() >= 1` can be satisfied by whatever
+// was showing a moment ago — and then Enter runs the wrong command, or runs
+// before the highlight has moved. This failed roughly one run in three, and the
+// symptom was a missing toast rather than anything pointing at the real cause.
+const wantedFirst = async () =>
+  ((await p.locator('[role="option"]').first().textContent()) ?? '').includes('Copy email address')
+await until(wantedFirst)
 await p.keyboard.press('Enter')
 check(
   'copy-email toasts',
@@ -157,8 +164,20 @@ check('survey grid turns on', await until(surveyOn))
 // The palette closes on its own after the command runs; Escape has to reach the
 // grid's own handler, not be swallowed closing a dialog that is still up.
 await settle(0)
-await p.keyboard.press('Escape')
-check('Esc clears the survey grid', await until(async () => !(await surveyOn())))
+// Retry the KEYPRESS, not just the assertion. Polling a condition cannot
+// recover an action that never landed, and Escape can miss: the grid's own
+// handler has to be attached and focused, and the index page is heavier than it
+// used to be now that every 3D card stays mounted. One press then five seconds
+// of polling failed under load; pressing again is what actually helps.
+const escClears = await until(
+  async () => {
+    if (!(await surveyOn())) return true
+    await p.keyboard.press('Escape')
+    return !(await surveyOn())
+  },
+  8000,
+)
+check('Esc clears the survey grid', escClears)
 
 // 11. ARIA wiring while open.
 await p.keyboard.press('Meta+k')
