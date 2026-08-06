@@ -150,42 +150,6 @@ function ReliefThumb() {
   )
 }
 
-/** A miniature of the watch — warm dark, brass ring, ten past ten. */
-function MeridianThumb() {
-  return (
-    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
-      <rect width="280" height="160" rx="10" fill="#0e0d0b" />
-      {/* strap hints */}
-      <path d="M 122 0 L 158 0 L 154 34 L 126 34 Z" fill="#9a6b42" />
-      <path d="M 126 126 L 154 126 L 158 160 L 122 160 Z" fill="#9a6b42" />
-      {/* case + bezel */}
-      <circle cx="140" cy="80" r="52" fill="#171511" stroke="#c9cdd3" strokeWidth="5" />
-      <circle cx="140" cy="80" r="43" fill="#1c2a45" stroke="#c9a55a" strokeWidth="1.5" />
-      {/* indices */}
-      {Array.from({ length: 12 }, (_, i) => {
-        const a = (i / 12) * Math.PI * 2
-        return (
-          <line
-            key={i}
-            x1={140 + Math.sin(a) * 36}
-            y1={80 - Math.cos(a) * 36}
-            x2={140 + Math.sin(a) * 30}
-            y2={80 - Math.cos(a) * 30}
-            stroke="#c9a55a"
-            strokeWidth={i % 3 === 0 ? 3 : 1.5}
-          />
-        )
-      })}
-      {/* hands at ten past ten */}
-      <line x1="140" y1="80" x2="122" y2="62" stroke="#e8e6df" strokeWidth="4" strokeLinecap="round" />
-      <line x1="140" y1="80" x2="158" y2="54" stroke="#e8e6df" strokeWidth="3" strokeLinecap="round" />
-      <circle cx="140" cy="80" r="3.5" fill="#c9a55a" />
-      {/* crown */}
-      <rect x="194" y="74" width="9" height="12" rx="3" fill="#c9cdd3" />
-    </svg>
-  )
-}
-
 /** A miniature of a receipt being read — warm dark, cream slip, a mint check. */
 function LedgerThumb() {
   return (
@@ -312,96 +276,6 @@ function SkeinThumb() {
   )
 }
 
-/** A miniature of the globe — deep space, dotted sphere, a green land-run. */
-function TerraThumb() {
-  // Deterministic particle bands: (band radius, dot count, land indices).
-  const bands: Array<[number, number, number[]]> = [
-    [16, 20, [4, 5, 6, 14]],
-    [34, 28, [8, 9, 10, 11, 22, 23]],
-    [48, 32, [2, 3, 16, 17, 18, 27]],
-  ]
-  return (
-    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
-      <rect width="280" height="160" rx="10" fill="#060a12" />
-      <circle cx="140" cy="80" r="58" fill="none" stroke="#ffffff" strokeOpacity="0.14" strokeWidth="1" strokeDasharray="1 5" />
-      {bands.map(([ry, n, land], b) =>
-        Array.from({ length: n }, (_, i) => {
-          const a = (i / n) * Math.PI * 2
-          const cx = 140 + Math.cos(a) * 58 * Math.cos((ry / 58) * 0.85)
-          const cy = 80 + Math.sin(a) * ry
-          const isLand = land.includes(i)
-          return (
-            <circle
-              key={`${b}-${i}`}
-              cx={cx.toFixed(1)}
-              cy={cy.toFixed(1)}
-              r={isLand ? 2.1 : 1.5}
-              fill={isLand ? '#7fd7a1' : '#3a6fc4'}
-              opacity={isLand ? 0.95 : 0.6}
-            />
-          )
-        }),
-      )}
-      {/* the cursor, mid-disturbance */}
-      <circle cx="185" cy="52" r="9" fill="none" stroke="#c9f3dc" strokeWidth="1.2" strokeDasharray="2 3" opacity="0.8" />
-    </svg>
-  )
-}
-
-/** A miniature of the brain — dotted grey lobes, one deep red cluster. */
-function CortexThumb() {
-  const dots: Array<[number, number, boolean]> = []
-  // deterministic blob of points; a red cluster low-center = a deep structure
-  for (let i = 0; i < 150; i++) {
-    const a = (i * 2.399963) % (Math.PI * 2)
-    const r = 1 - ((i * 0.61803) % 1) * 0.4
-    const x = 140 + Math.cos(a) * 74 * r
-    const y = 80 + Math.sin(a) * 46 * r
-    const deep = Math.hypot(x - 150, y - 92) < 20
-    dots.push([x, y, deep])
-  }
-  return (
-    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
-      <rect width="280" height="160" rx="10" fill="#080a0f" />
-      {dots.map(([x, y, deep], i) => (
-        <circle
-          key={i}
-          cx={x.toFixed(1)}
-          cy={y.toFixed(1)}
-          r={deep ? 2.2 : 1.4}
-          fill={deep ? '#ff4d43' : '#5b8fd6'}
-          opacity={deep ? 0.95 : 0.4}
-        />
-      ))}
-    </svg>
-  )
-}
-
-/** A miniature of the skull — dotted ivory cranium, ember eye, jaw strip. */
-function SkullThumb() {
-  const dots: Array<[number, number]> = []
-  for (let i = 0; i < 130; i++) {
-    const a = (i * 2.399963) % (Math.PI * 2)
-    const r = 1 - ((i * 0.61803) % 1) * 0.38
-    dots.push([140 + Math.cos(a) * 60 * r, 72 + Math.sin(a) * 52 * r])
-  }
-  return (
-    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
-      <rect width="280" height="160" rx="10" fill="#0a0908" />
-      {dots.map(([x, y], i) => (
-        <circle key={i} cx={x.toFixed(1)} cy={y.toFixed(1)} r={1.4} fill="#d8ccb4" opacity={0.45} />
-      ))}
-      <circle cx="120" cy="76" r="11" fill="#0a0908" />
-      <circle cx="160" cy="76" r="11" fill="#0a0908" />
-      <circle cx="120" cy="76" r="4" fill="#ff6a3d" opacity="0.9" />
-      {/* jaw strip, dropped a touch (open) */}
-      {Array.from({ length: 22 }, (_, i) => (
-        <circle key={`j${i}`} cx={108 + i * 2.9} cy={128 + (i % 2) * 2} r={1.5} fill="#ff6a3d" opacity={0.7} />
-      ))}
-    </svg>
-  )
-}
-
 /** A miniature of the voxel rose — red cube bloom on a green cube stem. */
 function BloomThumb() {
   const petals: Array<[number, number, number]> = [
@@ -427,85 +301,12 @@ function BloomThumb() {
   )
 }
 
-/** A miniature — a guitar body, cable, and amp. */
-function RiffThumb() {
-  return (
-    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
-      <rect width="280" height="160" rx="10" fill="#0b0a09" />
-      {/* guitar */}
-      <g transform="rotate(-18 84 90)">
-        <ellipse cx="84" cy="98" rx="30" ry="26" fill="#e0563a" />
-        <ellipse cx="76" cy="90" rx="12" ry="10" fill="#0b0a09" opacity="0.35" />
-        <rect x="79" y="34" width="10" height="52" rx="2" fill="#5a4632" />
-        <rect x="76" y="24" width="16" height="13" rx="2" fill="#3a2d1f" />
-      </g>
-      {/* cable */}
-      <path d="M110 118 Q 150 150 186 110" fill="none" stroke="#2a2724" strokeWidth="3.5" />
-      {/* amp */}
-      <rect x="176" y="70" width="86" height="70" rx="5" fill="#211d1a" stroke="#3a352f" />
-      <rect x="184" y="94" width="70" height="40" rx="3" fill="#0f0d0c" />
-      {[...Array(9)].map((_, i) => (
-        <line key={i} x1={188 + i * 8} y1="96" x2={188 + i * 8} y2="132" stroke="#2b2723" strokeWidth="2" />
-      ))}
-      <circle cx="188" cy="80" r="3" fill="#7a746c" />
-      <circle cx="250" cy="80" r="3.2" fill="#59d98a" />
-    </svg>
-  )
-}
-
-/** A miniature of the spine — a stack of ivory vertebrae with an amber cord. */
-function SpineThumb() {
-  const verts: Array<[number, number, number]> = []
-  for (let i = 0; i < 15; i++) {
-    const t = i / 14
-    verts.push([140 + Math.sin(t * Math.PI * 2 - 0.6) * 14, 18 + t * 128, 12 - t * 3])
-  }
-  return (
-    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
-      <rect width="280" height="160" rx="10" fill="#08090b" />
-      {verts.map(([x, y, w], i) => (
-        <g key={i}>
-          <rect x={x - w} y={y - 3} width={w * 2} height={5} rx={2} fill="none" stroke="#d9d3c3" strokeWidth="1.1" opacity={0.55} />
-          <circle cx={x - w - 5} cy={y} r={1.6} fill="#d9d3c3" opacity={0.5} />
-        </g>
-      ))}
-      {/* amber cord threading through */}
-      <path
-        d={verts.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`).join(' ')}
-        fill="none"
-        stroke="#e8b24c"
-        strokeWidth="3"
-        opacity={0.85}
-      />
-      {/* signal spark */}
-      <circle cx={verts[9][0]} cy={verts[9][1]} r={4} fill="#33d1e6" />
-    </svg>
-  )
-}
-
-/** A miniature of the heart — a dotted heart, red left / blue right, mid-beat. */
-function PulseThumb() {
-  const pts: Array<[number, number, boolean]> = []
-  for (let i = 0; i < 150; i++) {
-    const t = (i / 150) * Math.PI * 2
-    const x = 16 * Math.pow(Math.sin(t), 3)
-    const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)
-    const r = 0.5 + ((i * 0.61803) % 1) * 0.5
-    pts.push([140 + x * r * 2.2, 78 - y * r * 2.2, x < 0])
-  }
-  return (
-    <svg viewBox="0 0 280 160" className="h-full w-full" aria-hidden="true">
-      <rect width="280" height="160" rx="10" fill="#0a0607" />
-      {pts.map(([x, y, blue], i) => (
-        <circle key={i} cx={x.toFixed(1)} cy={y.toFixed(1)} r={1.5} fill={blue ? '#3f74d6' : '#e0463a'} opacity={0.55} />
-      ))}
-      {/* aorta stump + ejection spark */}
-      <circle cx="150" cy="30" r="3.5" fill="#ffd24a" />
-    </svg>
-  )
-}
-
-const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '02': MeridianThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb, '06': TerraThumb, '07': CortexThumb, '08': SkullThumb, '09': BloomThumb, '10': RiffThumb, '11': SpineThumb, '12': PulseThumb, '13': ReliefThumb }
+// Card art for the commissions that have no 3D scene to show. The seven that DO
+// have one render it directly — they used to carry a hand-drawn SVG stand-in and
+// it was deleted, because a schematic sitting where a model belongs reads as a
+// failure to load even when nothing is wrong. These six are not stand-ins for
+// anything: they are the card.
+const THUMBS: Record<string, () => ReactNode> = { '01': AeroThumb, '03': LedgerThumb, '04': PalisadeThumb, '05': SkeinThumb, '09': BloomThumb, '13': ReliefThumb }
 
 // Display order (by original commission number): brain, dashboard, skull, then
 // the coolest of the rest.
@@ -517,7 +318,7 @@ const byN: Record<string, (typeof COMMISSIONS)[number]> = Object.fromEntries(COM
 
 // Cards that show a live, auto-rotating WebGL scene instead of a static SVG
 // (Meridian is handled by its own MeridianLiveThumb below).
-const PREVIEWS: Record<string, (p: { onFail: () => void }) => ReactNode> = {
+const PREVIEWS: Record<string, (p: { onFail: () => void; active: boolean }) => ReactNode> = {
   '07': CortexPreview,
   '08': SkullPreview,
   '06': TerraPreview,
@@ -573,16 +374,14 @@ function MeridianLiveThumb() {
 
   return (
     <div ref={wrap} className="h-full w-full">
-      {near && !failed ? (
-        <Suspense fallback={<MeridianThumb />}>
+      {near && !failed && (
+        <Suspense fallback={null}>
           <MeridianLive
             active={inView}
             onActivate={() => navigate('#/demos/meridian')}
             onFail={() => setFailed(true)}
           />
         </Suspense>
-      ) : (
-        <MeridianThumb />
       )}
     </div>
   )
@@ -704,12 +503,7 @@ export function Range() {
                         className="plate-lift h-40 overflow-hidden rounded-xl border border-line"
                         style={{ background: '#06070b' }}
                       >
-                        <DemoPreview
-                          href={c.href}
-                          label={c.title}
-                          thumb={THUMBS[key]()}
-                          render={(onFail) => <Preview onFail={onFail} />}
-                        />
+                        <DemoPreview href={c.href} label={c.title} render={(p) => <Preview {...p} />} />
                       </div>
                       <button
                         onClick={() => navigate(c.href)}

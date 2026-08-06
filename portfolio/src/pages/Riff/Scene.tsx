@@ -445,9 +445,12 @@ function Rig({ apiRef }: { apiRef?: React.MutableRefObject<SceneApi | null> }) {
 }
 
 export default function Scene({
+  active = true,
   bodyColor, accentColor, tone, plugStage, capo, reduce, spin, apiRef,
   onPluck, onStrum, onAmpClick, onJackClick, onCapoDrag, onReady, onFail,
 }: {
+  /** False while the card is off screen: stop rendering. */
+  active?: boolean
   bodyColor: string; accentColor: string; tone: string; plugStage: PlugStage; capo: number; reduce: boolean
   spin?: boolean
   apiRef?: React.MutableRefObject<SceneApi | null>
@@ -463,6 +466,12 @@ export default function Scene({
   if (failed) return null
   return (
     <Canvas
+      // Paused when the card is off screen. These scenes also run as full-page
+      // demos, where `active` is not passed and defaults to true — but on the
+      // index seven of them are mounted at once, and seven simultaneous render
+      // loops measured the whole page down to 2 fps. 'demand' renders only when
+      // something asks it to, so an off-screen card costs nothing.
+      frameloop={active ? 'always' : 'demand'}
       dpr={[1, 2]}
       camera={{ position: [-0.6, 0.15, 4.8], fov: 40 }}
       gl={{ antialias: true, toneMapping: ACESFilmicToneMapping }}

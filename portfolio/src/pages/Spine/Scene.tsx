@@ -273,6 +273,7 @@ function buildSkeleton(
 }
 
 export default function Scene({
+  active = true,
   selected,
   cordId,
   pulseRef,
@@ -280,6 +281,8 @@ export default function Scene({
   onReady,
   onFail,
 }: {
+  /** False while the card is off screen: stop rendering. */
+  active?: boolean
   selected: number
   cordId: number
   pulseRef: React.MutableRefObject<{ pos: number; auto: boolean }>
@@ -331,6 +334,12 @@ export default function Scene({
 
   return (
     <Canvas
+      // Paused when the card is off screen. These scenes also run as full-page
+      // demos, where `active` is not passed and defaults to true — but on the
+      // index seven of them are mounted at once, and seven simultaneous render
+      // loops measured the whole page down to 2 fps. 'demand' renders only when
+      // something asks it to, so an off-screen card costs nothing.
+      frameloop={active ? 'always' : 'demand'}
       dpr={[1, 2]}
       camera={{ position: [0, 0, 2.7], fov: 42 }}
       gl={{ antialias: true, alpha: true }}

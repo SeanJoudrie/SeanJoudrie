@@ -150,11 +150,14 @@ function Brain({ data, selected }: { data: Loaded; selected: number }) {
 }
 
 export default function Scene({
+  active = true,
   selected,
   deepFlags,
   onReady,
   onFail,
 }: {
+  /** False while the card is off screen: stop rendering. */
+  active?: boolean
   selected: number
   deepFlags: Uint8Array // index = region id, 1 if deep
   onReady: () => void
@@ -196,6 +199,12 @@ export default function Scene({
 
   return (
     <Canvas
+      // Paused when the card is off screen. These scenes also run as full-page
+      // demos, where `active` is not passed and defaults to true — but on the
+      // index seven of them are mounted at once, and seven simultaneous render
+      // loops measured the whole page down to 2 fps. 'demand' renders only when
+      // something asks it to, so an off-screen card costs nothing.
+      frameloop={active ? 'always' : 'demand'}
       dpr={[1, 2]}
       camera={{ position: [0, 0.1, 3.0], fov: 42 }}
       gl={{ antialias: true, alpha: true }}

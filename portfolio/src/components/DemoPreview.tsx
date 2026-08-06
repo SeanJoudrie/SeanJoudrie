@@ -12,85 +12,87 @@ function webglOk(): boolean {
 }
 
 /**
- * A Range card's live 3D slot. Mounts the real (auto-rotating) scene only while
- * the card is near the viewport and UNMOUNTS it once scrolled well past — so at
- * most a couple of heavy WebGL contexts are ever alive at once. Falls back to
- * the static thumbnail on devices without WebGL or after a lost context. A
- * clean click (press + release without a drag) opens the full demo.
+ * A Range card's live 3D slot. The scene mounts as the card approaches and then
+ * STAYS mounted for the life of the page. A clean click (press + release without
+ * a drag) opens the full demo.
+ *
+ * This used to unmount the scene once you scrolled well past, to keep the number
+ * of live WebGL contexts down, and fall back to a hand-drawn SVG thumbnail in
+ * the meantime. Both are gone on purpose. The thumbnails were a stand-in for the
+ * real thing and read as one — a card that shows a schematic where a model was a
+ * moment ago looks broken, whatever the reason. And the churn was self-defeating:
+ * every mount/unmount cycle asked the browser for another context, which is what
+ * pushed the page into its 16-context budget and got live scenes evicted in the
+ * first place. Six cards mounted once and left alone is a steady seven contexts
+ * with Meridian, which is both fewer than the churn peaked at and predictable.
+ *
+ * Keeping them mounted is only affordable because they do not all keep DRAWING.
+ * Seven simultaneous render loops measured the whole page down to 2 fps, so each
+ * scene takes an `active` flag and switches its frameloop to 'demand' when its
+ * card is off screen: geometry and context retained, nothing rendered. Meridian
+ * has always worked this way, which is why it was the one card that never broke.
+ *
+ * There is no fallback element at all now. Before the scene mounts the slot is
+ * simply the card's own dark background, which is what "nothing standing in for
+ * it" means.
  */
 export function DemoPreview({
   href,
   label,
-  thumb,
   render,
 }: {
   href: string
   label: string
-  thumb: ReactNode
-  /** Renders the scene; call onFail on a lost GL context to drop to the thumb. */
-  render: (onFail: () => void) => ReactNode
+  /**
+   * Renders the scene. Call onFail on a lost GL context to remount it; pass
+   * `active` straight through so the scene idles while the card is off screen.
+   */
+  render: (p: { onFail: () => void; active: boolean }) => ReactNode
 }) {
   const wrap = useRef<HTMLDivElement>(null)
-  const [near, setNear] = useState(false)
-  /** Permanent: this device cannot do WebGL at all. Never cleared. */
-  const [failed, setFailed] = useState(false)
-  /** How many times this card's scene has been re-mounted after a lost context. */
+  const [mounted, setMounted] = useState(false)
+  /** Whether the card is actually on screen. Off screen, the scene stops drawing. */
+  const [inView, setInView] = useState(false)
+  /** Remount count after a lost context. Bounded, so a dead GPU cannot churn. */
   const [attempt, setAttempt] = useState(0)
   const down = useRef<{ x: number; y: number } | null>(null)
 
-  // Why `failed` latches at all: a device without WebGL, or one whose driver has
-  // given up, will not do better on the next scroll — retrying forever would
-  // just churn. But it must latch on FAILURES ONLY, and tearing our own scene
-  // down is not one. Releasing a context fires `webglcontextlost` on the way
-  // out, and every scene forwards that to onFail (see Cortex/Scene.tsx and
-  // friends), so an unmount used to permanently mark the card broken: scroll
-  // past a card and it came back as its thumbnail, for the life of the page.
-  //
-  // `wanted` is the discriminator — did we still want this scene when it
-  // reported trouble? It is assigned during render, which is the only point
-  // that is early enough: React renders with near=false, THEN commits the
-  // unmount, THEN the child's cleanup fires the lost-context event. A layout
-  // effect would run too late and a closure over `near` would be stale, because
-  // the handler the scene registered captured the onFail it was mounted with.
-  //
-  // The lost-context event is dispatched as a queued task rather than inline,
-  // which is still early enough: that task drains before the next frame, and an
-  // IntersectionObserver cannot call back more than once per frame — so `near`
-  // cannot have flipped true again by the time the event lands.
-  // A loss that arrives while we DO want the scene is a different thing again,
-  // and it is not permanent either. A browser keeps a budget of live WebGL
-  // contexts (Chrome: 16 per renderer) and evicts the oldest to make room, so
-  // scrolling the shelf hard enough gets a visible card's context taken away
-  // through no fault of its own — measured: four contexts lost in the same
-  // millisecond, and `getContext` never once returned null, which is eviction
-  // rather than exhaustion. Latching there means the card is dead until reload.
-  // So a loss while wanted remounts instead, bounded, and the count resets when
-  // the card leaves the viewport — a fresh visit deserves a fresh budget.
-  const RETRIES = 2
-  const wanted = useRef(false)
-  wanted.current = near
-  const fail = useCallback(() => {
-    if (wanted.current) setAttempt((a) => a + 1)
-  }, [])
+  // A browser keeps a budget of live WebGL contexts (Chrome: 16 per renderer)
+  // and evicts the oldest to make room. Now that nothing unmounts, the page sits
+  // well inside that budget — but an eviction, a driver reset or a backgrounded
+  // tab can still take a context away, and the scene reports it through onFail.
+  // That is recoverable, so remount rather than give up; the bound is there so a
+  // genuinely broken GPU does not spin.
+  const RETRIES = 3
+  const fail = useCallback(() => setAttempt((a) => a + 1), [])
 
   useEffect(() => {
-    if (!webglOk()) {
-      setFailed(true)
-      return
-    }
+    // Nothing to fall back to, so a device without WebGL simply gets an empty
+    // slot rather than a fake picture of one.
+    if (!webglOk()) return
     const el = wrap.current
     if (!el) return
-    const io = new IntersectionObserver(
+    // Load once, well before the card arrives, and stop watching. The margin is
+    // deliberately larger than a viewport so the scene is already drawing by the
+    // time the card is worth looking at.
+    const load = new IntersectionObserver(
       ([e]) => {
-        setNear(e.isIntersecting)
-        // Leaving the viewport clears the retry count: whatever pressure took
-        // the context away is not a fact about this card.
-        if (!e.isIntersecting) setAttempt(0)
+        if (!e.isIntersecting) return
+        setMounted(true)
+        load.disconnect()
       },
-      { rootMargin: '350px' },
+      { rootMargin: '600px' },
     )
-    io.observe(el)
-    return () => io.disconnect()
+    // A second, tighter observer drives whether the scene draws. Seven mounted
+    // scenes all rendering at once measured the whole page down to 2 fps, so
+    // this is not a nicety — it is what makes keeping them mounted affordable.
+    const view = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.1 })
+    load.observe(el)
+    view.observe(el)
+    return () => {
+      load.disconnect()
+      view.disconnect()
+    }
   }, [])
 
   return (
@@ -108,14 +110,12 @@ export function DemoPreview({
         if (d && Math.hypot(e.clientX - d.x, e.clientY - d.y) < 8) navigate(href)
       }}
     >
-      {near && !failed && attempt <= RETRIES ? (
+      {mounted && attempt <= RETRIES && (
         // Keyed on the attempt so a lost context gets a genuinely fresh scene
         // rather than a re-render of the dead one.
-        <Suspense fallback={thumb} key={attempt}>
-          {render(fail)}
+        <Suspense fallback={null} key={attempt}>
+          {render({ onFail: fail, active: inView })}
         </Suspense>
-      ) : (
-        thumb
       )}
     </div>
   )

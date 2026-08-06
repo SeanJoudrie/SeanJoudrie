@@ -228,9 +228,12 @@ function Globe({ mask, reduced }: { mask: MaskSampler; reduced: boolean }) {
 }
 
 export default function Scene({
+  active = true,
   onFail,
   onReady,
 }: {
+  /** False while the card is off screen: stop rendering. */
+  active?: boolean
   onFail: () => void
   onReady: () => void
 }) {
@@ -260,6 +263,12 @@ export default function Scene({
 
   return (
     <Canvas
+      // Paused when the card is off screen. These scenes also run as full-page
+      // demos, where `active` is not passed and defaults to true — but on the
+      // index seven of them are mounted at once, and seven simultaneous render
+      // loops measured the whole page down to 2 fps. 'demand' renders only when
+      // something asks it to, so an off-screen card costs nothing.
+      frameloop={active ? 'always' : 'demand'}
       dpr={[1, 2]}
       camera={{ position: [0, 0.35, 3.4], fov: 40 }}
       gl={{ antialias: true, alpha: true }}
