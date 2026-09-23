@@ -22,6 +22,20 @@ const decode = (s) =>
     .replace(/&gt;/g, '>')
     .replace(/&amp;/g, '&')
 
+/**
+ * The site shows no emoji or em dashes (docs/UX_AUDIT.md), so titles and
+ * names from YouTube are cleaned to match: "Fall Baking 🍁 — Part 1" →
+ * "Fall Baking - Part 1".
+ */
+export const tidy = (s) =>
+  s
+    .replace(/[\p{Extended_Pictographic}\u{1F1E6}-\u{1F1FF}\u{FE0F}\u{200D}\u{20E3}]/gu, '')
+    .replace(/[—―]/g, '-')
+    .replace(/\s+/g, ' ')
+    .replace(/\s+([,.!?:;)])/g, '$1')
+    .replace(/(\s*[-|]\s*)+$/g, '')
+    .trim()
+
 const DAY = 86_400_000
 const MAX_AGE_DAYS = 730
 const PER_CHANNEL = 5
@@ -38,11 +52,11 @@ export function parseFeed(xml, now = Date.now()) {
   const videos = []
   const rates = []
   let recent = 0
-  const title = decode(xml.match(/<title>([^<]*)<\/title>/)?.[1] ?? '')
+  const title = tidy(decode(xml.match(/<title>([^<]*)<\/title>/)?.[1] ?? ''))
   for (const e of xml.split('<entry>').slice(1)) {
     const id = e.match(/<yt:videoId>([\w-]{11})<\/yt:videoId>/)?.[1]
     const link = e.match(/<link rel="alternate" href="([^"]+)"/)?.[1] ?? ''
-    const name = decode(e.match(/<title>([^<]*)<\/title>/)?.[1] ?? '')
+    const name = tidy(decode(e.match(/<title>([^<]*)<\/title>/)?.[1] ?? ''))
     const published = e.match(/<published>([^<]+)<\/published>/)?.[1] ?? ''
     const views = Number(e.match(/<media:statistics views="(\d+)"/)?.[1] ?? '0')
     if (!id || !name || link.includes('/shorts/') || /#shorts?\b/i.test(name) || views === 0) continue

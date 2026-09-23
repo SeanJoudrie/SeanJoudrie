@@ -24,8 +24,9 @@ const read = (p, fallback) => (existsSync(join(root, p)) ? JSON.parse(readFileSy
 const taxonomy = read('src/data/taxonomy.json')
 const candidates = read('docs/ux/channels.candidates.json')
 const confirmed = read('src/data/channels.json', {})
-const outPath = join(root, 'docs/ux/channels.discovered.json')
-const out = read('docs/ux/channels.discovered.json', {})
+// WORK_DIR lets a long run keep its progress outside the repo until it's done.
+const outPath = join(process.env.WORK_DIR ?? join(root, 'docs/ux'), 'channels.discovered.json')
+const out = existsSync(outPath) ? JSON.parse(readFileSync(outPath, 'utf8')) : {}
 
 const MIN_SUBS = 100_000
 const PER_TOPIC = 6
