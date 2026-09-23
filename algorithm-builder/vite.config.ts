@@ -33,6 +33,6 @@ export default defineConfig(({ mode }) => {
     // under a sub-path (GitHub Pages: /SeanJoudrie/algorithm-builder/).
     base: './',
     plugins: [react(), tailwindcss(), devApi(env.YOUTUBE_API_KEY || process.env.YOUTUBE_API_KEY, env.YOUTUBE_API_URL || process.env.YOUTUBE_API_URL)],
-    test: { include: ['src/**/*.test.ts', 'server/**/*.test.ts'] },
+    test: { include: ['src/**/*.test.ts', 'server/**/*.test.ts', 'scripts/**/*.test.mjs'] },
   }
 })

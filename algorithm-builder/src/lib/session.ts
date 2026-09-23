@@ -107,6 +107,7 @@ export function newSession(platform: Platform = 'youtube'): Session {
     mix: initialMix([]),
     baseline: null,
     followUp: null,
+    hidden: [],
   }
 }
 
@@ -125,6 +126,7 @@ type Packed = {
   c: [string, string, number, 0 | 1, [string, string, number, 0 | 1, string?][]][]
   t0?: [string, number, number, number]
   t1?: [string, number, number, number]
+  h?: string[]
 }
 
 const packTally = (t: Tally | null) => (t ? ([t.date, t.wanted, t.sickOf, t.other] as [string, number, number, number]) : undefined)
@@ -153,6 +155,7 @@ export function encodeRecipe(s: Session): string {
     ]),
     t0: packTally(s.baseline),
     t1: packTally(s.followUp),
+    h: s.hidden.length ? s.hidden.slice(-MAX_HIDDEN) : undefined,
   }
   const bytes = new TextEncoder().encode(JSON.stringify(packed))
   let bin = ''
@@ -161,6 +164,9 @@ export function encodeRecipe(s: Session): string {
 }
 
 const PLATFORMS: Platform[] = ['youtube', 'instagram', 'tiktok', 'x']
+const CHANNEL_ID = /^UC[\w-]{22}$/
+/** Enough to remember every "not for me" someone is likely to tap, and keep the link short. */
+export const MAX_HIDDEN = 30
 const PROBLEM_IDS: ProblemId[] = ['one-topic', 'too-new', 'rage-bait', 'no-discovery', 'stale']
 
 function num(x: unknown, max: number): number {
@@ -207,6 +213,7 @@ export function decodeRecipe(code: string): Session | null {
       },
       baseline: unpackTally(p.t0),
       followUp: unpackTally(p.t1),
+      hidden: Array.isArray(p.h) ? p.h.filter((x) => typeof x === 'string' && CHANNEL_ID.test(x)).slice(-MAX_HIDDEN) : [],
     }
   } catch {
     return null

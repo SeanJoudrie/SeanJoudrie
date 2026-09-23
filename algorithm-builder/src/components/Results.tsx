@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { COPY, summarize } from '../copy'
 import { BRAND } from '../data/brand'
-import { poolFor } from '../data/library'
+import { channelsFor, feedFor, poolFor, recommend, topicById, type Feed } from '../data/library'
 import { PLATFORMS, SIGNALS, tipsFor } from '../data/playbooks'
 import { WILDCARD_ID } from '../data/topics'
 import { buildChecklist, type CheckItem } from '../lib/checklist'
@@ -10,7 +10,7 @@ import { allocate, filterVideos, platformSearchUrl, playAllUrl, searchUrl, searc
 import { pctFromTally, recipeUrl, tallyFromPct } from '../lib/session'
 import type { Session, Tally, Video } from '../lib/types'
 import { EstimateOptions } from './Flow'
-import { ExternalIcon, PlayIcon } from './icons'
+import { CloseIcon, ExternalIcon, PlayIcon } from './icons'
 import { Mascot } from './Mascot'
 import { categoryColor, displayLabel } from './MixChart'
 import { Button, buttonClass, Card } from './ui'
@@ -32,12 +32,14 @@ export function Results({
   onAdjust,
   onReset,
   onFollowUp,
+  onHide,
 }: {
   s: Session
   returning: boolean
   onAdjust: () => void
   onReset: () => void
   onFollowUp: (t: Tally) => void
+  onHide: (hidden: string[]) => void
 }) {
   const platform = PLATFORMS.find((p) => p.id === s.platform)!
   const [showMore, setShowMore] = useState(false)
@@ -59,6 +61,8 @@ export function Results({
       <Steps s={s} showMore={showMore} setShowMore={setShowMore} />
 
       {s.platform === 'youtube' ? <Watch s={s} /> : <SearchTerms s={s} />}
+
+      {s.platform === 'youtube' && <Recommend s={s} onHide={onHide} />}
 
       <FeedSummary s={s} onAdjust={onAdjust} />
 
@@ -211,7 +215,25 @@ function Tips({ s }: { s: Session }) {
 
 /* ---------- Videos: hand-picked first, then YouTube, then search links (F-15, G-07) ---------- */
 
-type Picked = { video: Video; slot: Slot; source: 'pool' | 'api' }
+type Picked = { video: Video; slot: Slot; source: 'pool' | 'channel' | 'api' }
+
+const thumbOf = (id: string) => `https://i.ytimg.com/vi/${id}/mqdefault.jpg`
+
+// Recent uploads from good channels: a separate file, loaded once, only here.
+let feedLoad: Promise<Feed | null> | null = null
+const loadFeed = () => (feedLoad ??= import('../data/feed.json').then((m) => m.default as Feed).catch(() => null))
+
+function useFeed(): Feed | null | undefined {
+  const [feed, setFeed] = useState<Feed | null | undefined>(undefined)
+  useEffect(() => {
+    let live = true
+    loadFeed().then((f) => live && setFeed(f))
+    return () => {
+      live = false
+    }
+  }, [])
+  return feed
+}
 
 function Watch({ s }: { s: Session }) {
   // Same "Surprise me" pick all day, so it can be cached.
@@ -230,7 +252,7 @@ function Watch({ s }: { s: Session }) {
       const topic = slot.key.split('/')[0]
       const fromPool = topic === WILDCARD_ID ? [] : poolFor(topic, s.mix.before)
       const fresh = filterVideos(
-        fromPool.filter((v) => !channels.has(v.channel)).map((v) => ({ id: v.id, title: v.title, channel: v.channel, published: v.year ? `${v.year}` : '', thumb: `https://i.ytimg.com/vi/${v.id}/mqdefault.jpg` })),
+        fromPool.filter((v) => !channels.has(v.channel)).map((v) => ({ id: v.id, title: v.title, channel: v.channel, published: v.year ? `${v.year}` : '', thumb: thumbOf(v.id) })),
         s.turnDown,
         seen,
         slot.count,
@@ -243,8 +265,37 @@ function Watch({ s }: { s: Session }) {
     }
     setState({ picked, missing: [], busy: false, loading: need.length > 0 })
     if (!need.length) return
-    // 2. Top up from YouTube search; 3. anything still missing becomes a search link.
     ;(async () => {
+      // 2. New uploads from good channels for the topic (no quota either).
+      //    They're all recent, so skip them when older videos were asked for.
+      const feed = s.mix.before ? null : await loadFeed()
+      if (ctl.signal.aborted) return
+      if (feed)
+        for (const n of need) {
+          const topic = n.slot.key.split('/')[0]
+          if (topic === WILDCARD_ID || !channelsFor(topic).length) continue
+          // Checked against a copy: only the videos actually picked count as seen.
+          const vids = filterVideos(
+            feedFor(topic, feed, s.hidden)
+              .filter((v) => !channels.has(v.channel))
+              .map((v) => ({ ...v, thumb: thumbOf(v.id) })),
+            s.turnDown,
+            new Set(seen),
+          )
+          // One video per channel.
+          for (const v of vids) {
+            if (n.count === 0) break
+            if (channels.has(v.channel)) continue
+            channels.add(v.channel)
+            seen.add(v.id)
+            picked.push({ video: v, slot: n.slot, source: 'channel' })
+            n.count--
+          }
+        }
+      const still = need.filter((n) => n.count > 0)
+      if (!still.length) return setState({ picked: [...picked], missing: [], busy: false, loading: false })
+      // 3. Top up from YouTube search; 4. anything still missing becomes a search link.
+      need.splice(0, need.length, ...still)
       const results = await Promise.all(need.map((n) => searchVideos(n.slot.query, s.mix.before, ctl.signal).catch(() => null)))
       if (ctl.signal.aborted) return
       const missing: Slot[] = []
@@ -262,7 +313,7 @@ function Watch({ s }: { s: Session }) {
       setState({ picked: [...picked], missing, busy, loading: false })
     })()
     return () => ctl.abort()
-  }, [slots, s.mix.before, s.turnDown])
+  }, [slots, s.mix.before, s.turnDown, s.hidden])
 
   const { picked, missing, busy, loading } = state
   return (
@@ -289,7 +340,8 @@ function Watch({ s }: { s: Session }) {
                     {v.published ? ` · ${v.published.slice(0, 4)}` : ''}
                   </span>
                   <span className="mt-1 inline-block rounded-full bg-paper-2 px-2 text-base text-ink-2">
-                    {source === 'pool' ? r.handPicked : r.fromYouTube} · {slot.label}
+                    {/* Channel videos match the topic, not a sub-topic. */}
+                    {source === 'pool' ? r.handPicked : source === 'channel' ? r.goodChannel : r.fromYouTube} · {source === 'channel' ? slot.category : slot.label}
                   </span>
                 </span>
               </a>
@@ -341,6 +393,99 @@ function Watch({ s }: { s: Session }) {
       )}
 
       <p className="m-0 mt-4 text-base text-ink-2">{r.creditYouTube}</p>
+    </Card>
+  )
+}
+
+/* ---------- Channels we recommend: 5 at a time, "not for me", show others ---------- */
+
+const PAGE = 5
+
+function Recommend({ s, onHide }: { s: Session; onHide: (hidden: string[]) => void }) {
+  const feed = useFeed()
+  const [start, setStart] = useState(0)
+  const [undo, setUndo] = useState<{ id: string; name: string } | null>(null)
+  const topics = s.mix.categories.map((c) => c.id)
+  const all = useMemo(() => (feed === undefined ? [] : recommend(topics, s.turnDown, s.hidden, feed)), [feed, topics.join(), s.turnDown, s.hidden])
+  if (feed === undefined) return null
+  const hiddenHere = s.hidden.filter((id) => topics.some((t) => channelsFor(t).some((c) => c.id === id)))
+  if (!all.length && !hiddenHere.length) return null
+
+  const from = all.length ? start % all.length : 0
+  const shown = [...all.slice(from, from + PAGE), ...all.slice(0, Math.max(0, from + PAGE - all.length))].slice(0, Math.min(PAGE, all.length))
+  const hide = (id: string, name: string) => {
+    onHide([...s.hidden.filter((x) => x !== id), id])
+    setUndo({ id, name })
+  }
+
+  return (
+    <Card>
+      <section aria-labelledby="recommend">
+        <h2 id="recommend" className="font-display m-0 text-xl font-bold">
+          {r.recTitle}
+        </h2>
+        <p className="m-0 mt-1 text-base text-ink-2">{r.recLead}</p>
+
+        {shown.length > 0 && (
+          <ul className="m-0 mt-4 grid list-none gap-3 p-0 sm:grid-cols-2">
+            {shown.map(({ channel: c, topic, popular, latest }) => (
+              <li key={c.id} className="flex min-w-0 items-start gap-2 rounded-xl border border-line p-3">
+                <a href={`https://www.youtube.com/channel/${c.id}`} target="_blank" rel="noopener noreferrer" className="min-h-12 min-w-0 flex-1 rounded-lg">
+                  <span className="flex items-center gap-2 text-base font-semibold text-ink">
+                    <span className="truncate">{c.name}</span> <ExternalIcon className="shrink-0 text-accent-ink" />
+                  </span>
+                  <span className="mt-1 flex flex-wrap items-center gap-2 text-base text-ink-2">
+                    {topicById(topic)?.label ?? topic}
+                    {popular && <span className="rounded-full bg-accent-soft px-2 font-semibold text-ink">{r.popular}</span>}
+                  </span>
+                  {latest && <span className="mt-1 line-clamp-2 block text-base text-ink-2">{r.latest(latest)}</span>}
+                </a>
+                <button
+                  onClick={() => hide(c.id, c.name)}
+                  aria-label={r.notForMe(c.name)}
+                  title={r.notForMe(c.name)}
+                  className="inline-flex min-h-12 min-w-12 shrink-0 items-center justify-center rounded-full text-ink-2 transition hover:bg-paper-2 hover:text-ink"
+                >
+                  <CloseIcon />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <p className="m-0 mt-3 text-base text-ink-2" aria-live="polite">
+          {undo && (
+            <>
+              {r.hidden(undo.name)}{' '}
+              <button
+                onClick={() => {
+                  onHide(s.hidden.filter((x) => x !== undo.id))
+                  setUndo(null)
+                }}
+                className="min-h-12 font-semibold text-accent-ink underline underline-offset-4"
+              >
+                {r.undo}
+              </button>
+            </>
+          )}
+        </p>
+
+        <div className="mt-2 flex flex-wrap gap-3">
+          {all.length > PAGE && (
+            <Button variant="secondary" onClick={() => setStart(from + PAGE)}>
+              {r.showOthers}
+            </Button>
+          )}
+          {!all.length && (
+            <>
+              <p className="m-0 w-full text-base text-ink-2">{r.noneLeft}</p>
+              <Button variant="secondary" onClick={() => onHide(s.hidden.filter((id) => !hiddenHere.includes(id)))}>
+                {r.showHidden}
+              </Button>
+            </>
+          )}
+        </div>
+      </section>
     </Card>
   )
 }

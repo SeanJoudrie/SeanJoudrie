@@ -151,3 +151,24 @@ describe('homepage estimate', () => {
     expect(pctFromTally({ date: '2026-09-01', wanted: 3, sickOf: 14, other: 3 })).toBe(70)
   })
 })
+
+describe('hidden channels', () => {
+  it('survive the personal link, and junk in a link is ignored', () => {
+    const id = 'UCsXVk37bltHxD1rDPwtNM8Q'
+    const s = { ...newSession('youtube'), hidden: [id] }
+    expect(decodeRecipe(encodeRecipe(s))?.hidden).toEqual([id])
+    // Links made before this change have no hidden list.
+    expect(decodeRecipe(encodeRecipe(newSession('youtube')))?.hidden).toEqual([])
+    const packed = JSON.parse(atob(encodeRecipe(s).replace(/-/g, '+').replace(/_/g, '/') + '=='.slice(0, (4 - (encodeRecipe(s).length % 4)) % 4)))
+    packed.h = [id, '<script>', 'UCshort', 42]
+    const code = btoa(JSON.stringify(packed)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+    expect(decodeRecipe(code)?.hidden).toEqual([id])
+  })
+
+  it('keeps only the most recent 30', () => {
+    const many = Array.from({ length: 40 }, (_, i) => `UC${String(i).padStart(22, 'a')}`)
+    const out = decodeRecipe(encodeRecipe({ ...newSession('youtube'), hidden: many }))?.hidden
+    expect(out).toHaveLength(30)
+    expect(out?.at(-1)).toBe(many.at(-1))
+  })
+})

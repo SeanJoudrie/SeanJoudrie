@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { norm, score } from '../lib/search'
-import { CULPRIT_LIST, findCulprit, GROUPS, inferProblems, POOL, poolFor, searchCulprits, searchLessOf, searchTopics, suggestFor, TOPIC_LIST, topicById } from './library'
+import { channelsFor, CULPRIT_LIST, feedFor, findCulprit, isHandPickedOnly, recommend, withoutChannel, GROUPS, inferProblems, POOL, poolFor, searchCulprits, searchLessOf, searchTopics, suggestFor, TOPIC_LIST, topicById } from './library'
 
 describe('taxonomy integrity', () => {
   it('has 200+ topics in 15-20 groups with unique ids', () => {
@@ -141,6 +141,66 @@ describe('search', () => {
     expect(norm('  Pokémon: Red!  ')).toBe('pokemon red')
     expect(score('xyz', ['Gardening'])).toBe(0)
     expect(score('garden', ['Gardening'])).toBe(80)
+  })
+})
+
+describe('good channels', () => {
+  it('only lists confirmed channel ids for real topics', () => {
+    for (const t of TOPIC_LIST) for (const c of channelsFor(t.id)) expect(c.id, `${t.id}: ${c.name}`).toMatch(/^UC[A-Za-z0-9_-]{22}$/)
+    expect(TOPIC_LIST.filter((t) => channelsFor(t.id).length > 0).length).toBeGreaterThanOrEqual(150)
+  })
+
+  it('takes turns between channels for videos', () => {
+    const topic = TOPIC_LIST.find((t) => channelsFor(t.id).length >= 2)!
+    const [c1, c2] = channelsFor(topic.id)
+    const v = (id: string) => ({ id, title: id, published: '2026-09-01' })
+    const feed = { fetched: '2026-09-23', channels: { [c1.id]: { name: 'One', videos: [v('1a'), v('1b')] }, [c2.id]: { name: 'Two', videos: [v('2a')] } } }
+    expect(feedFor(topic.id, feed).map((x) => x.id)).toEqual(['1a', '2a', '1b'])
+    expect(feedFor(topic.id, feed)[1].channel).toBe('Two')
+  })
+
+  it('recommends across topics, leaving out hidden ones and what they are sick of', () => {
+    const list = recommend(['space', 'baking'], [], [], null)
+    expect(list.length).toBeGreaterThan(3)
+    expect(new Set(list.map((r) => r.channel.id)).size).toBe(list.length)
+    // Takes turns: the first two are one from each topic.
+    expect(list.slice(0, 2).map((r) => r.topic)).toEqual(['space', 'baking'])
+    const first = channelsFor('space')[0]
+    expect(recommend(['space'], [], [first.id], null).some((r) => r.channel.id === first.id)).toBe(false)
+    expect(recommend(['space'], [first.name], [], null).some((r) => r.channel.id === first.id)).toBe(false)
+  })
+
+  it('ranks by how channels are doing now, and badges only a clear leader', () => {
+    const [a, b, c] = channelsFor('space')
+    const stats = (perDay: number, recent: number) => ({ name: 'x', videos: [{ id: 'v', title: 'Latest one', published: '2026-09-01' }], perDay, recent })
+    const feed = { fetched: '2026-09-23', channels: { [a.id]: stats(1000, 3), [b.id]: stats(9000, 3), [c.id]: stats(2000, 3) } }
+    const list = recommend(['space'], [], [], feed)
+    expect(list[0].channel.id).toBe(b.id)
+    expect(list[0].popular).toBe(true)
+    expect(list[0].latest).toBe('Latest one')
+    expect(list.filter((r) => r.popular)).toHaveLength(1)
+    // Not a clear leader (under twice the middle): no badge.
+    const close = { ...feed, channels: { ...feed.channels, [b.id]: stats(2500, 3) } }
+    expect(recommend(['space'], [], [], close).some((r) => r.popular)).toBe(false)
+  })
+
+  it('drops the channel name from the end of a title', () => {
+    expect(withoutChannel("Earth's Greatest Migrations | BBC Earth", 'BBC Earth')).toBe("Earth's Greatest Migrations")
+    expect(withoutChannel('Big Cats - DW Documentary', 'DW Documentary')).toBe('Big Cats')
+    expect(withoutChannel('BBC Earth', 'BBC Earth')).toBe('BBC Earth')
+    expect(withoutChannel('Why (a+b) works | 3Blue1Brown', '3Blue1Brown')).toBe('Why (a+b) works')
+  })
+
+  it('keeps politics, news, religion, kids and health hand-picked', () => {
+    for (const t of ['politics-explained', 'news-explained', 'faith-spirituality', 'nursery-sing-alongs', 'medicine']) expect(isHandPickedOnly(t), t).toBe(true)
+    expect(isHandPickedOnly('space')).toBe(false)
+    const list = channelsFor('news-explained')
+    if (list.length >= 2) {
+      const feed = { fetched: '2026-09-23', channels: Object.fromEntries(list.map((c, i) => [c.id, { name: c.name, videos: [], perDay: (i + 1) * 10_000, recent: 5 }])) }
+      const rec = recommend(['news-explained'], [], [], feed)
+      expect(rec.map((r) => r.channel.id)).toEqual(list.map((c) => c.id))
+      expect(rec.some((r) => r.popular)).toBe(false)
+    }
   })
 })
 

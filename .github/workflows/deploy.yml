@@ -8,6 +8,9 @@ on:
       - 'algorithm-builder/**'
       - '.github/workflows/deploy.yml'
   workflow_dispatch:
+  # Weekly rebuild so Algorithm Builder's "good channel" videos stay fresh.
+  schedule:
+    - cron: '17 6 * * 1'
 
 permissions:
   contents: read
@@ -48,6 +51,10 @@ jobs:
           VITE_SEARCH_API: 'off'
         run: |
           npm ci
+          # Latest uploads from its good channels (public feeds, no key).
+          # Never fails the build: a channel that can't be read keeps its
+          # last saved videos.
+          node scripts/feeds.mjs || echo "Feed refresh skipped; using saved videos."
           npm test
           npm run build
       - run: cp -r ../algorithm-builder/dist dist/algorithm-builder
