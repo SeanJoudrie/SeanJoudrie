@@ -290,6 +290,27 @@ function useVideos(s: Session, slots: Slot[]): Videos {
             n.count--
           }
         }
+      // Second pass for big topics: a channel's spare video, before falling back to search.
+      if (feed)
+        for (const n of need) {
+          const [topic, part] = n.slot.key.split('/')
+          if (n.count === 0 || topic === WILDCARD_ID || part?.startsWith('pick-')) continue
+          const perChannel = new Map<string, number>()
+          picked.forEach((p) => perChannel.set(p.video.channel, (perChannel.get(p.video.channel) ?? 0) + 1))
+          const spare = filterVideos(
+            feedFor(topic, feed, s.hidden).map((v) => ({ ...v, thumb: thumbOf(v.id) })),
+            s.turnDown,
+            new Set(seen),
+          )
+          for (const v of spare) {
+            if (n.count === 0) break
+            if ((perChannel.get(v.channel) ?? 0) >= 2) continue
+            perChannel.set(v.channel, (perChannel.get(v.channel) ?? 0) + 1)
+            seen.add(v.id)
+            picked.push({ video: v, slot: n.slot, source: 'channel' })
+            n.count--
+          }
+        }
       const still = need.filter((n) => n.count > 0)
       if (!still.length) return setState({ picked: [...picked], missing: [], busy: false, loading: false })
       // 3. Top up from YouTube search; 4. anything still missing becomes a search link.
@@ -461,9 +482,11 @@ function Shelf({
                     href={searchUrl(slot.query, s.mix.before)}
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-count={slot.count}
                     className="flex h-full min-h-28 flex-col justify-between gap-2 rounded-xl border-2 border-dashed border-line bg-card p-4 transition hover:border-ink"
                   >
                     <span className="block text-base font-semibold text-ink">{slot.label}</span>
+                    {slot.count > 1 && <span className="block text-base text-ink-2">{r.pickFromSearch(slot.count)}</span>}
                     <span className="flex items-center justify-between gap-2 text-base text-ink-2">
                       {r.searchFor(slot.query)} <ExternalIcon className="shrink-0 text-accent-ink" />
                     </span>

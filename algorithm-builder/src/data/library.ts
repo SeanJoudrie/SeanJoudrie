@@ -193,7 +193,9 @@ export function recommend(topicIds: string[], turnDown: string[], hidden: string
   const bad = turnDown.map(norm).filter(Boolean)
   const lists = topicIds.map((topic) => {
     const stat = (c: Channel) => feed?.channels[c.id]?.perDay ?? 0
-    let list = channelsFor(topic).filter((c) => !hidden.includes(c.id) && !bad.some((b) => norm(c.name).includes(b)))
+    // Leave out a channel whose name or latest video is about what they're sick of.
+    const sick = (c: Channel) => bad.some((b) => norm(c.name).includes(b) || norm(feed?.channels[c.id]?.videos[0]?.title ?? '').includes(b))
+    let list = channelsFor(topic).filter((c) => !hidden.includes(c.id) && !sick(c))
     const ranked = feed && !isHandPickedOnly(topic)
     if (ranked) list = [...list].sort((a, b) => stat(b) - stat(a))
     // The leader is popular if it's active and at least twice the topic's middle channel.
