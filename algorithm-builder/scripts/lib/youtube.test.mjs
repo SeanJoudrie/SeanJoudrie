@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseFeed } from './youtube.mjs'
+import { parseFeed, tidy } from './youtube.mjs'
 
 const entry = (id, { link = `https://www.youtube.com/watch?v=${id}`, title = 'A video', published = '2026-09-01T00:00:00+00:00', views = 10 } = {}) =>
   `<entry><yt:videoId>${id}</yt:videoId><title>${title}</title><link rel="alternate" href="${link}"/><published>${published}</published><media:statistics views="${views}"/></entry>`
@@ -38,5 +38,15 @@ describe('channel feed parsing', () => {
     ].join('')
     expect(parseFeed(xml, now).stats).toEqual({ perDay: 2000, recent: 2 })
     expect(parseFeed('', now).stats).toEqual({ perDay: 0, recent: 0 })
+  })
+})
+
+describe('tidy titles', () => {
+  it('drops emoji and em dashes to match the site', () => {
+    expect(tidy('Fall Baking 🍁 — Part 1')).toBe('Fall Baking - Part 1')
+    expect(tidy('Coffee ☕️ time!')).toBe('Coffee time!')
+    expect(tidy('Books 📖 |')).toBe('Books')
+    expect(tidy('🇯🇵 Tokyo walk')).toBe('Tokyo walk')
+    expect(tidy('Kurzgesagt – In a Nutshell')).toBe('Kurzgesagt – In a Nutshell')
   })
 })

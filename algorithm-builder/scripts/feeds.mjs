@@ -14,7 +14,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { fetchFeed, parseFeed } from './lib/youtube.mjs'
+import { fetchFeed, parseFeed, tidy } from './lib/youtube.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const outPath = join(root, 'src/data/feed.json')
@@ -41,7 +41,7 @@ await Promise.all(
       const xml = await fetchFeed(id)
       const feed = xml ? parseFeed(xml) : null
       if (feed?.videos.length) {
-        result[id] = { name, videos: feed.videos, perDay: feed.stats.perDay, recent: feed.stats.recent }
+        result[id] = { name: tidy(name), videos: feed.videos, perDay: feed.stats.perDay, recent: feed.stats.recent }
         fresh++
       } else if (old.channels[id]) {
         result[id] = old.channels[id]

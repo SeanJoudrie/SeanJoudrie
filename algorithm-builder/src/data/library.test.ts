@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { norm, score } from '../lib/search'
-import { channelsFor, CULPRIT_LIST, feedFor, findCulprit, isHandPickedOnly, recommend, withoutChannel, GROUPS, inferProblems, POOL, poolFor, searchCulprits, searchLessOf, searchTopics, suggestFor, TOPIC_LIST, topicById } from './library'
+import { channelsFor, CULPRIT_LIST, feedFor, findCulprit, isHandPickedOnly, recommend, withoutChannel, type Feed, GROUPS, inferProblems, POOL, poolFor, searchCulprits, searchLessOf, searchTopics, suggestFor, TOPIC_LIST, topicById } from './library'
 
 describe('taxonomy integrity', () => {
   it('has 200+ topics in 15-20 groups with unique ids', () => {
@@ -148,6 +148,14 @@ describe('good channels', () => {
   it('only lists confirmed channel ids for real topics', () => {
     for (const t of TOPIC_LIST) for (const c of channelsFor(t.id)) expect(c.id, `${t.id}: ${c.name}`).toMatch(/^UC[A-Za-z0-9_-]{22}$/)
     expect(TOPIC_LIST.filter((t) => channelsFor(t.id).length > 0).length).toBeGreaterThanOrEqual(150)
+  })
+
+  it('has no emoji or em dashes in channel names or video titles (the site shows none)', async () => {
+    const feed = (await import('./feed.json')).default as Feed
+    const bad = /[\p{Extended_Pictographic}—]/u
+    const names = TOPIC_LIST.flatMap((t) => channelsFor(t.id).map((c) => c.name))
+    const titles = Object.values(feed.channels).flatMap((c) => [c.name, ...c.videos.map((v) => v.title)])
+    expect([...names, ...titles].filter((x) => bad.test(x))).toEqual([])
   })
 
   it('takes turns between channels for videos', () => {
