@@ -20,7 +20,7 @@ export function allocate(mix: Mix, size = PLAYLIST_SIZE, seed = Date.now()): Slo
   const leaves = mix.categories.flatMap((c) =>
     c.children.map((k) => ({
       key: `${c.id}/${k.id}`,
-      label: c.id === WILDCARD_ID ? 'Wildcard' : k.label,
+      label: c.id === WILDCARD_ID ? 'Surprise me' : k.label,
       category: c.label,
       query: c.id === WILDCARD_ID ? WILDCARD_QUERIES[Math.abs(seed) % WILDCARD_QUERIES.length] : k.query || k.label,
       share: (c.weight / 100) * (k.weight / 100),

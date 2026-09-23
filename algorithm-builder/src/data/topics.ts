@@ -1,4 +1,4 @@
-import { CULPRIT_LIST, TOPIC_LIST } from './library'
+import { TOPIC_LIST } from './library'
 
 /**
  * The "What do you like?" chips (F-02). Each chip becomes a mix category with
@@ -45,9 +45,6 @@ export const WILDCARD_QUERIES = [
   'clock repair',
   'glass blowing',
 ]
-
-/** Suggestions for "What is taking over your feed?" (F-04): the full list lives in the library. */
-export const CULPRITS = CULPRIT_LIST.map((c) => c.label)
 
 export const WILDCARD_ID = 'wildcard'
 export const MAX_CATEGORIES = 7

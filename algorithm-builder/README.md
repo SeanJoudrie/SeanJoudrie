@@ -2,20 +2,23 @@
 
 **Live:** https://seanjoudrie.github.io/SeanJoudrie/algorithm-builder/
 
-A free, two-minute web tool that fixes a stuck recommendation feed. Tell it what you're sick of and what you actually want; it gives you the exact buttons to press (remove first), a rehab playlist matched to your mix (then add), and a recipe link to come back to in a week. No login, and nothing is stored on a server.
+A free tool that fixes a feed stuck on one topic, in about a minute and five taps. Three questions (what's taking over, roughly how much, what you want more of), then "Do these 3 things today", real videos to watch, and a personal link to check back in a week. No login, and nothing is stored on a server.
 
 - **Product review and roadmap:** [`docs/REVIEW.md`](docs/REVIEW.md) (every feature graded, MVP cut line, API keys and costs, brand, risks, 7-day plan).
+- **UX audit and what changed:** [`docs/UX_AUDIT.md`](docs/UX_AUDIT.md) (measured before/after, the "grandma rules", copy deck).
+- **Topic library:** [`docs/ux/TAXONOMY.md`](docs/ux/TAXONOMY.md), data in `src/data/taxonomy.json` (202 topics, 194 "show me less of" entries). Hand-picked videos in `src/data/pool.json`.
+- **Words:** every string the app shows is in `src/copy.ts`; `npm test` fails if one reads above a 6th-grade level or uses retired jargon.
 - **Working name.** The name lives in one constant, `src/data/brand.ts`.
 
 ## What's in the MVP
 
 | Area | Features (IDs from the review) |
 | --- | --- |
-| Flow | Platform picker (F-01), likes chips (F-02), problem presets + free text (F-03), "too much of what" (F-04, F-09), optional homepage tally (G-02) |
-| Mix builder | Two-level mix (F-06), pie / bars / numbers views (F-07), auto-balance to 100% with locks (F-08), wildcard slice (F-10), time capsule (F-11) |
-| Results | Cleanup checklist with curiosity quarantine (F-14, G-03), rehab playlist with search-link fallback (F-15, G-07), how-to-watch (F-16), signals card and platform tips matched to your problem (F-19 to F-24) |
-| Come back | Recipe link (F-18), calendar tune-up reminder (F-05), before/after homepage check (G-02), browser-saved state (F-25) |
-| Always | Mascot Gus (F-35), privacy note (G-10), rate-limited and cached search API (G-11), dark mode, keyboard and screen-reader support (G-08) |
+| Flow | Q1 what's taking over, with an app picker and typo-tolerant search over 194 names (F-01, F-04, F-09); Q2 a one-tap estimate, only if something was named (G-02); Q3 what you want more of, 3 topics pre-picked from Q1, 202 topics in 20 groups (F-02); the problem is inferred, not asked (F-03) |
+| Results | "Do these 3 things today" with "More ways to fix it" (F-14, G-03, F-19 to F-24); videos: hand-picked and verified first, YouTube search second, search links last (F-15, G-07); one-sentence summary of the new feed |
+| Change it | Optional editor: two-level feed, pie / bars / list (F-06, F-07), always 100% with "Keep the same" (F-08), "Surprise me" (F-10), "Add great old videos" (F-11) |
+| Come back | Personal link (F-18), calendar reminder (F-05), "Is your feed better?" check next week (G-02), browser-saved state (F-25) |
+| Always | Gus the mascot (F-35), privacy and terms pages (G-10), rate-limited and cached search API (G-11), dark mode, 18px text, 48px targets, keyboard and screen readers (G-08) |
 
 ## Run it
 
@@ -48,9 +51,11 @@ Optional: `VITE_TIP_URL=https://buymeacoffee.com/you` shows the one-line tip jar
 ```bash
 npm test           # logic + API handler (Vitest)
 npm run build      # typecheck + production build
-npm run smoke      # clicks every button in Chromium (phone + desktop, light + dark),
-                   # incl. the real /api/search handler against a fake YouTube,
-                   # quota running out, tip-guide platforms and reduced motion
+npm run smoke      # clicks every button in Chromium (phone + desktop, light + dark):
+                   # real /api/search against a fake YouTube, quota running out,
+                   # "just boring" path, tip-guide apps, 200% text on a 320px
+                   # phone, reduced motion, and links from before this update
+npm run verify:pool  # re-checks every hand-picked video with YouTube (run monthly)
 node scripts/og.mjs  # regenerates the share image and home-screen icon
 ```
 
@@ -59,8 +64,9 @@ node scripts/og.mjs  # regenerates the share image and home-screen icon
 ```
 src/
   App.tsx                 flow + routing between steps
-  components/             Steps, MixStep, MixChart, Results, Mascot, ui
-  data/                   topics, problems, platform playbooks, brand
+  copy.ts                 every word the app shows (reading-level tested)
+  components/             Flow (landing + 3 questions), Results, AdjustSheet, MixStep, MixChart, Mascot, ui
+  data/                   taxonomy.json, pool.json, library (search, suggestions), playbooks, brand
   lib/                    mix math, recipe links, checklist, playlist, calendar file
 server/search.ts          YouTube search proxy: key, cache, rate limit, quota back-off
 netlify/functions/        production wrapper for the proxy

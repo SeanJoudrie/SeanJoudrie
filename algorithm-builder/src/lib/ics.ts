@@ -1,5 +1,5 @@
 /**
- * The one-week tune-up reminder as a calendar file (F-05). No email, no
+ * The one-week check-in reminder as a calendar file (F-05). No email, no
  * account: the reminder lives in the user's own calendar.
  */
 export function tuneUpIcs(link: string, from = new Date()): string {
@@ -13,14 +13,14 @@ export function tuneUpIcs(link: string, from = new Date()): string {
   return [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Algorithm Builder//Tune-up//EN',
+    'PRODID:-//Algorithm Builder//Check-in//EN',
     'BEGIN:VEVENT',
     `UID:${stamp}-${Math.random().toString(36).slice(2)}@algorithm-builder`,
     `DTSTAMP:${stamp}`,
     `DTSTART:${fmt(start)}`,
     `DTEND:${fmt(end)}`,
-    'SUMMARY:Feed tune-up (2 min)',
-    `DESCRIPTION:${escape(`Tally your homepage again and adjust your mix: ${link}`)}`,
+    'SUMMARY:Check my feed (2 min)',
+    `DESCRIPTION:${escape(`Open your link and tell us how your feed is now: ${link}`)}`,
     `URL:${link}`,
     'END:VEVENT',
     'END:VCALENDAR',

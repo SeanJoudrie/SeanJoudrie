@@ -1,11 +1,12 @@
 import { useId, useState } from 'react'
+import { COPY } from '../copy'
 import { WILDCARD_ID } from '../data/topics'
 import { rebalance, removeAt } from '../lib/mix'
 import { slugify } from '../lib/session'
 import type { Category, Mix, SubTopic } from '../lib/types'
-import { categoryColor, childColor, MixChart, ViewToggle, type View } from './MixChart'
-import { CloseIcon, LockIcon } from './icons'
-import { Card, StepHeader } from './ui'
+import { categoryColor, childColor, displayLabel, MixChart, ViewToggle, type View } from './MixChart'
+import { LockIcon } from './icons'
+import { inputClass } from './ui'
 
 const VIEW_KEY = 'algorithm-builder:view'
 const readView = (): View => {
@@ -17,8 +18,13 @@ const readView = (): View => {
   }
 }
 
-/** The mix builder (F-06 to F-11). */
+/**
+ * The feed editor (F-06 to F-11), opened from "Change it" on the results
+ * page. Optional: the feed is built automatically, this is for people who
+ * want control.
+ */
 export function MixStep({ mix, onChange }: { mix: Mix; onChange: (m: Mix) => void }) {
+  const c = COPY.adjust
   const [view, setViewState] = useState<View>(readView)
   const [selected, setSelected] = useState<string | null>(null)
   const setView = (v: View) => {
@@ -30,109 +36,91 @@ export function MixStep({ mix, onChange }: { mix: Mix; onChange: (m: Mix) => voi
     }
   }
   const cats = mix.categories
-  const sel = cats.find((c) => c.id === selected) ?? null
-
+  const sel = cats.find((x) => x.id === selected) ?? null
   const setCats = (categories: Category[]) => onChange({ ...mix, categories })
-  const setCatWeight = (i: number, v: number) => setCats(rebalance(cats, i, v))
-  const toggleLock = (i: number) => setCats(cats.map((c, j) => (j === i ? { ...c, locked: !c.locked || undefined } : c)))
-
-  const setChildren = (id: string, children: SubTopic[]) => setCats(cats.map((c) => (c.id === id ? { ...c, children } : c)))
+  const setChildren = (id: string, children: SubTopic[]) => setCats(cats.map((x) => (x.id === id ? { ...x, children } : x)))
+  const realCount = cats.filter((x) => x.id !== WILDCARD_ID).length
 
   return (
-    <div className="anim-rise">
-      <StepHeader pose="diagnose" title="Build your mix" say="Drag the sliders. Everything always adds up to 100%. Tap a slice to split it further." />
-
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
-        <Card className="lg:sticky lg:top-4">
-          <div className="mb-4 flex items-center justify-between gap-2">
-            <h2 className="font-display m-0 text-lg font-bold">Your mix</h2>
-            <ViewToggle view={view} onChange={setView} />
-          </div>
-          <MixChart mix={mix} view={view} selected={selected} onSelect={(id) => setSelected(id === selected ? null : id)} />
-          <p className="m-0 mt-4 text-center text-xs text-muted">This is the mix we’ll steer toward. Feeds shift over 3–7 days.</p>
-        </Card>
-
-        <div className="space-y-4">
-          <Card>
-            <div className="mb-3 flex items-baseline justify-between">
-              <h2 className="font-display m-0 text-lg font-bold">Topics</h2>
-              <span className="rounded-full bg-paper-2 px-3 py-1 text-sm font-semibold tabular-nums text-ink-2" aria-live="polite">
-                Total {cats.reduce((a, c) => a + c.weight, 0)}%
-              </span>
-            </div>
-            <ul className="m-0 list-none space-y-2 p-0">
-              {cats.map((c, i) => (
-                <SliderRow
-                  key={c.id}
-                  label={c.id === WILDCARD_ID ? 'Something I’d never click' : c.label}
-                  value={c.weight}
-                  color={categoryColor(cats, c.id)}
-                  locked={!!c.locked}
-                  onChange={(v) => setCatWeight(i, v)}
-                  onLock={() => toggleLock(i)}
-                  onEdit={c.id === WILDCARD_ID ? undefined : () => setSelected(c.id === selected ? null : c.id)}
-                  editing={selected === c.id}
-                  onRemove={
-                    c.id !== WILDCARD_ID && cats.filter((x) => x.id !== WILDCARD_ID).length > 1
-                      ? () => {
-                          if (selected === c.id) setSelected(null)
-                          setCats(removeAt(cats, i))
-                        }
-                      : undefined
-                  }
-                />
-              ))}
-            </ul>
-            <AddTopic
-              disabled={cats.length >= 8}
-              onAdd={(label) => {
-                const id = `added-${slugify(label)}`
-                if (cats.some((c) => c.id === id)) return
-                const wild = cats.findIndex((c) => c.id === WILDCARD_ID)
-                const fresh: Category = { id, label, weight: 10, children: [{ id: `${id}-all`, label, weight: 100 }] }
-                const next = [...cats]
-                next.splice(wild === -1 ? next.length : wild, 0, fresh)
-                const idx = next.indexOf(fresh)
-                setCats(rebalance(next.map((c) => (c === fresh ? { ...c, weight: 0 } : c)), idx, 10))
-              }}
-            />
-          </Card>
-
-          {sel && sel.id !== WILDCARD_ID && (
-            <SubTopics
-              key={sel.id}
-              cat={sel}
-              color={categoryColor(cats, sel.id)}
-              onChange={(children) => setChildren(sel.id, children)}
-              onClose={() => setSelected(null)}
-            />
-          )}
-
-          <Card>
-            <h2 className="font-display m-0 text-lg font-bold">Time capsule</h2>
-            <p className="m-0 mt-1 text-sm text-ink-2">Great videos from years ago that the algorithm forgot.</p>
-            <div className="mt-3 flex flex-wrap gap-2" role="radiogroup" aria-label="Upload date">
-              {[null, 2020, 2015, 2010].map((y) => (
-                <button
-                  key={String(y)}
-                  role="radio"
-                  aria-checked={mix.before === y}
-                  onClick={() => onChange({ ...mix, before: y })}
-                  className={`min-h-11 rounded-full border-2 px-4 text-base font-medium ${
-                    mix.before === y ? 'border-ink bg-accent-soft text-ink' : 'border-line bg-card text-ink-2'
-                  }`}
-                >
-                  {y ? `Before ${y}` : 'Any age'}
-                </button>
-              ))}
-            </div>
-          </Card>
+    <div className="space-y-5">
+      <section>
+        <div className="mb-3 flex flex-wrap items-center justify-end gap-2">
+          <ViewToggle view={view} onChange={setView} />
         </div>
-      </div>
+        <MixChart mix={mix} view={view} selected={selected} onSelect={(id) => setSelected(id === selected || id === WILDCARD_ID ? null : id)} />
+        <p className="m-0 mt-3 text-center text-base text-ink-2">{c.change}</p>
+      </section>
+
+      <section>
+        <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
+          <h3 className="font-display m-0 text-lg font-bold">{c.topics}</h3>
+          <span className="rounded-full bg-paper-2 px-3 py-1 text-base font-semibold tabular-nums text-ink-2" aria-live="polite">
+            {c.total(cats.reduce((a, x) => a + x.weight, 0))}
+          </span>
+        </div>
+        <ul className="m-0 list-none space-y-3 p-0">
+          {cats.map((cat, i) => (
+            <SliderRow
+              key={cat.id}
+              label={displayLabel(cat)}
+              value={cat.weight}
+              color={categoryColor(cats, cat.id)}
+              locked={!!cat.locked}
+              onChange={(v) => setCats(rebalance(cats, i, v))}
+              onLock={() => setCats(cats.map((x, j) => (j === i ? { ...x, locked: !x.locked || undefined } : x)))}
+              onEdit={cat.id === WILDCARD_ID ? undefined : () => setSelected(cat.id === selected ? null : cat.id)}
+              editing={selected === cat.id}
+              onRemove={
+                cat.id !== WILDCARD_ID && realCount > 1
+                  ? () => {
+                      if (selected === cat.id) setSelected(null)
+                      setCats(removeAt(cats, i))
+                    }
+                  : undefined
+              }
+            >
+              {sel && sel.id === cat.id && <SubTopics key={sel.id} cat={sel} color={categoryColor(cats, sel.id)} onChange={(k) => setChildren(sel.id, k)} />}
+            </SliderRow>
+          ))}
+        </ul>
+        <AddTopic
+          label={c.addTopic}
+          placeholder={c.addTopicHint}
+          disabled={cats.length >= 8}
+          onAdd={(label) => {
+            const id = `added-${slugify(label)}`
+            if (cats.some((x) => x.id === id)) return
+            const wild = cats.findIndex((x) => x.id === WILDCARD_ID)
+            const fresh: Category = { id, label, weight: 0, children: [{ id: `${id}-all`, label, weight: 100 }] }
+            const next = [...cats]
+            next.splice(wild === -1 ? next.length : wild, 0, fresh)
+            setCats(rebalance(next, next.indexOf(fresh), 10))
+          }}
+        />
+      </section>
+
+      <section>
+        <h3 className="font-display m-0 text-lg font-bold">{c.olderTitle}</h3>
+        <p className="m-0 mt-1 text-base text-ink-2">{c.olderLead}</p>
+        <div className="mt-3 flex flex-wrap gap-2" role="radiogroup" aria-label={c.olderTitle}>
+          {[null, 2020, 2015, 2010].map((y) => (
+            <button
+              key={String(y)}
+              role="radio"
+              aria-checked={mix.before === y}
+              onClick={() => onChange({ ...mix, before: y })}
+              className={`min-h-12 rounded-full border-2 px-4 text-base font-medium ${mix.before === y ? 'border-ink bg-accent-soft text-ink' : 'border-line bg-card text-ink'}`}
+            >
+              {y ? c.olderThan(y) : c.anyAge}
+            </button>
+          ))}
+        </div>
+      </section>
     </div>
   )
 }
 
+/** Label and amount, the bar, then plain-word actions underneath (no icon-only buttons). */
 function SliderRow({
   label,
   value,
@@ -143,6 +131,7 @@ function SliderRow({
   onEdit,
   editing,
   onRemove,
+  children,
 }: {
   label: string
   value: number
@@ -153,37 +142,19 @@ function SliderRow({
   onEdit?: () => void
   editing?: boolean
   onRemove?: () => void
+  children?: React.ReactNode
 }) {
+  const c = COPY.adjust
   const id = useId()
+  const pill = 'min-h-12 rounded-full border-2 px-4 text-base font-semibold'
   return (
-    <li className={`rounded-xl px-2 py-2 ${editing ? 'bg-paper-2' : ''}`}>
+    <li className={`rounded-xl border border-line p-3 ${editing ? 'bg-paper-2' : 'bg-card'}`}>
       <div className="flex items-center justify-between gap-2">
-        <label htmlFor={id} className="flex min-w-0 items-center gap-2 text-base font-medium text-ink">
-          <span className="inline-block h-3 w-3 shrink-0 rounded-full" style={{ background: color }} aria-hidden />
-          <span className="truncate">{label}</span>
+        <label htmlFor={id} className="flex min-w-0 items-center gap-2 text-base font-semibold text-ink">
+          <span className="inline-block h-4 w-4 shrink-0 rounded-full" style={{ background: color }} aria-hidden />
+          <span>{label}</span>
         </label>
-        <span className="flex shrink-0 items-center gap-1">
-          <span className="font-display w-11 text-right text-lg font-bold tabular-nums">{value}%</span>
-          {onEdit && (
-            <button onClick={onEdit} className="h-9 rounded-full px-3 text-sm font-semibold text-accent-ink hover:underline" aria-expanded={editing}>
-              {editing ? 'Done' : 'Split'}
-            </button>
-          )}
-          {onRemove && (
-            <button onClick={onRemove} className="grid h-9 w-9 place-items-center rounded-full text-lg text-muted hover:text-alarm" aria-label={`Remove ${label}`}>
-              <CloseIcon />
-            </button>
-          )}
-          <button
-            onClick={onLock}
-            aria-pressed={locked}
-            aria-label={`${locked ? 'Unlock' : 'Lock'} ${label}`}
-            title={locked ? 'Locked: won’t move when you change others' : 'Lock this slice'}
-            className={`grid h-9 w-9 place-items-center rounded-full border-2 text-sm ${locked ? 'border-ink bg-ink text-paper' : 'border-line text-muted'}`}
-          >
-            <LockIcon closed={locked} />
-          </button>
-        </span>
+        <span className="font-display shrink-0 text-xl font-bold tabular-nums">{value}%</span>
       </div>
       <input
         id={id}
@@ -198,22 +169,40 @@ function SliderRow({
         style={{ ['--pct' as string]: `${value}%`, ['--track-fill' as string]: color }}
         onChange={(e) => onChange(Number(e.target.value))}
       />
+      <div className="mt-1 flex flex-wrap gap-2">
+        {onEdit && (
+          <button onClick={onEdit} aria-expanded={editing} className={`${pill} border-line bg-card text-ink`}>
+            {editing ? c.doneChoosing : c.choose}
+          </button>
+        )}
+        <button
+          onClick={onLock}
+          aria-pressed={locked}
+          aria-label={locked ? c.unkeep(label) : c.keep(label)}
+          title={c.keepHint}
+          className={`${pill} inline-flex items-center gap-2 ${locked ? 'border-ink bg-ink text-paper' : 'border-line bg-card text-ink'}`}
+        >
+          <LockIcon closed={locked} /> {locked ? c.keptShort : c.keepShort}
+        </button>
+        {onRemove && (
+          <button onClick={onRemove} aria-label={c.remove(label)} className={`${pill} border-line bg-card text-ink hover:border-alarm`}>
+            {c.removeShort}
+          </button>
+        )}
+      </div>
+      {children}
     </li>
   )
 }
 
-function SubTopics({ cat, color, onChange, onClose }: { cat: Category; color: string; onChange: (k: SubTopic[]) => void; onClose: () => void }) {
+function SubTopics({ cat, color, onChange }: { cat: Category; color: string; onChange: (k: SubTopic[]) => void }) {
+  const c = COPY.adjust
   const kids = cat.children
   return (
-    <Card className="anim-pop">
-      <div className="mb-2 flex items-center justify-between">
-        <h2 className="font-display m-0 text-lg font-bold">Inside {cat.label}</h2>
-        <button onClick={onClose} className="h-9 rounded-full px-3 text-sm font-semibold text-ink-2 hover:text-ink">
-          Close
-        </button>
-      </div>
-      <p className="m-0 mb-3 text-sm text-ink-2">Of your {cat.weight}% {cat.label}, how much of each?</p>
-      <ul className="m-0 list-none space-y-2 p-0">
+    <div className="anim-pop mt-3 border-t border-line pt-3">
+      <h4 className="font-display m-0 text-base font-bold">{c.inside(cat.label)}</h4>
+      <p className="m-0 mb-2 text-base text-ink-2">{c.insideLead(cat.label, cat.weight)}</p>
+      <ul className="m-0 list-none space-y-3 p-0">
         {kids.map((k, i) => (
           <SliderRow
             key={k.id}
@@ -228,8 +217,8 @@ function SubTopics({ cat, color, onChange, onClose }: { cat: Category; color: st
         ))}
       </ul>
       <AddTopic
-        label="Add a sub-topic"
-        placeholder={`e.g. a show or creator in ${cat.label}`}
+        label={c.addShow}
+        placeholder={c.addShowHint(cat.label)}
         disabled={kids.length >= 6}
         onAdd={(label) => {
           const id = slugify(label)
@@ -238,26 +227,17 @@ function SubTopics({ cat, color, onChange, onClose }: { cat: Category; color: st
           onChange(rebalance(next, next.length - 1, Math.round(100 / next.length)))
         }}
       />
-    </Card>
+    </div>
   )
 }
 
-function AddTopic({
-  onAdd,
-  disabled,
-  label = 'Add a topic',
-  placeholder = 'e.g. Chess, Formula 1, a creator…',
-}: {
-  onAdd: (label: string) => void
-  disabled?: boolean
-  label?: string
-  placeholder?: string
-}) {
+function AddTopic({ onAdd, disabled, label, placeholder }: { onAdd: (label: string) => void; disabled?: boolean; label: string; placeholder: string }) {
   const [v, setV] = useState('')
   const [open, setOpen] = useState(false)
+  const id = useId()
   if (!open)
     return (
-      <button onClick={() => setOpen(true)} disabled={disabled} className="mt-3 min-h-11 text-base font-semibold text-accent-ink hover:underline disabled:opacity-50">
+      <button onClick={() => setOpen(true)} disabled={disabled} className="mt-3 min-h-12 text-base font-semibold text-accent-ink underline underline-offset-4 disabled:opacity-50">
         + {label}
       </button>
     )
@@ -272,19 +252,12 @@ function AddTopic({
         setOpen(false)
       }}
     >
-      <label className="sr-only" htmlFor={`add-${slugify(label)}`}>
+      <label className="sr-only" htmlFor={id}>
         {label}
       </label>
-      <input
-        id={`add-${slugify(label)}`}
-        autoFocus
-        value={v}
-        onChange={(e) => setV(e.target.value)}
-        placeholder={placeholder}
-        className="min-h-11 flex-1 rounded-full border-2 border-line bg-card px-4 text-base text-ink placeholder:text-muted focus:border-ink"
-      />
-      <button type="submit" className="min-h-11 rounded-full border-2 border-ink px-4 font-semibold">
-        Add
+      <input id={id} autoFocus value={v} onChange={(e) => setV(e.target.value)} placeholder={placeholder} className={inputClass} />
+      <button type="submit" className="min-h-12 shrink-0 rounded-full border-2 border-ink px-4 text-base font-semibold">
+        {COPY.adjust.add}
       </button>
     </form>
   )

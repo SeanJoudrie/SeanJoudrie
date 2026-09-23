@@ -493,3 +493,67 @@ Each step is its own commit with tests, screenshots in light and dark on phone a
 - [ ] **Flagged videos:** keep or drop the 7 flagged picks (horror short, animal-testing short, fan film, WHCD speech, unofficial cartoon upload, 2 niche talks)?
 - [ ] **Instagram, TikTok and X:** keep them as tip guides in the app selector, or hide them until they have more than tips?
 - [ ] **Test participants:** who is the 60+ person for the usability test?
+
+---
+
+## 15. Phase 2 results (implemented)
+
+Approved with the defaults:
+
+- Question 1 asks what's taking over.
+- Flagged videos are dropped.
+- The pool grows once the API key arrives.
+
+Measured the same way as section 3 (Chromium, 390×844, Linda's path: "Political commentary", "Almost all", keep the pre-picked topics).
+
+| Measure | Before | After |
+| --- | --- | --- |
+| Screens before the fix | 7 | 4 (landing + 3 questions; 3 if nothing is named) |
+| Taps to the fix | 12 | **5** |
+| Words on screen before the fix | 507 | 214 (about 90 of them are sentences; the rest are tap-able topic names) |
+| Results page | 450 words, 4.1 screens | 214 words, 3.6 screens (10 video cards make up most of it) |
+| Controls under 48px (phone) | most | **0** (checked on every screen) |
+| Text under 16px (phone) | most | **0** (checked on every screen) |
+| 200% text on a 320px phone | cut off, 70–75px sideways scroll | fits; main button always visible |
+| Topics / "show me less of" entries | 33 / 22 | 202 / 194 |
+| Real videos without an API key | 0 | 27 verified, hand-picked |
+| Copy at 6th-grade level | not measured | every string, enforced by a unit test |
+
+**Estimated time for Linda:** about 100 seconds (214 words at 150 words a minute, plus 5 taps). That's just over the 90-second target. The remaining lever is fewer topic chips on question 3, to decide after the usability test.
+
+**What shipped, by the Phase 2 order:**
+
+1. **O-1 and O-2 fixed.** The bottom bar is fixed and re-created per step, and there is one Skip. Guarded by checks that the main button is on screen and on top at 390×844 and at 320×568 with 200% text, that each screen has one heading, and that Skip appears once.
+2. **Copy deck:**
+   - Every string lives in `src/copy.ts`.
+   - `src/copy.test.ts` fails on anything above grade 6, sentences over 14 words, retired words or em dashes.
+   - The checklist and platform tips are rewritten to match.
+3. **Flow:**
+   - Landing → "What is taking over your feed?" (with a "Which app?" picker) → "How much of your home screen is X?" → "What do you want to see more of?" → "You're done. Do these 3 things today."
+   - The pie and sliders moved into an optional "Change it" dialog.
+4. **Estimate and return visit:**
+   - Four big answers that move on by themselves. The answer is stored in the old count shape, so earlier links still work.
+   - Next week's link asks "Is your feed better?" and opens more ways to fix it when it isn't.
+5. **Library:** 202 topics in 20 groups and 194 entries with nicknames. Search forgives typos. Topics are pre-picked from what the user is tired of, never the same franchise back.
+6. **Verified pool:**
+   - 27 videos, each checked with oEmbed.
+   - `npm run verify:pool` re-checks them and fails if any is gone.
+   - Hand-picked videos show first and are labelled as such. YouTube search fills the rest when a key exists. Search links are the last resort.
+7. **Automation:**
+   - The problem is inferred.
+   - `?from=` sets the app.
+   - The feed is built automatically and summed up in one sentence.
+   - One video per channel.
+8. **Accessibility:**
+   - 18px body text.
+   - 48px targets.
+   - Helper text on the AAA-contrast colour.
+   - Buttons in the editor use words, not icons alone.
+   - Native dialog with Escape, reduced motion respected.
+
+**Still open:**
+
+- Usability test with real people (section 11).
+- Manual iPhone and in-app-browser check of O-1.
+- Grow the pool with the API key.
+- "Play them all" queue link still UNVERIFIED on phones.

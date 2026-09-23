@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { buildChecklist } from './checklist'
 import { sum } from './mix'
 import { allocate, filterVideos, searchUrl } from './playlist'
-import { decodeRecipe, encodeRecipe, initialMix, likeFor, newSession, reconcileMix } from './session'
+import { decodeRecipe, encodeRecipe, initialMix, likeFor, newSession, pctFromTally, reconcileMix, tallyFromPct } from './session'
 
 describe('initialMix', () => {
   it('splits likes evenly with a 5% wildcard, summing to 100', () => {
@@ -80,13 +80,13 @@ describe('searchUrl', () => {
 describe('buildChecklist', () => {
   it('leads with deletion for each turned-down topic on YouTube', () => {
     const items = buildChecklist('youtube', ['Game of Thrones', 'Star Wars'], [])
-    expect(items[0].text).toContain('Delete “Game of Thrones”')
-    expect(items[1].text).toContain('Delete “Star Wars”')
+    expect(items[0].text).toBe('Delete Game of Thrones videos from your history.')
+    expect(items[1].text).toBe('Delete Star Wars videos from your history.')
     expect(items.some((i) => i.id === 'yt-quarantine')).toBe(true)
   })
 
   it('uses platform-specific wording elsewhere', () => {
-    expect(buildChecklist('tiktok', ['Lego'], [])[0].text).toContain('long-press')
+    expect(buildChecklist('tiktok', ['Lego'], [])[0].detail).toContain('Press and hold')
     expect(buildChecklist('x', ['Lego'], []).some((i) => i.id === 'x-mute')).toBe(true)
   })
 })
@@ -140,5 +140,14 @@ describe('reconcileMix', () => {
   it('maps categories back to likes', () => {
     const mix = initialMix(['math-explained', 'Lego Technic'])
     expect(mix.categories.map(likeFor)).toEqual(['math-explained', 'Lego Technic', null])
+  })
+})
+
+describe('homepage estimate', () => {
+  it('round-trips each answer through the saved shape', () => {
+    for (const pct of [90, 50, 25, 10]) expect(pctFromTally(tallyFromPct(pct, '2026-09-23'))).toBe(pct)
+  })
+  it('reads old exact counts as a share', () => {
+    expect(pctFromTally({ date: '2026-09-01', wanted: 3, sickOf: 14, other: 3 })).toBe(70)
   })
 })

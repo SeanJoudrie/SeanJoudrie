@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { COPY, TOTAL_LABEL } from '../copy'
 import { WILDCARD_ID } from '../data/topics'
 import type { Category, Mix } from '../lib/types'
 
@@ -9,6 +10,9 @@ import type { Category, Mix } from '../lib/types'
  */
 
 export type View = 'pie' | 'bars' | 'numbers'
+
+/** The surprise slice is always called "Surprise me", even in links saved with its old name. */
+export const displayLabel = (c: Category) => (c.id === WILDCARD_ID ? COPY.adjust.surprise : c.label)
 
 /** Color follows the category (its slot), never its rank. */
 export function categoryColor(cats: Category[], id: string): string {
@@ -25,9 +29,9 @@ export function childColor(base: string, i: number): string {
 
 export function ViewToggle({ view, onChange }: { view: View; onChange: (v: View) => void }) {
   const opts: { id: View; label: string }[] = [
-    { id: 'pie', label: 'Pie' },
-    { id: 'bars', label: 'Bars' },
-    { id: 'numbers', label: 'Numbers' },
+    { id: 'pie', label: COPY.adjust.views.pie },
+    { id: 'bars', label: COPY.adjust.views.bars },
+    { id: 'numbers', label: COPY.adjust.views.list },
   ]
   return (
     <div role="radiogroup" aria-label="Chart view" className="inline-flex rounded-full border border-line bg-paper-2 p-1">
@@ -37,7 +41,7 @@ export function ViewToggle({ view, onChange }: { view: View; onChange: (v: View)
           role="radio"
           aria-checked={view === o.id}
           onClick={() => onChange(o.id)}
-          className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+          className={`min-h-12 rounded-full px-4 py-2 text-base font-semibold transition-colors ${
             view === o.id ? 'bg-ink text-paper' : 'text-ink-2 hover:text-ink'
           }`}
         >
@@ -155,7 +159,7 @@ function Sunburst({ mix, selected, onSelect }: { mix: Mix; selected: string | nu
 
   return (
     <figure className="m-0">
-      <svg viewBox="-110 -110 220 220" className="mx-auto block w-full max-w-[320px]" role="group" aria-label="Your mix as a two-ring pie chart">
+      <svg viewBox="-110 -110 220 220" className="mx-auto block w-full max-w-[320px]" role="group" aria-label="Your feed as a pie chart">
         {segs.map(({ c, a0, a1, kids }) => {
           const base = categoryColor(cats, c.id)
           const isSel = selected === c.id
@@ -168,13 +172,13 @@ function Sunburst({ mix, selected, onSelect }: { mix: Mix; selected: string | nu
                 strokeWidth={1}
                 tabIndex={0}
                 role="button"
-                aria-label={`${c.label}: ${c.weight}%. Edit sub-topics`}
+                aria-label={`${displayLabel(c)}: ${c.weight}%. Tap to choose shows`}
                 className="cursor-pointer outline-none"
                 onClick={() => onSelect(c.id)}
                 onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onSelect(c.id))}
-                onMouseEnter={() => setHover({ label: c.label, pct: c.weight })}
+                onMouseEnter={() => setHover({ label: displayLabel(c), pct: c.weight })}
                 onMouseLeave={() => setHover(null)}
-                onFocus={() => setHover({ label: c.label, pct: c.weight })}
+                onFocus={() => setHover({ label: displayLabel(c), pct: c.weight })}
                 onBlur={() => setHover(null)}
               />
               {kids.map(({ k, k0, k1 }, i) => (
@@ -185,7 +189,7 @@ function Sunburst({ mix, selected, onSelect }: { mix: Mix; selected: string | nu
                   stroke="var(--card)"
                   strokeWidth={1}
                   aria-hidden
-                  onMouseEnter={() => setHover({ label: `${k.label} (in ${c.label})`, pct: Math.round((c.weight * k.weight) / 100) })}
+                  onMouseEnter={() => setHover({ label: `${k.label} (in ${displayLabel(c)})`, pct: Math.round((c.weight * k.weight) / 100) })}
                   onMouseLeave={() => setHover(null)}
                   onClick={() => onSelect(c.id)}
                   className="cursor-pointer"
@@ -198,17 +202,17 @@ function Sunburst({ mix, selected, onSelect }: { mix: Mix; selected: string | nu
           {center ? `${center.pct}%` : '100%'}
         </text>
         <text pointerEvents="none" textAnchor="middle" y={center ? 14 : 20} fontSize={center ? 8 : 9} fill="var(--muted)">
-          {center ? truncate(center.label, 22) : 'your feed'}
+          {center ? truncate(center.label, 22) : TOTAL_LABEL}
         </text>
       </svg>
-      <figcaption className="sr-only">Inner ring: categories. Outer ring: sub-topics within each category. Switch to Numbers for a table.</figcaption>
+      <figcaption className="sr-only">Inner ring: topics. Outer ring: shows inside each topic. Tap List for a table.</figcaption>
     </figure>
   )
 }
 
 function find(cats: Category[], id: string) {
   const c = cats.find((x) => x.id === id)
-  return c ? { label: c.label, pct: c.weight } : null
+  return c ? { label: displayLabel(c), pct: c.weight } : null
 }
 
 const truncate = (s: string, n: number) => (s.length > n ? `${s.slice(0, n - 1)}…` : s)
@@ -219,7 +223,7 @@ function Bars({ mix, selected, onSelect }: { mix: Mix; selected: string | null; 
   const cats = mix.categories
   const max = Math.max(...cats.map((c) => c.weight), 1)
   return (
-    <ul className="m-0 list-none space-y-3 p-0" aria-label="Your mix as bars">
+    <ul className="m-0 list-none space-y-3 p-0" aria-label="Your feed as bars">
       {cats.map((c) => {
         const base = categoryColor(cats, c.id)
         return (
@@ -227,10 +231,10 @@ function Bars({ mix, selected, onSelect }: { mix: Mix; selected: string | null; 
             <button
               onClick={() => onSelect(c.id)}
               className={`block w-full rounded-lg p-1 text-left ${selected === c.id ? 'bg-paper-2' : ''}`}
-              aria-label={`${c.label}: ${c.weight}%. Edit sub-topics`}
+              aria-label={`${displayLabel(c)}: ${c.weight}%. Tap to choose shows`}
             >
-              <div className="mb-1 flex items-baseline justify-between gap-2 text-sm">
-                <span className="truncate font-medium text-ink">{c.label}</span>
+              <div className="mb-1 flex items-baseline justify-between gap-2 text-base">
+                <span className="truncate font-medium text-ink">{displayLabel(c)}</span>
                 <span className="font-display tabular-nums text-ink-2">{c.weight}%</span>
               </div>
               <div className="flex h-5 overflow-hidden rounded-r-[4px]" style={{ width: `${(c.weight / max) * 100}%`, minWidth: c.weight ? 6 : 0 }}>
@@ -259,12 +263,12 @@ function Bars({ mix, selected, onSelect }: { mix: Mix; selected: string | null; 
 
 function NumbersTable({ mix }: { mix: Mix }) {
   return (
-    <table className="w-full border-collapse text-sm">
-      <caption className="sr-only">Your mix: share of your feed by category and sub-topic</caption>
+    <table className="w-full border-collapse text-base">
+      <caption className="sr-only">Your feed: share by topic</caption>
       <thead>
-        <tr className="border-b border-line text-left text-muted">
+        <tr className="border-b border-line text-left text-ink-2">
           <th scope="col" className="py-2 font-medium">Topic</th>
-          <th scope="col" className="py-2 text-right font-medium">Share of feed</th>
+          <th scope="col" className="py-2 text-right font-medium">Share of your feed</th>
         </tr>
       </thead>
       <tbody>
@@ -283,7 +287,7 @@ function FragmentRows({ c, cats }: { c: Category; cats: Category[] }) {
       <tr className="border-b border-line">
         <th scope="row" className="py-2 text-left font-semibold text-ink">
           <span className="mr-2 inline-block h-3 w-3 rounded-full align-[-1px]" style={{ background: base }} aria-hidden />
-          {c.label}
+          {displayLabel(c)}
         </th>
         <td className="py-2 text-right font-display font-semibold tabular-nums">{c.weight}%</td>
       </tr>
@@ -303,11 +307,11 @@ function FragmentRows({ c, cats }: { c: Category; cats: Category[] }) {
 
 function Legend({ mix }: { mix: Mix }) {
   return (
-    <ul className="mt-4 flex list-none flex-wrap justify-center gap-x-4 gap-y-2 p-0 text-sm text-ink-2" aria-hidden>
+    <ul className="mt-4 flex list-none flex-wrap justify-center gap-x-4 gap-y-2 p-0 text-base text-ink-2" aria-hidden>
       {mix.categories.map((c) => (
         <li key={c.id} className="flex items-center gap-2">
           <span className="inline-block h-3 w-3 rounded-full" style={{ background: categoryColor(mix.categories, c.id) }} />
-          {c.label} <span className="tabular-nums text-muted">{c.weight}%</span>
+          {displayLabel(c)} <span className="tabular-nums text-ink-2">{c.weight}%</span>
         </li>
       ))}
     </ul>
