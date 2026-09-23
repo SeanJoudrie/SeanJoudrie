@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { buildChecklist } from './checklist'
 import { sum } from './mix'
 import { allocate, filterVideos, searchUrl } from './playlist'
-import { decodeRecipe, encodeRecipe, initialMix, likeFor, newSession, pctFromTally, reconcileMix, tallyFromPct } from './session'
+import { decodeRecipe, encodeRecipe, initialMix, likeFor, newSession, pctFromTally, reconcileMix, tallyFromPct, togglePick } from './session'
 
 describe('initialMix', () => {
   it('splits likes evenly with a 5% wildcard, summing to 100', () => {
@@ -170,5 +170,20 @@ describe('hidden channels', () => {
     const out = decodeRecipe(encodeRecipe({ ...newSession('youtube'), hidden: many }))?.hidden
     expect(out).toHaveLength(30)
     expect(out?.at(-1)).toBe(many.at(-1))
+  })
+})
+
+describe('picks in the feed', () => {
+  it('adds a pick at half its topic, and takes it out again', () => {
+    const s = { ...newSession('youtube'), mix: initialMix(['sitcoms']) }
+    const office = { label: 'The Office', query: 'the office us best moments' }
+    const on = togglePick(s.mix, 'sitcoms', office)
+    const cat = on.categories.find((c) => c.id === 'sitcoms')!
+    expect(cat.children.find((k) => k.label === 'The Office')?.weight).toBe(50)
+    expect(sum(cat.children)).toBe(100)
+    const off = togglePick(on, 'sitcoms', office)
+    expect(off.categories.find((c) => c.id === 'sitcoms')!.children.some((k) => k.label === 'The Office')).toBe(false)
+    // Picks survive the personal link.
+    expect(decodeRecipe(encodeRecipe({ ...s, mix: on }))?.mix.categories.find((c) => c.id === 'sitcoms')?.children.some((k) => k.query === office.query)).toBe(true)
   })
 })

@@ -14,6 +14,8 @@ export interface Topic {
   label: string
   group: string
   subtopics: { label: string; query: string }[]
+  /** Specific things to pick inside the topic (shows, artists, games): label and YouTube search words. */
+  picks: { label: string; query: string }[]
   synonyms: string[]
   /** Looser words that lead here ("lipstick" → Beauty & makeup). */
   keywords: string[]
@@ -207,4 +209,40 @@ export function recommend(topicIds: string[], turnDown: string[], hidden: string
   const out: Recommendation[] = []
   for (let i = 0; lists.some((l) => l[i]); i++) for (const l of lists) if (l[i] && !out.some((r) => r.channel.id === l[i].channel.id)) out.push(l[i])
   return out
+}
+
+/** Specific picks for a topic, leaving out anything they're sick of. */
+export function picksFor(topicId: string, turnDown: string[]): { label: string; query: string }[] {
+  const bad = turnDown.map(norm).filter(Boolean)
+  return (byId.get(topicId)?.picks ?? []).filter((p) => !bad.some((b) => norm(p.label).includes(b) || b.includes(norm(p.label))))
+}
+
+const ALL_CHANNELS = [...new Map(Object.values(CHANNELS).flat().map((c) => [c.id, c])).values()]
+
+/** A confirmed channel that is the pick itself ("The Office" → the show's own channel). */
+export function channelNamed(label: string): Channel | undefined {
+  const l = norm(label)
+  return ALL_CHANNELS.find((c) => {
+    const n = norm(c.name)
+    return n === l || (l.length >= 6 && (n === `${l}official` || n === `official${l}` || n === `${l}us` || n === `${l}uk`))
+  })
+}
+
+/**
+ * "Surprise pick": a recent video from a good channel on a topic they didn't
+ * choose, the same one all day (`seed` is the day). Never from politics,
+ * news, religion, kids or health, and never something they hid or are sick of.
+ */
+export function surpriseFrom(feed: Feed, topicIds: string[], hidden: string[], turnDown: string[], seed: number): { id: string; title: string; channel: string; published: string; topic: string } | null {
+  const bad = turnDown.map(norm).filter(Boolean)
+  const ok = (text: string) => !bad.some((b) => norm(text).includes(b))
+  const topics = TOPIC_LIST.filter((t) => !topicIds.includes(t.id) && !isHandPickedOnly(t.id) && t.group !== 'Kids & family' && ok(t.label))
+  for (let i = 0; i < topics.length; i++) {
+    const t = topics[(Math.abs(seed) + i * 7) % topics.length]
+    for (const c of channelsFor(t.id)) {
+      const v = feed.channels[c.id]?.videos[0]
+      if (v && !hidden.includes(c.id) && ok(c.name) && ok(v.title)) return { ...v, channel: feed.channels[c.id].name, topic: t.id }
+    }
+  }
+  return null
 }

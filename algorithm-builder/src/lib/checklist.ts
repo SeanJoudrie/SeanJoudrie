@@ -46,7 +46,7 @@ export function buildChecklist(platform: Platform, turnDown: string[], problems:
     }
     items.push({
       id: 'yt-subscribe',
-      text: 'Pick 2 videos below you like, and follow their channels.',
+      text: 'Pick 2 videos above you like, and follow their channels.',
     })
     items.push({
       id: 'yt-quarantine',

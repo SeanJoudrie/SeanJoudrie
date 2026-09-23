@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { norm, score } from '../lib/search'
-import { channelsFor, CULPRIT_LIST, feedFor, findCulprit, isHandPickedOnly, recommend, withoutChannel, type Feed, GROUPS, inferProblems, POOL, poolFor, searchCulprits, searchLessOf, searchTopics, suggestFor, TOPIC_LIST, topicById } from './library'
+import { channelsFor, CULPRIT_LIST, feedFor, findCulprit, isHandPickedOnly, picksFor, recommend, surpriseFrom, withoutChannel, type Feed, GROUPS, inferProblems, POOL, poolFor, searchCulprits, searchLessOf, searchTopics, suggestFor, TOPIC_LIST, topicById } from './library'
 
 describe('taxonomy integrity', () => {
   it('has 200+ topics in 15-20 groups with unique ids', () => {
@@ -209,6 +209,29 @@ describe('good channels', () => {
       expect(rec.map((r) => r.channel.id)).toEqual(list.map((c) => c.id))
       expect(rec.some((r) => r.popular)).toBe(false)
     }
+  })
+})
+
+describe('picks and surprises', () => {
+  it('offers specific picks for most topics, never what they are sick of', () => {
+    expect(TOPIC_LIST.filter((t) => t.picks.length > 0).length).toBeGreaterThanOrEqual(150)
+    expect(picksFor('sitcoms', []).map((p) => p.label)).toContain('The Office')
+    expect(picksFor('sitcoms', ['The Office']).map((p) => p.label)).not.toContain('The Office')
+    for (const t of TOPIC_LIST) for (const p of t.picks) expect(p.query.trim().length, `${t.id}/${p.label}`).toBeGreaterThan(2)
+  })
+
+  it('pulls a surprise from a topic they did not pick, never a hand-picked-only one', () => {
+    const feed = { fetched: '2026-09-23', channels: {} as Feed['channels'] }
+    for (const t of TOPIC_LIST) for (const c of channelsFor(t.id)) feed.channels[c.id] = { name: c.name, videos: [{ id: `v-${c.id}`, title: `${t.id} video`, published: '2026-09-01' }] }
+    for (let day = 0; day < 30; day++) {
+      const v = surpriseFrom(feed, ['space', 'baking'], [], [], day)
+      expect(v).toBeTruthy()
+      expect(['space', 'baking']).not.toContain(v!.topic)
+      expect(isHandPickedOnly(v!.topic), v!.topic).toBe(false)
+      expect(topicById(v!.topic)?.group).not.toBe('Kids & family')
+    }
+    // Same day, same surprise.
+    expect(surpriseFrom(feed, [], [], [], 5)?.id).toBe(surpriseFrom(feed, [], [], [], 5)?.id)
   })
 })
 

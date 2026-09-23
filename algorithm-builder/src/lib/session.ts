@@ -1,6 +1,6 @@
 import { DEFAULT_SUGGESTIONS } from '../data/library'
 import { MAX_CATEGORIES, TOPICS, WILDCARD_ID } from '../data/topics'
-import { apportion, evenly } from './mix'
+import { apportion, evenly, rebalance, removeAt } from './mix'
 import type { Category, Mix, Platform, ProblemId, Session, SubTopic, Tally } from './types'
 
 export const DEFAULT_WILDCARD = 5
@@ -79,6 +79,30 @@ export function reconcileMix(mix: Mix, likes: string[]): Mix {
   const withWild = ordered.some((c) => c.id === WILDCARD_ID) ? ordered : [...ordered, wildcardCategory(0)]
   const parts = apportion(100, withWild.map((c) => c.weight))
   return { ...mix, categories: withWild.map((c, i) => ({ ...c, weight: parts[i] })) }
+}
+
+/** A category holds at most this many parts (the editor's limit too). */
+export const MAX_PARTS = 6
+
+export const pickId = (label: string) => `pick-${slugify(label)}`
+
+/**
+ * Add a specific pick ("The Office" in Sitcoms) to a category, or take it
+ * out again. A new pick gets half the category, so it always wins at least
+ * one of the week's videos when the category has any.
+ */
+export function togglePick(mix: Mix, categoryId: string, pick: { label: string; query: string }): Mix {
+  return {
+    ...mix,
+    categories: mix.categories.map((c) => {
+      if (c.id !== categoryId) return c
+      const at = c.children.findIndex((k) => k.id === pickId(pick.label))
+      if (at !== -1) return c.children.length > 1 ? { ...c, children: removeAt(c.children, at) } : c
+      if (c.children.length >= MAX_PARTS) return c
+      const next = [...c.children, { id: pickId(pick.label), label: pick.label, query: pick.query, weight: 0 }]
+      return { ...c, children: rebalance(next, next.length - 1, 50) }
+    }),
+  }
 }
 
 /*
