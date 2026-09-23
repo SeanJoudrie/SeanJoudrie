@@ -23,9 +23,9 @@ describe('channel feed parsing', () => {
     ])
   })
 
-  it('keeps at most 5 per channel', () => {
+  it('keeps at most 2 per channel', () => {
     const xml = Array.from({ length: 8 }, (_, i) => entry(`vid${i}aaaaaaa`)).join('')
-    expect(parseFeed(xml, now).videos).toHaveLength(5)
+    expect(parseFeed(xml, now).videos).toHaveLength(2)
   })
 
   it('measures how a channel is doing right now', () => {

@@ -15,7 +15,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { fetchFeed, norm, parseFeed, searchChannels } from './lib/youtube.mjs'
+import { fetchFeed, norm, parseFeed, searchChannels, tidy } from './lib/youtube.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const candidates = JSON.parse(readFileSync(join(root, 'docs/ux/channels.candidates.json'), 'utf8'))
@@ -84,7 +84,8 @@ const found = new Map(names.filter((n) => cache[n]).map((n) => [n, cache[n]]))
 const missed = []
 // Saved as it goes, so a stopped run keeps what it confirmed.
 const saveCache = () => writeFileSync(cachePath, JSON.stringify(Object.fromEntries([...found].sort(([a], [b]) => a.localeCompare(b))), null, 1) + '\n')
-const todo = names.filter((n) => !found.has(n))
+// CACHED_ONLY=1 rebuilds the site's list from confirmed names without retrying misses.
+const todo = process.env.CACHED_ONLY ? [] : names.filter((n) => !found.has(n))
 let next = 0
 await Promise.all(
   Array.from({ length: 1 }, async () => {
@@ -106,7 +107,10 @@ const out = { _handPickedOnly: candidates._handPickedOnly ?? [] }
 for (const [topic, list] of Object.entries(candidates)) {
   if (topic.startsWith('_')) continue
   const seen = new Set()
-  out[topic] = list.map((n) => found.get(n)).filter((c) => c && !seen.has(c.id) && seen.add(c.id))
+  out[topic] = list
+    .map((n) => found.get(n))
+    .filter((c) => c && !seen.has(c.id) && seen.add(c.id))
+    .map((c) => ({ id: c.id, name: tidy(c.name) }))
 }
 writeFileSync(join(root, 'src/data/channels.json'), JSON.stringify(out, null, 1) + '\n')
 const empty = Object.entries(out).filter(([k, v]) => !k.startsWith('_') && !v.length).map(([k]) => k)
