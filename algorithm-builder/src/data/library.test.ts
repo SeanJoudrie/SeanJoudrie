@@ -199,6 +199,13 @@ describe('good channels', () => {
     expect(withoutChannel('Why (a+b) works | 3Blue1Brown', '3Blue1Brown')).toBe('Why (a+b) works')
   })
 
+  it('leaves out a channel whose latest video is about what they are sick of', () => {
+    const [a] = channelsFor('space')
+    const feed = { fetched: '2026-09-23', channels: { [a.id]: { name: a.name, videos: [{ id: 'v', title: 'iPhone 18 camera test', published: '2026-09-01' }], perDay: 10, recent: 3 } } }
+    expect(recommend(['space'], ['iPhone'], [], feed).some((r) => r.channel.id === a.id)).toBe(false)
+    expect(recommend(['space'], [], [], feed).some((r) => r.channel.id === a.id)).toBe(true)
+  })
+
   it('keeps politics, news, religion, kids and health hand-picked', () => {
     for (const t of ['politics-explained', 'news-explained', 'faith-spirituality', 'nursery-sing-alongs', 'medicine']) expect(isHandPickedOnly(t), t).toBe(true)
     expect(isHandPickedOnly('space')).toBe(false)

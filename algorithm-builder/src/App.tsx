@@ -190,6 +190,13 @@ export default function App() {
               <Landing
                 onStart={() => {
                   setReturning(false)
+                  // "Fix my feed" starts fresh; "Pick up where I left off" is how to continue.
+                  // A shared ?from= link picks the app, else keep the one they used.
+                  if (resumable) {
+                    seeded.current = false
+                    setS(newSession(fromParam() ?? s.platform))
+                    setResumable(false)
+                  }
                   go('q1')
                 }}
                 onResume={resumable ? () => go('results') : null}

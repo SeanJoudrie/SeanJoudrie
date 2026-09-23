@@ -123,6 +123,7 @@ export const COPY = {
     fromYouTube: 'From YouTube',
     playAll: 'Play them all on YouTube',
     searchFor: (q: string) => `Search YouTube for “${q}”`,
+    pickFromSearch: (n: number) => `Pick ${n} from this search.`,
     busy: 'YouTube is busy. These links work just as well.',
     creditYouTube: 'Videos from YouTube',
 

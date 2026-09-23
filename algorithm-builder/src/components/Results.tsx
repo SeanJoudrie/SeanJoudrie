@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { COPY, summarize } from '../copy'
 import { BRAND } from '../data/brand'
-import { channelNamed, channelsFor, feedFor, picksFor, poolFor, recommend, surpriseFrom, topicById, type Feed } from '../data/library'
+import { channelNamed, channelsFor, feedFor, picksFor, poolFor, recommend, surpriseFrom, topicById, type Feed, type Recommendation } from '../data/library'
 import { PLATFORMS, SIGNALS, tipsFor } from '../data/playbooks'
 import { WILDCARD_ID } from '../data/topics'
 import { buildChecklist, type CheckItem } from '../lib/checklist'
@@ -290,6 +290,27 @@ function useVideos(s: Session, slots: Slot[]): Videos {
             n.count--
           }
         }
+      // Second pass for big topics: a channel's spare video, before falling back to search.
+      if (feed)
+        for (const n of need) {
+          const [topic, part] = n.slot.key.split('/')
+          if (n.count === 0 || topic === WILDCARD_ID || part?.startsWith('pick-')) continue
+          const perChannel = new Map<string, number>()
+          picked.forEach((p) => perChannel.set(p.video.channel, (perChannel.get(p.video.channel) ?? 0) + 1))
+          const spare = filterVideos(
+            feedFor(topic, feed, s.hidden).map((v) => ({ ...v, thumb: thumbOf(v.id) })),
+            s.turnDown,
+            new Set(seen),
+          )
+          for (const v of spare) {
+            if (n.count === 0) break
+            if ((perChannel.get(v.channel) ?? 0) >= 2) continue
+            perChannel.set(v.channel, (perChannel.get(v.channel) ?? 0) + 1)
+            seen.add(v.id)
+            picked.push({ video: v, slot: n.slot, source: 'channel' })
+            n.count--
+          }
+        }
       const still = need.filter((n) => n.count > 0)
       if (!still.length) return setState({ picked: [...picked], missing: [], busy: false, loading: false })
       // 3. Top up from YouTube search; 4. anything still missing becomes a search link.
@@ -334,6 +355,10 @@ function Feed({ s, onAdjust, onHide, onMix }: { s: Session; onAdjust: () => void
   }, [s.mix, seed])
   const videos = useVideos(s, slots)
   const cats = s.mix.categories.filter((c) => c.weight > 0)
+  // Channels are chosen once for the whole page, so none shows up under two topics.
+  const feed = useFeed()
+  const topicKey = cats.map((c) => c.id).join()
+  const recs = useMemo(() => (feed === undefined ? null : recommend(topicKey.split(','), s.turnDown, s.hidden, feed)), [feed, topicKey, s.turnDown, s.hidden])
   const countFor = (id: string) => slots.filter((x) => x.key.startsWith(`${id}/`)).reduce((n, x) => n + x.count, 0)
   const all = videos.picked.map((p) => p.video)
 
@@ -381,7 +406,7 @@ function Feed({ s, onAdjust, onHide, onMix }: { s: Session; onAdjust: () => void
       )}
 
       {cats.map((c) => (
-        <Shelf key={c.id} s={s} cat={c} count={countFor(c.id)} videos={videos} onHide={onHide} onMix={onMix} />
+        <Shelf key={c.id} s={s} cat={c} count={countFor(c.id)} videos={videos} recs={recs?.filter((x) => x.topic === c.id) ?? null} onHide={onHide} onMix={onMix} />
       ))}
 
       <p className="m-0 text-base text-ink-2">{r.creditYouTube}</p>
@@ -389,7 +414,23 @@ function Feed({ s, onAdjust, onHide, onMix }: { s: Session; onAdjust: () => void
   )
 }
 
-function Shelf({ s, cat, count, videos, onHide, onMix }: { s: Session; cat: Category; count: number; videos: Videos; onHide: (hidden: string[]) => void; onMix: (mix: Mix) => void }) {
+function Shelf({
+  s,
+  cat,
+  count,
+  videos,
+  recs,
+  onHide,
+  onMix,
+}: {
+  s: Session
+  cat: Category
+  count: number
+  videos: Videos
+  recs: Recommendation[] | null
+  onHide: (hidden: string[]) => void
+  onMix: (mix: Mix) => void
+}) {
   const mine = videos.picked.filter((p) => p.slot.key.startsWith(`${cat.id}/`))
   const links = videos.missing.filter((m) => m.key.startsWith(`${cat.id}/`))
   const surprise = cat.id === WILDCARD_ID
@@ -441,9 +482,11 @@ function Shelf({ s, cat, count, videos, onHide, onMix }: { s: Session; cat: Cate
                     href={searchUrl(slot.query, s.mix.before)}
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-count={slot.count}
                     className="flex h-full min-h-28 flex-col justify-between gap-2 rounded-xl border-2 border-dashed border-line bg-card p-4 transition hover:border-ink"
                   >
                     <span className="block text-base font-semibold text-ink">{slot.label}</span>
+                    {slot.count > 1 && <span className="block text-base text-ink-2">{r.pickFromSearch(slot.count)}</span>}
                     <span className="flex items-center justify-between gap-2 text-base text-ink-2">
                       {r.searchFor(slot.query)} <ExternalIcon className="shrink-0 text-accent-ink" />
                     </span>
@@ -455,7 +498,7 @@ function Shelf({ s, cat, count, videos, onHide, onMix }: { s: Session; cat: Cate
         )}
 
         {picks.length > 0 && <Picks cat={cat} picks={picks} mix={s.mix} onMix={onMix} />}
-        {!surprise && <ShelfChannels s={s} topic={cat.id} onHide={onHide} />}
+        {!surprise && recs && <ShelfChannels s={s} topic={cat.id} all={recs} onHide={onHide} />}
       </section>
     </Card>
   )
@@ -486,12 +529,9 @@ function Picks({ cat, picks, mix, onMix }: { cat: Category; picks: { label: stri
 
 const PAGE = 3
 
-function ShelfChannels({ s, topic, onHide }: { s: Session; topic: string; onHide: (hidden: string[]) => void }) {
-  const feed = useFeed()
+function ShelfChannels({ s, topic, all, onHide }: { s: Session; topic: string; all: Recommendation[]; onHide: (hidden: string[]) => void }) {
   const [start, setStart] = useState(0)
   const [undo, setUndo] = useState<{ id: string; name: string } | null>(null)
-  const all = useMemo(() => (feed === undefined ? [] : recommend([topic], s.turnDown, s.hidden, feed)), [feed, topic, s.turnDown, s.hidden])
-  if (feed === undefined) return null
   const hiddenHere = s.hidden.filter((id) => channelsFor(topic).some((c) => c.id === id))
   if (!all.length && !hiddenHere.length) return null
 

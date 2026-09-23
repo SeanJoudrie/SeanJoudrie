@@ -4,3 +4,5 @@ dist
 .env.local
 .netlify
 shots
+*.tsbuildinfo
+*.tmp.mjs
