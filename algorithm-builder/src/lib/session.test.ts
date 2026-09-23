@@ -2,18 +2,18 @@ import { describe, expect, it } from 'vitest'
 import { buildChecklist } from './checklist'
 import { sum } from './mix'
 import { allocate, filterVideos, searchUrl } from './playlist'
-import { decodeRecipe, encodeRecipe, initialMix, likeFor, newSession, reconcileMix } from './session'
+import { decodeRecipe, encodeRecipe, initialMix, likeFor, newSession, pctFromTally, reconcileMix, tallyFromPct } from './session'
 
 describe('initialMix', () => {
   it('splits likes evenly with a 5% wildcard, summing to 100', () => {
-    const mix = initialMix(['math', 'comedy', 'Game theory'])
+    const mix = initialMix(['math-explained', 'stand-up', 'Game theory'])
     expect(mix.categories.map((c) => c.weight)).toEqual([32, 32, 31, 5])
     expect(sum(mix.categories)).toBe(100)
     for (const c of mix.categories) expect(sum(c.children)).toBe(100)
   })
 
   it('falls back to a starter mix', () => {
-    expect(initialMix([]).categories.map((c) => c.id)).toEqual(['comedy', 'science', 'wildcard'])
+    expect(initialMix([]).categories.map((c) => c.id)).toEqual(['documentaries', 'nature-relaxing', 'easy-recipes', 'wildcard'])
   })
 })
 
@@ -80,46 +80,74 @@ describe('searchUrl', () => {
 describe('buildChecklist', () => {
   it('leads with deletion for each turned-down topic on YouTube', () => {
     const items = buildChecklist('youtube', ['Game of Thrones', 'Star Wars'], [])
-    expect(items[0].text).toContain('Delete “Game of Thrones”')
-    expect(items[1].text).toContain('Delete “Star Wars”')
+    expect(items[0].text).toBe('Delete Game of Thrones videos from your history.')
+    expect(items[1].text).toBe('Delete Star Wars videos from your history.')
     expect(items.some((i) => i.id === 'yt-quarantine')).toBe(true)
   })
 
   it('uses platform-specific wording elsewhere', () => {
-    expect(buildChecklist('tiktok', ['Lego'], [])[0].text).toContain('long-press')
+    expect(buildChecklist('tiktok', ['Lego'], [])[0].detail).toContain('Press and hold')
     expect(buildChecklist('x', ['Lego'], []).some((i) => i.id === 'x-mute')).toBe(true)
   })
 })
 
 describe('reconcileMix', () => {
   it('keeps tuned weights when a like is added', () => {
-    const mix = initialMix(['math', 'comedy'])
+    const mix = initialMix(['math-explained', 'stand-up'])
     mix.categories = [
       { ...mix.categories[0], weight: 70 },
       { ...mix.categories[1], weight: 25 },
       mix.categories[2],
     ]
-    const out = reconcileMix(mix, ['math', 'comedy', 'history'])
-    expect(out.categories.map((c) => c.id)).toEqual(['math', 'comedy', 'history', 'wildcard'])
+    const out = reconcileMix(mix, ['math-explained', 'stand-up', 'world-history'])
+    expect(out.categories.map((c) => c.id)).toEqual(['math-explained', 'stand-up', 'world-history', 'wildcard'])
     expect(sum(out.categories)).toBe(100)
     expect(out.categories[0].weight).toBeGreaterThan(out.categories[1].weight)
   })
 
   it('drops unliked categories and keeps topics added in the mix step', () => {
-    const mix = initialMix(['math', 'comedy'])
+    const mix = initialMix(['math-explained', 'stand-up'])
     mix.categories.splice(2, 0, { id: 'added-chess', label: 'Chess', weight: 10, children: [{ id: 'a', label: 'Chess', weight: 100 }] })
-    const out = reconcileMix(mix, ['math'])
-    expect(out.categories.map((c) => c.id)).toEqual(['math', 'added-chess', 'wildcard'])
+    const out = reconcileMix(mix, ['math-explained'])
+    expect(out.categories.map((c) => c.id)).toEqual(['math-explained', 'added-chess', 'wildcard'])
     expect(sum(out.categories)).toBe(100)
   })
 
   it('returns the same mix when nothing changed', () => {
-    const mix = initialMix(['math', 'Lego Technic'])
-    expect(reconcileMix(mix, ['math', 'Lego Technic'])).toBe(mix)
+    const mix = initialMix(['math-explained', 'Lego Technic'])
+    expect(reconcileMix(mix, ['math-explained', 'Lego Technic'])).toBe(mix)
+  })
+
+  it('keeps categories from links shared before the library changed', () => {
+    // A v1 recipe from the first release: 'science' and 'comedy' were topic ids then.
+    const legacy = {
+      ...newSession(),
+      likes: ['science', 'comedy'],
+      mix: {
+        before: null,
+        categories: [
+          { id: 'science', label: 'Science', weight: 60, children: [{ id: 'space', label: 'Space', weight: 100, query: 'space science explained' }] },
+          { id: 'comedy', label: 'Comedy', weight: 35, children: [{ id: 'stand-up', label: 'Stand-up', weight: 100, query: 'stand up comedy special clip' }] },
+          { id: 'wildcard', label: 'Something I’d never click', weight: 5, children: [{ id: 'wildcard-all', label: 'Random but good', weight: 100 }] },
+        ],
+      },
+    }
+    const back = decodeRecipe(encodeRecipe(legacy))!
+    expect(reconcileMix(back.mix, back.likes)).toBe(back.mix)
+    expect(back.mix.categories.map((c) => c.weight)).toEqual([60, 35, 5])
   })
 
   it('maps categories back to likes', () => {
-    const mix = initialMix(['math', 'Lego Technic'])
-    expect(mix.categories.map(likeFor)).toEqual(['math', 'Lego Technic', null])
+    const mix = initialMix(['math-explained', 'Lego Technic'])
+    expect(mix.categories.map(likeFor)).toEqual(['math-explained', 'Lego Technic', null])
+  })
+})
+
+describe('homepage estimate', () => {
+  it('round-trips each answer through the saved shape', () => {
+    for (const pct of [90, 50, 25, 10]) expect(pctFromTally(tallyFromPct(pct, '2026-09-23'))).toBe(pct)
+  })
+  it('reads old exact counts as a share', () => {
+    expect(pctFromTally({ date: '2026-09-01', wanted: 3, sickOf: 14, other: 3 })).toBe(70)
   })
 })

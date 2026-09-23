@@ -5,6 +5,29 @@
    (the mascot's hard hat). Alarm red is reserved for the turn-down list.
    ============================================================ */
 @theme {
+  /* Sizes for readers of every age (docs/UX_AUDIT.md §10): the root is 18px,
+     so body text is 18px and nothing in the UI is under 16px. Spacing is in
+     px so the 4px grid holds at any text size. */
+  --spacing: 4px;
+  --text-xs: 0.889rem;
+  --text-xs--line-height: 1.4;
+  --text-sm: 0.889rem;
+  --text-sm--line-height: 1.45;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5;
+  --text-lg: 1.111rem;
+  --text-lg--line-height: 1.45;
+  --text-xl: 1.222rem;
+  --text-xl--line-height: 1.35;
+  --text-2xl: 1.444rem;
+  --text-2xl--line-height: 1.25;
+  --text-3xl: 1.778rem;
+  --text-3xl--line-height: 1.2;
+  --text-4xl: 2.111rem;
+  --text-4xl--line-height: 1.15;
+  --text-5xl: 2.667rem;
+  --text-5xl--line-height: 1.1;
+
   --font-display: "Bricolage Grotesque", ui-rounded, system-ui, sans-serif;
   --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
 
@@ -79,6 +102,7 @@
 }
 
 html {
+  font-size: 112.5%;
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-sans);
@@ -95,6 +119,11 @@ body {
   font-family: var(--font-display);
   letter-spacing: -0.01em;
 }
+
+/* Long words never push the page sideways, even at 200% text. */
+h1, h2, h3, p, li, label, button, a { overflow-wrap: anywhere; }
+
+dialog::backdrop { background: rgb(0 0 0 / 0.45); }
 
 /* Headings take focus on step change (for screen readers); no ring for that. */
 h1[tabindex="-1"]:focus {
@@ -156,7 +185,7 @@ input[type="range"].slider {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 28px;
+  height: 48px;
   background: transparent;
   cursor: pointer;
 }
@@ -172,17 +201,17 @@ input[type="range"].slider::-moz-range-track {
 }
 input[type="range"].slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 24px;
-  height: 24px;
-  margin-top: -8px;
+  width: 32px;
+  height: 32px;
+  margin-top: -12px;
   border-radius: 50%;
   background: var(--card);
   border: 3px solid var(--ink);
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
 }
 input[type="range"].slider::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: var(--card);
   border: 3px solid var(--ink);

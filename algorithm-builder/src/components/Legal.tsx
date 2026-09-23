@@ -13,12 +13,12 @@ export function Privacy() {
       </p>
       <h2>What stays on your device</h2>
       <p>
-        Your answers (the topics you like, what you’re sick of, your mix and your homepage counts) are saved in your browser’s local storage and inside your recipe link. We don’t
-        receive or store them. Anyone you send your recipe link to can see what’s in it.
+        Your answers (the topics you like, what you’re tired of, and your guesses about your home screen) are saved in your browser and inside your personal link. We don’t
+        receive or store them. Anyone you send your link to can see what’s in it.
       </p>
       <h2>What we send to YouTube</h2>
       <p>
-        To build your playlist, the app sends only the search words for each slice of your mix (for example “math explained visually”) and an optional “before” year to our search
+        To find videos, the app sends only the search words for each topic (for example “math explained visually”) and an optional “older than” year to our search
         server, which asks the YouTube Data API. Our server keeps these results in memory for up to 24 hours so repeated searches don’t use up our quota, and it keeps a short-lived
         count of requests per connection to stop abuse. Nothing is linked to you.
       </p>
@@ -58,7 +58,7 @@ export function Terms() {
       <p>{BRAND.name} is a free tool that suggests settings to change and videos to watch. By using it you agree to these terms.</p>
       <h2>No guarantees</h2>
       <p>
-        Recommendation systems are run by the platforms, not by us. Your mix is a target, not a promise, and results vary. The tool is provided as is, without warranties of any
+        Recommendation systems are run by the platforms, not by us. Your new feed is a goal, not a promise, and results vary. The tool is provided as is, without warranties of any
         kind, and we aren’t liable for anything that results from using it.
       </p>
       <h2>We never touch your accounts</h2>

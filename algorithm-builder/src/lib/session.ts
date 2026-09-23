@@ -1,9 +1,10 @@
+import { DEFAULT_SUGGESTIONS } from '../data/library'
 import { MAX_CATEGORIES, TOPICS, WILDCARD_ID } from '../data/topics'
 import { apportion, evenly } from './mix'
 import type { Category, Mix, Platform, ProblemId, Session, SubTopic, Tally } from './types'
 
 export const DEFAULT_WILDCARD = 5
-const STARTER_LIKES = ['comedy', 'science']
+const STARTER_LIKES = DEFAULT_SUGGESTIONS
 
 export function slugify(s: string): string {
   return (
@@ -34,7 +35,7 @@ function categoryFor(like: string): Category {
 export function wildcardCategory(weight: number): Category {
   return {
     id: WILDCARD_ID,
-    label: 'Something I’d never click',
+    label: 'Surprise me',
     weight,
     children: [{ id: 'wildcard-all', label: 'Random but good', weight: 100 }],
   }
@@ -64,10 +65,13 @@ const categoryId = (like: string) => (TOPICS.some((t) => t.id === like) ? like :
  */
 export function reconcileMix(mix: Mix, likes: string[]): Mix {
   const picked = (likes.length ? likes : STARTER_LIKES).slice(0, MAX_CATEGORIES)
-  const wantIds = picked.map(categoryId)
+  // A like that already names a category in this mix keeps it, even if the
+  // library has since renamed that topic (links shared before the change).
+  const idFor = (like: string) => (mix.categories.some((c) => c.id === like) ? like : categoryId(like))
+  const wantIds = picked.map(idFor)
   const kept = mix.categories.filter((c) => c.id === WILDCARD_ID || c.id.startsWith('added-') || wantIds.includes(c.id))
   const have = new Set(kept.map((c) => c.id))
-  const fresh = picked.filter((l) => !have.has(categoryId(l))).map(categoryFor)
+  const fresh = picked.filter((l) => !have.has(idFor(l))).map(categoryFor)
   if (!fresh.length && kept.length === mix.categories.length) return mix
   const share = Math.max(1, Math.round(100 / Math.max(1, kept.length + fresh.length)))
   const wild = kept.findIndex((c) => c.id === WILDCARD_ID)
@@ -75,6 +79,21 @@ export function reconcileMix(mix: Mix, likes: string[]): Mix {
   const withWild = ordered.some((c) => c.id === WILDCARD_ID) ? ordered : [...ordered, wildcardCategory(0)]
   const parts = apportion(100, withWild.map((c) => c.weight))
   return { ...mix, categories: withWild.map((c, i) => ({ ...c, weight: parts[i] })) }
+}
+
+/*
+ * The homepage estimate (Q2) is stored in the existing tally shape, so links
+ * shared before the estimate replaced counting still decode: a 50% guess is
+ * "10 of 20 videos".
+ */
+export function tallyFromPct(pct: number, date = new Date().toISOString().slice(0, 10)): Tally {
+  const sickOf = Math.max(0, Math.min(20, Math.round((pct / 100) * 20)))
+  return { date, wanted: 0, sickOf, other: 20 - sickOf }
+}
+
+export function pctFromTally(t: Tally): number {
+  const total = t.wanted + t.sickOf + t.other || 20
+  return Math.round((t.sickOf / total) * 100)
 }
 
 export function newSession(platform: Platform = 'youtube'): Session {
