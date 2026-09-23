@@ -29,7 +29,8 @@ export function withLessOf(s: Session, typed: string): Partial<Session> {
 export function withMoreOf(s: Session, typed: string): Partial<Session> {
   const v = clean(typed)
   if (!v || s.likes.length >= MAX_CATEGORIES) return {}
-  const exact = TOPIC_LIST.find((t) => norm(t.label) === norm(v))
+  // The topic's name or a nickname ("yoga" → Yoga & stretching); anything else stays in their words.
+  const exact = findTopic(v)
   if (exact) return s.likes.includes(exact.id) ? {} : { likes: [...s.likes, exact.id] }
   return s.likes.some((l) => norm(l) === norm(v)) ? {} : { likes: [...s.likes, v] }
 }
@@ -252,7 +253,7 @@ export function WantMore({ s, update, draft: { text, setText } }: { s: Session; 
   const results = q ? searchTopics(q, 12) : []
   const picked = TOPIC_LIST.filter((t) => s.likes.includes(t.id))
   const suggested = TOPIC_LIST.filter((t) => t.suggested && !s.likes.includes(t.id))
-  const exactTopic = q ? TOPIC_LIST.find((t) => norm(t.label) === norm(q)) : undefined
+  const exactTopic = q ? findTopic(q) : undefined
   const add = () => {
     update(withMoreOf(s, q))
     setText('')

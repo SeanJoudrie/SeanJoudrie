@@ -23,5 +23,8 @@ describe('adding what was typed', () => {
     expect(withMoreOf(s, 'baking').likes).toEqual(['baking'])
     expect(withMoreOf(s, 'sourdough').likes).toEqual(['sourdough'])
     expect(withMoreOf(s, 'Classic films').likes).toEqual(['classic-films'])
+    // A nickname is the topic, so they get its channels and videos.
+    expect(withMoreOf(s, 'yoga').likes).toEqual(['yoga-stretching'])
+    expect(withMoreOf(s, 'NBA').likes).toEqual(['basketball'])
   })
 })
