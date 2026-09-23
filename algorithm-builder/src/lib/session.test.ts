@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { buildChecklist } from './checklist'
 import { sum } from './mix'
 import { allocate, filterVideos, searchUrl } from './playlist'
-import { decodeRecipe, encodeRecipe, initialMix, newSession } from './session'
+import { decodeRecipe, encodeRecipe, initialMix, likeFor, newSession, reconcileMix } from './session'
 
 describe('initialMix', () => {
   it('splits likes evenly with a 5% wildcard, summing to 100', () => {
@@ -88,5 +88,38 @@ describe('buildChecklist', () => {
   it('uses platform-specific wording elsewhere', () => {
     expect(buildChecklist('tiktok', ['Lego'], [])[0].text).toContain('long-press')
     expect(buildChecklist('x', ['Lego'], []).some((i) => i.id === 'x-mute')).toBe(true)
+  })
+})
+
+describe('reconcileMix', () => {
+  it('keeps tuned weights when a like is added', () => {
+    const mix = initialMix(['math', 'comedy'])
+    mix.categories = [
+      { ...mix.categories[0], weight: 70 },
+      { ...mix.categories[1], weight: 25 },
+      mix.categories[2],
+    ]
+    const out = reconcileMix(mix, ['math', 'comedy', 'history'])
+    expect(out.categories.map((c) => c.id)).toEqual(['math', 'comedy', 'history', 'wildcard'])
+    expect(sum(out.categories)).toBe(100)
+    expect(out.categories[0].weight).toBeGreaterThan(out.categories[1].weight)
+  })
+
+  it('drops unliked categories and keeps topics added in the mix step', () => {
+    const mix = initialMix(['math', 'comedy'])
+    mix.categories.splice(2, 0, { id: 'added-chess', label: 'Chess', weight: 10, children: [{ id: 'a', label: 'Chess', weight: 100 }] })
+    const out = reconcileMix(mix, ['math'])
+    expect(out.categories.map((c) => c.id)).toEqual(['math', 'added-chess', 'wildcard'])
+    expect(sum(out.categories)).toBe(100)
+  })
+
+  it('returns the same mix when nothing changed', () => {
+    const mix = initialMix(['math', 'Lego Technic'])
+    expect(reconcileMix(mix, ['math', 'Lego Technic'])).toBe(mix)
+  })
+
+  it('maps categories back to likes', () => {
+    const mix = initialMix(['math', 'Lego Technic'])
+    expect(mix.categories.map(likeFor)).toEqual(['math', 'Lego Technic', null])
   })
 })

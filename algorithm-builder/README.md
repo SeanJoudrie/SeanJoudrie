@@ -29,6 +29,8 @@ Without a YouTube key the app works fully and the playlist becomes YouTube searc
 1. Create a Google Cloud project, enable **YouTube Data API v3**, and create an API key (restrict it to that API).
 2. Put it in `.env.local` as `YOUTUBE_API_KEY=...` for local dev, or in the host's environment variables in production.
 
+**Before sharing the Netlify link:** open it once with the key set and press **Play all on YouTube**. That queue link is undocumented by YouTube and couldn't be checked from the build machine; every video is also linked on its own either way.
+
 The default quota is **100 search calls per day**. Each search is cached for 24 hours, so popular topics are free after the first hit. Request a quota increase before launch.
 
 Optional: `VITE_TIP_URL=https://buymeacoffee.com/you` shows the one-line tip jar on the results page.
@@ -46,7 +48,9 @@ Optional: `VITE_TIP_URL=https://buymeacoffee.com/you` shows the one-line tip jar
 ```bash
 npm test           # logic + API handler (Vitest)
 npm run build      # typecheck + production build
-npm run smoke      # walks the whole flow in Chromium, screenshots in ./shots
+npm run smoke      # clicks every button in Chromium (phone + desktop, light + dark),
+                   # incl. the real /api/search handler against a fake YouTube,
+                   # quota running out, tip-guide platforms and reduced motion
 node scripts/og.mjs  # regenerates the share image and home-screen icon
 ```
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { apportion, evenly, normalize, rebalance, sum } from './mix'
+import { apportion, evenly, normalize, rebalance, removeAt, sum } from './mix'
 
 const items = (...w: number[]) => w.map((weight) => ({ weight }))
 
@@ -49,6 +49,17 @@ describe('rebalance', () => {
       expect(sum(state)).toBe(100)
       for (const it of state) expect(Number.isInteger(it.weight) && it.weight >= 0).toBe(true)
     }
+  })
+})
+
+describe('removeAt', () => {
+  it('gives the removed share to unlocked items and keeps locks', () => {
+    const out = removeAt([{ weight: 20 }, { weight: 30, locked: true }, { weight: 50 }], 0)
+    expect(out.map((i) => i.weight)).toEqual([30, 70])
+  })
+  it('falls back to rescaling when everything left is locked', () => {
+    const out = removeAt([{ weight: 20 }, { weight: 30, locked: true }], 0)
+    expect(out.map((i) => i.weight)).toEqual([100])
   })
 })
 

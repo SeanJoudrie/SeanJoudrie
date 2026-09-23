@@ -125,16 +125,26 @@ h1[tabindex="-1"]:focus {
   to { background-position: 200px 0; }
 }
 /* Motion is limited to: a short fade/rise when a screen changes, chart values
-   easing to their new size, and the mascot blinking. Nothing else moves. */
-.anim-rise { animation: rise 240ms ease-out both; }
-.anim-pop { animation: fade 200ms ease-out both; }
+   easing to their new size, and the mascot blinking. Nothing else moves.
+   Two durations, one curve, used everywhere (MixChart's tween reads --dur-data). */
+:root {
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur-screen: 240ms;
+  --dur-data: 320ms;
+}
+.anim-rise { animation: rise var(--dur-screen) var(--ease) both; }
+.anim-pop { animation: fade var(--dur-screen) var(--ease) both; }
 .anim-blink { animation: blink 4.5s infinite; transform-box: fill-box; transform-origin: center; }
 .skeleton {
   background: linear-gradient(90deg, var(--paper-2), var(--line), var(--paper-2));
   background-size: 400px 100%;
   animation: shimmer 1.2s linear infinite;
 }
-.bar-seg { transition: width 380ms cubic-bezier(0.2, 0.7, 0.2, 1); }
+.bar-seg { transition: width var(--dur-data) var(--ease); }
+
+/* Touch: no double-tap zoom on rapid taps (tally +/-), no grey tap flash. */
+button, a, input, label { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.safe-bottom { padding-bottom: max(12px, env(safe-area-inset-bottom)); }
 
 @media (prefers-reduced-motion: reduce) {
   .anim-rise, .anim-pop, .anim-blink, .skeleton { animation: none; }

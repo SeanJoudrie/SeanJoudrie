@@ -53,6 +53,22 @@ export function rebalance<T extends Weighted>(items: T[], index: number, value: 
   })
 }
 
+/**
+ * Remove item `index` and hand its share to the unlocked items (in proportion
+ * to their size). Locked items keep their values unless nothing else is free.
+ */
+export function removeAt<T extends Weighted>(items: T[], index: number): T[] {
+  const rest = items.filter((_, i) => i !== index)
+  const freeIdx = rest.map((_, i) => i).filter((i) => !rest[i].locked)
+  if (freeIdx.length === 0) return normalize(rest)
+  const lockedSum = rest.reduce((a, it) => (it.locked ? a + it.weight : a), 0)
+  const parts = apportion(100 - lockedSum, freeIdx.map((i) => rest[i].weight))
+  return rest.map((it, i) => {
+    const k = freeIdx.indexOf(i)
+    return k === -1 ? it : { ...it, weight: parts[k] }
+  })
+}
+
 /** Evenly split 100 across the items, keeping order. */
 export function evenly<T extends Weighted>(items: T[]): T[] {
   const parts = apportion(100, items.map(() => 1))

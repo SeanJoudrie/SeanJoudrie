@@ -47,13 +47,22 @@ export function Chip({
   )
 }
 
-/** Gus plus a speech line: the header of every step. */
-export function StepHeader({ pose, title, say }: { pose: Pose; title: string; say?: string }) {
+/** Gus plus a speech line: the header of every step. Nested use (inside a card) drops to an h2 without Gus. */
+export function StepHeader({ pose, title, say, nested = false }: { pose: Pose; title: string; say?: string; nested?: boolean }) {
+  if (nested)
+    return (
+      <header className="mb-4">
+        <h2 className="font-display m-0 text-xl font-bold leading-tight text-ink">{title}</h2>
+        {say && <p className="m-0 mt-2 text-base text-ink-2">{say}</p>}
+      </header>
+    )
   return (
     <header className="mb-6 flex items-start gap-3 sm:gap-4">
       <Mascot pose={pose} size={64} className="shrink-0" />
       <div className="pt-1">
-        <h1 tabIndex={-1} className="font-display m-0 text-2xl font-bold leading-tight text-ink sm:text-3xl">{title}</h1>
+        <h1 tabIndex={-1} className="font-display m-0 text-2xl font-bold leading-tight text-ink sm:text-3xl">
+          {title}
+        </h1>
         {say && <p className="m-0 mt-2 text-base text-ink-2">{say}</p>}
       </div>
     </header>

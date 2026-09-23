@@ -48,7 +48,8 @@ The master review prompt, applied to the product spec. As of 2026-09-23.
 | API clients may store some data beyond 30 days but must re-verify authorization every 30 days; after revoked consent, delete within 7 days (Authorized Data) or 30 days | VERIFIED | [Developer policies](https://developers.google.com/youtube/terms/developer-policies) |
 | Watch history is not readable via the Data API | UNVERIFIED (widely documented since 2016) | Check the `playlists`/`activities` docs; plan for Takeout either way. |
 | Nobody can press "Not interested" or delete history for a user via API | UNVERIFIED (no such endpoint known) | No endpoint appears in the API reference. |
-| `youtube.com/watch_videos?video_ids=a,b,c` opens an unnamed playlist | UNVERIFIED (undocumented) | Used as a convenience only; the app never depends on it. |
+| YouTube search honours a `before:YYYY-MM-DD` operator in the query | VERIFIED (2026-09-23) | A `math before:2015-01-01` search returned only videos 11+ years old. Used by the search-link fallback. |
+| `youtube.com/watch_videos?video_ids=a,b,c` opens an unnamed playlist | UNVERIFIED (undocumented) | Couldn't be checked from the build machine (YouTube served a captcha). Check it by hand once the API key is live; every video is also linked individually. |
 | Instagram "Reset suggested content", TikTok "Refresh your For You feed", X muted words | UNVERIFIED as of today | Check in each app before launch; date-stamp tip cards. |
 | Instagram has said sends/shares are among the strongest Reels signals | UNVERIFIED | Check Instagram head's public statements before quoting. |
 

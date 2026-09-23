@@ -95,54 +95,77 @@ export function PlatformStep({ s, update, next }: { s: Session; update: Update; 
 /* ---------- Likes (F-02) ---------- */
 
 export function LikesStep({ s, update }: { s: Session; update: Update }) {
-  const [custom, setCustom] = useState('')
+  const [text, setText] = useState('')
+  const [showAll, setShowAll] = useState(() => s.likes.some((l) => TOPICS.find((t) => t.id === l && !t.popular)))
   const full = s.likes.length >= MAX_CATEGORIES
   const toggle = (id: string) =>
     update({ likes: s.likes.includes(id) ? s.likes.filter((x) => x !== id) : full ? s.likes : [...s.likes, id] })
   const customLikes = s.likes.filter((l) => !TOPICS.some((t) => t.id === l))
+  const q = text.trim().toLowerCase()
+  // Typing filters the whole library; otherwise show the popular dozen (plus anything already picked).
+  const visible = q
+    ? TOPICS.filter((t) => t.label.toLowerCase().includes(q) || t.children.some((c) => c.label.toLowerCase().includes(q)))
+    : TOPICS.filter((t) => showAll || t.popular || s.likes.includes(t.id))
+  const exact = TOPICS.find((t) => t.label.toLowerCase() === q)
   const add = () => {
-    const v = custom.trim().slice(0, 40)
-    if (v && !s.likes.includes(v) && !full) update({ likes: [...s.likes, v] })
-    setCustom('')
+    const v = text.trim().replace(/\s+/g, ' ').slice(0, 40)
+    if (!v || full) return
+    if (exact) {
+      if (!s.likes.includes(exact.id)) update({ likes: [...s.likes, exact.id] })
+    } else if (!s.likes.some((l) => l.toLowerCase() === v.toLowerCase())) {
+      update({ likes: [...s.likes, v] })
+    }
+    setText('')
   }
   return (
     <div className="anim-rise">
       <StepHeader pose="wave" title="What do you actually want to see?" say={`Pick up to ${MAX_CATEGORIES}. These become your mix.`} />
-      <div className="flex flex-wrap gap-2">
-        {TOPICS.map((t) => (
-          <Chip key={t.id} selected={s.likes.includes(t.id)} onClick={() => toggle(t.id)} disabled={full && !s.likes.includes(t.id)}>
-            {t.label}
-          </Chip>
-        ))}
-        {customLikes.map((l) => (
-          <Chip key={l} selected onClick={() => toggle(l)}>
-            {l} <CloseIcon />
-          </Chip>
-        ))}
-      </div>
       <form
-        className="mt-4 flex gap-2"
+        className="mb-4 flex gap-2"
         onSubmit={(e) => {
           e.preventDefault()
           add()
         }}
       >
         <label className="sr-only" htmlFor="custom-like">
-          Add your own topic
+          Search topics or add your own
         </label>
         <input
           id="custom-like"
-          value={custom}
-          onChange={(e) => setCustom(e.target.value)}
-          placeholder="Add your own (e.g. Lego Technic)"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Search or add your own (e.g. Lego Technic)"
+          autoComplete="off"
           disabled={full}
-          className="min-h-11 flex-1 rounded-full border-2 border-line bg-card px-4 text-base text-ink placeholder:text-muted focus:border-ink"
+          className="min-h-11 min-w-0 flex-1 rounded-full border-2 border-line bg-card px-4 text-base text-ink placeholder:text-muted focus:border-ink"
         />
-        <Button variant="secondary" type="submit" disabled={!custom.trim() || full}>
+        <Button variant="secondary" type="submit" disabled={!text.trim() || full}>
           Add
         </Button>
       </form>
-      {s.likes.length === 0 && <p className="m-0 mt-3 text-sm text-muted">Pick nothing and we’ll start you on comedy, science and a surprise.</p>}
+      <div className="flex flex-wrap gap-2">
+        {visible.map((t) => (
+          <Chip key={t.id} selected={s.likes.includes(t.id)} onClick={() => toggle(t.id)} disabled={full && !s.likes.includes(t.id)}>
+            {t.label}
+          </Chip>
+        ))}
+        {customLikes.map((l) => (
+          <Chip key={l} selected onClick={() => toggle(l)} aria-label={`Remove ${l}`}>
+            {l} <CloseIcon />
+          </Chip>
+        ))}
+      </div>
+      {q && visible.length === 0 && !full && (
+        <p className="m-0 mt-3 text-sm text-muted">Not in our list. Press Add and it becomes its own slice.</p>
+      )}
+      {!q && (
+        <button onClick={() => setShowAll((v) => !v)} className="mt-4 min-h-11 text-sm font-semibold text-accent-ink hover:underline" aria-expanded={showAll}>
+          {showAll ? 'Show fewer topics' : `More topics (${TOPICS.length - TOPICS.filter((t) => t.popular).length})`}
+        </button>
+      )}
+      <p className="m-0 mt-2 text-sm text-muted">
+        {full ? `That’s ${MAX_CATEGORIES}, the most a mix can hold. Remove one to pick another.` : s.likes.length === 0 ? 'Pick nothing and we’ll start you on comedy, science and a surprise.' : `${s.likes.length} of ${MAX_CATEGORIES} picked.`}
+      </p>
     </div>
   )
 }
@@ -269,7 +292,9 @@ export function TallyStep({
   title,
   say,
   sickOfLabel,
+  nested = false,
 }: {
+  nested?: boolean
   value: Tally | null
   onChange: (t: Tally) => void
   title: string
@@ -290,8 +315,8 @@ export function TallyStep({
   ]
   return (
     <div className="anim-rise">
-      <StepHeader pose="diagnose" title={title} say={say} />
-      <Card>
+      <StepHeader pose="diagnose" title={title} say={say} nested={nested} />
+      <Card className={nested ? '!border-0 !p-0' : ''}>
         <ul className="m-0 list-none space-y-3 p-0">
           {rows.map((r) => (
             <li key={r.k} className="flex items-center justify-between gap-3">
