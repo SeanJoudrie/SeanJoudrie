@@ -76,7 +76,8 @@ async function fromWikidata(name) {
 
 // Confirmed names are remembered, so a rerun only retries the misses
 // (YouTube slows down bursts of requests).
-const cachePath = join(root, 'docs/ux/channels.resolved.json')
+// WORK_DIR lets a long run keep its progress outside the repo until it's done.
+const cachePath = join(process.env.WORK_DIR ?? join(root, 'docs/ux'), 'channels.resolved.json')
 const cache = existsSync(cachePath) ? JSON.parse(readFileSync(cachePath, 'utf8')) : {}
 const names = [...new Set(Object.entries(candidates).flatMap(([k, v]) => (k.startsWith('_') ? [] : v)))]
 const found = new Map(names.filter((n) => cache[n]).map((n) => [n, cache[n]]))
