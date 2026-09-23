@@ -38,11 +38,12 @@ export const tidy = (s) =>
 
 const DAY = 86_400_000
 const MAX_AGE_DAYS = 730
-const PER_CHANNEL = 5
+// The site shows one video per channel; the second is a spare if the first is filtered out.
+const PER_CHANNEL = 2
 
 /**
  * Read a channel feed (its latest 15 uploads).
- * - `videos`: up to 5 full-length videos worth showing: no Shorts, nothing
+ * - `videos`: up to 2 full-length videos worth showing: no Shorts, nothing
  *   unaired (0 views), no "Part 2", nothing over 2 years old.
  * - `stats`: how the channel is doing right now, from every full-length
  *   upload in the last 60 days: `perDay` is the median views per day since

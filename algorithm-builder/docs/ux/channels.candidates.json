@@ -1,5 +1,5 @@
 {
-  "_note": "Hand-picked channel names per topic. scripts/channels.mjs resolves each name to a YouTube channel id through Wikidata, confirms it with the channel's own feed, and writes src/data/channels.json. Names that can't be confirmed are dropped, never guessed.",
+  "_note": "Hand-picked channel names per topic. scripts/channels.mjs resolves each name to a YouTube channel id through Wikidata, confirms it with the channel's own feed, and writes src/data/channels.json. Names that can't be confirmed are dropped, never guessed. Names after the first few in a topic came from scripts/discover.mjs and were each reviewed by hand before being added.",
   "_handPickedOnly": [
     "news-explained",
     "politics-explained",
@@ -25,27 +25,34 @@
   "behind-the-scenes": [
     "Corridor Crew",
     "Vanity Fair",
-    "Insider"
+    "Insider",
+    "Collider Behind the Scenes",
+    "JoBlo Behind-the-Scenes + Bloopers"
   ],
   "classic-films": [
     "TCM",
-    "Criterion Collection"
+    "Criterion Collection",
+    "Turner Classic Movies"
   ],
   "horror": [
     "Dead Meat",
-    "Bloody Disgusting"
+    "Bloody Disgusting",
+    "FoundFlix",
+    "Fascinating Horror"
   ],
   "sci-fi": [
     "DUST",
     "Nerdwriter1"
   ],
   "fantasy": [
-    "Pop Culture Detective"
+    "Pop Culture Detective",
+    "Hello Future Me"
   ],
   "anime": [
     "Gigguk",
     "Crunchyroll",
-    "Super Eyepatch Wolf"
+    "Super Eyepatch Wolf",
+    "Glass Reflection"
   ],
   "k-dramas": [
     "Netflix K-Content",
@@ -55,74 +62,105 @@
     "DW Documentary",
     "PBS Frontline",
     "Real Stories",
-    "BBC Earth"
+    "BBC Earth",
+    "Epic History",
+    "National Geographic",
+    "Channel 4 Documentaries",
+    "History Time"
   ],
   "reality-tv": [
     "Survivor",
-    "The Great British Bake Off"
+    "The Great British Bake Off",
+    "Hell's Kitchen",
+    "Food Network"
   ],
   "sitcoms": [
     "The Office US",
-    "Seinfeld"
+    "Seinfeld",
+    "BBC Comedy Greats"
   ],
   "film-essays": [
     "Every Frame a Painting",
     "Lessons from the Screenplay",
     "Nerdwriter1",
     "Thomas Flight",
-    "Patrick (H) Willems"
+    "Patrick (H) Willems",
+    "Cinema Therapy"
   ],
   "short-films": [
     "Omeleto",
     "Dust",
-    "ALTER"
+    "ALTER",
+    "CGMeetup",
+    "Short of the Week"
   ],
   "westerns": [
     "Grindhouse Cinema Database",
-    "Western Channel"
+    "Western Channel",
+    "The Wild West Extravaganza",
+    "Grjngo - Western Movies"
   ],
   "live-music": [
     "NPR Music",
     "KEXP",
     "COLORS",
-    "Audiotree"
+    "Audiotree",
+    "ARTE Concert"
   ],
   "music-theory": [
     "Adam Neely",
     "12tone",
     "Rick Beato",
-    "David Bennett Piano"
+    "David Bennett Piano",
+    "Signals Music Studio",
+    "David Bennett Music Theory",
+    "8-bit Music Theory",
+    "Brad Harrison Music"
   ],
   "learn-an-instrument": [
     "Justin Guitar",
     "Andy Guitar",
     "Pianote",
     "Drumeo",
-    "Marty Music"
+    "Marty Music",
+    "Learn Piano with Jazer Lee",
+    "Anyone Can Play Guitar",
+    "Marin Music Center",
+    "Bill Hilton"
   ],
   "classical": [
     "Berliner Philharmoniker",
     "Classic FM",
     "TwoSetViolin",
-    "Tiffany Poon"
+    "Tiffany Poon",
+    "HALIDONMUSIC",
+    "Warner Classics",
+    "DW Classical Music"
   ],
   "jazz": [
     "Jacob Collier",
-    "Open Studio"
+    "Open Studio",
+    "Jazz Video Guy"
   ],
   "gospel-worship": [
     "Elevation Worship",
     "Hillsong Worship",
     "Maverick City Music",
-    "Gaither Music TV"
+    "Gaither Music TV",
+    "Bethel Music",
+    "Neema Gospel Choir",
+    "Classic Hymns"
   ],
   "country": [
     "Grand Ole Opry",
-    "CMT"
+    "CMT",
+    "ACM - Academy of Country Music"
   ],
   "rock": [
     "Rick Beato",
-    "Professor of Rock"
+    "Professor of Rock",
+    "The Classic Rock Show",
+    "Amplified - Classic Rock & Music History"
   ],
   "hip-hop": [
     "Genius",
@@ -137,7 +175,9 @@
   "electronic": [
     "Boiler Room",
     "Cercle",
-    "Mixmag"
+    "Mixmag",
+    "DJ Mag",
+    "Beatport"
   ],
   "oldies": [
     "The Ed Sullivan Show",
@@ -151,33 +191,43 @@
   "covers": [
     "Scary Pockets",
     "Postmodern Jukebox",
-    "Pentatonix"
+    "Pentatonix",
+    "VoicePlay"
   ],
   "music-reactions": [
     "Elizabeth Zharoff",
-    "The Charismatic Voice"
+    "The Charismatic Voice",
+    "Cliff Beats Classics"
   ],
   "game-design": [
     "Game Maker's Toolkit",
     "GDC",
     "Noclip",
-    "Design Doc"
+    "Design Doc",
+    "GDC Festival of Gaming",
+    "Adam Millard - The Architect of Games"
   ],
   "retro-games": [
     "Digital Foundry",
     "The Gaming Historian",
     "Pat the NES Punk",
     "Modern Vintage Gamer",
-    "Ahoy"
+    "Ahoy",
+    "Retro Game Corps",
+    "My Retro Life"
   ],
   "speedruns": [
     "Games Done Quick",
     "Summoning Salt",
-    "Karl Jobst"
+    "Karl Jobst",
+    "Kosmic",
+    "ESA Speedrunning"
   ],
   "strategy-games": [
     "Spiffing Brit",
-    "GothamChess"
+    "GothamChess",
+    "agadmator's Chess Channel",
+    "GMHikaru"
   ],
   "cozy-games": [
     "Aliensrock",
@@ -185,44 +235,68 @@
   ],
   "horror-games": [
     "Markiplier",
-    "Game Theory"
+    "Game Theory",
+    "The Game Theorists",
+    "Hollow"
   ],
   "esports": [
     "LoL Esports",
     "Valorant Champions Tour",
-    "ESL Counter-Strike"
+    "ESL Counter-Strike",
+    "Esports World Cup",
+    "LEC",
+    "Overwatch Esports",
+    "Rocket League Esports"
   ],
   "minecraft-builds": [
     "Grian",
     "Mumbo Jumbo",
     "BdoubleO100",
-    "Hermitcraft"
+    "Hermitcraft",
+    "GeminiTay",
+    "Keralis",
+    "Blockical",
+    "cubicmetre",
+    "Skip the Tutorial"
   ],
   "game-lore": [
     "VaatiVidya",
     "Game Theory",
-    "Lore"
+    "Lore",
+    "Gingy",
+    "Cosmic Lore"
   ],
   "indie-games": [
     "Game Maker's Toolkit",
     "Mark Brown",
-    "Splattercat"
+    "Splattercat",
+    "Splattercatgaming",
+    "Biffa Plays Indie Games",
+    "Get Indie Gaming"
   ],
   "board-games": [
     "Shut Up & Sit Down",
     "Watch It Played",
     "Dice Tower",
-    "Critical Role"
+    "Critical Role",
+    "No Rolls Barred",
+    "3 Minute Board Games"
   ],
   "puzzles-crosswords": [
     "Cracking the Cryptic",
-    "New York Times"
+    "New York Times",
+    "MindYourDecisions",
+    "Rangsk"
   ],
   "stand-up": [
     "Netflix Is A Joke",
     "Comedy Central Stand-Up",
     "Dry Bar Comedy",
-    "Just For Laughs"
+    "Just For Laughs",
+    "jimgaffigan",
+    "Don't Tell Comedy",
+    "Gabriel Iglesias",
+    "Josh Johnson"
   ],
   "sketch-comedy": [
     "Saturday Night Live",
@@ -242,7 +316,8 @@
   ],
   "improv": [
     "Whose Line Is It Anyway?",
-    "Improv Everywhere"
+    "Improv Everywhere",
+    "Taskmaster"
   ],
   "funny-animals": [
     "The Dodo",
@@ -256,13 +331,15 @@
   "magic-illusions": [
     "Chris Ramsay",
     "Penn & Teller",
-    "Dynamo"
+    "Dynamo",
+    "Oscar Owen Magic"
   ],
   "ai": [
     "Two Minute Papers",
     "3Blue1Brown",
     "Computerphile",
-    "Welch Labs"
+    "Welch Labs",
+    "AI Explained"
   ],
   "gadgets": [
     "Marques Brownlee",
@@ -275,7 +352,8 @@
     "freeCodeCamp.org",
     "The Coding Train",
     "Computerphile",
-    "Traversy Media"
+    "Traversy Media",
+    "Tech With Tim"
   ],
   "cybersecurity": [
     "Computerphile",
@@ -286,42 +364,56 @@
   "repair": [
     "Louis Rossmann",
     "iFixit",
-    "Hugh Jeffreys"
+    "Hugh Jeffreys",
+    "TronicsFix",
+    "how-2-repair.com"
   ],
   "computers-for-beginners": [
     "GCFLearnFree.org",
-    "Techboomers"
+    "Techboomers",
+    "Hayls World"
   ],
   "internet-culture": [
     "Internet Historian",
     "Jacob Geller",
-    "Folding Ideas"
+    "Folding Ideas",
+    "fern"
   ],
   "tech-history": [
     "LGR",
     "The 8-Bit Guy",
     "Techmoan",
     "Computer History Museum",
-    "Asianometry"
+    "Asianometry",
+    "Enrico Tartarotti",
+    "Company Man"
   ],
   "world-history": [
     "Kings and Generals",
     "OverSimplified",
     "Extra History",
     "CrashCourse",
-    "Historia Civilis"
+    "Historia Civilis",
+    "Real Time History",
+    "The Rest Is History",
+    "History Buffs",
+    "Timeline - World History Documentaries"
   ],
   "ancient-history": [
     "Garrett Ryan",
     "Historia Civilis",
     "Toldinstone",
-    "Invicta"
+    "Invicta",
+    "Odyssey - Ancient History Documentaries"
   ],
   "medieval-history": [
     "Modern History TV",
     "Metatron",
     "Lindybeige",
-    "Shadiversity"
+    "Shadiversity",
+    "Medieval Mindset",
+    "Chronicle - Medieval History Documentaries",
+    "MedievalMadness"
   ],
   "modern-history": [
     "The Cold War",
@@ -332,27 +424,35 @@
     "World War Two",
     "The Great War",
     "Mark Felton Productions",
-    "IWM"
+    "IWM",
+    "World at War"
   ],
   "american-history": [
     "CrashCourse",
     "History",
-    "Smithsonian Channel"
+    "Smithsonian Channel",
+    "American Experience | PBS",
+    "Heimler's History"
   ],
   "history-of-everyday-life": [
     "Townsends",
     "Tasting History with Max Miller",
-    "Absolute History"
+    "Absolute History",
+    "History Tea Time with Lindsay Holiday",
+    "History of Simple Things"
   ],
   "military-history": [
     "Mark Felton Productions",
     "Kings and Generals",
     "Drachinifel",
-    "The Tank Museum"
+    "The Tank Museum",
+    "The Armchair Historian",
+    "HistoryMarche"
   ],
   "genealogy": [
     "Ancestry",
-    "FamilySearch"
+    "FamilySearch",
+    "Genealogy TV"
   ],
   "local-history": [
     "Tom Scott",
@@ -361,7 +461,8 @@
   "odd-history": [
     "Weird History",
     "Tom Scott",
-    "Vsauce"
+    "Vsauce",
+    "Weird History Food"
   ],
   "famous-speeches": [
     "TED",
@@ -370,7 +471,8 @@
   "true-crime": [
     "JCS - Criminal Psychology",
     "Dateline NBC",
-    "Explore With Us"
+    "Explore With Us",
+    "48 Hours"
   ],
   "heists-scams": [
     "Coffeezilla",
@@ -386,67 +488,92 @@
   "courtroom": [
     "LegalEagle",
     "Law&Crime Network",
-    "Court TV"
+    "Court TV",
+    "The People's Court"
   ],
   "detectives-forensics": [
     "JCS - Criminal Psychology",
-    "Forensic Files"
+    "Forensic Files",
+    "The New Detectives"
   ],
   "easy-recipes": [
     "Joshua Weissman",
     "Babish Culinary Universe",
     "Pro Home Cooks",
     "Adam Ragusea",
-    "Jamie Oliver"
+    "Jamie Oliver",
+    "Allrecipes",
+    "Recipe30",
+    "RecipeTin Eats"
   ],
   "baking": [
     "Claire Saffitz x Dessert Person",
     "Preppy Kitchen",
     "Joshua Weissman",
-    "King Arthur Baking Company"
+    "King Arthur Baking Company",
+    "Bigger Bolder Baking with Gemma Stafford",
+    "Wilton"
   ],
   "food-science": [
     "J. Kenji López-Alt",
     "Adam Ragusea",
     "America's Test Kitchen",
-    "Ethan Chlebowski"
+    "Ethan Chlebowski",
+    "Tasting History with Max Miller",
+    "Joshua Weissman"
   ],
   "italian-food": [
     "Vincenzo's Plate",
     "Pasta Grannies",
-    "Italia Squisita"
+    "Italia Squisita",
+    "Lidia Bastianich",
+    "Vito Iacopelli"
   ],
   "mexican-food": [
     "Rick Bayless",
     "Rick Martinez",
-    "Villa Cocina"
+    "Villa Cocina",
+    "Cooking Con Claudia",
+    "ArnieTex",
+    "Jonathan Zaragoza"
   ],
   "asian-cooking": [
     "Chinese Cooking Demystified",
     "Maangchi",
     "Just One Cookbook",
     "Pailin's Kitchen",
-    "Hebbars Kitchen"
+    "Hebbars Kitchen",
+    "Made With Lau",
+    "JAPANESE COOKING CHANNEL",
+    "Dianxi Xiaoge"
   ],
   "southern-soul-food": [
     "Smokin' & Grillin' wit AB",
-    "Collard Valley Cooks"
+    "Collard Valley Cooks",
+    "The Hillbilly Kitchen - Down Home Country Cooking"
   ],
   "bbq-grilling": [
     "Mad Scientist BBQ",
     "Chuds BBQ",
     "How To BBQ Right",
-    "Guga Foods"
+    "Guga Foods",
+    "Smokin' & Grillin with AB",
+    "Meat Church BBQ",
+    "Heath Riles BBQ"
   ],
   "budget-cooking": [
     "Pro Home Cooks",
     "Budget Bytes",
-    "Struggle Meals"
+    "Struggle Meals",
+    "Dollar Tree Dinners",
+    "Julia Pacheco"
   ],
   "healthy-cooking": [
     "Pick Up Limes",
     "Rainbow Plant Life",
-    "Downshiftology"
+    "Downshiftology",
+    "Gaz Oakley",
+    "fitfoodieselma"
   ],
   "street-food-food-travel": [
     "Mark Wiens",
@@ -469,48 +596,62 @@
     "Savagegeese",
     "The Straight Pipes",
     "Throttle House",
-    "Top Gear"
+    "Top Gear",
+    "Edmunds Cars"
   ],
   "how-cars-work": [
     "Engineering Explained",
     "ChrisFix",
     "Scotty Kilmer",
-    "Donut"
+    "Donut",
+    "The Car Care Nut"
   ],
   "classic-cars": [
     "Jay Leno's Garage",
     "Hagerty",
-    "Vice Grip Garage"
+    "Vice Grip Garage",
+    "Yorkshire Car Restoration",
+    "Tasty Classics"
   ],
   "motorsport": [
     "FORMULA 1",
     "NASCAR",
     "Chain Bear",
-    "WRC"
+    "WRC",
+    "THE RACE",
+    "Sky Sports F1"
   ],
   "trains-planes": [
     "Mentour Pilot",
     "74 Gear",
     "Green Dot Aviation",
     "Jago Hazzard",
-    "Scott Manley"
+    "Scott Manley",
+    "Simple Flying"
   ],
   "heavy-machinery": [
     "Just Rolling With It",
     "Diesel Creek",
-    "Fortitude Valley Diesel"
+    "Fortitude Valley Diesel",
+    "C&C Equipment",
+    "Mega Machines Channel"
   ],
   "engineering": [
     "Real Engineering",
     "Practical Engineering",
     "Stuff Made Here",
     "Smarter Every Day",
-    "The B1M"
+    "The B1M",
+    "Cutting Edge Engineering Australia",
+    "The Efficient Engineer",
+    "The Engineering Mindset"
   ],
   "motorcycles": [
     "FortNine",
     "Motorcyclist Magazine",
-    "Dan Dan the Fireman"
+    "Dan Dan the Fireman",
+    "Yammie Noob",
+    "MCN - Motorcyclenews.com"
   ],
   "sports-analysis": [
     "Secret Base",
@@ -520,79 +661,116 @@
   "football-nfl": [
     "NFL",
     "Brett Kollmann",
-    "NFL Films"
+    "NFL Films",
+    "NFL on ESPN",
+    "Thinking Football"
   ],
   "soccer": [
     "Tifo Football",
     "Premier League",
     "COPA90",
-    "UEFA"
+    "UEFA",
+    "Tifo Football by The Athletic",
+    "Major League Soccer",
+    "Football Made Simple"
   ],
   "basketball": [
     "NBA",
     "Thinking Basketball",
-    "JxmyHighroller"
+    "JxmyHighroller",
+    "Kenny For Real",
+    "FIBA Basketball",
+    "Daniel Li"
   ],
   "baseball": [
     "MLB",
     "Jomboy Media",
-    "Foolish Baseball"
+    "Foolish Baseball",
+    "Talkin' Baseball",
+    "JM Baseball"
   ],
   "golf": [
     "Rick Shiels Golf",
     "Good Good",
-    "PGA TOUR"
+    "PGA TOUR",
+    "Grant Horvat Golf",
+    "Bryan Bros Golf"
   ],
   "tennis": [
     "Wimbledon",
     "Tennis TV",
-    "Intuitive Tennis"
+    "Intuitive Tennis",
+    "US Open Tennis Championships",
+    "Tennis Channel",
+    "Australian Open"
   ],
   "fishing": [
     "Tactical Bassin",
     "BlakeFishing",
-    "Lawson Fishing"
+    "Lawson Fishing",
+    "Fletcher The Fisherman",
+    "Wild Fly Productions"
   ],
   "outdoor-adventure": [
     "Kraig Adams",
     "Steven Rinella",
     "My Self Reliance",
-    "Hiking Bill"
+    "Hiking Bill",
+    "Homemade Wanderlust",
+    "Paul Messner"
   ],
   "skateboarding-bmx": [
     "Thrasher Magazine",
     "Braille Skateboarding",
-    "Red Bull"
+    "Red Bull",
+    "Plan B Skateboards",
+    "nikeskateboarding"
   ],
   "martial-arts-boxing": [
     "UFC",
     "Jesse Enkamp",
-    "Lawrence Kenshin"
+    "Lawrence Kenshin",
+    "The Modern Martial Artist",
+    "History of Boxing EN"
   ],
   "olympics": [
     "Olympics",
-    "Team USA"
+    "Team USA",
+    "World Athletics",
+    "Olympic Games"
   ],
   "strength-training": [
     "Jeff Nippard",
     "Athlean-X",
     "Alan Thrall",
-    "Mind Pump TV"
+    "Mind Pump TV",
+    "Heather Robertson",
+    "Sydney Cummings Houdyshell",
+    "Alan Thrall (Untamed Strength)"
   ],
   "running": [
     "The Running Channel",
     "Global Triathlon Network",
-    "Ben Parkes"
+    "Ben Parkes",
+    "James Dunne",
+    "Total Running Productions"
   ],
   "yoga-stretching": [
     "Yoga With Adriene",
     "Tom Merrick",
-    "Boho Beautiful Yoga"
+    "Boho Beautiful Yoga",
+    "Charlie Follows",
+    "Yoga with Kassandra",
+    "Jess Yoga"
   ],
   "walking-low-impact": [
     "Leslie Sansone",
     "More Life Health",
-    "Bob & Brad"
+    "Bob & Brad",
+    "Get Fit With Rick",
+    "Lucy Wyndham-Read",
+    "Improved Health",
+    "More Life Health Seniors"
   ],
   "nutrition": [
     "Nutrition Made Simple!",
@@ -601,7 +779,9 @@
   ],
   "sleep": [
     "Jason Stephenson - Sleep Meditation Music",
-    "SciShow"
+    "SciShow",
+    "Stephen Dalton Sleep Stories",
+    "Get Sleepy"
   ],
   "mental-health": [
     "Psych2Go",
@@ -612,7 +792,9 @@
   "meditation": [
     "Headspace",
     "Great Meditation",
-    "Jason Stephenson - Sleep Meditation Music"
+    "Jason Stephenson - Sleep Meditation Music",
+    "The Mindful Movement",
+    "Breathe With Sandy"
   ],
   "healthy-aging": [
     "Bob & Brad",
@@ -623,12 +805,15 @@
     "The Financial Diet",
     "Graham Stephan",
     "The Ramsey Show",
-    "Two Cents"
+    "Two Cents",
+    "Humphrey Yang",
+    "Nischa"
   ],
   "investing-basics": [
     "Ben Felix",
     "The Plain Bagel",
-    "The Money Guy Show"
+    "The Money Guy Show",
+    "Damien Talks Money"
   ],
   "frugal-living": [
     "The Financial Diet",
@@ -638,7 +823,8 @@
     "Economics Explained",
     "Money & Macro",
     "How Money Works",
-    "Patrick Boyle"
+    "Patrick Boyle",
+    "The Economist"
   ],
   "business-stories": [
     "Company Man",
@@ -649,29 +835,41 @@
   "startups-side-hustles": [
     "Y Combinator",
     "Ali Abdaal",
-    "My First Million"
+    "My First Million",
+    "Founders Podcast",
+    "S3 | Science, Startups, & Stories"
   ],
   "careers": [
     "Andrew LaCivita",
-    "Harvard Business Review"
+    "Harvard Business Review",
+    "Indeed",
+    "CareerVidz"
   ],
   "real-estate": [
     "Architectural Digest",
     "Never Too Small",
-    "Dwell"
+    "Dwell",
+    "Tiny Home Tours",
+    "Enes Yilmazer"
   ],
   "travel": [
     "Kara and Nate",
     "Rick Steves' Europe",
     "Drew Binsky",
     "Lost LeBlanc",
-    "Yes Theory"
+    "Yes Theory",
+    "HONEST GUIDE",
+    "Jack Aynsley Travel",
+    "Solo Solo Travel"
   ],
   "geography": [
     "Geography Now",
     "RealLifeLore",
     "CGP Grey",
-    "Wendover Productions"
+    "Wendover Productions",
+    "Geography By Geoff",
+    "JackSucksAtGeography",
+    "Beaver Geography"
   ],
   "cities-architecture": [
     "Not Just Bikes",
@@ -682,80 +880,110 @@
   "slow-travel": [
     "Rambalac",
     "Prowalk Tours",
-    "Watched Walker"
+    "Watched Walker",
+    "4K JAPAN",
+    "Seoul Walker",
+    "LONDON CITY WALK"
   ],
   "national-parks": [
     "National Park Service",
     "Kraig Adams",
-    "Tourist in Paradise"
+    "Tourist in Paradise",
+    "Latest Sightings"
   ],
   "abandoned-places": [
     "Exploring With Josh",
     "Bright Sun Films",
-    "Dan Bell"
+    "Dan Bell",
+    "Exploring the Unbeaten Path",
+    "Ghost Town Living",
+    "RangerRickTV"
   ],
   "road-trips": [
     "Kara and Nate",
     "Eamon & Bec",
-    "Kyle Hurley"
+    "Kyle Hurley",
+    "Joe & Nic's Road Trip",
+    "Epic Family Road Trip"
   ],
   "local-culture": [
     "Atlas Obscura",
     "Great Big Story",
-    "Insider"
+    "Insider",
+    "The Local Project",
+    "DW History and Culture"
   ],
   "language-dialects": [
     "Langfocus",
     "NativLang",
     "RobWords",
-    "Accent Expert"
+    "Accent Expert",
+    "Language Simp"
   ],
   "food-cultures": [
     "Great Big Story",
     "Pasta Grannies",
-    "Mark Wiens"
+    "Mark Wiens",
+    "Food Around The World Studio"
   ],
   "holidays-traditions": [
     "History",
-    "Tasting History with Max Miller"
+    "Tasting History with Max Miller",
+    "History Tea Time with Lindsay Holiday"
   ],
   "wildlife": [
     "BBC Earth",
     "Nat Geo WILD",
     "Brave Wilderness",
-    "Animalogic"
+    "Animalogic",
+    "Nat Geo Animals",
+    "Casual Geographic",
+    "Free Documentary - Nature",
+    "Latest Sightings"
   ],
   "birds-birdwatching": [
     "Cornell Lab of Ornithology",
     "Jeffrey Mere",
-    "Explore.org"
+    "Explore.org",
+    "Badgerland Birding",
+    "Bird Watching HQ"
   ],
   "pets": [
     "Kikopup",
     "Zak George's Dog Training Revolution",
     "Jackson Galaxy",
-    "The Dodo"
+    "The Dodo",
+    "McCann Dog Training",
+    "Will Atherton Canine Training"
   ],
   "ocean-life": [
     "Monterey Bay Aquarium",
     "OceanX",
     "BBC Earth",
-    "MBARI"
+    "MBARI",
+    "Natural World Facts",
+    "River Monsters™"
   ],
   "insects-bugs": [
     "Ant Lab",
     "AntsCanada",
-    "Deep Look"
+    "Deep Look",
+    "Minuscule",
+    "David Burns"
   ],
   "farm-animals": [
     "Farmer Derek",
     "Welker Farms",
-    "Ben Hartley"
+    "Ben Hartley",
+    "Gold Shaw Farm",
+    "Norwegian farm life"
   ],
   "nature-relaxing": [
     "Nature Relaxation Films",
     "Explore.org",
-    "BBC Earth"
+    "BBC Earth",
+    "4K Relaxation Channel",
+    "Soothing Relaxation"
   ],
   "faith-spirituality": [
     "BibleProject",
@@ -770,7 +998,8 @@
   "philosophy": [
     "Philosophy Tube",
     "Wireless Philosophy",
-    "The School of Life"
+    "The School of Life",
+    "Philosophy Overdose"
   ],
   "psychology": [
     "CrashCourse",
@@ -790,42 +1019,56 @@
     "Ali Abdaal",
     "Thomas Frank",
     "CrashCourse",
-    "Khan Academy"
+    "Khan Academy",
+    "Justin Sung"
   ],
   "languages": [
     "Langfocus",
     "Easy Languages",
     "Dreaming Spanish",
-    "Comprehensible French"
+    "Comprehensible French",
+    "Butterfly Spanish",
+    "Zoe.languages"
   ],
   "books": [
     "Jack Edwards",
     "PeruseProject",
     "Merphy Napier",
-    "Daniel Greene"
+    "Daniel Greene",
+    "Tristan and the Classics",
+    "Better Than Food",
+    "The Book Leo"
   ],
   "writing": [
     "Brandon Sanderson",
     "Tale Foundry",
     "Hello Future Me",
-    "Lessons from the Screenplay"
+    "Lessons from the Screenplay",
+    "Abbie Emmons"
   ],
   "art-history": [
     "The Art Assignment",
     "Great Art Explained",
     "Smarthistory",
-    "The National Gallery"
+    "The National Gallery",
+    "Shawn Grenier | The Canvas",
+    "Art Deco"
   ],
   "design": [
     "The Futur",
     "Vox",
-    "Roman Mars"
+    "Roman Mars",
+    "Satori Graphics",
+    "Will Paterson",
+    "Design Anthology"
   ],
   "fashion": [
     "Vogue",
     "Bliss Foster",
     "Mina Le",
-    "Karolina Zebrowska"
+    "Karolina Zebrowska",
+    "Abby Cox",
+    "The Style Insider"
   ],
   "streetwear": [
     "Complex",
@@ -838,7 +1081,11 @@
     "Hyram",
     "Robert Welsh",
     "Allure",
-    "Vogue"
+    "Vogue",
+    "Dr Dray",
+    "Christen Dominique",
+    "Makeup By Nikki La Rose",
+    "Elena Rachitskaya"
   ],
   "news-explained": [
     "Vox",
@@ -855,7 +1102,8 @@
     "Hot Ones",
     "TED",
     "Lex Fridman",
-    "Conan O'Brien Needs A Friend"
+    "Conan O'Brien Needs A Friend",
+    "StarTalk"
   ],
   "old-time-radio": [
     "Old Time Radio Classics",
@@ -865,7 +1113,9 @@
     "Gibi ASMR",
     "ASMR Darling",
     "Jojo's ASMR",
-    "ASMR Glow"
+    "ASMR Glow",
+    "Gentle Whispering ASMR",
+    "Moonlight Cottage ASMR"
   ],
   "slow-tv": [
     "Slow TV",
@@ -914,14 +1164,20 @@
     "Kurzgesagt – In a Nutshell",
     "SEA",
     "PBS Space Time",
-    "Everyday Astronaut"
+    "Everyday Astronaut",
+    "European Space Agency, ESA",
+    "SpaceX",
+    "The Space Race"
   ],
   "physics": [
     "Veritasium",
     "minutephysics",
     "PBS Space Time",
     "Sabine Hossenfelder",
-    "Physics Girl"
+    "Physics Girl",
+    "FloatHeadPhysics",
+    "Physics Explained",
+    "Lectures by Walter Lewin. They will make you ♥ Physics."
   ],
   "chemistry": [
     "NileRed",
@@ -934,7 +1190,8 @@
     "Journey to the Microcosmos",
     "SciShow",
     "Deep Look",
-    "Stated Clearly"
+    "Stated Clearly",
+    "Institute of Human Anatomy"
   ],
   "earth-weather": [
     "Geology Hub",
@@ -945,12 +1202,14 @@
   "oceans": [
     "OceanX",
     "MBARI",
-    "Natural World Facts"
+    "Natural World Facts",
+    "Schmidt Ocean Institute"
   ],
   "dinosaurs": [
     "PBS Eons",
     "Ben G Thomas",
-    "American Museum of Natural History"
+    "American Museum of Natural History",
+    "Mamlambo Fossils"
   ],
   "medicine": [
     "Chubbyemu",
@@ -968,7 +1227,9 @@
     "The Action Lab",
     "Smarter Every Day",
     "The Slow Mo Guys",
-    "Steve Mould"
+    "Steve Mould",
+    "TheDadLab",
+    "Science Max - Scholastic"
   ],
   "weird-science": [
     "Vsauce",
@@ -981,7 +1242,11 @@
     "Numberphile",
     "Khan Academy",
     "Mathologer",
-    "Stand-up Maths"
+    "Stand-up Maths",
+    "Eddie Woo",
+    "Dr. Trefor Bazett",
+    "Oxford Mathematics",
+    "Professor Dave Explains"
   ],
   "math-puzzles": [
     "MindYourDecisions",
@@ -1012,52 +1277,71 @@
     "Charles Dowding",
     "Garden Answer",
     "Huw Richards",
-    "Planet Houseplant"
+    "Planet Houseplant",
+    "The Middle-Sized Garden",
+    "GrowVeg"
   ],
   "diy-home-repair": [
     "This Old House",
     "Home RenoVision DIY",
     "See Jane Drill",
-    "Everyday Home Repairs"
+    "Everyday Home Repairs",
+    "The Fixer"
   ],
   "woodworking": [
     "Steve Ramsey - Woodworking for Mere Mortals",
     "Paul Sellers",
     "Jonathan Katz-Moses",
-    "Rex Krueger"
+    "Rex Krueger",
+    "Foureyes Furniture",
+    "Bourbon Moth Woodworking"
   ],
   "cleaning-organizing": [
     "Clean My Space",
     "The Home Edit",
-    "Jamie Grace"
+    "Jamie Grace",
+    "Clutterbug",
+    "Clean That Up",
+    "Space Maker Method"
   ],
   "home-makeovers": [
     "Mr. Kate",
     "Architectural Digest",
     "Never Too Small",
-    "Nick Lewis"
+    "Nick Lewis",
+    "Alexandra Gater",
+    "TheSorryGirls",
+    "Caroline Winkler"
   ],
   "restoration": [
     "Hand Tool Rescue",
     "Baumgartner Restoration",
     "Rescue & Restore",
-    "my mechanics"
+    "my mechanics",
+    "TysyTube Restoration"
   ],
   "homesteading": [
     "Roots and Refuge Farm",
     "Justin Rhodes",
     "Off Grid with Doug & Stacy",
-    "Townsends"
+    "Townsends",
+    "Acre Homestead",
+    "Homesteading with the Zimmermans"
   ],
   "knitting-crochet": [
     "Bella Coco Crochet",
     "VeryPink Knits",
-    "Nimble Needles"
+    "Nimble Needles",
+    "HappyBerry Crochet",
+    "Kutovakika"
   ],
   "sewing-quilting": [
     "Missouri Star Quilt Company",
     "Bernadette Banner",
-    "Evelyn Wood"
+    "Evelyn Wood",
+    "Made to Sew",
+    "Angela Walters",
+    "Easy Sewing for Beginners"
   ],
   "painting-drawing": [
     "Bob Ross",
@@ -1068,18 +1352,22 @@
   ],
   "pottery": [
     "Florian Gadsby",
-    "Simon Leach Pottery"
+    "Simon Leach Pottery",
+    "Pottery to the People"
   ],
   "lego-models": [
     "Beyond the Brick",
     "Brick Science",
     "Tiny Brick Builds",
-    "Jangbricks"
+    "Jangbricks",
+    "Brick Technology",
+    "Brick Experiment Channel"
   ],
   "miniatures": [
     "Kiwami Japan",
     "Miniature Space",
-    "Squidmar Miniatures"
+    "Squidmar Miniatures",
+    "Boylei Hobby Time"
   ],
   "calligraphy-lettering": [
     "Seb Lester",
