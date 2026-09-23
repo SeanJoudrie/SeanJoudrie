@@ -33,29 +33,46 @@ function distance(a: string, b: string, max: number): number {
 
 const allowedTypos = (w: string) => (w.length >= 7 ? 2 : w.length >= 4 ? 1 : 0)
 
-/** Score how well `query` matches any of `fields` (0 = no match). */
-export function score(query: string, fields: string[]): number {
+/** How well a normalized query matches one normalized field (0 = no match). */
+function fieldScore(q: string, f: string): number {
+  if (!f) return 0
+  if (f === q) return 100
+  if (f.startsWith(q)) {
+    // "car" → "cars" beats "car" → "card games"; a whole word beats part of one.
+    if (f.length - q.length <= 2) return 90
+    return f[q.length] === ' ' ? 85 : 80
+  }
+  if (` ${f} `.includes(` ${q} `)) return 75
+  // Starts a later word ("lip" → "red lipstick"), never mid-word ("art" ↛ "party").
+  if (` ${f}`.includes(` ${q}`)) return 70
+  // Every query word matches some word in the field, allowing small typos.
+  const fw = f.split(' ')
+  const qw = q.split(' ')
+  const near = (w: string) => fw.some((x) => x.startsWith(w) || distance(w, x, allowedTypos(w)) <= allowedTypos(w))
+  if (qw.every(near)) return 40
+  // Extra words around a strong one ("matte lipstick" → "lipstick").
+  if (qw.length > 1 && qw.some((w) => w.length >= 4 && fw.length === 1 && distance(w, fw[0], allowedTypos(w)) <= allowedTypos(w))) return 30
+  return 0
+}
+
+/**
+ * Score how well `query` matches an item (0 = no match). `fields` are its
+ * names; `related` are looser words ("lipstick" for Beauty & makeup), which
+ * count a little less so a direct name always ranks first.
+ */
+export function score(query: string, fields: string[], related: string[] = []): number {
   const q = norm(query)
   if (!q) return 0
   let best = 0
-  for (const f of fields.map(norm)) {
-    if (!f) continue
-    if (f === q) return 100
-    if (f.startsWith(q)) best = Math.max(best, 80)
-    else if (f.includes(q)) best = Math.max(best, 60)
-    else {
-      // Every query word matches some word in the field, allowing small typos.
-      const fw = f.split(' ')
-      const ok = q.split(' ').every((w) => fw.some((x) => x.startsWith(w) || distance(w, x, allowedTypos(w)) <= allowedTypos(w)))
-      if (ok) best = Math.max(best, 40)
-    }
-  }
+  for (const f of fields) best = Math.max(best, fieldScore(q, norm(f)))
+  if (best === 100) return best
+  for (const f of related) best = Math.max(best, Math.round(fieldScore(q, norm(f)) * 0.9))
   return best
 }
 
-export function rank<T>(query: string, items: T[], fields: (t: T) => string[], limit = 12): T[] {
+export function rank<T>(query: string, items: T[], fields: (t: T) => string[], limit = 12, related: (t: T) => string[] = () => []): T[] {
   return items
-    .map((it, i) => ({ it, i, s: score(query, fields(it)) }))
+    .map((it, i) => ({ it, i, s: score(query, fields(it), related(it)) }))
     .filter((x) => x.s > 0)
     .sort((a, b) => b.s - a.s || a.i - b.i)
     .slice(0, limit)

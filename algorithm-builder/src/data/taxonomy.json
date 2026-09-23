@@ -19,6 +19,20 @@
     "film reviews",
     "cinema"
    ],
+   "keywords": [
+    "movies",
+    "films",
+    "box office",
+    "oscars",
+    "academy awards",
+    "critics",
+    "letterboxd",
+    "blockbusters",
+    "new movies",
+    "rotten tomatoes",
+    "film critic",
+    "movie ranking"
+   ],
    "audience": "general",
    "suggested": true,
    "popularWith": []
@@ -40,6 +54,20 @@
    "synonyms": [
     "making of",
     "bts"
+   ],
+   "keywords": [
+    "vfx",
+    "cgi",
+    "visual effects",
+    "stunts",
+    "film sets",
+    "makeup effects",
+    "props",
+    "costumes",
+    "bloopers",
+    "deleted scenes",
+    "practical effects",
+    "sound design"
    ],
    "audience": "general",
    "suggested": false,
@@ -67,6 +95,19 @@
     "old movies",
     "black and white movies"
    ],
+   "keywords": [
+    "hitchcock",
+    "casablanca",
+    "chaplin",
+    "old hollywood",
+    "1940s movies",
+    "1950s movies",
+    "criterion",
+    "film classics",
+    "marilyn monroe",
+    "audrey hepburn",
+    "james dean"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": [
@@ -90,6 +131,18 @@
    "synonyms": [
     "scary movies"
    ],
+   "keywords": [
+    "slasher",
+    "zombies",
+    "ghost movies",
+    "jump scares",
+    "stephen king",
+    "halloween movies",
+    "creepy",
+    "monsters",
+    "a24 horror",
+    "haunted house movies"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -112,6 +165,19 @@
     "science fiction",
     "scifi"
    ],
+   "keywords": [
+    "space movies",
+    "aliens movies",
+    "robots",
+    "time travel",
+    "dystopia",
+    "star trek",
+    "dune",
+    "blade runner",
+    "cyberpunk",
+    "doctor who",
+    "the expanse"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -132,6 +198,17 @@
    ],
    "synonyms": [
     "fantasy movies"
+   ],
+   "keywords": [
+    "dragons",
+    "wizards",
+    "magic",
+    "elves",
+    "fairy tales",
+    "witcher",
+    "narnia",
+    "epic fantasy",
+    "sword and sorcery"
    ],
    "audience": "general",
    "suggested": false,
@@ -159,6 +236,20 @@
     "manga",
     "japanimation"
    ],
+   "keywords": [
+    "one piece",
+    "naruto",
+    "dragon ball",
+    "attack on titan",
+    "demon slayer",
+    "jujutsu kaisen",
+    "ghibli",
+    "miyazaki",
+    "crunchyroll",
+    "shonen",
+    "my hero academia",
+    "pokemon anime"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": [
@@ -182,6 +273,16 @@
    "synonyms": [
     "korean drama",
     "kdrama"
+   ],
+   "keywords": [
+    "korean shows",
+    "k drama",
+    "korean tv",
+    "cdrama",
+    "chinese drama",
+    "j drama",
+    "squid game",
+    "netflix korea"
    ],
    "audience": "general",
    "suggested": false,
@@ -208,6 +309,16 @@
    "synonyms": [
     "docs"
    ],
+   "keywords": [
+    "documentary",
+    "docuseries",
+    "full documentary",
+    "bbc documentary",
+    "pbs",
+    "frontline",
+    "netflix documentary",
+    "real stories"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": [
@@ -231,6 +342,20 @@
    "synonyms": [
     "reality shows"
    ],
+   "keywords": [
+    "survivor",
+    "big brother",
+    "love island",
+    "bachelor",
+    "the bachelorette",
+    "real housewives",
+    "top chef",
+    "great british bake off",
+    "american idol",
+    "the voice",
+    "dating shows",
+    "game shows"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -252,6 +377,20 @@
    "synonyms": [
     "comedy shows",
     "tv comedy"
+   ],
+   "keywords": [
+    "seinfeld",
+    "cheers",
+    "parks and rec",
+    "brooklyn 99",
+    "frasier",
+    "i love lucy",
+    "golden girls",
+    "how i met your mother",
+    "big bang theory",
+    "modern family",
+    "90s tv",
+    "tv shows"
    ],
    "audience": "general",
    "suggested": false,
@@ -281,6 +420,19 @@
     "video essays about film",
     "film analysis"
    ],
+   "keywords": [
+    "video essay",
+    "film theory",
+    "directors cut",
+    "kubrick",
+    "tarantino",
+    "scorsese",
+    "nolan",
+    "every frame a painting",
+    "film school",
+    "movie breakdown",
+    "editing"
+   ],
    "audience": "general",
    "suggested": true,
    "popularWith": []
@@ -302,6 +454,14 @@
    "synonyms": [
     "shorts films"
    ],
+   "keywords": [
+    "short film",
+    "student films",
+    "festival films",
+    "omeleto",
+    "pixar shorts",
+    "animated short"
+   ],
    "audience": "kids-safe",
    "suggested": false,
    "popularWith": []
@@ -322,6 +482,17 @@
    ],
    "synonyms": [
     "cowboy movies"
+   ],
+   "keywords": [
+    "cowboys",
+    "wild west",
+    "john wayne",
+    "clint eastwood",
+    "spaghetti western",
+    "yellowstone",
+    "gunslingers",
+    "frontier",
+    "1883"
    ],
    "audience": "general",
    "suggested": false,
@@ -351,6 +522,20 @@
     "concerts",
     "live performances"
    ],
+   "keywords": [
+    "concert",
+    "live show",
+    "festival",
+    "tour",
+    "unplugged",
+    "npr music",
+    "kexp",
+    "colors show",
+    "acoustic session",
+    "live album",
+    "coachella",
+    "glastonbury"
+   ],
    "audience": "general",
    "suggested": true,
    "popularWith": []
@@ -371,6 +556,19 @@
    ],
    "synonyms": [
     "songwriting theory"
+   ],
+   "keywords": [
+    "chords",
+    "harmony",
+    "scales",
+    "songwriting",
+    "composition",
+    "music production",
+    "why this song",
+    "ear training",
+    "rhythm",
+    "melody",
+    "music explained"
    ],
    "audience": "general",
    "suggested": false,
@@ -398,6 +596,20 @@
     "music lessons",
     "how to play"
    ],
+   "keywords": [
+    "guitar lessons",
+    "piano lessons",
+    "drum lessons",
+    "ukulele",
+    "violin",
+    "bass guitar",
+    "saxophone",
+    "trumpet",
+    "singing lessons",
+    "vocal lessons",
+    "sheet music",
+    "beginner guitar"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -419,6 +631,19 @@
    "synonyms": [
     "classical music",
     "symphony"
+   ],
+   "keywords": [
+    "orchestra",
+    "mozart",
+    "beethoven",
+    "bach",
+    "chopin",
+    "opera",
+    "violin concerto",
+    "piano sonata",
+    "conductor",
+    "symphony orchestra",
+    "chamber music"
    ],
    "audience": "general",
    "suggested": false,
@@ -443,6 +668,17 @@
    "synonyms": [
     "swing",
     "bebop"
+   ],
+   "keywords": [
+    "miles davis",
+    "coltrane",
+    "big band",
+    "jazz piano",
+    "blues",
+    "saxophone jazz",
+    "louis armstrong",
+    "ella fitzgerald",
+    "smooth jazz"
    ],
    "audience": "general",
    "suggested": false,
@@ -473,6 +709,17 @@
     "christian music",
     "hymns"
    ],
+   "keywords": [
+    "praise",
+    "worship songs",
+    "choir",
+    "christian songs",
+    "gospel singers",
+    "sunday service",
+    "hillsong",
+    "elevation worship",
+    "spirituals"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": [
@@ -497,6 +744,19 @@
     "country music",
     "bluegrass"
    ],
+   "keywords": [
+    "nashville",
+    "dolly parton",
+    "johnny cash",
+    "willie nelson",
+    "garth brooks",
+    "luke combs",
+    "zach bryan",
+    "morgan wallen",
+    "honky tonk",
+    "americana",
+    "folk"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": [
@@ -519,6 +779,21 @@
    ],
    "synonyms": [
     "rock music"
+   ],
+   "keywords": [
+    "guitar solos",
+    "classic rock",
+    "metal",
+    "heavy metal",
+    "punk",
+    "grunge",
+    "led zeppelin",
+    "beatles",
+    "queen",
+    "nirvana",
+    "foo fighters",
+    "alternative",
+    "indie rock"
    ],
    "audience": "general",
    "suggested": false,
@@ -544,6 +819,20 @@
     "rap",
     "hiphop"
    ],
+   "keywords": [
+    "rappers",
+    "beats",
+    "drake",
+    "kendrick lamar",
+    "eminem",
+    "kanye",
+    "jay z",
+    "trap",
+    "freestyle",
+    "lyrics breakdown",
+    "boom bap",
+    "old school rap"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": [
@@ -566,6 +855,21 @@
    ],
    "synonyms": [
     "pop music"
+   ],
+   "keywords": [
+    "taylor swift",
+    "billie eilish",
+    "ariana grande",
+    "beyonce",
+    "dua lipa",
+    "olivia rodrigo",
+    "sabrina carpenter",
+    "harry styles",
+    "pop stars",
+    "top 40",
+    "charts",
+    "music videos",
+    "k-pop"
    ],
    "audience": "general",
    "suggested": false,
@@ -592,6 +896,19 @@
     "electronic music",
     "techno"
    ],
+   "keywords": [
+    "house music",
+    "trance",
+    "dubstep",
+    "drum and bass",
+    "dj",
+    "synthwave",
+    "edm festival",
+    "daft punk",
+    "boiler room",
+    "ableton",
+    "producing beats"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -613,6 +930,20 @@
    "synonyms": [
     "old songs",
     "oldies music"
+   ],
+   "keywords": [
+    "motown",
+    "elvis",
+    "1950s music",
+    "1960s music",
+    "70s music",
+    "80s music",
+    "classic hits",
+    "beach boys",
+    "frank sinatra",
+    "big band hits",
+    "soul music",
+    "disco"
    ],
    "audience": "general",
    "suggested": false,
@@ -638,6 +969,19 @@
     "latin",
     "spanish music"
    ],
+   "keywords": [
+    "salsa",
+    "bachata",
+    "reggaeton",
+    "bad bunny",
+    "cumbia",
+    "merengue",
+    "mariachi",
+    "tango",
+    "bossa nova",
+    "spanish songs",
+    "shakira"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -659,6 +1003,16 @@
    "synonyms": [
     "cover songs"
    ],
+   "keywords": [
+    "cover",
+    "acoustic cover",
+    "piano cover",
+    "guitar cover",
+    "a cappella",
+    "postmodern jukebox",
+    "street performers",
+    "busking"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -679,6 +1033,13 @@
    ],
    "synonyms": [
     "reaction videos music"
+   ],
+   "keywords": [
+    "first time hearing",
+    "vocal coach",
+    "reacts to music",
+    "music reaction",
+    "song reaction"
    ],
    "audience": "general",
    "suggested": false,
@@ -703,6 +1064,17 @@
    "synonyms": [
     "game dev"
    ],
+   "keywords": [
+    "game development",
+    "unity",
+    "unreal engine",
+    "godot",
+    "indie dev",
+    "level design",
+    "game mechanics",
+    "gdc",
+    "making a game"
+   ],
    "audience": "general",
    "suggested": true,
    "popularWith": []
@@ -726,6 +1098,25 @@
     "classic games",
     "nintendo"
    ],
+   "keywords": [
+    "snes",
+    "nes",
+    "n64",
+    "sega",
+    "genesis",
+    "playstation 1",
+    "ps1",
+    "ps2",
+    "gameboy",
+    "atari",
+    "arcade",
+    "mario 64",
+    "zelda ocarina",
+    "pokemon red",
+    "emulation",
+    "90s games",
+    "retro consoles"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -746,6 +1137,15 @@
    ],
    "synonyms": [
     "speedrunning"
+   ],
+   "keywords": [
+    "any%",
+    "world record",
+    "gdq",
+    "games done quick",
+    "glitches",
+    "tas",
+    "speedrunner"
    ],
    "audience": "general",
    "suggested": false,
@@ -771,6 +1171,19 @@
     "strategy",
     "rts"
    ],
+   "keywords": [
+    "civilization",
+    "civ 6",
+    "total war",
+    "age of empires",
+    "starcraft",
+    "xcom",
+    "paradox games",
+    "europa universalis",
+    "hearts of iron",
+    "grand strategy",
+    "city builder"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -793,6 +1206,16 @@
     "relaxing games",
     "cozy"
    ],
+   "keywords": [
+    "stardew valley",
+    "animal crossing",
+    "cozy gaming",
+    "farming games",
+    "slime rancher",
+    "unpacking",
+    "spiritfarer",
+    "wholesome games"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -814,6 +1237,17 @@
    "synonyms": [
     "scary games"
    ],
+   "keywords": [
+    "resident evil",
+    "silent hill",
+    "outlast",
+    "fnaf",
+    "five nights",
+    "amnesia",
+    "dead space",
+    "phasmophobia",
+    "alan wake"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -834,6 +1268,19 @@
    ],
    "synonyms": [
     "competitive gaming"
+   ],
+   "keywords": [
+    "league of legends",
+    "lol worlds",
+    "valorant",
+    "cs2",
+    "counter strike",
+    "dota 2",
+    "overwatch league",
+    "pro players",
+    "tournaments",
+    "fighting games",
+    "evo"
    ],
    "audience": "general",
    "suggested": false,
@@ -858,6 +1305,16 @@
    "synonyms": [
     "minecraft"
    ],
+   "keywords": [
+    "minecraft houses",
+    "redstone",
+    "minecraft survival",
+    "minecraft castle",
+    "hermitcraft",
+    "minecraft tutorial",
+    "minecraft mods",
+    "creative mode"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": [
@@ -881,6 +1338,15 @@
    "synonyms": [
     "lore"
    ],
+   "keywords": [
+    "elden ring lore",
+    "dark souls lore",
+    "zelda lore",
+    "halo lore",
+    "fnaf lore",
+    "story explained",
+    "video game stories"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -901,6 +1367,17 @@
    ],
    "synonyms": [
     "indie"
+   ],
+   "keywords": [
+    "hollow knight",
+    "celeste",
+    "hades",
+    "undertale",
+    "terraria",
+    "balatro",
+    "steam games",
+    "itch io",
+    "hidden gem games"
    ],
    "audience": "general",
    "suggested": false,
@@ -923,6 +1400,21 @@
    "synonyms": [
     "tabletop",
     "card games"
+   ],
+   "keywords": [
+    "catan",
+    "dungeons and dragons",
+    "d&d",
+    "dnd",
+    "magic the gathering",
+    "mtg",
+    "pokemon cards",
+    "trading cards",
+    "tabletop rpg",
+    "warhammer",
+    "monopoly",
+    "card game",
+    "poker night"
    ],
    "audience": "kids-safe",
    "suggested": false,
@@ -951,6 +1443,16 @@
     "sudoku",
     "puzzles"
    ],
+   "keywords": [
+    "wordle",
+    "jigsaw puzzles",
+    "rubiks cube",
+    "brain games",
+    "nyt crossword",
+    "word games",
+    "escape rooms",
+    "logic"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": [
@@ -975,6 +1477,17 @@
     "standup",
     "comedians"
    ],
+   "keywords": [
+    "stand up comedy",
+    "comedian",
+    "comedy special",
+    "netflix special",
+    "dry bar",
+    "jokes",
+    "roast",
+    "open mic",
+    "funny"
+   ],
    "audience": "general",
    "suggested": true,
    "popularWith": []
@@ -997,6 +1510,16 @@
     "sketches",
     "skits"
    ],
+   "keywords": [
+    "snl",
+    "saturday night live",
+    "key and peele",
+    "monty python",
+    "mad tv",
+    "i think you should leave",
+    "comedy sketch",
+    "funny sketches"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1017,6 +1540,15 @@
    ],
    "synonyms": [
     "parody"
+   ],
+   "keywords": [
+    "the onion",
+    "daily show",
+    "last week tonight",
+    "john oliver",
+    "colbert",
+    "political comedy",
+    "spoof"
    ],
    "audience": "general",
    "suggested": false,
@@ -1039,6 +1571,17 @@
    "synonyms": [
     "cartoons"
    ],
+   "keywords": [
+    "simpsons",
+    "family guy",
+    "futurama",
+    "south park",
+    "bobs burgers",
+    "king of the hill",
+    "rick and morty",
+    "looney tunes",
+    "cartoon clips"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1059,6 +1602,13 @@
    ],
    "synonyms": [
     "improvisation"
+   ],
+   "keywords": [
+    "whose line is it anyway",
+    "comedy games",
+    "improv comedy",
+    "second city",
+    "drew carey"
    ],
    "audience": "general",
    "suggested": false,
@@ -1083,6 +1633,15 @@
    "synonyms": [
     "cute animals funny"
    ],
+   "keywords": [
+    "funny dogs",
+    "funny cats",
+    "funny pets",
+    "animal fails",
+    "cute animals",
+    "goats",
+    "parrots talking"
+   ],
    "audience": "kids-safe",
    "suggested": false,
    "popularWith": []
@@ -1103,6 +1662,16 @@
    ],
    "synonyms": [
     "old comedy"
+   ],
+   "keywords": [
+    "three stooges",
+    "laurel and hardy",
+    "marx brothers",
+    "abbott and costello",
+    "carol burnett",
+    "johnny carson",
+    "buster keaton",
+    "old comedians"
    ],
    "audience": "general",
    "suggested": false,
@@ -1128,6 +1697,16 @@
     "magicians",
     "illusions"
    ],
+   "keywords": [
+    "magic",
+    "card tricks",
+    "mentalism",
+    "penn and teller",
+    "david blaine",
+    "street magic",
+    "sleight of hand",
+    "escape artist"
+   ],
    "audience": "kids-safe",
    "suggested": false,
    "popularWith": []
@@ -1149,6 +1728,18 @@
    "synonyms": [
     "artificial intelligence",
     "chatgpt"
+   ],
+   "keywords": [
+    "machine learning",
+    "openai",
+    "claude",
+    "gemini",
+    "neural networks",
+    "robots",
+    "ai art",
+    "deep learning",
+    "llm",
+    "automation"
    ],
    "audience": "general",
    "suggested": false,
@@ -1172,6 +1763,22 @@
     "tech reviews",
     "phones"
    ],
+   "keywords": [
+    "iphone",
+    "android",
+    "samsung",
+    "pixel",
+    "apple",
+    "laptops",
+    "headphones",
+    "smartwatch",
+    "cameras",
+    "unboxing",
+    "tech news",
+    "mkbhd",
+    "smart home",
+    "ipad"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1194,6 +1801,20 @@
     "programming",
     "software"
    ],
+   "keywords": [
+    "python",
+    "javascript",
+    "web development",
+    "app development",
+    "java",
+    "c++",
+    "html",
+    "css",
+    "leetcode",
+    "software engineer",
+    "computer science",
+    "linux"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1215,6 +1836,18 @@
    "synonyms": [
     "hacking",
     "security"
+   ],
+   "keywords": [
+    "hackers",
+    "scams online",
+    "passwords",
+    "phishing",
+    "viruses",
+    "malware",
+    "privacy online",
+    "cyber attacks",
+    "dark web",
+    "identity theft"
    ],
    "audience": "general",
    "suggested": false,
@@ -1240,6 +1873,17 @@
     "fix it",
     "right to repair"
    ],
+   "keywords": [
+    "fixing phones",
+    "iphone repair",
+    "laptop repair",
+    "soldering",
+    "electronics",
+    "broken screen",
+    "fix tech",
+    "louis rossmann",
+    "refurbishing"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1260,6 +1904,18 @@
    ],
    "synonyms": [
     "tech help"
+   ],
+   "keywords": [
+    "how to use a computer",
+    "windows help",
+    "mac help",
+    "email help",
+    "facebook help",
+    "smartphone basics",
+    "iphone for seniors",
+    "tablet help",
+    "zoom calls",
+    "typing"
    ],
    "audience": "general",
    "suggested": false,
@@ -1285,6 +1941,16 @@
     "memes",
     "online culture"
    ],
+   "keywords": [
+    "viral videos",
+    "tiktok trends",
+    "youtube history",
+    "internet mysteries",
+    "lost media",
+    "creepypasta",
+    "reddit",
+    "twitter"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": [
@@ -1308,6 +1974,18 @@
    "synonyms": [
     "retro tech"
    ],
+   "keywords": [
+    "old computers",
+    "apple history",
+    "microsoft history",
+    "steve jobs",
+    "bill gates",
+    "retro computers",
+    "commodore",
+    "early internet",
+    "90s tech",
+    "gaming history"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1328,6 +2006,17 @@
    ],
    "synonyms": [
     "history"
+   ],
+   "keywords": [
+    "civilizations",
+    "empires",
+    "history documentary",
+    "timeline",
+    "world wars",
+    "history explained",
+    "kings and queens",
+    "revolutions",
+    "historians"
    ],
    "audience": "general",
    "suggested": true,
@@ -1354,6 +2043,22 @@
    "synonyms": [
     "ancient world"
    ],
+   "keywords": [
+    "egypt",
+    "pyramids",
+    "pharaohs",
+    "romans",
+    "roman empire",
+    "greeks",
+    "sparta",
+    "mesopotamia",
+    "aztecs",
+    "mayans",
+    "incas",
+    "vikings",
+    "ancient china",
+    "archaeology"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1374,6 +2079,20 @@
    ],
    "synonyms": [
     "middle ages"
+   ],
+   "keywords": [
+    "castles",
+    "knights",
+    "crusades",
+    "vikings",
+    "samurai",
+    "feudal",
+    "tudors",
+    "plague",
+    "kings",
+    "armor",
+    "swords",
+    "middle ages life"
    ],
    "audience": "general",
    "suggested": false,
@@ -1396,6 +2115,19 @@
    "synonyms": [
     "modern"
    ],
+   "keywords": [
+    "cold war",
+    "1900s",
+    "20th century",
+    "soviet union",
+    "ussr",
+    "vietnam war",
+    "1960s",
+    "1980s",
+    "berlin wall",
+    "space race",
+    "industrial revolution"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1417,6 +2149,19 @@
    "synonyms": [
     "ww2",
     "second world war"
+   ],
+   "keywords": [
+    "wwii",
+    "hitler",
+    "nazis",
+    "d-day",
+    "normandy",
+    "pearl harbor",
+    "holocaust",
+    "churchill",
+    "world war 2",
+    "pacific war",
+    "eastern front"
    ],
    "audience": "general",
    "suggested": false,
@@ -1441,6 +2186,18 @@
    "synonyms": [
     "us history"
    ],
+   "keywords": [
+    "founding fathers",
+    "civil war",
+    "lincoln",
+    "revolutionary war",
+    "presidents",
+    "wild west",
+    "civil rights movement",
+    "great depression",
+    "colonial america",
+    "1776"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": [
@@ -1464,6 +2221,17 @@
    "synonyms": [
     "daily life history"
    ],
+   "keywords": [
+    "how people lived",
+    "victorian life",
+    "medieval life",
+    "old kitchens",
+    "history of food",
+    "old jobs",
+    "tudor life",
+    "daily life",
+    "1800s life"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1484,6 +2252,19 @@
    ],
    "synonyms": [
     "war history"
+   ],
+   "keywords": [
+    "battles",
+    "tanks",
+    "warships",
+    "fighter jets",
+    "generals",
+    "napoleon",
+    "ww1",
+    "world war 1",
+    "war documentaries",
+    "navy",
+    "army"
    ],
    "audience": "general",
    "suggested": false,
@@ -1506,6 +2287,16 @@
    "synonyms": [
     "family tree",
     "ancestry"
+   ],
+   "keywords": [
+    "ancestry dna",
+    "23andme",
+    "family history",
+    "family tree research",
+    "ancestors",
+    "heritage",
+    "surnames",
+    "dna test results"
    ],
    "audience": "general",
    "suggested": false,
@@ -1530,6 +2321,16 @@
    "synonyms": [
     "hometown history"
    ],
+   "keywords": [
+    "hometown",
+    "small town history",
+    "old photos",
+    "old maps",
+    "state history",
+    "county history",
+    "local museum",
+    "town history"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": [
@@ -1553,6 +2354,16 @@
    "synonyms": [
     "weird history"
    ],
+   "keywords": [
+    "strange history",
+    "history facts",
+    "weird facts",
+    "history mysteries",
+    "forgotten history",
+    "history myths",
+    "bizarre history",
+    "fun facts"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1573,6 +2384,16 @@
    ],
    "synonyms": [
     "speeches"
+   ],
+   "keywords": [
+    "mlk",
+    "i have a dream",
+    "jfk speech",
+    "churchill speech",
+    "ted talks",
+    "commencement speech",
+    "inaugural address",
+    "public speaking"
    ],
    "audience": "general",
    "suggested": false,
@@ -1597,6 +2418,18 @@
    "synonyms": [
     "crime stories"
    ],
+   "keywords": [
+    "murder",
+    "serial killers",
+    "cold cases",
+    "criminals",
+    "crime documentary",
+    "dateline",
+    "20/20",
+    "investigation",
+    "missing persons",
+    "unsolved murders"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1619,6 +2452,17 @@
     "cons",
     "fraud"
    ],
+   "keywords": [
+    "bank robbery",
+    "con artists",
+    "ponzi scheme",
+    "scammers",
+    "pyramid schemes",
+    "scam baiting",
+    "art theft",
+    "heist",
+    "white collar crime"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1639,6 +2483,19 @@
    ],
    "synonyms": [
     "unexplained"
+   ],
+   "keywords": [
+    "unsolved mysteries",
+    "conspiracies",
+    "paranormal",
+    "ghosts",
+    "ufos",
+    "bigfoot",
+    "bermuda triangle",
+    "creepy",
+    "disappearances",
+    "cryptids",
+    "lost cities"
    ],
    "audience": "general",
    "suggested": false,
@@ -1662,6 +2519,17 @@
     "law",
     "trials"
    ],
+   "keywords": [
+    "court",
+    "judge judy",
+    "lawyers",
+    "legal eagle",
+    "verdicts",
+    "jury",
+    "supreme court",
+    "law explained",
+    "sentencing"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1682,6 +2550,17 @@
    ],
    "synonyms": [
     "forensics"
+   ],
+   "keywords": [
+    "detective",
+    "sherlock holmes",
+    "csi",
+    "forensic science",
+    "dna evidence",
+    "fbi",
+    "police investigation",
+    "fingerprints",
+    "crime scene"
    ],
    "audience": "general",
    "suggested": false,
@@ -1704,6 +2583,21 @@
    "synonyms": [
     "recipes",
     "cooking"
+   ],
+   "keywords": [
+    "dinner ideas",
+    "quick meals",
+    "chicken recipes",
+    "pasta recipes",
+    "soup",
+    "casserole",
+    "crockpot",
+    "slow cooker",
+    "instant pot",
+    "air fryer",
+    "cooking for beginners",
+    "one pan",
+    "meals"
    ],
    "audience": "general",
    "suggested": true,
@@ -1731,6 +2625,20 @@
     "bread",
     "cakes"
    ],
+   "keywords": [
+    "sourdough",
+    "bread baking",
+    "cookies",
+    "cake decorating",
+    "cupcakes",
+    "pies",
+    "pastry",
+    "croissants",
+    "brownies",
+    "muffins",
+    "gluten free baking",
+    "bake off"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": [
@@ -1754,6 +2662,17 @@
    "synonyms": [
     "kitchen science"
    ],
+   "keywords": [
+    "why food works",
+    "kenji",
+    "alton brown",
+    "good eats",
+    "chemistry of cooking",
+    "food myths",
+    "kitchen tips",
+    "knife skills",
+    "cooking science"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1775,6 +2694,18 @@
    "synonyms": [
     "italian"
    ],
+   "keywords": [
+    "pasta",
+    "pizza",
+    "lasagna",
+    "risotto",
+    "carbonara",
+    "italian grandma",
+    "pasta grannies",
+    "tiramisu",
+    "gelato",
+    "sauce"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1795,6 +2726,18 @@
    ],
    "synonyms": [
     "mexican"
+   ],
+   "keywords": [
+    "tacos",
+    "burritos",
+    "enchiladas",
+    "tamales",
+    "salsa",
+    "guacamole",
+    "mole",
+    "tex mex",
+    "birria",
+    "quesadilla"
    ],
    "audience": "general",
    "suggested": false,
@@ -1821,6 +2764,22 @@
    "synonyms": [
     "asian food"
    ],
+   "keywords": [
+    "chinese food",
+    "japanese food",
+    "korean food",
+    "thai food",
+    "indian food",
+    "vietnamese food",
+    "sushi",
+    "ramen",
+    "curry",
+    "stir fry",
+    "dumplings",
+    "pho",
+    "kimchi",
+    "wok"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1841,6 +2800,18 @@
    ],
    "synonyms": [
     "southern food"
+   ],
+   "keywords": [
+    "fried chicken",
+    "biscuits",
+    "gumbo",
+    "cajun",
+    "creole",
+    "cornbread",
+    "grits",
+    "mac and cheese",
+    "collard greens",
+    "southern cooking"
    ],
    "audience": "general",
    "suggested": false,
@@ -1866,6 +2837,19 @@
     "barbecue",
     "bbq"
    ],
+   "keywords": [
+    "smoker",
+    "brisket",
+    "ribs",
+    "pulled pork",
+    "steak",
+    "grilling",
+    "traeger",
+    "charcoal",
+    "burgers",
+    "pitmaster",
+    "barbecue sauce"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1886,6 +2870,16 @@
    ],
    "synonyms": [
     "frugal cooking"
+   ],
+   "keywords": [
+    "cheap meals",
+    "meal prep",
+    "cooking on a budget",
+    "pantry meals",
+    "feed a family",
+    "leftovers",
+    "dollar meals",
+    "frugal recipes"
    ],
    "audience": "general",
    "suggested": false,
@@ -1908,6 +2902,18 @@
    "synonyms": [
     "healthy food"
    ],
+   "keywords": [
+    "vegan",
+    "vegetarian",
+    "salads",
+    "high protein",
+    "low carb",
+    "plant based",
+    "healthy meals",
+    "smoothies",
+    "clean eating",
+    "mediterranean diet"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1929,6 +2935,17 @@
    "synonyms": [
     "food tours"
    ],
+   "keywords": [
+    "street food",
+    "food tour",
+    "best food in",
+    "night markets",
+    "mark wiens",
+    "food ranger",
+    "local food",
+    "food trucks",
+    "trying food"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1949,6 +2966,17 @@
    ],
    "synonyms": [
     "preserving"
+   ],
+   "keywords": [
+    "canning",
+    "pickling",
+    "jam",
+    "fermenting",
+    "sauerkraut",
+    "dehydrating",
+    "food storage",
+    "root cellar",
+    "water bath canning"
    ],
    "audience": "general",
    "suggested": false,
@@ -1974,6 +3002,18 @@
     "coffee",
     "tea"
    ],
+   "keywords": [
+    "espresso",
+    "latte art",
+    "coffee brewing",
+    "pour over",
+    "barista",
+    "matcha",
+    "tea ceremony",
+    "james hoffmann",
+    "coffee beans",
+    "cafe"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -1995,6 +3035,22 @@
    "synonyms": [
     "cars"
    ],
+   "keywords": [
+    "new cars",
+    "suv",
+    "trucks",
+    "pickup trucks",
+    "ev",
+    "electric cars",
+    "tesla",
+    "toyota",
+    "ford",
+    "honda",
+    "car buying",
+    "used cars",
+    "doug demuro",
+    "top gear"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2015,6 +3071,18 @@
    ],
    "synonyms": [
     "mechanics"
+   ],
+   "keywords": [
+    "car repair",
+    "oil change",
+    "mechanic",
+    "engine explained",
+    "diy car",
+    "brakes",
+    "transmission",
+    "car maintenance",
+    "chrisfix",
+    "car problems"
    ],
    "audience": "general",
    "suggested": false,
@@ -2038,6 +3106,17 @@
    ],
    "synonyms": [
     "vintage cars"
+   ],
+   "keywords": [
+    "muscle cars",
+    "hot rods",
+    "barn finds",
+    "car restoration",
+    "mustang",
+    "corvette",
+    "jay leno",
+    "car shows",
+    "old cars"
    ],
    "audience": "general",
    "suggested": false,
@@ -2067,6 +3146,18 @@
     "racing",
     "f1"
    ],
+   "keywords": [
+    "formula one",
+    "nascar",
+    "indycar",
+    "rally",
+    "drifting",
+    "le mans",
+    "drag racing",
+    "motogp",
+    "racing highlights",
+    "karting"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2093,6 +3184,20 @@
     "aviation",
     "railways"
    ],
+   "keywords": [
+    "airplanes",
+    "pilots",
+    "airlines",
+    "airports",
+    "cockpit",
+    "trains",
+    "railroad",
+    "model trains",
+    "subway",
+    "air crash investigation",
+    "boeing",
+    "airbus"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2115,6 +3220,17 @@
     "tractors",
     "trucks"
    ],
+   "keywords": [
+    "excavators",
+    "bulldozers",
+    "cranes",
+    "construction",
+    "mining trucks",
+    "semi trucks",
+    "trucking",
+    "farming equipment",
+    "big machines"
+   ],
    "audience": "kids-safe",
    "suggested": false,
    "popularWith": []
@@ -2135,6 +3251,19 @@
    ],
    "synonyms": [
     "engineers"
+   ],
+   "keywords": [
+    "bridges",
+    "skyscrapers",
+    "dams",
+    "how its made",
+    "megaprojects",
+    "inventions",
+    "machines",
+    "engineering disasters",
+    "structural engineering",
+    "mechanical engineering",
+    "3d printing"
    ],
    "audience": "general",
    "suggested": false,
@@ -2158,6 +3287,17 @@
     "bikes",
     "motorbikes"
    ],
+   "keywords": [
+    "harley davidson",
+    "dirt bikes",
+    "motorcycle touring",
+    "sport bikes",
+    "scooters",
+    "motovlog",
+    "riding tips",
+    "ducati",
+    "honda motorcycles"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2179,6 +3319,16 @@
    "synonyms": [
     "sports breakdown"
    ],
+   "keywords": [
+    "sports highlights",
+    "sports history",
+    "sports stories",
+    "greatest athletes",
+    "espn",
+    "sports documentary",
+    "coaching",
+    "sports news"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2199,6 +3349,19 @@
    ],
    "synonyms": [
     "american football"
+   ],
+   "keywords": [
+    "nfl",
+    "super bowl",
+    "quarterback",
+    "college football",
+    "fantasy football",
+    "touchdowns",
+    "chiefs",
+    "cowboys",
+    "patriots",
+    "tom brady",
+    "mahomes"
    ],
    "audience": "general",
    "suggested": false,
@@ -2222,6 +3385,21 @@
     "football",
     "futbol"
    ],
+   "keywords": [
+    "premier league",
+    "champions league",
+    "world cup",
+    "messi",
+    "ronaldo",
+    "la liga",
+    "mls",
+    "euros",
+    "soccer skills",
+    "goals",
+    "manchester united",
+    "liverpool",
+    "real madrid"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2243,6 +3421,16 @@
    "synonyms": [
     "nba"
    ],
+   "keywords": [
+    "lebron",
+    "michael jordan",
+    "steph curry",
+    "march madness",
+    "college basketball",
+    "wnba",
+    "dunks",
+    "basketball highlights"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2263,6 +3451,17 @@
    ],
    "synonyms": [
     "mlb"
+   ],
+   "keywords": [
+    "world series",
+    "home runs",
+    "yankees",
+    "dodgers",
+    "red sox",
+    "little league",
+    "pitching",
+    "shohei ohtani",
+    "softball"
    ],
    "audience": "general",
    "suggested": false,
@@ -2287,6 +3486,16 @@
    "synonyms": [
     "golfing"
    ],
+   "keywords": [
+    "pga",
+    "golf swing",
+    "masters",
+    "tiger woods",
+    "golf course",
+    "putting",
+    "driving range",
+    "disc golf"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": [
@@ -2310,6 +3519,19 @@
    "synonyms": [
     "tennis"
    ],
+   "keywords": [
+    "wimbledon",
+    "us open",
+    "federer",
+    "nadal",
+    "djokovic",
+    "serena williams",
+    "pickleball",
+    "badminton",
+    "table tennis",
+    "ping pong",
+    "padel"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2330,6 +3552,17 @@
    ],
    "synonyms": [
     "angling"
+   ],
+   "keywords": [
+    "bass fishing",
+    "fly fishing",
+    "catch and cook",
+    "ice fishing",
+    "deep sea fishing",
+    "kayak fishing",
+    "lures",
+    "trout",
+    "carp"
    ],
    "audience": "general",
    "suggested": false,
@@ -2358,6 +3591,22 @@
    "synonyms": [
     "outdoors"
    ],
+   "keywords": [
+    "hiking",
+    "camping",
+    "backpacking",
+    "climbing",
+    "rock climbing",
+    "mountains",
+    "kayaking",
+    "survival skills",
+    "bushcraft",
+    "van life",
+    "thru hike",
+    "appalachian trail",
+    "skiing",
+    "snowboarding"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2379,6 +3628,18 @@
    "synonyms": [
     "skate",
     "skating"
+   ],
+   "keywords": [
+    "skateboard",
+    "skatepark",
+    "bmx",
+    "surfing",
+    "snowboarding",
+    "rollerblading",
+    "scooter tricks",
+    "tony hawk",
+    "extreme sports",
+    "parkour"
    ],
    "audience": "general",
    "suggested": false,
@@ -2404,6 +3665,18 @@
     "mma",
     "boxing"
    ],
+   "keywords": [
+    "ufc",
+    "jiu jitsu",
+    "bjj",
+    "karate",
+    "kung fu",
+    "muay thai",
+    "taekwondo",
+    "wrestling",
+    "self defense",
+    "judo"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2424,6 +3697,17 @@
    ],
    "synonyms": [
     "olympic games"
+   ],
+   "keywords": [
+    "gymnastics",
+    "swimming",
+    "track and field",
+    "figure skating",
+    "winter olympics",
+    "sprinting",
+    "usain bolt",
+    "simone biles",
+    "michael phelps"
    ],
    "audience": "general",
    "suggested": false,
@@ -2447,6 +3731,21 @@
     "weights",
     "gym"
    ],
+   "keywords": [
+    "weight lifting",
+    "workout",
+    "bodybuilding",
+    "muscle",
+    "powerlifting",
+    "dumbbells",
+    "home workout",
+    "calisthenics",
+    "push ups",
+    "bench press",
+    "squats",
+    "crossfit",
+    "fitness"
+   ],
    "audience": "general",
    "suggested": true,
    "popularWith": []
@@ -2467,6 +3766,18 @@
    ],
    "synonyms": [
     "jogging"
+   ],
+   "keywords": [
+    "marathon",
+    "5k",
+    "10k",
+    "half marathon",
+    "couch to 5k",
+    "trail running",
+    "running shoes",
+    "jogging tips",
+    "sprinting",
+    "treadmill"
    ],
    "audience": "general",
    "suggested": false,
@@ -2490,6 +3801,18 @@
     "yoga",
     "stretching"
    ],
+   "keywords": [
+    "yoga for beginners",
+    "pilates",
+    "stretches",
+    "flexibility",
+    "mobility",
+    "back pain",
+    "morning yoga",
+    "chair yoga",
+    "tai chi",
+    "posture"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": [
@@ -2512,6 +3835,17 @@
    ],
    "synonyms": [
     "seniors exercise"
+   ],
+   "keywords": [
+    "walking workout",
+    "low impact exercise",
+    "exercise for seniors",
+    "chair exercise",
+    "balance exercises",
+    "water aerobics",
+    "arthritis exercise",
+    "gentle exercise",
+    "step count"
    ],
    "audience": "general",
    "suggested": false,
@@ -2537,6 +3871,19 @@
     "diet",
     "healthy eating"
    ],
+   "keywords": [
+    "weight loss",
+    "protein",
+    "vitamins",
+    "calories",
+    "intermittent fasting",
+    "keto",
+    "meal plan",
+    "gut health",
+    "dietitian",
+    "sugar",
+    "cholesterol"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2557,6 +3904,17 @@
    ],
    "synonyms": [
     "sleeping"
+   ],
+   "keywords": [
+    "insomnia",
+    "sleep tips",
+    "sleep sounds",
+    "dreams",
+    "naps",
+    "sleep science",
+    "rain sounds for sleep",
+    "white noise",
+    "sleep music"
    ],
    "audience": "general",
    "suggested": false,
@@ -2580,6 +3938,21 @@
     "wellbeing",
     "mental wellness"
    ],
+   "keywords": [
+    "anxiety",
+    "depression",
+    "therapy",
+    "stress",
+    "adhd",
+    "autism",
+    "self care",
+    "burnout",
+    "loneliness",
+    "grief",
+    "trauma",
+    "therapist",
+    "self esteem"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2600,6 +3973,15 @@
    ],
    "synonyms": [
     "mindfulness"
+   ],
+   "keywords": [
+    "breathing exercises",
+    "guided meditation",
+    "calm",
+    "relaxation",
+    "buddhism meditation",
+    "sleep meditation",
+    "zen"
    ],
    "audience": "general",
    "suggested": false,
@@ -2625,6 +4007,19 @@
     "aging well",
     "seniors"
    ],
+   "keywords": [
+    "retirement",
+    "aging",
+    "memory",
+    "dementia",
+    "alzheimers",
+    "staying sharp",
+    "longevity",
+    "menopause",
+    "over 60",
+    "over 50",
+    "grandparents"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": [
@@ -2649,6 +4044,18 @@
     "money tips",
     "finance"
    ],
+   "keywords": [
+    "budgeting",
+    "saving money",
+    "credit score",
+    "debt",
+    "dave ramsey",
+    "taxes",
+    "credit cards",
+    "emergency fund",
+    "money advice",
+    "paying off debt"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2670,6 +4077,20 @@
    "synonyms": [
     "investing",
     "stocks"
+   ],
+   "keywords": [
+    "index funds",
+    "401k",
+    "ira",
+    "roth ira",
+    "dividends",
+    "etf",
+    "stock market",
+    "retirement savings",
+    "warren buffett",
+    "bonds",
+    "crypto",
+    "bitcoin"
    ],
    "audience": "general",
    "suggested": false,
@@ -2694,6 +4115,17 @@
    "synonyms": [
     "cheap living"
    ],
+   "keywords": [
+    "saving tips",
+    "thrifting",
+    "thrift store",
+    "coupons",
+    "minimalism",
+    "no spend",
+    "money saving hacks",
+    "goodwill",
+    "secondhand"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2714,6 +4146,19 @@
    ],
    "synonyms": [
     "econ"
+   ],
+   "keywords": [
+    "inflation",
+    "recession",
+    "interest rates",
+    "the fed",
+    "prices",
+    "economy explained",
+    "gdp",
+    "trade",
+    "tariffs",
+    "housing market",
+    "supply and demand"
    ],
    "audience": "general",
    "suggested": false,
@@ -2736,6 +4181,17 @@
    "synonyms": [
     "business"
    ],
+   "keywords": [
+    "company history",
+    "how companies",
+    "ceo",
+    "brands",
+    "marketing",
+    "mcdonalds history",
+    "apple story",
+    "business documentary",
+    "rise and fall"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2756,6 +4212,18 @@
    ],
    "synonyms": [
     "entrepreneur"
+   ],
+   "keywords": [
+    "side hustle",
+    "small business",
+    "starting a business",
+    "etsy",
+    "entrepreneurs",
+    "shark tank",
+    "dropshipping",
+    "freelancing",
+    "passive income",
+    "ecommerce"
    ],
    "audience": "general",
    "suggested": false,
@@ -2779,6 +4247,20 @@
     "work",
     "jobs"
    ],
+   "keywords": [
+    "job interview",
+    "resume",
+    "job search",
+    "career change",
+    "office life",
+    "remote work",
+    "trades",
+    "electricians",
+    "plumbers",
+    "nursing",
+    "teachers",
+    "day in the life"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2799,6 +4281,18 @@
    ],
    "synonyms": [
     "housing"
+   ],
+   "keywords": [
+    "home buying",
+    "mortgage",
+    "house tours",
+    "renting",
+    "landlord",
+    "real estate investing",
+    "zillow",
+    "luxury homes",
+    "mansions",
+    "apartment tours"
    ],
    "audience": "general",
    "suggested": false,
@@ -2822,6 +4316,22 @@
     "trips",
     "vacation"
    ],
+   "keywords": [
+    "travel vlog",
+    "japan travel",
+    "europe travel",
+    "italy",
+    "paris",
+    "london",
+    "new york",
+    "backpacking",
+    "cruises",
+    "travel tips",
+    "hotels",
+    "flights",
+    "disney world",
+    "vacation ideas"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2842,6 +4352,17 @@
    ],
    "synonyms": [
     "maps"
+   ],
+   "keywords": [
+    "countries",
+    "flags",
+    "capitals",
+    "borders",
+    "geography now",
+    "world map",
+    "continents",
+    "islands",
+    "geoguessr"
    ],
    "audience": "general",
    "suggested": false,
@@ -2864,6 +4385,18 @@
    "synonyms": [
     "architecture"
    ],
+   "keywords": [
+    "buildings",
+    "urban planning",
+    "skyscrapers",
+    "city design",
+    "houses",
+    "gothic cathedrals",
+    "modern architecture",
+    "urbanism",
+    "public transit",
+    "cities"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2884,6 +4417,17 @@
    ],
    "synonyms": [
     "walking tours"
+   ],
+   "keywords": [
+    "train journeys",
+    "walking tour",
+    "4k walk",
+    "scenic train",
+    "city walk",
+    "countryside",
+    "rambling",
+    "virtual walk",
+    "window seat"
    ],
    "audience": "general",
    "suggested": false,
@@ -2908,6 +4452,18 @@
    "synonyms": [
     "parks"
    ],
+   "keywords": [
+    "yellowstone",
+    "yosemite",
+    "grand canyon",
+    "zion",
+    "national park",
+    "state parks",
+    "glacier national park",
+    "smoky mountains",
+    "wilderness",
+    "rangers"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2928,6 +4484,16 @@
    ],
    "synonyms": [
     "urbex"
+   ],
+   "keywords": [
+    "abandoned",
+    "urban exploring",
+    "ghost towns",
+    "abandoned mall",
+    "abandoned house",
+    "ruins",
+    "forgotten places",
+    "lost places"
    ],
    "audience": "general",
    "suggested": false,
@@ -2950,6 +4516,17 @@
    "synonyms": [
     "road trips"
    ],
+   "keywords": [
+    "road trip",
+    "rv life",
+    "route 66",
+    "van life",
+    "camper van",
+    "scenic drives",
+    "cross country drive",
+    "motorhome",
+    "rv travel"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -2970,6 +4547,17 @@
    ],
    "synonyms": [
     "culture"
+   ],
+   "keywords": [
+    "traditions",
+    "customs",
+    "festivals",
+    "cultures",
+    "small towns",
+    "rural life",
+    "village life",
+    "folk traditions",
+    "amish"
    ],
    "audience": "general",
    "suggested": false,
@@ -2992,6 +4580,15 @@
    "synonyms": [
     "accents"
    ],
+   "keywords": [
+    "dialects",
+    "slang",
+    "british accent",
+    "southern accent",
+    "how people talk",
+    "pronunciation",
+    "regional words"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -3013,6 +4610,16 @@
    "synonyms": [
     "food culture"
    ],
+   "keywords": [
+    "food traditions",
+    "markets",
+    "farmers market",
+    "local dishes",
+    "cuisine",
+    "food around the world",
+    "grandma cooking",
+    "traditional food"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -3033,6 +4640,18 @@
    ],
    "synonyms": [
     "holidays"
+   ],
+   "keywords": [
+    "christmas",
+    "halloween",
+    "thanksgiving",
+    "easter",
+    "hanukkah",
+    "diwali",
+    "new year",
+    "holiday decorations",
+    "christmas lights",
+    "celebrations"
    ],
    "audience": "general",
    "suggested": false,
@@ -3057,6 +4676,22 @@
    "synonyms": [
     "animals"
    ],
+   "keywords": [
+    "lions",
+    "tigers",
+    "elephants",
+    "wolves",
+    "bears",
+    "safari",
+    "africa wildlife",
+    "david attenborough",
+    "planet earth",
+    "predators",
+    "monkeys",
+    "apes",
+    "reptiles",
+    "snakes"
+   ],
    "audience": "general",
    "suggested": true,
    "popularWith": []
@@ -3078,6 +4713,18 @@
    "synonyms": [
     "birds",
     "birding"
+   ],
+   "keywords": [
+    "birdwatching",
+    "bird feeder",
+    "owls",
+    "eagles",
+    "hummingbirds",
+    "parrots",
+    "bird cam",
+    "bird songs",
+    "backyard birds",
+    "hawks"
    ],
    "audience": "general",
    "suggested": false,
@@ -3103,6 +4750,21 @@
     "dogs",
     "cats"
    ],
+   "keywords": [
+    "puppies",
+    "kittens",
+    "dog training",
+    "cat care",
+    "rabbits",
+    "hamsters",
+    "guinea pigs",
+    "aquarium",
+    "fish tank",
+    "reptiles pets",
+    "vet",
+    "pet care",
+    "parrots"
+   ],
    "audience": "kids-safe",
    "suggested": false,
    "popularWith": []
@@ -3123,6 +4785,19 @@
    ],
    "synonyms": [
     "sea life"
+   ],
+   "keywords": [
+    "sharks",
+    "whales",
+    "dolphins",
+    "octopus",
+    "coral reef",
+    "jellyfish",
+    "sea turtles",
+    "aquarium",
+    "scuba diving",
+    "deep sea creatures",
+    "seals"
    ],
    "audience": "kids-safe",
    "suggested": false,
@@ -3146,6 +4821,16 @@
     "bugs",
     "insects"
    ],
+   "keywords": [
+    "bees",
+    "beekeeping",
+    "butterflies",
+    "spiders",
+    "ants",
+    "beetles",
+    "moths",
+    "tarantulas"
+   ],
    "audience": "kids-safe",
    "suggested": false,
    "popularWith": []
@@ -3167,6 +4852,21 @@
    "synonyms": [
     "farms"
    ],
+   "keywords": [
+    "farm",
+    "cows",
+    "goats",
+    "chickens",
+    "sheep",
+    "horses",
+    "pigs",
+    "ranch",
+    "farming",
+    "animal rescue",
+    "sanctuary",
+    "donkeys",
+    "llamas"
+   ],
    "audience": "kids-safe",
    "suggested": false,
    "popularWith": []
@@ -3187,6 +4887,19 @@
    ],
    "synonyms": [
     "nature videos"
+   ],
+   "keywords": [
+    "nature sounds",
+    "rain sounds",
+    "forest",
+    "waterfalls",
+    "ocean waves",
+    "birdsong",
+    "4k nature",
+    "scenery",
+    "relaxing nature",
+    "mountains",
+    "drone footage"
    ],
    "audience": "general",
    "suggested": false,
@@ -3212,6 +4925,21 @@
     "religion",
     "church"
    ],
+   "keywords": [
+    "bible",
+    "jesus",
+    "god",
+    "christianity",
+    "catholic",
+    "sermon",
+    "prayer",
+    "pastor",
+    "devotional",
+    "scripture",
+    "faith",
+    "bible stories",
+    "saints"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": [
@@ -3235,6 +4963,18 @@
    "synonyms": [
     "religion"
    ],
+   "keywords": [
+    "islam",
+    "judaism",
+    "hinduism",
+    "buddhism",
+    "sikhism",
+    "religions explained",
+    "mythology",
+    "greek mythology",
+    "norse mythology",
+    "theology"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -3255,6 +4995,18 @@
    ],
    "synonyms": [
     "philosophy"
+   ],
+   "keywords": [
+    "stoicism",
+    "marcus aurelius",
+    "existentialism",
+    "ethics",
+    "plato",
+    "socrates",
+    "nietzsche",
+    "meaning of life",
+    "logic",
+    "thinkers"
    ],
    "audience": "general",
    "suggested": false,
@@ -3278,6 +5030,18 @@
     "mind",
     "behavior"
    ],
+   "keywords": [
+    "human behavior",
+    "brain",
+    "personality",
+    "psychology facts",
+    "body language",
+    "habits",
+    "emotions",
+    "narcissism",
+    "cognitive biases",
+    "social psychology"
+   ],
    "audience": "general",
    "suggested": true,
    "popularWith": []
@@ -3299,6 +5063,20 @@
    "synonyms": [
     "family",
     "kids"
+   ],
+   "keywords": [
+    "babies",
+    "toddlers",
+    "newborn",
+    "raising children",
+    "pregnancy",
+    "motherhood",
+    "fatherhood",
+    "dad tips",
+    "mom tips",
+    "teenagers",
+    "homeschool",
+    "potty training"
    ],
    "audience": "general",
    "suggested": false,
@@ -3322,6 +5100,17 @@
     "dating",
     "marriage"
    ],
+   "keywords": [
+    "love",
+    "friendships",
+    "breakups",
+    "couples",
+    "communication tips",
+    "wedding",
+    "boyfriend",
+    "girlfriend",
+    "family relationships"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -3343,6 +5132,19 @@
    "synonyms": [
     "studying",
     "school"
+   ],
+   "keywords": [
+    "exams",
+    "college",
+    "university",
+    "homework",
+    "note taking",
+    "productivity",
+    "focus",
+    "study tips",
+    "sat",
+    "learning how to learn",
+    "memory techniques"
    ],
    "audience": "general",
    "suggested": false,
@@ -3369,6 +5171,21 @@
    "synonyms": [
     "language learning"
    ],
+   "keywords": [
+    "learn spanish",
+    "learn french",
+    "learn japanese",
+    "learn german",
+    "learn english",
+    "duolingo",
+    "linguistics",
+    "language learning tips",
+    "sign language",
+    "asl",
+    "polyglot",
+    "learn korean",
+    "learn italian"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -3391,6 +5208,18 @@
     "reading",
     "booktube"
    ],
+   "keywords": [
+    "book reviews",
+    "novels",
+    "book recommendations",
+    "classic literature",
+    "fantasy books",
+    "audiobooks",
+    "kindle",
+    "book club",
+    "poetry",
+    "libraries"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -3411,6 +5240,17 @@
    ],
    "synonyms": [
     "authors"
+   ],
+   "keywords": [
+    "writing tips",
+    "how to write a novel",
+    "storytelling",
+    "screenwriting",
+    "poetry writing",
+    "creative writing",
+    "journaling",
+    "publishing",
+    "fan fiction"
    ],
    "audience": "general",
    "suggested": false,
@@ -3433,6 +5273,19 @@
    "synonyms": [
     "art"
    ],
+   "keywords": [
+    "famous paintings",
+    "museums",
+    "van gogh",
+    "da vinci",
+    "michelangelo",
+    "monet",
+    "picasso",
+    "renaissance",
+    "impressionism",
+    "sculpture",
+    "art explained"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -3453,6 +5306,19 @@
    ],
    "synonyms": [
     "design"
+   ],
+   "keywords": [
+    "graphic design",
+    "logo design",
+    "interior design",
+    "typography",
+    "fonts",
+    "product design",
+    "ux design",
+    "web design",
+    "color theory",
+    "photoshop",
+    "canva"
    ],
    "audience": "general",
    "suggested": false,
@@ -3476,6 +5342,20 @@
     "clothes",
     "style"
    ],
+   "keywords": [
+    "outfits",
+    "runway",
+    "fashion week",
+    "vintage clothing",
+    "thrift flip",
+    "capsule wardrobe",
+    "mens fashion",
+    "womens fashion",
+    "dresses",
+    "jewelry",
+    "accessories",
+    "hairstyles"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -3496,6 +5376,16 @@
    ],
    "synonyms": [
     "sneakers"
+   ],
+   "keywords": [
+    "jordans",
+    "nike",
+    "yeezy",
+    "supreme",
+    "hypebeast",
+    "sneaker collection",
+    "resell",
+    "shoes"
    ],
    "audience": "general",
    "suggested": false,
@@ -3521,6 +5411,43 @@
     "makeup",
     "skincare"
    ],
+   "keywords": [
+    "lipstick",
+    "lip gloss",
+    "mascara",
+    "eyeliner",
+    "eyeshadow",
+    "foundation",
+    "concealer",
+    "blush",
+    "bronzer",
+    "highlighter",
+    "contour",
+    "makeup tutorial",
+    "skincare routine",
+    "moisturizer",
+    "sunscreen",
+    "serum",
+    "acne",
+    "nails",
+    "nail art",
+    "manicure",
+    "hair care",
+    "hairstyles",
+    "hair tutorial",
+    "perfume",
+    "fragrance",
+    "cosmetics",
+    "sephora",
+    "ulta",
+    "grwm",
+    "get ready with me",
+    "drugstore makeup",
+    "glam",
+    "beauty tips",
+    "eyebrows",
+    "lashes"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -3542,6 +5469,15 @@
    "synonyms": [
     "current events"
    ],
+   "keywords": [
+    "news",
+    "world news",
+    "explainers",
+    "vox",
+    "why is",
+    "what happened",
+    "breaking news explained"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -3562,6 +5498,17 @@
    ],
    "synonyms": [
     "civics"
+   ],
+   "keywords": [
+    "government",
+    "congress",
+    "elections",
+    "voting",
+    "supreme court",
+    "how laws are made",
+    "president",
+    "democracy",
+    "constitution"
    ],
    "audience": "general",
    "suggested": false,
@@ -3585,6 +5532,17 @@
     "podcasts",
     "talks"
    ],
+   "keywords": [
+    "podcast",
+    "long form interview",
+    "talk show",
+    "lectures",
+    "ted talk",
+    "conversations",
+    "hot ones",
+    "late night interviews",
+    "sit down interview"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -3605,6 +5563,15 @@
    ],
    "synonyms": [
     "radio shows"
+   ],
+   "keywords": [
+    "radio drama",
+    "old radio shows",
+    "the shadow",
+    "lone ranger radio",
+    "jack benny",
+    "audio drama",
+    "golden age of radio"
    ],
    "audience": "general",
    "suggested": false,
@@ -3629,6 +5596,15 @@
    "synonyms": [
     "tingles"
    ],
+   "keywords": [
+    "whispering",
+    "tapping",
+    "soft spoken",
+    "asmr sleep",
+    "roleplay asmr",
+    "mouth sounds",
+    "head massage"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -3649,6 +5625,16 @@
    ],
    "synonyms": [
     "slow tv"
+   ],
+   "keywords": [
+    "fireplace",
+    "train ride",
+    "aquarium tv",
+    "long drives",
+    "slow television",
+    "window view",
+    "ambient video",
+    "snowfall"
    ],
    "audience": "general",
    "suggested": false,
@@ -3674,6 +5660,17 @@
     "study music",
     "chill"
    ],
+   "keywords": [
+    "lofi",
+    "lo-fi hip hop",
+    "chill beats",
+    "ambient music",
+    "focus music",
+    "piano music",
+    "relaxing music",
+    "background music",
+    "chillhop"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -3694,6 +5691,19 @@
    ],
    "synonyms": [
     "satisfying"
+   ],
+   "keywords": [
+    "oddly satisfying",
+    "power washing",
+    "pressure washing",
+    "cleaning",
+    "kinetic sand",
+    "soap cutting",
+    "slime",
+    "restoration",
+    "carpet cleaning",
+    "cake decorating",
+    "paint mixing"
    ],
    "audience": "general",
    "suggested": false,
@@ -3716,6 +5726,16 @@
    "synonyms": [
     "kids learning"
    ],
+   "keywords": [
+    "science for kids",
+    "space for kids",
+    "dinosaurs for kids",
+    "educational videos",
+    "sesame street",
+    "bill nye",
+    "magic school bus",
+    "learning videos"
+   ],
    "audience": "kids-safe",
    "suggested": false,
    "popularWith": []
@@ -3736,6 +5756,16 @@
    ],
    "synonyms": [
     "kids art"
+   ],
+   "keywords": [
+    "crafts for kids",
+    "drawing for kids",
+    "art for kids hub",
+    "diy kids",
+    "play doh",
+    "coloring",
+    "paper crafts for kids",
+    "slime for kids"
    ],
    "audience": "kids-safe",
    "suggested": false,
@@ -3758,6 +5788,17 @@
    "synonyms": [
     "family"
    ],
+   "keywords": [
+    "disney",
+    "pixar",
+    "dreamworks",
+    "family movies",
+    "animated movies",
+    "kids movies",
+    "classic cartoons",
+    "frozen",
+    "toy story"
+   ],
    "audience": "kids-safe",
    "suggested": false,
    "popularWith": []
@@ -3779,6 +5820,13 @@
    "synonyms": [
     "story time"
    ],
+   "keywords": [
+    "picture books",
+    "bedtime stories",
+    "kids books read aloud",
+    "childrens books",
+    "fairy tales"
+   ],
    "audience": "kids-safe",
    "suggested": false,
    "popularWith": []
@@ -3799,6 +5847,18 @@
    ],
    "synonyms": [
     "songs for kids"
+   ],
+   "keywords": [
+    "nursery rhymes",
+    "kids songs",
+    "baby songs",
+    "abc song",
+    "sing along",
+    "toddler songs",
+    "lullabies",
+    "ms rachel",
+    "super simple songs",
+    "cocomelon"
    ],
    "audience": "kids-safe",
    "suggested": false,
@@ -3827,6 +5887,19 @@
     "nasa",
     "universe"
    ],
+   "keywords": [
+    "spacex",
+    "black holes",
+    "planets",
+    "mars",
+    "moon landing",
+    "rockets",
+    "astronauts",
+    "galaxies",
+    "james webb",
+    "solar system",
+    "stars"
+   ],
    "audience": "general",
    "suggested": true,
    "popularWith": []
@@ -3848,6 +5921,18 @@
    "synonyms": [
     "physics"
    ],
+   "keywords": [
+    "quantum physics",
+    "relativity",
+    "einstein",
+    "gravity",
+    "particles",
+    "energy",
+    "physics explained",
+    "veritasium",
+    "light",
+    "electricity"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -3868,6 +5953,16 @@
    ],
    "synonyms": [
     "chem"
+   ],
+   "keywords": [
+    "chemical reactions",
+    "elements",
+    "periodic table",
+    "molecules",
+    "explosions",
+    "chemistry experiments",
+    "atoms",
+    "nilered"
    ],
    "audience": "general",
    "suggested": false,
@@ -3893,6 +5988,19 @@
    ],
    "synonyms": [
     "life science"
+   ],
+   "keywords": [
+    "human body",
+    "cells",
+    "dna",
+    "evolution",
+    "genetics",
+    "microbes",
+    "bacteria",
+    "viruses",
+    "anatomy",
+    "brain science",
+    "animals biology"
    ],
    "audience": "general",
    "suggested": false,
@@ -3920,6 +6028,20 @@
     "geology",
     "meteorology"
    ],
+   "keywords": [
+    "weather",
+    "storms",
+    "tornadoes",
+    "hurricanes",
+    "volcanoes",
+    "earthquakes",
+    "rocks",
+    "climate",
+    "rain",
+    "lightning",
+    "storm chasers",
+    "tsunamis"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -3941,6 +6063,18 @@
    "synonyms": [
     "sea",
     "marine"
+   ],
+   "keywords": [
+    "ocean",
+    "deep sea",
+    "sea creatures",
+    "marine biology",
+    "ocean exploration",
+    "submarines",
+    "titanic",
+    "shipwrecks",
+    "tides",
+    "ocean floor"
    ],
    "audience": "general",
    "suggested": false,
@@ -3964,6 +6098,17 @@
     "dinos",
     "paleontology"
    ],
+   "keywords": [
+    "t rex",
+    "fossils",
+    "jurassic",
+    "jurassic park",
+    "prehistoric",
+    "raptors",
+    "triceratops",
+    "extinction",
+    "mammoths"
+   ],
    "audience": "kids-safe",
    "suggested": false,
    "popularWith": []
@@ -3986,6 +6131,18 @@
     "doctors",
     "health science"
    ],
+   "keywords": [
+    "surgery",
+    "nurses",
+    "hospital",
+    "diseases",
+    "vaccines",
+    "medical mysteries",
+    "er stories",
+    "anatomy",
+    "pharmacy",
+    "health explained"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -4006,6 +6163,18 @@
    ],
    "synonyms": [
     "environment"
+   ],
+   "keywords": [
+    "climate change",
+    "global warming",
+    "renewable energy",
+    "solar power",
+    "wind power",
+    "electric",
+    "recycling",
+    "sustainability",
+    "pollution",
+    "nature conservation"
    ],
    "audience": "general",
    "suggested": false,
@@ -4028,6 +6197,15 @@
    "synonyms": [
     "experiments"
    ],
+   "keywords": [
+    "mark rober",
+    "science projects",
+    "science fair",
+    "slow motion",
+    "diy science",
+    "cool science",
+    "stem"
+   ],
    "audience": "kids-safe",
    "suggested": false,
    "popularWith": []
@@ -4048,6 +6226,15 @@
    ],
    "synonyms": [
     "science mysteries"
+   ],
+   "keywords": [
+    "science facts",
+    "strange science",
+    "mind blowing facts",
+    "unexplained science",
+    "vsauce",
+    "kurzgesagt",
+    "what if"
    ],
    "audience": "general",
    "suggested": false,
@@ -4070,6 +6257,18 @@
    "synonyms": [
     "maths"
    ],
+   "keywords": [
+    "algebra",
+    "geometry",
+    "calculus",
+    "math help",
+    "math lessons",
+    "3blue1brown",
+    "numberphile",
+    "khan academy",
+    "math tutoring",
+    "trigonometry"
+   ],
    "audience": "general",
    "suggested": true,
    "popularWith": []
@@ -4090,6 +6289,14 @@
    ],
    "synonyms": [
     "brain teasers"
+   ],
+   "keywords": [
+    "riddles",
+    "logic puzzles",
+    "puzzles",
+    "sudoku",
+    "math riddles",
+    "lateral thinking"
    ],
    "audience": "general",
    "suggested": false,
@@ -4112,6 +6319,15 @@
    "synonyms": [
     "stats"
    ],
+   "keywords": [
+    "probability",
+    "data",
+    "charts",
+    "data science",
+    "polls",
+    "odds",
+    "chance"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -4132,6 +6348,15 @@
    ],
    "synonyms": [
     "history of math"
+   ],
+   "keywords": [
+    "mathematicians",
+    "euler",
+    "newton",
+    "pythagoras",
+    "famous equations",
+    "unsolved problems",
+    "history of numbers"
    ],
    "audience": "general",
    "suggested": false,
@@ -4154,6 +6379,13 @@
    "synonyms": [
     "math tricks"
    ],
+   "keywords": [
+    "quick math",
+    "multiplication tricks",
+    "speed math",
+    "abacus",
+    "mental arithmetic"
+   ],
    "audience": "kids-safe",
    "suggested": false,
    "popularWith": []
@@ -4175,6 +6407,15 @@
    "synonyms": [
     "night sky",
     "telescope"
+   ],
+   "keywords": [
+    "astrophotography",
+    "meteor shower",
+    "eclipse",
+    "constellations",
+    "northern lights",
+    "planets tonight",
+    "backyard astronomy"
    ],
    "audience": "general",
    "suggested": false,
@@ -4204,6 +6445,22 @@
     "garden",
     "plants"
    ],
+   "keywords": [
+    "vegetable garden",
+    "raised beds",
+    "houseplants",
+    "flowers",
+    "roses",
+    "tomatoes",
+    "lawn care",
+    "composting",
+    "seeds",
+    "succulents",
+    "trees",
+    "garden tour",
+    "landscaping",
+    "orchids"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": [
@@ -4228,6 +6485,19 @@
     "fix my house",
     "handyman"
    ],
+   "keywords": [
+    "home improvement",
+    "plumbing",
+    "electrical",
+    "drywall",
+    "painting walls",
+    "tools",
+    "fix it",
+    "power tools",
+    "tiling",
+    "roofing",
+    "home maintenance"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -4248,6 +6518,18 @@
    ],
    "synonyms": [
     "carpentry"
+   ],
+   "keywords": [
+    "wood",
+    "furniture making",
+    "wood turning",
+    "lathe",
+    "cutting board",
+    "wood carving",
+    "whittling",
+    "joinery",
+    "table saw",
+    "epoxy"
    ],
    "audience": "general",
    "suggested": false,
@@ -4270,6 +6552,18 @@
    "synonyms": [
     "tidy",
     "organize"
+   ],
+   "keywords": [
+    "cleaning",
+    "decluttering",
+    "organizing",
+    "cleaning motivation",
+    "marie kondo",
+    "laundry",
+    "speed cleaning",
+    "deep cleaning",
+    "home organization",
+    "tidying"
    ],
    "audience": "general",
    "suggested": false,
@@ -4294,6 +6588,18 @@
    "synonyms": [
     "renovation"
    ],
+   "keywords": [
+    "room makeover",
+    "home decor",
+    "interior decorating",
+    "house flip",
+    "before and after",
+    "kitchen remodel",
+    "bathroom remodel",
+    "tiny house",
+    "diy decor",
+    "furniture flip"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -4314,6 +6620,17 @@
    ],
    "synonyms": [
     "restore"
+   ],
+   "keywords": [
+    "restoring",
+    "rusty tools",
+    "old tools",
+    "antique restoration",
+    "car restoration",
+    "furniture restoration",
+    "restoring old",
+    "watch repair",
+    "knife restoration"
    ],
    "audience": "general",
    "suggested": false,
@@ -4336,6 +6653,17 @@
    "synonyms": [
     "farm life"
    ],
+   "keywords": [
+    "homestead",
+    "chickens",
+    "self sufficient",
+    "off grid",
+    "raising animals",
+    "cabin building",
+    "log cabin",
+    "living off the land",
+    "homemade"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -4356,6 +6684,17 @@
    ],
    "synonyms": [
     "yarn"
+   ],
+   "keywords": [
+    "knitting",
+    "crochet",
+    "amigurumi",
+    "knitting patterns",
+    "crochet blanket",
+    "sweaters",
+    "granny squares",
+    "fiber arts",
+    "spinning yarn"
    ],
    "audience": "general",
    "suggested": false,
@@ -4379,6 +6718,18 @@
    ],
    "synonyms": [
     "quilts"
+   ],
+   "keywords": [
+    "sewing",
+    "quilting",
+    "quilt",
+    "sewing machine",
+    "embroidery",
+    "cross stitch",
+    "dressmaking",
+    "alterations",
+    "patterns",
+    "cosplay making"
    ],
    "audience": "general",
    "suggested": false,
@@ -4407,6 +6758,20 @@
    "synonyms": [
     "art tutorials"
    ],
+   "keywords": [
+    "drawing",
+    "painting",
+    "watercolor",
+    "oil painting",
+    "acrylic painting",
+    "sketching",
+    "bob ross",
+    "digital art",
+    "procreate",
+    "portrait drawing",
+    "art tutorial",
+    "anime drawing"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -4427,6 +6792,14 @@
    ],
    "synonyms": [
     "ceramics"
+   ],
+   "keywords": [
+    "clay",
+    "pottery wheel",
+    "glazing",
+    "kiln",
+    "throwing pots",
+    "sculpting"
    ],
    "audience": "general",
    "suggested": false,
@@ -4455,6 +6828,18 @@
     "legos",
     "models"
    ],
+   "keywords": [
+    "lego sets",
+    "lego technic",
+    "lego star wars",
+    "model kits",
+    "gundam",
+    "warhammer painting",
+    "rc cars",
+    "model trains",
+    "scale models",
+    "model airplanes"
+   ],
    "audience": "kids-safe",
    "suggested": false,
    "popularWith": []
@@ -4475,6 +6860,14 @@
    ],
    "synonyms": [
     "dioramas"
+   ],
+   "keywords": [
+    "dollhouse",
+    "tiny food",
+    "miniature cooking",
+    "tiny worlds",
+    "terrarium",
+    "miniature painting"
    ],
    "audience": "general",
    "suggested": false,
@@ -4497,6 +6890,16 @@
    "synonyms": [
     "lettering"
    ],
+   "keywords": [
+    "calligraphy",
+    "hand lettering",
+    "sign painting",
+    "fountain pens",
+    "bullet journal",
+    "penmanship",
+    "brush lettering",
+    "cursive"
+   ],
    "audience": "general",
    "suggested": false,
    "popularWith": []
@@ -4517,6 +6920,16 @@
    ],
    "synonyms": [
     "origami"
+   ],
+   "keywords": [
+    "scrapbooking",
+    "card making",
+    "paper flowers",
+    "paper models",
+    "journaling",
+    "stickers",
+    "papercraft",
+    "bookbinding"
    ],
    "audience": "kids-safe",
    "suggested": false,
@@ -4989,7 +7402,10 @@
    "id": "celebrity-gossip",
    "label": "Celebrity gossip",
    "synonyms": [
-    "celebrity drama"
+    "celebrity drama",
+    "celebrities",
+    "hollywood gossip",
+    "tmz"
    ],
    "alternatives": [
     "documentaries",
@@ -5002,7 +7418,9 @@
    "label": "Influencer drama",
    "synonyms": [
     "youtuber drama",
-    "tea channels"
+    "tea channels",
+    "drama channels",
+    "youtuber beef"
    ],
    "alternatives": [
     "documentaries",
@@ -5014,7 +7432,8 @@
    "id": "mr-beast",
    "label": "Mr Beast",
    "synonyms": [
-    "mrbeast"
+    "mrbeast",
+    "beast games"
    ],
    "alternatives": [
     "documentaries",
@@ -5091,7 +7510,18 @@
    "id": "political-commentary",
    "label": "Political commentary",
    "synonyms": [
-    "politics"
+    "politics",
+    "trump",
+    "biden",
+    "maga",
+    "democrats",
+    "republicans",
+    "liberals",
+    "conservatives",
+    "left wing",
+    "right wing",
+    "woke",
+    "election"
    ],
    "alternatives": [
     "news-explained",
@@ -5112,7 +7542,12 @@
   {
    "id": "cable-news-clips",
    "label": "Cable news clips",
-   "synonyms": [],
+   "synonyms": [
+    "fox news",
+    "cnn",
+    "msnbc",
+    "news clips"
+   ],
    "alternatives": [
     "news-explained",
     "world-history",
@@ -5133,7 +7568,9 @@
    "id": "rage-bait",
    "label": "Rage bait",
    "synonyms": [
-    "outrage"
+    "outrage",
+    "rage",
+    "angry videos"
    ],
    "alternatives": [
     "news-explained",
@@ -5145,7 +7582,9 @@
    "id": "reaction-videos",
    "label": "Reaction videos",
    "synonyms": [
-    "reacts"
+    "reacts",
+    "reactions",
+    "reacting"
    ],
    "alternatives": [
     "short-films",
@@ -5169,7 +7608,11 @@
    "id": "shorts",
    "label": "Shorts",
    "synonyms": [
-    "youtube shorts"
+    "youtube shorts",
+    "tiktok",
+    "tiktoks",
+    "reels",
+    "short videos"
    ],
    "alternatives": [
     "short-films",
@@ -5226,7 +7669,10 @@
    "label": "Crypto",
    "synonyms": [
     "bitcoin",
-    "nfts"
+    "nfts",
+    "ethereum",
+    "dogecoin",
+    "memecoins"
    ],
    "alternatives": [
     "personal-finance",
@@ -5300,7 +7746,10 @@
    "label": "Self-improvement hype",
    "synonyms": [
     "alpha",
-    "motivation"
+    "motivation",
+    "sigma male",
+    "looksmaxxing",
+    "mewing"
    ],
    "alternatives": [
     "psychology",
@@ -5313,7 +7762,9 @@
    "label": "Dating advice",
    "synonyms": [
     "red pill",
-    "pickup"
+    "pickup",
+    "manosphere",
+    "high value man"
    ],
    "alternatives": [
     "psychology",
@@ -5552,7 +8003,10 @@
    "id": "makeup-drama",
    "label": "Makeup drama",
    "synonyms": [
-    "beauty drama"
+    "beauty drama",
+    "beauty gurus",
+    "jeffree star",
+    "james charles"
    ],
    "alternatives": [
     "documentaries",
@@ -6145,7 +8599,11 @@
    "label": "K-pop",
    "synonyms": [
     "bts",
-    "blackpink"
+    "blackpink",
+    "kpop",
+    "stray kids",
+    "twice",
+    "newjeans"
    ],
    "alternatives": [
     "documentaries",

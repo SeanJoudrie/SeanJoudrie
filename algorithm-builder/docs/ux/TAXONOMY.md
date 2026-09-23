@@ -2,6 +2,8 @@
 
 Draft for Phase 2 of the UX audit ([`../UX_AUDIT.md`](../UX_AUDIT.md) §7). Data: `taxonomy.draft.json`. Sub-topic queries are the words sent to YouTube search. "Also matches" are nicknames and synonyms the search box will accept.
 
+**Related words (added after launch).** The live data in `src/data/taxonomy.json` also gives every topic a `keywords` list (about 2,000 in all), so the specific thing someone types finds its topic: "lipstick", "mascara" or "nail art" → Beauty & makeup, "sourdough" → Baking, "Taylor Swift" → Pop, "pickleball" → Tennis. Names always rank above related words. Question 1 searches these topics too, after the shows and people it knows. `src/data/library.test.ts` holds 50 everyday searches that must land on the right topic first; add a row when a real search misses.
+
 ## Topics
 
 **202 topics in 20 groups** (12 suggested first, 45 tagged popular with 60+, 10 with teens, 19 kids-safe).
