@@ -15,6 +15,32 @@
      "query": "underrated movies review"
     }
    ],
+   "picks": [
+    {
+     "label": "Oscar winners",
+     "query": "best picture oscar winner review"
+    },
+    {
+     "label": "Hidden gems",
+     "query": "underrated movies you missed"
+    },
+    {
+     "label": "90s movies",
+     "query": "best 90s movies review"
+    },
+    {
+     "label": "Christopher Nolan",
+     "query": "christopher nolan movies explained"
+    },
+    {
+     "label": "Pixar",
+     "query": "pixar movies ranked"
+    },
+    {
+     "label": "Studio A24",
+     "query": "a24 movies review"
+    }
+   ],
    "synonyms": [
     "film reviews",
     "cinema"
@@ -49,6 +75,32 @@
     {
      "label": "Special effects",
      "query": "practical effects behind the scenes"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Lord of the Rings",
+     "query": "lord of the rings behind the scenes"
+    },
+    {
+     "label": "Jurassic Park",
+     "query": "jurassic park making of"
+    },
+    {
+     "label": "Star Trek",
+     "query": "star trek behind the scenes"
+    },
+    {
+     "label": "Pixar",
+     "query": "pixar behind the scenes"
+    },
+    {
+     "label": "Stunts",
+     "query": "movie stunts behind the scenes"
+    },
+    {
+     "label": "Practical effects",
+     "query": "practical effects breakdown"
     }
    ],
    "synonyms": [
@@ -91,6 +143,32 @@
      "query": "silent film comedy"
     }
    ],
+   "picks": [
+    {
+     "label": "Hitchcock",
+     "query": "alfred hitchcock explained"
+    },
+    {
+     "label": "Charlie Chaplin",
+     "query": "charlie chaplin full scenes"
+    },
+    {
+     "label": "Film noir",
+     "query": "film noir explained"
+    },
+    {
+     "label": "Casablanca",
+     "query": "casablanca 1942 analysis"
+    },
+    {
+     "label": "Audrey Hepburn",
+     "query": "audrey hepburn classic films"
+    },
+    {
+     "label": "Silent films",
+     "query": "silent film history"
+    }
+   ],
    "synonyms": [
     "old movies",
     "black and white movies"
@@ -128,6 +206,32 @@
      "query": "horror short film"
     }
    ],
+   "picks": [
+    {
+     "label": "Stephen King",
+     "query": "stephen king movies explained"
+    },
+    {
+     "label": "Classic monsters",
+     "query": "universal monsters history"
+    },
+    {
+     "label": "Found footage",
+     "query": "found footage horror explained"
+    },
+    {
+     "label": "Horror comedies",
+     "query": "best horror comedy movies"
+    },
+    {
+     "label": "Ghost stories",
+     "query": "ghost movies explained"
+    },
+    {
+     "label": "Short horror films",
+     "query": "short horror film"
+    }
+   ],
    "synonyms": [
     "scary movies"
    ],
@@ -159,6 +263,32 @@
     {
      "label": "Sci-fi short films",
      "query": "sci fi short film"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Star Trek",
+     "query": "star trek explained"
+    },
+    {
+     "label": "Dune",
+     "query": "dune explained"
+    },
+    {
+     "label": "Blade Runner",
+     "query": "blade runner explained"
+    },
+    {
+     "label": "Doctor Who",
+     "query": "doctor who best episodes"
+    },
+    {
+     "label": "Time travel",
+     "query": "time travel movies explained"
+    },
+    {
+     "label": "The Expanse",
+     "query": "the expanse explained"
     }
    ],
    "synonyms": [
@@ -196,6 +326,32 @@
      "query": "fantasy adaptation analysis"
     }
    ],
+   "picks": [
+    {
+     "label": "Lord of the Rings",
+     "query": "lord of the rings lore"
+    },
+    {
+     "label": "Narnia",
+     "query": "chronicles of narnia explained"
+    },
+    {
+     "label": "The Witcher",
+     "query": "the witcher lore"
+    },
+    {
+     "label": "Studio Ghibli",
+     "query": "studio ghibli explained"
+    },
+    {
+     "label": "Discworld",
+     "query": "discworld explained"
+    },
+    {
+     "label": "Dragons",
+     "query": "dragons in fantasy explained"
+    }
+   ],
    "synonyms": [
     "fantasy movies"
    ],
@@ -230,6 +386,32 @@
     {
      "label": "Studio Ghibli",
      "query": "studio ghibli analysis"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Studio Ghibli",
+     "query": "studio ghibli explained"
+    },
+    {
+     "label": "One Piece",
+     "query": "one piece explained"
+    },
+    {
+     "label": "Attack on Titan",
+     "query": "attack on titan explained"
+    },
+    {
+     "label": "Demon Slayer",
+     "query": "demon slayer review"
+    },
+    {
+     "label": "Cowboy Bebop",
+     "query": "cowboy bebop analysis"
+    },
+    {
+     "label": "Frieren",
+     "query": "frieren review"
     }
    ],
    "synonyms": [
@@ -270,6 +452,32 @@
      "query": "korean film analysis"
     }
    ],
+   "picks": [
+    {
+     "label": "Crash Landing on You",
+     "query": "crash landing on you review"
+    },
+    {
+     "label": "Squid Game",
+     "query": "squid game explained"
+    },
+    {
+     "label": "Goblin",
+     "query": "goblin kdrama review"
+    },
+    {
+     "label": "Reply 1988",
+     "query": "reply 1988 review"
+    },
+    {
+     "label": "Korean films",
+     "query": "best korean movies review"
+    },
+    {
+     "label": "Romantic comedies",
+     "query": "best kdrama romantic comedy"
+    }
+   ],
    "synonyms": [
     "korean drama",
     "kdrama"
@@ -306,6 +514,32 @@
      "query": "science documentary full"
     }
    ],
+   "picks": [
+    {
+     "label": "Planet Earth",
+     "query": "planet earth david attenborough"
+    },
+    {
+     "label": "Space",
+     "query": "space documentary full"
+    },
+    {
+     "label": "History",
+     "query": "history documentary full"
+    },
+    {
+     "label": "Engineering",
+     "query": "megastructures documentary"
+    },
+    {
+     "label": "Food",
+     "query": "food documentary full"
+    },
+    {
+     "label": "True stories",
+     "query": "true story documentary full"
+    }
+   ],
    "synonyms": [
     "docs"
    ],
@@ -337,6 +571,32 @@
     {
      "label": "Competition shows",
      "query": "cooking competition show"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Great British Bake Off",
+     "query": "great british bake off best moments"
+    },
+    {
+     "label": "Survivor",
+     "query": "survivor best moments"
+    },
+    {
+     "label": "Top Chef",
+     "query": "top chef best moments"
+    },
+    {
+     "label": "Kitchen Nightmares",
+     "query": "kitchen nightmares full episode"
+    },
+    {
+     "label": "Shark Tank",
+     "query": "shark tank best pitches"
+    },
+    {
+     "label": "Antiques Roadshow",
+     "query": "antiques roadshow best finds"
     }
    ],
    "synonyms": [
@@ -372,6 +632,40 @@
     {
      "label": "Best sitcom moments",
      "query": "classic sitcom scenes"
+    }
+   ],
+   "picks": [
+    {
+     "label": "The Office",
+     "query": "the office us best moments"
+    },
+    {
+     "label": "Parks and Recreation",
+     "query": "parks and recreation best moments"
+    },
+    {
+     "label": "Seinfeld",
+     "query": "seinfeld best scenes"
+    },
+    {
+     "label": "Brooklyn Nine-Nine",
+     "query": "brooklyn nine nine best moments"
+    },
+    {
+     "label": "Frasier",
+     "query": "frasier best moments"
+    },
+    {
+     "label": "Cheers",
+     "query": "cheers best moments"
+    },
+    {
+     "label": "The Golden Girls",
+     "query": "golden girls best moments"
+    },
+    {
+     "label": "Abbott Elementary",
+     "query": "abbott elementary best moments"
     }
    ],
    "synonyms": [
@@ -416,6 +710,32 @@
      "query": "cinematography explained"
     }
    ],
+   "picks": [
+    {
+     "label": "Directors",
+     "query": "director style video essay"
+    },
+    {
+     "label": "Screenwriting",
+     "query": "screenwriting video essay"
+    },
+    {
+     "label": "Cinematography",
+     "query": "cinematography explained"
+    },
+    {
+     "label": "Film scores",
+     "query": "film score analysis"
+    },
+    {
+     "label": "Editing",
+     "query": "film editing explained"
+    },
+    {
+     "label": "Animation",
+     "query": "animation video essay"
+    }
+   ],
    "synonyms": [
     "video essays about film",
     "film analysis"
@@ -451,6 +771,28 @@
      "query": "award winning short film"
     }
    ],
+   "picks": [
+    {
+     "label": "Animated shorts",
+     "query": "animated short film award winning"
+    },
+    {
+     "label": "Pixar shorts",
+     "query": "pixar short films"
+    },
+    {
+     "label": "Sci-fi shorts",
+     "query": "sci-fi short film"
+    },
+    {
+     "label": "Comedy shorts",
+     "query": "comedy short film"
+    },
+    {
+     "label": "Student films",
+     "query": "student short film award"
+    }
+   ],
    "synonyms": [
     "shorts films"
    ],
@@ -478,6 +820,32 @@
     {
      "label": "Western history",
      "query": "real wild west history"
+    }
+   ],
+   "picks": [
+    {
+     "label": "John Wayne",
+     "query": "john wayne western full"
+    },
+    {
+     "label": "Clint Eastwood",
+     "query": "clint eastwood westerns explained"
+    },
+    {
+     "label": "Spaghetti westerns",
+     "query": "spaghetti western explained"
+    },
+    {
+     "label": "Real Wild West",
+     "query": "real wild west history"
+    },
+    {
+     "label": "Lonesome Dove",
+     "query": "lonesome dove review"
+    },
+    {
+     "label": "Bonanza",
+     "query": "bonanza full episode"
     }
    ],
    "synonyms": [
@@ -518,6 +886,32 @@
      "query": "tiny desk concert"
     }
    ],
+   "picks": [
+    {
+     "label": "Tiny Desk",
+     "query": "npr tiny desk concert"
+    },
+    {
+     "label": "KEXP sessions",
+     "query": "kexp live session"
+    },
+    {
+     "label": "Unplugged",
+     "query": "mtv unplugged full"
+    },
+    {
+     "label": "Festival sets",
+     "query": "festival live full set"
+    },
+    {
+     "label": "Live at the Apollo",
+     "query": "live at the apollo performance"
+    },
+    {
+     "label": "Jazz clubs",
+     "query": "live jazz club performance"
+    }
+   ],
    "synonyms": [
     "concerts",
     "live performances"
@@ -552,6 +946,32 @@
     {
      "label": "Chords and harmony",
      "query": "chords explained"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Why songs work",
+     "query": "why this song works music theory"
+    },
+    {
+     "label": "Chords",
+     "query": "chord progressions explained"
+    },
+    {
+     "label": "Film music",
+     "query": "film score theory"
+    },
+    {
+     "label": "Beatles",
+     "query": "beatles music theory"
+    },
+    {
+     "label": "Video game music",
+     "query": "video game music theory"
+    },
+    {
+     "label": "Jazz harmony",
+     "query": "jazz harmony explained"
     }
    ],
    "synonyms": [
@@ -592,6 +1012,36 @@
      "query": "beginner drum lesson"
     }
    ],
+   "picks": [
+    {
+     "label": "Guitar",
+     "query": "beginner guitar lesson"
+    },
+    {
+     "label": "Piano",
+     "query": "beginner piano lesson"
+    },
+    {
+     "label": "Drums",
+     "query": "beginner drum lesson"
+    },
+    {
+     "label": "Ukulele",
+     "query": "beginner ukulele lesson"
+    },
+    {
+     "label": "Violin",
+     "query": "beginner violin lesson"
+    },
+    {
+     "label": "Singing",
+     "query": "beginner singing lesson"
+    },
+    {
+     "label": "Bass guitar",
+     "query": "beginner bass guitar lesson"
+    }
+   ],
    "synonyms": [
     "music lessons",
     "how to play"
@@ -626,6 +1076,32 @@
     {
      "label": "Great composers",
      "query": "composer biography documentary"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Beethoven",
+     "query": "beethoven symphony full"
+    },
+    {
+     "label": "Mozart",
+     "query": "mozart full concert"
+    },
+    {
+     "label": "Bach",
+     "query": "bach cello suites"
+    },
+    {
+     "label": "Chopin",
+     "query": "chopin nocturnes"
+    },
+    {
+     "label": "Opera",
+     "query": "opera full performance"
+    },
+    {
+     "label": "Film scores live",
+     "query": "film music orchestra live"
     }
    ],
    "synonyms": [
@@ -663,6 +1139,32 @@
     {
      "label": "Jazz history",
      "query": "history of jazz"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Miles Davis",
+     "query": "miles davis live"
+    },
+    {
+     "label": "John Coltrane",
+     "query": "john coltrane live"
+    },
+    {
+     "label": "Ella Fitzgerald",
+     "query": "ella fitzgerald live"
+    },
+    {
+     "label": "Big band",
+     "query": "big band swing live"
+    },
+    {
+     "label": "Jazz piano",
+     "query": "jazz piano live"
+    },
+    {
+     "label": "Louis Armstrong",
+     "query": "louis armstrong live"
     }
    ],
    "synonyms": [
@@ -704,6 +1206,28 @@
      "query": "worship music live"
     }
    ],
+   "picks": [
+    {
+     "label": "Gospel choirs",
+     "query": "gospel choir live"
+    },
+    {
+     "label": "Hymns",
+     "query": "classic hymns with lyrics"
+    },
+    {
+     "label": "Southern gospel",
+     "query": "southern gospel live"
+    },
+    {
+     "label": "Worship songs",
+     "query": "worship songs live"
+    },
+    {
+     "label": "Spirituals",
+     "query": "african american spirituals"
+    }
+   ],
    "synonyms": [
     "church music",
     "christian music",
@@ -738,6 +1262,32 @@
     {
      "label": "New country",
      "query": "country music live"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Dolly Parton",
+     "query": "dolly parton live"
+    },
+    {
+     "label": "Johnny Cash",
+     "query": "johnny cash live"
+    },
+    {
+     "label": "Willie Nelson",
+     "query": "willie nelson live"
+    },
+    {
+     "label": "Chris Stapleton",
+     "query": "chris stapleton live"
+    },
+    {
+     "label": "Bluegrass",
+     "query": "bluegrass live"
+    },
+    {
+     "label": "Grand Ole Opry",
+     "query": "grand ole opry performance"
     }
    ],
    "synonyms": [
@@ -775,6 +1325,32 @@
     {
      "label": "Rock history",
      "query": "history of rock music"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Queen",
+     "query": "queen live"
+    },
+    {
+     "label": "The Beatles",
+     "query": "the beatles documentary"
+    },
+    {
+     "label": "Led Zeppelin",
+     "query": "led zeppelin live"
+    },
+    {
+     "label": "Fleetwood Mac",
+     "query": "fleetwood mac live"
+    },
+    {
+     "label": "Pink Floyd",
+     "query": "pink floyd live"
+    },
+    {
+     "label": "Foo Fighters",
+     "query": "foo fighters live"
     }
    ],
    "synonyms": [
@@ -815,6 +1391,32 @@
      "query": "hip hop producer breakdown"
     }
    ],
+   "picks": [
+    {
+     "label": "Kendrick Lamar",
+     "query": "kendrick lamar live"
+    },
+    {
+     "label": "Hip-hop history",
+     "query": "hip hop history documentary"
+    },
+    {
+     "label": "Producers",
+     "query": "hip hop producer breakdown"
+    },
+    {
+     "label": "90s hip-hop",
+     "query": "90s hip hop classics"
+    },
+    {
+     "label": "Freestyles",
+     "query": "best freestyle rap"
+    },
+    {
+     "label": "Lyrics explained",
+     "query": "rap lyrics explained"
+    }
+   ],
    "synonyms": [
     "rap",
     "hiphop"
@@ -851,6 +1453,32 @@
     {
      "label": "Pop history",
      "query": "history of pop music"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Taylor Swift",
+     "query": "taylor swift live"
+    },
+    {
+     "label": "Beyoncé",
+     "query": "beyonce live"
+    },
+    {
+     "label": "Adele",
+     "query": "adele live"
+    },
+    {
+     "label": "Michael Jackson",
+     "query": "michael jackson live"
+    },
+    {
+     "label": "ABBA",
+     "query": "abba live"
+    },
+    {
+     "label": "Pop song breakdowns",
+     "query": "why this pop song works"
     }
    ],
    "synonyms": [
@@ -891,6 +1519,32 @@
      "query": "dj set live"
     }
    ],
+   "picks": [
+    {
+     "label": "House",
+     "query": "house music dj set"
+    },
+    {
+     "label": "Techno",
+     "query": "techno dj set"
+    },
+    {
+     "label": "Daft Punk",
+     "query": "daft punk live"
+    },
+    {
+     "label": "Synthwave",
+     "query": "synthwave mix"
+    },
+    {
+     "label": "Drum and bass",
+     "query": "drum and bass set"
+    },
+    {
+     "label": "Making beats",
+     "query": "making electronic music"
+    }
+   ],
    "synonyms": [
     "edm",
     "electronic music",
@@ -927,6 +1581,32 @@
      "query": "doo wop live"
     }
    ],
+   "picks": [
+    {
+     "label": "Motown",
+     "query": "motown classics live"
+    },
+    {
+     "label": "Elvis",
+     "query": "elvis presley live"
+    },
+    {
+     "label": "The Beach Boys",
+     "query": "beach boys live"
+    },
+    {
+     "label": "Frank Sinatra",
+     "query": "frank sinatra live"
+    },
+    {
+     "label": "Doo-wop",
+     "query": "doo wop classics"
+    },
+    {
+     "label": "70s soul",
+     "query": "70s soul classics"
+    }
+   ],
    "synonyms": [
     "old songs",
     "oldies music"
@@ -959,6 +1639,28 @@
     {
      "label": "Salsa",
      "query": "salsa music live"
+    },
+    {
+     "label": "Reggaeton history",
+     "query": "reggaeton history"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Salsa",
+     "query": "salsa classics live"
+    },
+    {
+     "label": "Buena Vista Social Club",
+     "query": "buena vista social club live"
+    },
+    {
+     "label": "Mariachi",
+     "query": "mariachi live"
+    },
+    {
+     "label": "Bossa nova",
+     "query": "bossa nova classics"
     },
     {
      "label": "Reggaeton history",
@@ -1000,6 +1702,28 @@
      "query": "a cappella cover"
     }
    ],
+   "picks": [
+    {
+     "label": "Postmodern Jukebox",
+     "query": "postmodern jukebox"
+    },
+    {
+     "label": "Pentatonix",
+     "query": "pentatonix"
+    },
+    {
+     "label": "Acoustic covers",
+     "query": "acoustic cover"
+    },
+    {
+     "label": "Scary Pockets",
+     "query": "scary pockets funk cover"
+    },
+    {
+     "label": "A cappella",
+     "query": "a cappella cover"
+    }
+   ],
    "synonyms": [
     "cover songs"
    ],
@@ -1031,6 +1755,7 @@
      "query": "vocal coach reacts"
     }
    ],
+   "picks": [],
    "synonyms": [
     "reaction videos music"
    ],
@@ -1059,6 +1784,28 @@
     {
      "label": "Level design",
      "query": "level design explained"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Level design",
+     "query": "level design explained"
+    },
+    {
+     "label": "Nintendo",
+     "query": "nintendo game design"
+    },
+    {
+     "label": "Indie dev stories",
+     "query": "indie game dev story"
+    },
+    {
+     "label": "Game mechanics",
+     "query": "game mechanics explained"
+    },
+    {
+     "label": "Game music",
+     "query": "video game music explained"
     }
    ],
    "synonyms": [
@@ -1091,6 +1838,32 @@
     {
      "label": "Hidden retro gems",
      "query": "underrated retro games"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Nintendo 64",
+     "query": "nintendo 64 retrospective"
+    },
+    {
+     "label": "Super Nintendo",
+     "query": "snes hidden gems"
+    },
+    {
+     "label": "Sega Genesis",
+     "query": "sega genesis retrospective"
+    },
+    {
+     "label": "Game Boy",
+     "query": "game boy retrospective"
+    },
+    {
+     "label": "Arcade",
+     "query": "arcade history"
+    },
+    {
+     "label": "PlayStation 1",
+     "query": "ps1 retrospective"
     }
    ],
    "synonyms": [
@@ -1135,6 +1908,28 @@
      "query": "speedrun world record history"
     }
    ],
+   "picks": [
+    {
+     "label": "Mario",
+     "query": "super mario speedrun explained"
+    },
+    {
+     "label": "Zelda",
+     "query": "zelda speedrun explained"
+    },
+    {
+     "label": "Games Done Quick",
+     "query": "games done quick best runs"
+    },
+    {
+     "label": "World records",
+     "query": "speedrun world record history"
+    },
+    {
+     "label": "Minecraft",
+     "query": "minecraft speedrun explained"
+    }
+   ],
    "synonyms": [
     "speedrunning"
    ],
@@ -1165,6 +1960,32 @@
     {
      "label": "Chess",
      "query": "chess explained"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Chess",
+     "query": "chess game analysis"
+    },
+    {
+     "label": "Civilization",
+     "query": "civilization strategy guide"
+    },
+    {
+     "label": "Age of Empires",
+     "query": "age of empires strategy"
+    },
+    {
+     "label": "Total War",
+     "query": "total war strategy"
+    },
+    {
+     "label": "StarCraft",
+     "query": "starcraft 2 pro match"
+    },
+    {
+     "label": "XCOM",
+     "query": "xcom strategy"
     }
    ],
    "synonyms": [
@@ -1202,6 +2023,32 @@
      "query": "farming game"
     }
    ],
+   "picks": [
+    {
+     "label": "Stardew Valley",
+     "query": "stardew valley tips"
+    },
+    {
+     "label": "Animal Crossing",
+     "query": "animal crossing island tour"
+    },
+    {
+     "label": "Unpacking",
+     "query": "unpacking game"
+    },
+    {
+     "label": "Spiritfarer",
+     "query": "spiritfarer review"
+    },
+    {
+     "label": "Farming games",
+     "query": "best cozy farming games"
+    },
+    {
+     "label": "A Short Hike",
+     "query": "a short hike review"
+    }
+   ],
    "synonyms": [
     "relaxing games",
     "cozy"
@@ -1234,6 +2081,28 @@
      "query": "horror game design analysis"
     }
    ],
+   "picks": [
+    {
+     "label": "Resident Evil",
+     "query": "resident evil lore explained"
+    },
+    {
+     "label": "Silent Hill",
+     "query": "silent hill explained"
+    },
+    {
+     "label": "Five Nights at Freddy's",
+     "query": "fnaf lore explained"
+    },
+    {
+     "label": "Outlast",
+     "query": "outlast explained"
+    },
+    {
+     "label": "Dead Space",
+     "query": "dead space explained"
+    }
+   ],
    "synonyms": [
     "scary games"
    ],
@@ -1264,6 +2133,28 @@
     {
      "label": "Esports explained",
      "query": "esports explained"
+    }
+   ],
+   "picks": [
+    {
+     "label": "League of Legends",
+     "query": "league of legends worlds highlights"
+    },
+    {
+     "label": "Valorant",
+     "query": "valorant champions highlights"
+    },
+    {
+     "label": "Counter-Strike",
+     "query": "cs2 major highlights"
+    },
+    {
+     "label": "Rocket League",
+     "query": "rocket league championship highlights"
+    },
+    {
+     "label": "Fighting games",
+     "query": "evo moments"
     }
    ],
    "synonyms": [
@@ -1302,6 +2193,28 @@
      "query": "minecraft redstone explained"
     }
    ],
+   "picks": [
+    {
+     "label": "Houses",
+     "query": "minecraft house tutorial"
+    },
+    {
+     "label": "Castles",
+     "query": "minecraft castle tutorial"
+    },
+    {
+     "label": "Redstone",
+     "query": "minecraft redstone tutorial"
+    },
+    {
+     "label": "Hermitcraft",
+     "query": "hermitcraft"
+    },
+    {
+     "label": "Survival tips",
+     "query": "minecraft survival tips"
+    }
+   ],
    "synonyms": [
     "minecraft"
    ],
@@ -1335,6 +2248,32 @@
      "query": "video game story analysis"
     }
    ],
+   "picks": [
+    {
+     "label": "Zelda",
+     "query": "zelda lore explained"
+    },
+    {
+     "label": "Elden Ring",
+     "query": "elden ring lore"
+    },
+    {
+     "label": "Halo",
+     "query": "halo lore explained"
+    },
+    {
+     "label": "Mass Effect",
+     "query": "mass effect lore"
+    },
+    {
+     "label": "Final Fantasy",
+     "query": "final fantasy lore explained"
+    },
+    {
+     "label": "Pokémon",
+     "query": "pokemon lore explained"
+    }
+   ],
    "synonyms": [
     "lore"
    ],
@@ -1363,6 +2302,32 @@
     {
      "label": "Indie dev stories",
      "query": "indie game developer story"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Hollow Knight",
+     "query": "hollow knight review"
+    },
+    {
+     "label": "Celeste",
+     "query": "celeste review"
+    },
+    {
+     "label": "Hades",
+     "query": "hades review"
+    },
+    {
+     "label": "Undertale",
+     "query": "undertale analysis"
+    },
+    {
+     "label": "Terraria",
+     "query": "terraria guide"
+    },
+    {
+     "label": "Balatro",
+     "query": "balatro guide"
     }
    ],
    "synonyms": [
@@ -1395,6 +2360,32 @@
     {
      "label": "Board game reviews",
      "query": "board game review"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Catan",
+     "query": "catan how to play"
+    },
+    {
+     "label": "Dungeons & Dragons",
+     "query": "dungeons and dragons for beginners"
+    },
+    {
+     "label": "Magic: The Gathering",
+     "query": "magic the gathering beginners"
+    },
+    {
+     "label": "Ticket to Ride",
+     "query": "ticket to ride how to play"
+    },
+    {
+     "label": "Wingspan",
+     "query": "wingspan how to play"
+    },
+    {
+     "label": "Card games",
+     "query": "card game how to play"
     }
    ],
    "synonyms": [
@@ -1438,6 +2429,32 @@
      "query": "sudoku solving technique"
     }
    ],
+   "picks": [
+    {
+     "label": "Crosswords",
+     "query": "how to solve crosswords"
+    },
+    {
+     "label": "Sudoku",
+     "query": "sudoku solving explained"
+    },
+    {
+     "label": "Wordle",
+     "query": "wordle strategy"
+    },
+    {
+     "label": "Jigsaw puzzles",
+     "query": "jigsaw puzzle tips"
+    },
+    {
+     "label": "Logic puzzles",
+     "query": "logic puzzle explained"
+    },
+    {
+     "label": "Rubik's cube",
+     "query": "how to solve rubiks cube"
+    }
+   ],
    "synonyms": [
     "crossword",
     "sudoku",
@@ -1473,6 +2490,32 @@
      "query": "clean stand up comedy"
     }
    ],
+   "picks": [
+    {
+     "label": "Jim Gaffigan",
+     "query": "jim gaffigan stand up"
+    },
+    {
+     "label": "Nate Bargatze",
+     "query": "nate bargatze stand up"
+    },
+    {
+     "label": "Brian Regan",
+     "query": "brian regan stand up"
+    },
+    {
+     "label": "Gabriel Iglesias",
+     "query": "gabriel iglesias stand up"
+    },
+    {
+     "label": "Clean comedy",
+     "query": "clean stand up comedy"
+    },
+    {
+     "label": "Classic specials",
+     "query": "classic stand up special"
+    }
+   ],
    "synonyms": [
     "standup",
     "comedians"
@@ -1504,6 +2547,32 @@
     {
      "label": "New sketches",
      "query": "sketch comedy channel"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Key & Peele",
+     "query": "key and peele"
+    },
+    {
+     "label": "Monty Python",
+     "query": "monty python sketches"
+    },
+    {
+     "label": "SNL classics",
+     "query": "snl classic sketches"
+    },
+    {
+     "label": "The Carol Burnett Show",
+     "query": "carol burnett show sketches"
+    },
+    {
+     "label": "Studio C",
+     "query": "studio c sketches"
+    },
+    {
+     "label": "Mr. Bean",
+     "query": "mr bean full episode"
     }
    ],
    "synonyms": [
@@ -1538,6 +2607,24 @@
      "query": "political comedy sketch"
     }
    ],
+   "picks": [
+    {
+     "label": "The Onion",
+     "query": "the onion"
+    },
+    {
+     "label": "Monty Python",
+     "query": "monty python satire"
+    },
+    {
+     "label": "Honest Trailers",
+     "query": "honest trailers"
+    },
+    {
+     "label": "Yes Minister",
+     "query": "yes minister best scenes"
+    }
+   ],
    "synonyms": [
     "parody"
    ],
@@ -1566,6 +2653,32 @@
     {
      "label": "Adult animation clips",
      "query": "adult animation"
+    }
+   ],
+   "picks": [
+    {
+     "label": "The Simpsons",
+     "query": "the simpsons best moments"
+    },
+    {
+     "label": "Futurama",
+     "query": "futurama best moments"
+    },
+    {
+     "label": "Bob's Burgers",
+     "query": "bobs burgers best moments"
+    },
+    {
+     "label": "Looney Tunes",
+     "query": "looney tunes classic"
+    },
+    {
+     "label": "King of the Hill",
+     "query": "king of the hill best moments"
+    },
+    {
+     "label": "Tom and Jerry",
+     "query": "tom and jerry classic"
     }
    ],
    "synonyms": [
@@ -1600,6 +2713,24 @@
      "query": "whose line is it anyway"
     }
    ],
+   "picks": [
+    {
+     "label": "Whose Line Is It Anyway",
+     "query": "whose line is it anyway best"
+    },
+    {
+     "label": "Taskmaster",
+     "query": "taskmaster full episode"
+    },
+    {
+     "label": "Improv Everywhere",
+     "query": "improv everywhere"
+    },
+    {
+     "label": "Improv games",
+     "query": "improv comedy games"
+    }
+   ],
    "synonyms": [
     "improvisation"
    ],
@@ -1624,6 +2755,28 @@
     {
      "label": "Funny pets",
      "query": "funny pets compilation"
+    },
+    {
+     "label": "Animal bloopers",
+     "query": "animal bloopers"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Funny dogs",
+     "query": "funny dogs compilation"
+    },
+    {
+     "label": "Funny cats",
+     "query": "funny cats compilation"
+    },
+    {
+     "label": "Parrots talking",
+     "query": "talking parrot"
+    },
+    {
+     "label": "Goats",
+     "query": "funny goats"
     },
     {
      "label": "Animal bloopers",
@@ -1660,6 +2813,32 @@
      "query": "buster keaton charlie chaplin"
     }
    ],
+   "picks": [
+    {
+     "label": "The Three Stooges",
+     "query": "three stooges full episode"
+    },
+    {
+     "label": "Laurel and Hardy",
+     "query": "laurel and hardy"
+    },
+    {
+     "label": "Abbott and Costello",
+     "query": "abbott and costello who's on first"
+    },
+    {
+     "label": "Johnny Carson",
+     "query": "johnny carson best moments"
+    },
+    {
+     "label": "Buster Keaton",
+     "query": "buster keaton stunts"
+    },
+    {
+     "label": "I Love Lucy",
+     "query": "i love lucy best scenes"
+    }
+   ],
    "synonyms": [
     "old comedy"
    ],
@@ -1691,6 +2870,28 @@
     {
      "label": "Stage magic",
      "query": "stage magic performance"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Card tricks",
+     "query": "card tricks revealed"
+    },
+    {
+     "label": "Penn & Teller: Fool Us",
+     "query": "penn and teller fool us"
+    },
+    {
+     "label": "Street magic",
+     "query": "street magic"
+    },
+    {
+     "label": "Escape artists",
+     "query": "escape artist history"
+    },
+    {
+     "label": "Mentalism",
+     "query": "mentalism explained"
     }
    ],
    "synonyms": [
@@ -1725,6 +2926,28 @@
      "query": "ai explained"
     }
    ],
+   "picks": [
+    {
+     "label": "How ChatGPT works",
+     "query": "how large language models work"
+    },
+    {
+     "label": "AI explained simply",
+     "query": "ai explained simply"
+    },
+    {
+     "label": "Robots",
+     "query": "robotics explained"
+    },
+    {
+     "label": "AI art",
+     "query": "ai art explained"
+    },
+    {
+     "label": "AI news",
+     "query": "ai news explained"
+    }
+   ],
    "synonyms": [
     "artificial intelligence",
     "chatgpt"
@@ -1757,6 +2980,32 @@
     {
      "label": "How it's made",
      "query": "how smartphones are made"
+    }
+   ],
+   "picks": [
+    {
+     "label": "iPhone",
+     "query": "iphone review"
+    },
+    {
+     "label": "Android phones",
+     "query": "best android phone review"
+    },
+    {
+     "label": "Laptops",
+     "query": "laptop review"
+    },
+    {
+     "label": "Headphones",
+     "query": "headphones review"
+    },
+    {
+     "label": "Smart home",
+     "query": "smart home setup"
+    },
+    {
+     "label": "Cameras",
+     "query": "camera review"
     }
    ],
    "synonyms": [
@@ -1797,6 +3046,28 @@
      "query": "coding project from scratch"
     }
    ],
+   "picks": [
+    {
+     "label": "Python",
+     "query": "python for beginners"
+    },
+    {
+     "label": "Web development",
+     "query": "web development for beginners"
+    },
+    {
+     "label": "JavaScript",
+     "query": "javascript for beginners"
+    },
+    {
+     "label": "Build a game",
+     "query": "code a game from scratch"
+    },
+    {
+     "label": "Computer science",
+     "query": "computer science explained"
+    }
+   ],
    "synonyms": [
     "programming",
     "software"
@@ -1831,6 +3102,24 @@
     {
      "label": "Hacks explained",
      "query": "famous hack explained"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Scams to avoid",
+     "query": "online scams to avoid"
+    },
+    {
+     "label": "Passwords",
+     "query": "password security explained"
+    },
+    {
+     "label": "Scam baiting",
+     "query": "scam baiting"
+    },
+    {
+     "label": "How hackers work",
+     "query": "how hackers hack explained"
     }
    ],
    "synonyms": [
@@ -1869,6 +3158,28 @@
      "query": "electronics repair"
     }
    ],
+   "picks": [
+    {
+     "label": "Phone repair",
+     "query": "phone screen repair"
+    },
+    {
+     "label": "Laptop repair",
+     "query": "laptop repair"
+    },
+    {
+     "label": "Game console repair",
+     "query": "game console repair"
+    },
+    {
+     "label": "Soldering",
+     "query": "soldering for beginners"
+    },
+    {
+     "label": "Appliance repair",
+     "query": "appliance repair diy"
+    }
+   ],
    "synonyms": [
     "fix it",
     "right to repair"
@@ -1900,6 +3211,32 @@
     {
      "label": "Smartphone help",
      "query": "smartphone tips for seniors"
+    }
+   ],
+   "picks": [
+    {
+     "label": "iPhone basics",
+     "query": "iphone for beginners"
+    },
+    {
+     "label": "Android basics",
+     "query": "android phone for beginners"
+    },
+    {
+     "label": "Email",
+     "query": "how to use email for beginners"
+    },
+    {
+     "label": "Video calls",
+     "query": "how to make a video call"
+    },
+    {
+     "label": "Staying safe online",
+     "query": "staying safe online for beginners"
+    },
+    {
+     "label": "Windows basics",
+     "query": "windows for beginners"
     }
    ],
    "synonyms": [
@@ -1937,6 +3274,24 @@
      "query": "internet mystery explained"
     }
    ],
+   "picks": [
+    {
+     "label": "Lost media",
+     "query": "lost media explained"
+    },
+    {
+     "label": "Internet history",
+     "query": "history of the internet"
+    },
+    {
+     "label": "Memes explained",
+     "query": "meme history explained"
+    },
+    {
+     "label": "Online mysteries",
+     "query": "internet mysteries explained"
+    }
+   ],
    "synonyms": [
     "memes",
     "online culture"
@@ -1971,6 +3326,28 @@
      "query": "tech company history"
     }
    ],
+   "picks": [
+    {
+     "label": "Apple",
+     "query": "apple history"
+    },
+    {
+     "label": "Nintendo",
+     "query": "nintendo history"
+    },
+    {
+     "label": "Old computers",
+     "query": "vintage computer restoration"
+    },
+    {
+     "label": "The first internet",
+     "query": "early internet history"
+    },
+    {
+     "label": "Video game history",
+     "query": "video game history"
+    }
+   ],
    "synonyms": [
     "retro tech"
    ],
@@ -2002,6 +3379,32 @@
     {
      "label": "Empires",
      "query": "rise and fall of empires"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Roman Empire",
+     "query": "roman empire documentary"
+    },
+    {
+     "label": "Mongols",
+     "query": "mongol empire explained"
+    },
+    {
+     "label": "Ottoman Empire",
+     "query": "ottoman empire explained"
+    },
+    {
+     "label": "French Revolution",
+     "query": "french revolution explained"
+    },
+    {
+     "label": "Silk Road",
+     "query": "silk road history"
+    },
+    {
+     "label": "Vikings",
+     "query": "vikings history"
     }
    ],
    "synonyms": [
@@ -2038,6 +3441,32 @@
     {
      "label": "Greece",
      "query": "ancient greece documentary"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Egypt",
+     "query": "ancient egypt documentary"
+    },
+    {
+     "label": "Rome",
+     "query": "ancient rome daily life"
+    },
+    {
+     "label": "Greece",
+     "query": "ancient greece explained"
+    },
+    {
+     "label": "Mesopotamia",
+     "query": "mesopotamia explained"
+    },
+    {
+     "label": "Aztecs and Maya",
+     "query": "aztec maya history"
+    },
+    {
+     "label": "Ancient China",
+     "query": "ancient china history"
     }
    ],
    "synonyms": [
@@ -2077,6 +3506,32 @@
      "query": "real medieval knights"
     }
    ],
+   "picks": [
+    {
+     "label": "Castles",
+     "query": "medieval castle explained"
+    },
+    {
+     "label": "Knights",
+     "query": "medieval knights explained"
+    },
+    {
+     "label": "Vikings",
+     "query": "vikings documentary"
+    },
+    {
+     "label": "Samurai",
+     "query": "samurai history"
+    },
+    {
+     "label": "The Crusades",
+     "query": "crusades explained"
+    },
+    {
+     "label": "Daily life",
+     "query": "medieval daily life"
+    }
+   ],
    "synonyms": [
     "middle ages"
    ],
@@ -2112,6 +3567,28 @@
      "query": "cold war explained"
     }
    ],
+   "picks": [
+    {
+     "label": "The Cold War",
+     "query": "cold war explained"
+    },
+    {
+     "label": "Space race",
+     "query": "space race history"
+    },
+    {
+     "label": "The 1960s",
+     "query": "1960s history"
+    },
+    {
+     "label": "Fall of the Berlin Wall",
+     "query": "berlin wall history"
+    },
+    {
+     "label": "Industrial Revolution",
+     "query": "industrial revolution explained"
+    }
+   ],
    "synonyms": [
     "modern"
    ],
@@ -2144,6 +3621,32 @@
     {
      "label": "Home front",
      "query": "ww2 home front"
+    }
+   ],
+   "picks": [
+    {
+     "label": "D-Day",
+     "query": "d-day explained"
+    },
+    {
+     "label": "Pacific War",
+     "query": "pacific war explained"
+    },
+    {
+     "label": "Battle of Britain",
+     "query": "battle of britain explained"
+    },
+    {
+     "label": "Home front",
+     "query": "ww2 home front"
+    },
+    {
+     "label": "Tanks",
+     "query": "ww2 tanks explained"
+    },
+    {
+     "label": "Code breakers",
+     "query": "enigma code breakers"
     }
    ],
    "synonyms": [
@@ -2183,6 +3686,32 @@
      "query": "civil rights movement documentary"
     }
    ],
+   "picks": [
+    {
+     "label": "Founding Fathers",
+     "query": "founding fathers history"
+    },
+    {
+     "label": "Civil War",
+     "query": "american civil war explained"
+    },
+    {
+     "label": "Presidents",
+     "query": "us presidents history"
+    },
+    {
+     "label": "Civil rights",
+     "query": "civil rights movement history"
+    },
+    {
+     "label": "Wild West",
+     "query": "wild west history"
+    },
+    {
+     "label": "Great Depression",
+     "query": "great depression explained"
+    }
+   ],
    "synonyms": [
     "us history"
    ],
@@ -2218,6 +3747,28 @@
      "query": "jobs that no longer exist"
     }
    ],
+   "picks": [
+    {
+     "label": "Old recipes",
+     "query": "historical recipes cooking"
+    },
+    {
+     "label": "Victorian life",
+     "query": "victorian daily life"
+    },
+    {
+     "label": "Medieval life",
+     "query": "medieval daily life"
+    },
+    {
+     "label": "Old jobs",
+     "query": "jobs that no longer exist"
+    },
+    {
+     "label": "1950s life",
+     "query": "1950s daily life"
+    }
+   ],
    "synonyms": [
     "daily life history"
    ],
@@ -2248,6 +3799,28 @@
     {
      "label": "Military tech",
      "query": "military technology history"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Napoleon",
+     "query": "napoleon battles explained"
+    },
+    {
+     "label": "World War I",
+     "query": "world war 1 explained"
+    },
+    {
+     "label": "Battleships",
+     "query": "battleship history"
+    },
+    {
+     "label": "Fighter planes",
+     "query": "fighter plane history"
+    },
+    {
+     "label": "Famous battles",
+     "query": "famous battles explained"
     }
    ],
    "synonyms": [
@@ -2284,6 +3857,7 @@
      "query": "dna ancestry explained"
     }
    ],
+   "picks": [],
    "synonyms": [
     "family tree",
     "ancestry"
@@ -2318,6 +3892,7 @@
      "query": "old photographs history"
     }
    ],
+   "picks": [],
    "synonyms": [
     "hometown history"
    ],
@@ -2351,6 +3926,24 @@
      "query": "history myths debunked"
     }
    ],
+   "picks": [
+    {
+     "label": "Strange deaths",
+     "query": "strangest deaths in history"
+    },
+    {
+     "label": "History myths",
+     "query": "history myths debunked"
+    },
+    {
+     "label": "Weird jobs",
+     "query": "weird historical jobs"
+    },
+    {
+     "label": "Odd inventions",
+     "query": "strange inventions history"
+    }
+   ],
    "synonyms": [
     "weird history"
    ],
@@ -2382,6 +3975,7 @@
      "query": "famous speech analysis"
     }
    ],
+   "picks": [],
    "synonyms": [
     "speeches"
    ],
@@ -2413,6 +4007,28 @@
     {
      "label": "Solved cases",
      "query": "solved cold case"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Solved cases",
+     "query": "cold case solved"
+    },
+    {
+     "label": "Famous trials",
+     "query": "famous trial explained"
+    },
+    {
+     "label": "Dateline",
+     "query": "dateline full episode"
+    },
+    {
+     "label": "Forensics",
+     "query": "forensic files full episode"
+    },
+    {
+     "label": "Missing people found",
+     "query": "missing person found"
     }
    ],
    "synonyms": [
@@ -2448,6 +4064,28 @@
      "query": "scam explained"
     }
    ],
+   "picks": [
+    {
+     "label": "Famous heists",
+     "query": "famous heists explained"
+    },
+    {
+     "label": "Con artists",
+     "query": "famous con artists"
+    },
+    {
+     "label": "Ponzi schemes",
+     "query": "ponzi scheme explained"
+    },
+    {
+     "label": "Scam baiting",
+     "query": "scam baiting"
+    },
+    {
+     "label": "Art theft",
+     "query": "art theft history"
+    }
+   ],
    "synonyms": [
     "cons",
     "fraud"
@@ -2479,6 +4117,28 @@
     {
      "label": "Lost places",
      "query": "lost city mystery"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Unsolved mysteries",
+     "query": "unsolved mysteries explained"
+    },
+    {
+     "label": "Lost cities",
+     "query": "lost cities explained"
+    },
+    {
+     "label": "Bermuda Triangle",
+     "query": "bermuda triangle explained"
+    },
+    {
+     "label": "Shipwrecks",
+     "query": "shipwreck mysteries"
+    },
+    {
+     "label": "Disappearances",
+     "query": "mysterious disappearances"
     }
    ],
    "synonyms": [
@@ -2515,6 +4175,28 @@
      "query": "how courts work"
     }
    ],
+   "picks": [
+    {
+     "label": "Judge Judy",
+     "query": "judge judy full episode"
+    },
+    {
+     "label": "The People's Court",
+     "query": "the people's court"
+    },
+    {
+     "label": "Famous trials",
+     "query": "famous trial explained"
+    },
+    {
+     "label": "How courts work",
+     "query": "how courts work explained"
+    },
+    {
+     "label": "Supreme Court cases",
+     "query": "supreme court cases explained"
+    }
+   ],
    "synonyms": [
     "law",
     "trials"
@@ -2548,6 +4230,28 @@
      "query": "real detective story"
     }
    ],
+   "picks": [
+    {
+     "label": "Sherlock Holmes",
+     "query": "sherlock holmes explained"
+    },
+    {
+     "label": "Forensic Files",
+     "query": "forensic files full episode"
+    },
+    {
+     "label": "Columbo",
+     "query": "columbo best scenes"
+    },
+    {
+     "label": "DNA cases",
+     "query": "dna solved cold case"
+    },
+    {
+     "label": "Agatha Christie",
+     "query": "agatha christie explained"
+    }
+   ],
    "synonyms": [
     "forensics"
    ],
@@ -2578,6 +4282,32 @@
     {
      "label": "One-pot meals",
      "query": "one pot recipe"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Chicken dinners",
+     "query": "easy chicken dinner recipe"
+    },
+    {
+     "label": "Pasta",
+     "query": "easy pasta recipe"
+    },
+    {
+     "label": "Soups",
+     "query": "easy soup recipe"
+    },
+    {
+     "label": "Slow cooker",
+     "query": "slow cooker recipe"
+    },
+    {
+     "label": "Air fryer",
+     "query": "air fryer recipe"
+    },
+    {
+     "label": "One-pot meals",
+     "query": "one pot meal recipe"
     }
    ],
    "synonyms": [
@@ -2621,6 +4351,32 @@
      "query": "cookie recipe"
     }
    ],
+   "picks": [
+    {
+     "label": "Sourdough",
+     "query": "sourdough bread for beginners"
+    },
+    {
+     "label": "Cookies",
+     "query": "best cookie recipe"
+    },
+    {
+     "label": "Cakes",
+     "query": "cake decorating for beginners"
+    },
+    {
+     "label": "Pies",
+     "query": "pie crust recipe"
+    },
+    {
+     "label": "Bread",
+     "query": "easy bread recipe"
+    },
+    {
+     "label": "Croissants",
+     "query": "how to make croissants"
+    }
+   ],
    "synonyms": [
     "bread",
     "cakes"
@@ -2659,6 +4415,7 @@
      "query": "cooking myths tested"
     }
    ],
+   "picks": [],
    "synonyms": [
     "kitchen science"
    ],
@@ -2689,6 +4446,32 @@
     {
      "label": "Pizza",
      "query": "neapolitan pizza at home"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Pasta",
+     "query": "homemade pasta recipe"
+    },
+    {
+     "label": "Pizza",
+     "query": "homemade pizza dough"
+    },
+    {
+     "label": "Lasagna",
+     "query": "lasagna recipe"
+    },
+    {
+     "label": "Risotto",
+     "query": "risotto recipe"
+    },
+    {
+     "label": "Pasta Grannies",
+     "query": "pasta grannies"
+    },
+    {
+     "label": "Tiramisu",
+     "query": "tiramisu recipe"
     }
    ],
    "synonyms": [
@@ -2722,6 +4505,32 @@
     {
      "label": "Salsa",
      "query": "homemade salsa"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Tacos",
+     "query": "tacos recipe authentic"
+    },
+    {
+     "label": "Tamales",
+     "query": "how to make tamales"
+    },
+    {
+     "label": "Enchiladas",
+     "query": "enchiladas recipe"
+    },
+    {
+     "label": "Salsa",
+     "query": "homemade salsa recipe"
+    },
+    {
+     "label": "Mole",
+     "query": "mole recipe"
+    },
+    {
+     "label": "Pozole",
+     "query": "pozole recipe"
     }
    ],
    "synonyms": [
@@ -2761,6 +4570,32 @@
      "query": "indian curry recipe"
     }
    ],
+   "picks": [
+    {
+     "label": "Chinese",
+     "query": "chinese home cooking recipe"
+    },
+    {
+     "label": "Japanese",
+     "query": "japanese home cooking recipe"
+    },
+    {
+     "label": "Korean",
+     "query": "korean home cooking recipe"
+    },
+    {
+     "label": "Thai",
+     "query": "thai recipe authentic"
+    },
+    {
+     "label": "Indian",
+     "query": "indian curry recipe"
+    },
+    {
+     "label": "Vietnamese",
+     "query": "vietnamese pho recipe"
+    }
+   ],
    "synonyms": [
     "asian food"
    ],
@@ -2798,6 +4633,28 @@
      "query": "soul food recipe"
     }
    ],
+   "picks": [
+    {
+     "label": "Fried chicken",
+     "query": "southern fried chicken recipe"
+    },
+    {
+     "label": "Biscuits",
+     "query": "southern biscuits recipe"
+    },
+    {
+     "label": "Gumbo",
+     "query": "gumbo recipe"
+    },
+    {
+     "label": "Mac and cheese",
+     "query": "soul food mac and cheese"
+    },
+    {
+     "label": "Cornbread",
+     "query": "cornbread recipe"
+    }
+   ],
    "synonyms": [
     "southern food"
    ],
@@ -2831,6 +4688,32 @@
     {
      "label": "Grilling",
      "query": "grilling tips"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Brisket",
+     "query": "brisket for beginners"
+    },
+    {
+     "label": "Ribs",
+     "query": "smoked ribs recipe"
+    },
+    {
+     "label": "Steak",
+     "query": "perfect steak grill"
+    },
+    {
+     "label": "Burgers",
+     "query": "best burger grill"
+    },
+    {
+     "label": "Pulled pork",
+     "query": "pulled pork recipe"
+    },
+    {
+     "label": "Chicken wings",
+     "query": "grilled chicken wings"
     }
    ],
    "synonyms": [
@@ -2868,6 +4751,28 @@
      "query": "meal prep for the week"
     }
    ],
+   "picks": [
+    {
+     "label": "Meal prep",
+     "query": "budget meal prep"
+    },
+    {
+     "label": "Cheap dinners",
+     "query": "cheap dinner ideas"
+    },
+    {
+     "label": "Pantry meals",
+     "query": "pantry meals recipe"
+    },
+    {
+     "label": "Feeding a family",
+     "query": "feed a family on a budget"
+    },
+    {
+     "label": "Leftovers",
+     "query": "leftover recipes"
+    }
+   ],
    "synonyms": [
     "frugal cooking"
    ],
@@ -2897,6 +4802,28 @@
     {
      "label": "Vegetarian",
      "query": "vegetarian recipe"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Vegetarian",
+     "query": "easy vegetarian recipe"
+    },
+    {
+     "label": "High protein",
+     "query": "high protein meals"
+    },
+    {
+     "label": "Salads",
+     "query": "filling salad recipe"
+    },
+    {
+     "label": "Mediterranean",
+     "query": "mediterranean diet recipes"
+    },
+    {
+     "label": "Smoothies",
+     "query": "healthy smoothie recipe"
     }
    ],
    "synonyms": [
@@ -2932,6 +4859,32 @@
      "query": "food history documentary"
     }
    ],
+   "picks": [
+    {
+     "label": "Japan",
+     "query": "japan street food"
+    },
+    {
+     "label": "Thailand",
+     "query": "thailand street food"
+    },
+    {
+     "label": "Mexico",
+     "query": "mexico street food"
+    },
+    {
+     "label": "India",
+     "query": "india street food"
+    },
+    {
+     "label": "Italy",
+     "query": "italy food tour"
+    },
+    {
+     "label": "Vietnam",
+     "query": "vietnam street food"
+    }
+   ],
    "synonyms": [
     "food tours"
    ],
@@ -2964,6 +4917,7 @@
      "query": "pickling at home"
     }
    ],
+   "picks": [],
    "synonyms": [
     "preserving"
    ],
@@ -2998,6 +4952,28 @@
      "query": "tea brewing guide"
     }
    ],
+   "picks": [
+    {
+     "label": "Espresso",
+     "query": "espresso at home"
+    },
+    {
+     "label": "Pour over",
+     "query": "pour over coffee guide"
+    },
+    {
+     "label": "Latte art",
+     "query": "latte art for beginners"
+    },
+    {
+     "label": "Matcha",
+     "query": "how to make matcha"
+    },
+    {
+     "label": "Tea",
+     "query": "how to brew tea properly"
+    }
+   ],
    "synonyms": [
     "coffee",
     "tea"
@@ -3030,6 +5006,32 @@
     {
      "label": "Used car advice",
      "query": "used car buying tips"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Pickup trucks",
+     "query": "pickup truck review"
+    },
+    {
+     "label": "SUVs",
+     "query": "suv review"
+    },
+    {
+     "label": "Electric cars",
+     "query": "electric car review"
+    },
+    {
+     "label": "Used cars",
+     "query": "best used cars to buy"
+    },
+    {
+     "label": "Sports cars",
+     "query": "sports car review"
+    },
+    {
+     "label": "Toyota",
+     "query": "toyota review"
     }
    ],
    "synonyms": [
@@ -3069,6 +5071,28 @@
      "query": "basic car maintenance"
     }
    ],
+   "picks": [
+    {
+     "label": "Engines",
+     "query": "how engines work"
+    },
+    {
+     "label": "Oil change",
+     "query": "how to change oil"
+    },
+    {
+     "label": "Brakes",
+     "query": "how to replace brakes"
+    },
+    {
+     "label": "Car problems",
+     "query": "common car problems"
+    },
+    {
+     "label": "Transmissions",
+     "query": "how transmissions work"
+    }
+   ],
    "synonyms": [
     "mechanics"
    ],
@@ -3102,6 +5126,32 @@
     {
      "label": "Car history",
      "query": "car history documentary"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Muscle cars",
+     "query": "classic muscle cars"
+    },
+    {
+     "label": "Barn finds",
+     "query": "barn find restoration"
+    },
+    {
+     "label": "Mustang",
+     "query": "ford mustang history"
+    },
+    {
+     "label": "Corvette",
+     "query": "corvette history"
+    },
+    {
+     "label": "Jay Leno's Garage",
+     "query": "jay lenos garage"
+    },
+    {
+     "label": "Car shows",
+     "query": "classic car show"
     }
    ],
    "synonyms": [
@@ -3142,6 +5192,32 @@
      "query": "rally racing"
     }
    ],
+   "picks": [
+    {
+     "label": "Formula 1",
+     "query": "formula 1 explained"
+    },
+    {
+     "label": "NASCAR",
+     "query": "nascar history"
+    },
+    {
+     "label": "Rally",
+     "query": "rally racing highlights"
+    },
+    {
+     "label": "Le Mans",
+     "query": "le mans 24 hours"
+    },
+    {
+     "label": "IndyCar",
+     "query": "indycar highlights"
+    },
+    {
+     "label": "MotoGP",
+     "query": "motogp highlights"
+    }
+   ],
    "synonyms": [
     "racing",
     "f1"
@@ -3180,6 +5256,32 @@
      "query": "how airports work"
     }
    ],
+   "picks": [
+    {
+     "label": "Pilots explain crashes",
+     "query": "air crash explained"
+    },
+    {
+     "label": "Airliners",
+     "query": "how airliners work"
+    },
+    {
+     "label": "Trains",
+     "query": "train journey"
+    },
+    {
+     "label": "Airports",
+     "query": "how airports work"
+    },
+    {
+     "label": "Model trains",
+     "query": "model train layout"
+    },
+    {
+     "label": "Cockpit views",
+     "query": "cockpit view landing"
+    }
+   ],
    "synonyms": [
     "aviation",
     "railways"
@@ -3216,6 +5318,28 @@
      "query": "construction machines"
     }
    ],
+   "picks": [
+    {
+     "label": "Excavators",
+     "query": "excavator operator"
+    },
+    {
+     "label": "Tractors",
+     "query": "tractor restoration"
+    },
+    {
+     "label": "Mining trucks",
+     "query": "mining trucks explained"
+    },
+    {
+     "label": "Cranes",
+     "query": "crane lift"
+    },
+    {
+     "label": "Big machines",
+     "query": "biggest machines in the world"
+    }
+   ],
    "synonyms": [
     "tractors",
     "trucks"
@@ -3247,6 +5371,32 @@
     {
      "label": "Disasters explained",
      "query": "engineering disaster explained"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Bridges",
+     "query": "how bridges work"
+    },
+    {
+     "label": "Skyscrapers",
+     "query": "how skyscrapers are built"
+    },
+    {
+     "label": "Megaprojects",
+     "query": "megaprojects explained"
+    },
+    {
+     "label": "Engineering disasters",
+     "query": "engineering disasters explained"
+    },
+    {
+     "label": "How it's made",
+     "query": "how it's made factory"
+    },
+    {
+     "label": "3D printing",
+     "query": "3d printing projects"
     }
    ],
    "synonyms": [
@@ -3283,6 +5433,28 @@
      "query": "motorcycle riding for beginners"
     }
    ],
+   "picks": [
+    {
+     "label": "Harley-Davidson",
+     "query": "harley davidson review"
+    },
+    {
+     "label": "Dirt bikes",
+     "query": "dirt bike riding"
+    },
+    {
+     "label": "Touring",
+     "query": "motorcycle touring"
+    },
+    {
+     "label": "Beginner bikes",
+     "query": "best beginner motorcycle"
+    },
+    {
+     "label": "Riding tips",
+     "query": "motorcycle riding tips"
+    }
+   ],
    "synonyms": [
     "bikes",
     "motorbikes"
@@ -3316,6 +5488,7 @@
      "query": "greatest plays ever"
     }
    ],
+   "picks": [],
    "synonyms": [
     "sports breakdown"
    ],
@@ -3345,6 +5518,28 @@
     {
      "label": "NFL history",
      "query": "nfl history"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Game highlights",
+     "query": "nfl game highlights"
+    },
+    {
+     "label": "Super Bowl classics",
+     "query": "super bowl classic games"
+    },
+    {
+     "label": "QB breakdowns",
+     "query": "quarterback breakdown film"
+    },
+    {
+     "label": "NFL history",
+     "query": "nfl history"
+    },
+    {
+     "label": "College football",
+     "query": "college football highlights"
     }
    ],
    "synonyms": [
@@ -3379,6 +5574,32 @@
     {
      "label": "Soccer history",
      "query": "soccer history"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Premier League",
+     "query": "premier league highlights"
+    },
+    {
+     "label": "World Cup classics",
+     "query": "world cup classic matches"
+    },
+    {
+     "label": "Messi",
+     "query": "messi best goals"
+    },
+    {
+     "label": "Tactics",
+     "query": "soccer tactics explained"
+    },
+    {
+     "label": "Champions League",
+     "query": "champions league highlights"
+    },
+    {
+     "label": "MLS",
+     "query": "mls highlights"
     }
    ],
    "synonyms": [
@@ -3418,6 +5639,32 @@
      "query": "basketball history"
     }
    ],
+   "picks": [
+    {
+     "label": "NBA highlights",
+     "query": "nba highlights"
+    },
+    {
+     "label": "Michael Jordan",
+     "query": "michael jordan career"
+    },
+    {
+     "label": "LeBron James",
+     "query": "lebron james career"
+    },
+    {
+     "label": "Steph Curry",
+     "query": "steph curry best shots"
+    },
+    {
+     "label": "March Madness",
+     "query": "march madness best moments"
+    },
+    {
+     "label": "Basketball history",
+     "query": "nba history"
+    }
+   ],
    "synonyms": [
     "nba"
    ],
@@ -3447,6 +5694,28 @@
     {
      "label": "Baseball explained",
      "query": "baseball explained"
+    }
+   ],
+   "picks": [
+    {
+     "label": "World Series classics",
+     "query": "world series classic games"
+    },
+    {
+     "label": "Home runs",
+     "query": "longest home runs"
+    },
+    {
+     "label": "Shohei Ohtani",
+     "query": "shohei ohtani highlights"
+    },
+    {
+     "label": "Baseball history",
+     "query": "baseball history"
+    },
+    {
+     "label": "Pitching",
+     "query": "pitching explained"
     }
    ],
    "synonyms": [
@@ -3483,6 +5752,28 @@
      "query": "golf history"
     }
    ],
+   "picks": [
+    {
+     "label": "Tiger Woods",
+     "query": "tiger woods best shots"
+    },
+    {
+     "label": "The Masters",
+     "query": "the masters highlights"
+    },
+    {
+     "label": "Golf tips",
+     "query": "golf swing tips for beginners"
+    },
+    {
+     "label": "Course vlogs",
+     "query": "golf course vlog"
+    },
+    {
+     "label": "Putting",
+     "query": "putting tips"
+    }
+   ],
    "synonyms": [
     "golfing"
    ],
@@ -3514,6 +5805,32 @@
     {
      "label": "Classic matches",
      "query": "classic tennis match"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Federer",
+     "query": "federer best points"
+    },
+    {
+     "label": "Nadal",
+     "query": "nadal best points"
+    },
+    {
+     "label": "Djokovic",
+     "query": "djokovic best points"
+    },
+    {
+     "label": "Serena Williams",
+     "query": "serena williams best points"
+    },
+    {
+     "label": "Wimbledon",
+     "query": "wimbledon classic matches"
+    },
+    {
+     "label": "Pickleball",
+     "query": "pickleball for beginners"
     }
    ],
    "synonyms": [
@@ -3548,6 +5865,32 @@
     {
      "label": "Fly fishing",
      "query": "fly fishing"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Bass fishing",
+     "query": "bass fishing tips"
+    },
+    {
+     "label": "Fly fishing",
+     "query": "fly fishing for beginners"
+    },
+    {
+     "label": "Catch and cook",
+     "query": "catch and cook"
+    },
+    {
+     "label": "Ice fishing",
+     "query": "ice fishing"
+    },
+    {
+     "label": "Deep sea",
+     "query": "deep sea fishing"
+    },
+    {
+     "label": "Kayak fishing",
+     "query": "kayak fishing"
     }
    ],
    "synonyms": [
@@ -3588,6 +5931,32 @@
      "query": "rock climbing documentary"
     }
    ],
+   "picks": [
+    {
+     "label": "Hiking",
+     "query": "hiking trail"
+    },
+    {
+     "label": "Camping",
+     "query": "camping trip"
+    },
+    {
+     "label": "Backpacking",
+     "query": "backpacking tips"
+    },
+    {
+     "label": "Rock climbing",
+     "query": "rock climbing"
+    },
+    {
+     "label": "Appalachian Trail",
+     "query": "appalachian trail thru hike"
+    },
+    {
+     "label": "Skiing",
+     "query": "skiing"
+    }
+   ],
    "synonyms": [
     "outdoors"
    ],
@@ -3625,6 +5994,7 @@
      "query": "skateboarding history"
     }
    ],
+   "picks": [],
    "synonyms": [
     "skate",
     "skating"
@@ -3661,6 +6031,32 @@
      "query": "martial arts technique explained"
     }
    ],
+   "picks": [
+    {
+     "label": "Boxing history",
+     "query": "boxing history"
+    },
+    {
+     "label": "Muhammad Ali",
+     "query": "muhammad ali fights"
+    },
+    {
+     "label": "Bruce Lee",
+     "query": "bruce lee"
+    },
+    {
+     "label": "Karate",
+     "query": "karate explained"
+    },
+    {
+     "label": "Self-defense",
+     "query": "self defense basics"
+    },
+    {
+     "label": "Technique",
+     "query": "boxing technique breakdown"
+    }
+   ],
    "synonyms": [
     "mma",
     "boxing"
@@ -3695,6 +6091,28 @@
      "query": "olympic sport explained"
     }
    ],
+   "picks": [
+    {
+     "label": "Gymnastics",
+     "query": "olympic gymnastics best"
+    },
+    {
+     "label": "Swimming",
+     "query": "olympic swimming best races"
+    },
+    {
+     "label": "Track and field",
+     "query": "olympic sprint finals"
+    },
+    {
+     "label": "Figure skating",
+     "query": "olympic figure skating best"
+    },
+    {
+     "label": "Winter Olympics",
+     "query": "winter olympics best moments"
+    }
+   ],
    "synonyms": [
     "olympic games"
    ],
@@ -3725,6 +6143,28 @@
     {
      "label": "Form tips",
      "query": "exercise form tips"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Beginner workouts",
+     "query": "beginner strength workout"
+    },
+    {
+     "label": "Home workouts",
+     "query": "home workout no equipment"
+    },
+    {
+     "label": "Dumbbells",
+     "query": "dumbbell workout"
+    },
+    {
+     "label": "Form tips",
+     "query": "exercise form tips"
+    },
+    {
+     "label": "Over 50",
+     "query": "strength training over 50"
     }
    ],
    "synonyms": [
@@ -3764,6 +6204,28 @@
      "query": "couch to 5k"
     }
    ],
+   "picks": [
+    {
+     "label": "First 5K",
+     "query": "couch to 5k"
+    },
+    {
+     "label": "Running form",
+     "query": "running form tips"
+    },
+    {
+     "label": "Marathons",
+     "query": "marathon training"
+    },
+    {
+     "label": "Trail running",
+     "query": "trail running"
+    },
+    {
+     "label": "Running shoes",
+     "query": "running shoes review"
+    }
+   ],
    "synonyms": [
     "jogging"
    ],
@@ -3795,6 +6257,32 @@
     {
      "label": "Stretching",
      "query": "daily stretching routine"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Beginner yoga",
+     "query": "yoga for beginners"
+    },
+    {
+     "label": "Morning yoga",
+     "query": "morning yoga"
+    },
+    {
+     "label": "Chair yoga",
+     "query": "chair yoga"
+    },
+    {
+     "label": "Back pain",
+     "query": "yoga for back pain"
+    },
+    {
+     "label": "Stretching",
+     "query": "full body stretch"
+    },
+    {
+     "label": "Bedtime yoga",
+     "query": "bedtime yoga"
     }
    ],
    "synonyms": [
@@ -3833,6 +6321,28 @@
      "query": "chair exercises for seniors"
     }
    ],
+   "picks": [
+    {
+     "label": "Walking workouts",
+     "query": "walking workout at home"
+    },
+    {
+     "label": "Chair exercises",
+     "query": "chair exercises for seniors"
+    },
+    {
+     "label": "Balance",
+     "query": "balance exercises for seniors"
+    },
+    {
+     "label": "Tai chi",
+     "query": "tai chi for beginners"
+    },
+    {
+     "label": "Arthritis",
+     "query": "exercises for arthritis"
+    }
+   ],
    "synonyms": [
     "seniors exercise"
    ],
@@ -3867,6 +6377,7 @@
      "query": "nutrition myths"
     }
    ],
+   "picks": [],
    "synonyms": [
     "diet",
     "healthy eating"
@@ -3902,6 +6413,24 @@
      "query": "sleep science explained"
     }
    ],
+   "picks": [
+    {
+     "label": "Sleep stories",
+     "query": "sleep story for grown ups"
+    },
+    {
+     "label": "Rain sounds",
+     "query": "rain sounds for sleep"
+    },
+    {
+     "label": "Sleep science",
+     "query": "sleep science explained"
+    },
+    {
+     "label": "Bedtime routine",
+     "query": "better sleep routine"
+    }
+   ],
    "synonyms": [
     "sleeping"
    ],
@@ -3934,6 +6463,7 @@
      "query": "anxiety explained"
     }
    ],
+   "picks": [],
    "synonyms": [
     "wellbeing",
     "mental wellness"
@@ -3971,6 +6501,24 @@
      "query": "breathing exercise"
     }
    ],
+   "picks": [
+    {
+     "label": "Guided meditation",
+     "query": "guided meditation 10 minutes"
+    },
+    {
+     "label": "Breathing",
+     "query": "breathing exercise for stress"
+    },
+    {
+     "label": "Sleep meditation",
+     "query": "sleep meditation"
+    },
+    {
+     "label": "Mindfulness",
+     "query": "mindfulness for beginners"
+    }
+   ],
    "synonyms": [
     "mindfulness"
    ],
@@ -4003,6 +6551,7 @@
      "query": "memory tips"
     }
    ],
+   "picks": [],
    "synonyms": [
     "aging well",
     "seniors"
@@ -4040,6 +6589,28 @@
      "query": "how to save money"
     }
    ],
+   "picks": [
+    {
+     "label": "Budgeting",
+     "query": "how to budget for beginners"
+    },
+    {
+     "label": "Paying off debt",
+     "query": "how to pay off debt"
+    },
+    {
+     "label": "Saving",
+     "query": "how to save money"
+    },
+    {
+     "label": "Credit scores",
+     "query": "credit score explained"
+    },
+    {
+     "label": "Taxes",
+     "query": "taxes explained simply"
+    }
+   ],
    "synonyms": [
     "money tips",
     "finance"
@@ -4072,6 +6643,24 @@
     {
      "label": "Retirement",
      "query": "retirement planning explained"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Index funds",
+     "query": "index funds explained"
+    },
+    {
+     "label": "Retirement",
+     "query": "retirement saving explained"
+    },
+    {
+     "label": "Stocks",
+     "query": "how the stock market works"
+    },
+    {
+     "label": "Roth IRA",
+     "query": "roth ira explained"
     }
    ],
    "synonyms": [
@@ -4112,6 +6701,24 @@
      "query": "thrift store finds"
     }
    ],
+   "picks": [
+    {
+     "label": "Thrifting",
+     "query": "thrift with me"
+    },
+    {
+     "label": "Money-saving tips",
+     "query": "money saving tips"
+    },
+    {
+     "label": "Minimalism",
+     "query": "minimalism for beginners"
+    },
+    {
+     "label": "Grocery savings",
+     "query": "save money on groceries"
+    }
+   ],
    "synonyms": [
     "cheap living"
    ],
@@ -4142,6 +6749,24 @@
     {
      "label": "Why prices change",
      "query": "inflation explained"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Inflation",
+     "query": "inflation explained"
+    },
+    {
+     "label": "Recessions",
+     "query": "recession explained"
+    },
+    {
+     "label": "Housing",
+     "query": "housing market explained"
+    },
+    {
+     "label": "Why prices rise",
+     "query": "why prices go up explained"
     }
    ],
    "synonyms": [
@@ -4178,6 +6803,24 @@
      "query": "brand history"
     }
    ],
+   "picks": [
+    {
+     "label": "Rise and fall",
+     "query": "rise and fall of a company"
+    },
+    {
+     "label": "Famous brands",
+     "query": "brand history"
+    },
+    {
+     "label": "Fast food history",
+     "query": "fast food chain history"
+    },
+    {
+     "label": "Toy companies",
+     "query": "toy company history"
+    }
+   ],
    "synonyms": [
     "business"
    ],
@@ -4210,6 +6853,7 @@
      "query": "small business tips"
     }
    ],
+   "picks": [],
    "synonyms": [
     "entrepreneur"
    ],
@@ -4243,6 +6887,7 @@
      "query": "day in the life job"
     }
    ],
+   "picks": [],
    "synonyms": [
     "work",
     "jobs"
@@ -4279,6 +6924,24 @@
      "query": "house tour"
     }
    ],
+   "picks": [
+    {
+     "label": "House tours",
+     "query": "house tour"
+    },
+    {
+     "label": "Tiny homes",
+     "query": "tiny house tour"
+    },
+    {
+     "label": "Home buying",
+     "query": "first time home buyer tips"
+    },
+    {
+     "label": "Mansions",
+     "query": "mansion tour"
+    }
+   ],
    "synonyms": [
     "housing"
    ],
@@ -4306,6 +6969,32 @@
     {
      "label": "City guides",
      "query": "city travel guide"
+    },
+    {
+     "label": "Travel on a budget",
+     "query": "budget travel tips"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Japan",
+     "query": "japan travel guide"
+    },
+    {
+     "label": "Italy",
+     "query": "italy travel guide"
+    },
+    {
+     "label": "Paris",
+     "query": "paris travel guide"
+    },
+    {
+     "label": "National parks",
+     "query": "us national parks travel"
+    },
+    {
+     "label": "Cruises",
+     "query": "cruise ship tour"
     },
     {
      "label": "Travel on a budget",
@@ -4350,6 +7039,28 @@
      "query": "weird borders explained"
     }
    ],
+   "picks": [
+    {
+     "label": "Maps explained",
+     "query": "maps explained"
+    },
+    {
+     "label": "Weird borders",
+     "query": "weird borders explained"
+    },
+    {
+     "label": "Countries",
+     "query": "country explained"
+    },
+    {
+     "label": "Islands",
+     "query": "remote islands explained"
+    },
+    {
+     "label": "Flags",
+     "query": "flags explained"
+    }
+   ],
    "synonyms": [
     "maps"
    ],
@@ -4380,6 +7091,28 @@
     {
      "label": "City design",
      "query": "urban planning explained"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Cathedrals",
+     "query": "gothic cathedral explained"
+    },
+    {
+     "label": "City design",
+     "query": "city planning explained"
+    },
+    {
+     "label": "Famous buildings",
+     "query": "famous buildings explained"
+    },
+    {
+     "label": "Tiny homes",
+     "query": "tiny home design"
+    },
+    {
+     "label": "Old towns",
+     "query": "old town walking tour"
     }
    ],
    "synonyms": [
@@ -4413,6 +7146,28 @@
     {
      "label": "Walking tours",
      "query": "walking tour 4k"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Tokyo walks",
+     "query": "tokyo walking tour 4k"
+    },
+    {
+     "label": "London walks",
+     "query": "london walking tour 4k"
+    },
+    {
+     "label": "Train rides",
+     "query": "scenic train ride"
+    },
+    {
+     "label": "Italian towns",
+     "query": "italy village walk 4k"
+    },
+    {
+     "label": "Countryside",
+     "query": "countryside walk 4k"
     }
    ],
    "synonyms": [
@@ -4449,6 +7204,28 @@
      "query": "national park wildlife"
     }
    ],
+   "picks": [
+    {
+     "label": "Yellowstone",
+     "query": "yellowstone national park"
+    },
+    {
+     "label": "Grand Canyon",
+     "query": "grand canyon national park"
+    },
+    {
+     "label": "Yosemite",
+     "query": "yosemite national park"
+    },
+    {
+     "label": "Zion",
+     "query": "zion national park"
+    },
+    {
+     "label": "Smoky Mountains",
+     "query": "great smoky mountains"
+    }
+   ],
    "synonyms": [
     "parks"
    ],
@@ -4482,6 +7259,24 @@
      "query": "ghost town"
     }
    ],
+   "picks": [
+    {
+     "label": "Ghost towns",
+     "query": "ghost town exploring"
+    },
+    {
+     "label": "Abandoned malls",
+     "query": "abandoned mall"
+    },
+    {
+     "label": "Abandoned mansions",
+     "query": "abandoned mansion"
+    },
+    {
+     "label": "Old hospitals",
+     "query": "abandoned hospital history"
+    }
+   ],
    "synonyms": [
     "urbex"
    ],
@@ -4511,6 +7306,28 @@
     {
      "label": "Route 66",
      "query": "route 66"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Route 66",
+     "query": "route 66 road trip"
+    },
+    {
+     "label": "Pacific Coast Highway",
+     "query": "pacific coast highway road trip"
+    },
+    {
+     "label": "RV life",
+     "query": "rv living"
+    },
+    {
+     "label": "Van life",
+     "query": "van life"
+    },
+    {
+     "label": "Scenic drives",
+     "query": "scenic drive 4k"
     }
    ],
    "synonyms": [
@@ -4545,6 +7362,7 @@
      "query": "festival documentary"
     }
    ],
+   "picks": [],
    "synonyms": [
     "culture"
    ],
@@ -4577,6 +7395,7 @@
      "query": "dialects explained"
     }
    ],
+   "picks": [],
    "synonyms": [
     "accents"
    ],
@@ -4607,6 +7426,7 @@
      "query": "market tour"
     }
    ],
+   "picks": [],
    "synonyms": [
     "food culture"
    ],
@@ -4636,6 +7456,24 @@
     {
      "label": "Christmas traditions",
      "query": "christmas traditions around the world"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Christmas",
+     "query": "christmas traditions history"
+    },
+    {
+     "label": "Halloween",
+     "query": "halloween history"
+    },
+    {
+     "label": "Thanksgiving",
+     "query": "thanksgiving history"
+    },
+    {
+     "label": "New Year",
+     "query": "new year traditions around the world"
     }
    ],
    "synonyms": [
@@ -4671,6 +7509,32 @@
     {
      "label": "Big cats",
      "query": "big cats documentary"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Big cats",
+     "query": "big cats documentary"
+    },
+    {
+     "label": "Elephants",
+     "query": "elephants documentary"
+    },
+    {
+     "label": "Wolves",
+     "query": "wolves documentary"
+    },
+    {
+     "label": "Bears",
+     "query": "bears documentary"
+    },
+    {
+     "label": "Safari",
+     "query": "african safari"
+    },
+    {
+     "label": "David Attenborough",
+     "query": "david attenborough"
     }
    ],
    "synonyms": [
@@ -4710,6 +7574,28 @@
      "query": "bird songs identification"
     }
    ],
+   "picks": [
+    {
+     "label": "Bird songs",
+     "query": "bird songs identification"
+    },
+    {
+     "label": "Owls",
+     "query": "owls documentary"
+    },
+    {
+     "label": "Hummingbirds",
+     "query": "hummingbirds"
+    },
+    {
+     "label": "Backyard birds",
+     "query": "backyard bird feeder"
+    },
+    {
+     "label": "Eagles",
+     "query": "eagle nest cam"
+    }
+   ],
    "synonyms": [
     "birds",
     "birding"
@@ -4744,6 +7630,28 @@
     {
      "label": "Cat care",
      "query": "cat care tips"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Dog training",
+     "query": "dog training basics"
+    },
+    {
+     "label": "Cat care",
+     "query": "cat care tips"
+    },
+    {
+     "label": "Puppies",
+     "query": "new puppy tips"
+    },
+    {
+     "label": "Aquariums",
+     "query": "aquarium for beginners"
+    },
+    {
+     "label": "Rabbits",
+     "query": "rabbit care"
     }
    ],
    "synonyms": [
@@ -4783,6 +7691,28 @@
      "query": "coral reef documentary"
     }
    ],
+   "picks": [
+    {
+     "label": "Sharks",
+     "query": "sharks documentary"
+    },
+    {
+     "label": "Whales",
+     "query": "whales documentary"
+    },
+    {
+     "label": "Octopus",
+     "query": "octopus documentary"
+    },
+    {
+     "label": "Coral reefs",
+     "query": "coral reef documentary"
+    },
+    {
+     "label": "Deep sea",
+     "query": "deep sea creatures"
+    }
+   ],
    "synonyms": [
     "sea life"
    ],
@@ -4817,6 +7747,24 @@
      "query": "beekeeping"
     }
    ],
+   "picks": [
+    {
+     "label": "Bees",
+     "query": "beekeeping for beginners"
+    },
+    {
+     "label": "Butterflies",
+     "query": "butterfly life cycle"
+    },
+    {
+     "label": "Ants",
+     "query": "ant colony"
+    },
+    {
+     "label": "Spiders",
+     "query": "spiders explained"
+    }
+   ],
    "synonyms": [
     "bugs",
     "insects"
@@ -4843,6 +7791,28 @@
     {
      "label": "Farm life",
      "query": "farm life"
+    },
+    {
+     "label": "Animal rescue",
+     "query": "farm animal rescue"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Chickens",
+     "query": "raising chickens"
+    },
+    {
+     "label": "Goats",
+     "query": "raising goats"
+    },
+    {
+     "label": "Horses",
+     "query": "horse care"
+    },
+    {
+     "label": "Cows",
+     "query": "dairy farm"
     },
     {
      "label": "Animal rescue",
@@ -4885,6 +7855,28 @@
      "query": "forest walk 4k"
     }
    ],
+   "picks": [
+    {
+     "label": "Rain",
+     "query": "rain sounds nature"
+    },
+    {
+     "label": "Forest walks",
+     "query": "forest walk 4k"
+    },
+    {
+     "label": "Ocean waves",
+     "query": "ocean waves 4k"
+    },
+    {
+     "label": "Birdsong",
+     "query": "birdsong morning"
+    },
+    {
+     "label": "Waterfalls",
+     "query": "waterfall sounds"
+    }
+   ],
    "synonyms": [
     "nature videos"
    ],
@@ -4919,6 +7911,28 @@
     {
      "label": "Bible study",
      "query": "bible study"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Bible stories",
+     "query": "bible stories explained"
+    },
+    {
+     "label": "Sermons",
+     "query": "sunday sermon"
+    },
+    {
+     "label": "Hymns",
+     "query": "classic hymns"
+    },
+    {
+     "label": "Prayer",
+     "query": "prayer guide"
+    },
+    {
+     "label": "Saints",
+     "query": "lives of the saints"
     }
    ],
    "synonyms": [
@@ -4960,6 +7974,28 @@
      "query": "history of religion"
     }
    ],
+   "picks": [
+    {
+     "label": "Religions explained",
+     "query": "world religions explained"
+    },
+    {
+     "label": "Greek mythology",
+     "query": "greek mythology explained"
+    },
+    {
+     "label": "Norse mythology",
+     "query": "norse mythology explained"
+    },
+    {
+     "label": "Buddhism",
+     "query": "buddhism explained"
+    },
+    {
+     "label": "Religious history",
+     "query": "history of religion"
+    }
+   ],
    "synonyms": [
     "religion"
    ],
@@ -4991,6 +8027,24 @@
     {
      "label": "Philosophers",
      "query": "philosopher ideas explained"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Stoicism",
+     "query": "stoicism explained"
+    },
+    {
+     "label": "Big questions",
+     "query": "philosophy big questions"
+    },
+    {
+     "label": "Socrates and Plato",
+     "query": "socrates plato explained"
+    },
+    {
+     "label": "Ethics",
+     "query": "ethics explained"
     }
    ],
    "synonyms": [
@@ -5026,6 +8080,24 @@
      "query": "famous psychology experiments"
     }
    ],
+   "picks": [
+    {
+     "label": "How the mind works",
+     "query": "psychology explained"
+    },
+    {
+     "label": "Famous experiments",
+     "query": "famous psychology experiments"
+    },
+    {
+     "label": "Habits",
+     "query": "how habits work"
+    },
+    {
+     "label": "Body language",
+     "query": "body language explained"
+    }
+   ],
    "synonyms": [
     "mind",
     "behavior"
@@ -5058,6 +8130,24 @@
     {
      "label": "Toddlers",
      "query": "toddler development"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Toddlers",
+     "query": "toddler parenting tips"
+    },
+    {
+     "label": "Newborns",
+     "query": "newborn care tips"
+    },
+    {
+     "label": "Teens",
+     "query": "parenting teenagers"
+    },
+    {
+     "label": "Homeschool",
+     "query": "homeschool tips"
     }
    ],
    "synonyms": [
@@ -5096,6 +8186,7 @@
      "query": "making friends as an adult"
     }
    ],
+   "picks": [],
    "synonyms": [
     "dating",
     "marriage"
@@ -5127,6 +8218,24 @@
     {
      "label": "Note-taking",
      "query": "note taking method"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Study tips",
+     "query": "study tips"
+    },
+    {
+     "label": "Note-taking",
+     "query": "note taking methods"
+    },
+    {
+     "label": "Memory",
+     "query": "memory techniques"
+    },
+    {
+     "label": "Focus",
+     "query": "how to focus"
     }
    ],
    "synonyms": [
@@ -5168,6 +8277,32 @@
      "query": "linguistics explained"
     }
    ],
+   "picks": [
+    {
+     "label": "Spanish",
+     "query": "learn spanish for beginners"
+    },
+    {
+     "label": "French",
+     "query": "learn french for beginners"
+    },
+    {
+     "label": "Japanese",
+     "query": "learn japanese for beginners"
+    },
+    {
+     "label": "German",
+     "query": "learn german for beginners"
+    },
+    {
+     "label": "Italian",
+     "query": "learn italian for beginners"
+    },
+    {
+     "label": "Sign language",
+     "query": "learn sign language"
+    }
+   ],
    "synonyms": [
     "language learning"
    ],
@@ -5204,6 +8339,28 @@
      "query": "classic novel explained"
     }
    ],
+   "picks": [
+    {
+     "label": "Classic novels",
+     "query": "classic novels explained"
+    },
+    {
+     "label": "Fantasy books",
+     "query": "fantasy book recommendations"
+    },
+    {
+     "label": "Mystery books",
+     "query": "mystery book recommendations"
+    },
+    {
+     "label": "Book reviews",
+     "query": "book review"
+    },
+    {
+     "label": "Poetry",
+     "query": "poetry reading"
+    }
+   ],
    "synonyms": [
     "reading",
     "booktube"
@@ -5238,6 +8395,24 @@
      "query": "storytelling explained"
     }
    ],
+   "picks": [
+    {
+     "label": "Writing tips",
+     "query": "writing tips"
+    },
+    {
+     "label": "Storytelling",
+     "query": "storytelling explained"
+    },
+    {
+     "label": "Screenwriting",
+     "query": "screenwriting tips"
+    },
+    {
+     "label": "Poetry writing",
+     "query": "how to write poetry"
+    }
+   ],
    "synonyms": [
     "authors"
    ],
@@ -5268,6 +8443,28 @@
     {
      "label": "Art movements",
      "query": "art history explained"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Van Gogh",
+     "query": "van gogh explained"
+    },
+    {
+     "label": "Da Vinci",
+     "query": "leonardo da vinci explained"
+    },
+    {
+     "label": "Impressionism",
+     "query": "impressionism explained"
+    },
+    {
+     "label": "Famous paintings",
+     "query": "famous paintings explained"
+    },
+    {
+     "label": "Museums",
+     "query": "museum tour"
     }
    ],
    "synonyms": [
@@ -5304,6 +8501,24 @@
      "query": "design of everyday things"
     }
    ],
+   "picks": [
+    {
+     "label": "Logos",
+     "query": "logo design explained"
+    },
+    {
+     "label": "Interior design",
+     "query": "interior design tips"
+    },
+    {
+     "label": "Typography",
+     "query": "typography explained"
+    },
+    {
+     "label": "Everyday design",
+     "query": "everyday design explained"
+    }
+   ],
    "synonyms": [
     "design"
    ],
@@ -5336,6 +8551,28 @@
     {
      "label": "Style tips",
      "query": "style tips"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Fashion history",
+     "query": "fashion history"
+    },
+    {
+     "label": "Style tips",
+     "query": "style tips"
+    },
+    {
+     "label": "Thrift flips",
+     "query": "thrift flip"
+    },
+    {
+     "label": "Capsule wardrobe",
+     "query": "capsule wardrobe"
+    },
+    {
+     "label": "Men's style",
+     "query": "mens style tips"
     }
    ],
    "synonyms": [
@@ -5374,6 +8611,7 @@
      "query": "streetwear history"
     }
    ],
+   "picks": [],
    "synonyms": [
     "sneakers"
    ],
@@ -5405,6 +8643,32 @@
     {
      "label": "Skincare",
      "query": "skincare routine"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Makeup for beginners",
+     "query": "makeup for beginners"
+    },
+    {
+     "label": "Skincare routine",
+     "query": "skincare routine"
+    },
+    {
+     "label": "Lipstick",
+     "query": "lipstick tutorial"
+    },
+    {
+     "label": "Hair tutorials",
+     "query": "easy hairstyles tutorial"
+    },
+    {
+     "label": "Nails",
+     "query": "nail art tutorial"
+    },
+    {
+     "label": "Makeup over 50",
+     "query": "makeup for mature skin"
     }
    ],
    "synonyms": [
@@ -5466,6 +8730,7 @@
      "query": "how the world works explained"
     }
    ],
+   "picks": [],
    "synonyms": [
     "current events"
    ],
@@ -5496,6 +8761,7 @@
      "query": "elections explained"
     }
    ],
+   "picks": [],
    "synonyms": [
     "civics"
    ],
@@ -5526,6 +8792,24 @@
     {
      "label": "Lectures",
      "query": "university lecture"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Science talks",
+     "query": "science lecture"
+    },
+    {
+     "label": "TED Talks",
+     "query": "ted talk"
+    },
+    {
+     "label": "Author interviews",
+     "query": "author interview"
+    },
+    {
+     "label": "Hot Ones",
+     "query": "hot ones"
     }
    ],
    "synonyms": [
@@ -5561,6 +8845,24 @@
      "query": "old time radio comedy"
     }
    ],
+   "picks": [
+    {
+     "label": "The Shadow",
+     "query": "the shadow radio show"
+    },
+    {
+     "label": "Jack Benny",
+     "query": "jack benny radio show"
+    },
+    {
+     "label": "Mystery dramas",
+     "query": "old time radio mystery"
+    },
+    {
+     "label": "Comedy",
+     "query": "old time radio comedy"
+    }
+   ],
    "synonyms": [
     "radio shows"
    ],
@@ -5593,6 +8895,24 @@
      "query": "asmr tapping"
     }
    ],
+   "picks": [
+    {
+     "label": "Soft-spoken",
+     "query": "soft spoken asmr"
+    },
+    {
+     "label": "Tapping",
+     "query": "tapping asmr"
+    },
+    {
+     "label": "Role plays",
+     "query": "asmr roleplay"
+    },
+    {
+     "label": "Sleep",
+     "query": "asmr for sleep"
+    }
+   ],
    "synonyms": [
     "tingles"
    ],
@@ -5621,6 +8941,24 @@
     {
      "label": "Fireplace",
      "query": "fireplace 1 hour"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Train rides",
+     "query": "train ride slow tv"
+    },
+    {
+     "label": "Fireplace",
+     "query": "fireplace 4k"
+    },
+    {
+     "label": "Aquarium",
+     "query": "aquarium 4k"
+    },
+    {
+     "label": "Snowfall",
+     "query": "snowfall 4k"
     }
    ],
    "synonyms": [
@@ -5656,6 +8994,24 @@
      "query": "ambient music"
     }
    ],
+   "picks": [
+    {
+     "label": "Lo-fi",
+     "query": "lofi hip hop"
+    },
+    {
+     "label": "Ambient",
+     "query": "ambient music"
+    },
+    {
+     "label": "Piano",
+     "query": "calm piano music"
+    },
+    {
+     "label": "Study music",
+     "query": "study music"
+    }
+   ],
    "synonyms": [
     "study music",
     "chill"
@@ -5687,6 +9043,24 @@
     {
      "label": "Restoration timelapse",
      "query": "restoration timelapse"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Restoration",
+     "query": "restoration video"
+    },
+    {
+     "label": "Pressure washing",
+     "query": "pressure washing"
+    },
+    {
+     "label": "Cake decorating",
+     "query": "cake decorating"
+    },
+    {
+     "label": "Carpet cleaning",
+     "query": "carpet cleaning satisfying"
     }
    ],
    "synonyms": [
@@ -5723,6 +9097,24 @@
      "query": "space for kids"
     }
    ],
+   "picks": [
+    {
+     "label": "Space for kids",
+     "query": "space for kids"
+    },
+    {
+     "label": "Dinosaurs for kids",
+     "query": "dinosaurs for kids"
+    },
+    {
+     "label": "Experiments for kids",
+     "query": "science experiments for kids"
+    },
+    {
+     "label": "Animals for kids",
+     "query": "animals for kids"
+    }
+   ],
    "synonyms": [
     "kids learning"
    ],
@@ -5752,6 +9144,24 @@
     {
      "label": "Drawing for kids",
      "query": "how to draw for kids"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Drawing for kids",
+     "query": "drawing for kids"
+    },
+    {
+     "label": "Paper crafts",
+     "query": "paper crafts for kids"
+    },
+    {
+     "label": "Play-Doh",
+     "query": "play doh ideas"
+    },
+    {
+     "label": "Painting for kids",
+     "query": "painting for kids"
     }
    ],
    "synonyms": [
@@ -5785,6 +9195,7 @@
      "query": "classic cartoons"
     }
    ],
+   "picks": [],
    "synonyms": [
     "family"
    ],
@@ -5817,6 +9228,20 @@
      "query": "bedtime story read aloud"
     }
    ],
+   "picks": [
+    {
+     "label": "Picture books",
+     "query": "picture book read aloud"
+    },
+    {
+     "label": "Bedtime stories",
+     "query": "bedtime stories for kids"
+    },
+    {
+     "label": "Dr. Seuss",
+     "query": "dr seuss read aloud"
+    }
+   ],
    "synonyms": [
     "story time"
    ],
@@ -5843,6 +9268,24 @@
     {
      "label": "Nursery rhymes",
      "query": "nursery rhymes"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Nursery rhymes",
+     "query": "nursery rhymes"
+    },
+    {
+     "label": "ABC songs",
+     "query": "abc song"
+    },
+    {
+     "label": "Counting songs",
+     "query": "counting songs for kids"
+    },
+    {
+     "label": "Lullabies",
+     "query": "lullabies"
     }
    ],
    "synonyms": [
@@ -5882,6 +9325,32 @@
      "query": "astronomy for beginners"
     }
    ],
+   "picks": [
+    {
+     "label": "Black holes",
+     "query": "black holes explained"
+    },
+    {
+     "label": "Mars",
+     "query": "mars explained"
+    },
+    {
+     "label": "The Moon",
+     "query": "moon landing history"
+    },
+    {
+     "label": "James Webb",
+     "query": "james webb telescope images"
+    },
+    {
+     "label": "Rockets",
+     "query": "rocket launches"
+    },
+    {
+     "label": "Planets",
+     "query": "solar system planets explained"
+    }
+   ],
    "synonyms": [
     "astronomy",
     "nasa",
@@ -5918,6 +9387,24 @@
      "query": "physics experiment"
     }
    ],
+   "picks": [
+    {
+     "label": "Einstein",
+     "query": "relativity explained"
+    },
+    {
+     "label": "Quantum physics",
+     "query": "quantum physics explained simply"
+    },
+    {
+     "label": "Gravity",
+     "query": "gravity explained"
+    },
+    {
+     "label": "Light",
+     "query": "light explained"
+    }
+   ],
    "synonyms": [
     "physics"
    ],
@@ -5949,6 +9436,24 @@
     {
      "label": "Everyday chemistry",
      "query": "everyday chemistry explained"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Explosions",
+     "query": "chemistry explosions explained"
+    },
+    {
+     "label": "Everyday chemistry",
+     "query": "everyday chemistry"
+    },
+    {
+     "label": "Elements",
+     "query": "periodic table elements"
+    },
+    {
+     "label": "Cooking chemistry",
+     "query": "chemistry of cooking"
     }
    ],
    "synonyms": [
@@ -5984,6 +9489,24 @@
     {
      "label": "Evolution",
      "query": "evolution explained"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Human body",
+     "query": "human body explained"
+    },
+    {
+     "label": "Cells",
+     "query": "cells explained"
+    },
+    {
+     "label": "Evolution",
+     "query": "evolution explained"
+    },
+    {
+     "label": "DNA",
+     "query": "dna explained"
     }
    ],
    "synonyms": [
@@ -6024,6 +9547,28 @@
      "query": "earthquake explained"
     }
    ],
+   "picks": [
+    {
+     "label": "Tornadoes",
+     "query": "tornado explained"
+    },
+    {
+     "label": "Hurricanes",
+     "query": "hurricane explained"
+    },
+    {
+     "label": "Volcanoes",
+     "query": "volcano explained"
+    },
+    {
+     "label": "Earthquakes",
+     "query": "earthquake explained"
+    },
+    {
+     "label": "Weather",
+     "query": "weather explained"
+    }
+   ],
    "synonyms": [
     "geology",
     "meteorology"
@@ -6060,6 +9605,24 @@
      "query": "ocean explained"
     }
    ],
+   "picks": [
+    {
+     "label": "Deep sea",
+     "query": "deep sea explained"
+    },
+    {
+     "label": "Titanic",
+     "query": "titanic wreck"
+    },
+    {
+     "label": "Shipwrecks",
+     "query": "shipwrecks explained"
+    },
+    {
+     "label": "Submarines",
+     "query": "submarine explained"
+    }
+   ],
    "synonyms": [
     "sea",
     "marine"
@@ -6094,6 +9657,24 @@
      "query": "fossil hunting"
     }
    ],
+   "picks": [
+    {
+     "label": "T. rex",
+     "query": "t rex explained"
+    },
+    {
+     "label": "Fossils",
+     "query": "dinosaur fossils"
+    },
+    {
+     "label": "Extinction",
+     "query": "dinosaur extinction explained"
+    },
+    {
+     "label": "Ice age animals",
+     "query": "ice age animals"
+    }
+   ],
    "synonyms": [
     "dinos",
     "paleontology"
@@ -6125,6 +9706,24 @@
     {
      "label": "Medical history",
      "query": "history of medicine"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Human body",
+     "query": "how the body works"
+    },
+    {
+     "label": "Medical history",
+     "query": "history of medicine"
+    },
+    {
+     "label": "How surgery works",
+     "query": "surgery explained"
+    },
+    {
+     "label": "Vaccines",
+     "query": "how vaccines work"
     }
    ],
    "synonyms": [
@@ -6161,6 +9760,20 @@
      "query": "renewable energy explained"
     }
    ],
+   "picks": [
+    {
+     "label": "Clean energy",
+     "query": "clean energy explained"
+    },
+    {
+     "label": "Solar power",
+     "query": "solar power explained"
+    },
+    {
+     "label": "Weather and climate",
+     "query": "climate explained simply"
+    }
+   ],
    "synonyms": [
     "environment"
    ],
@@ -6194,6 +9807,24 @@
      "query": "large scale experiment"
     }
    ],
+   "picks": [
+    {
+     "label": "Mark Rober",
+     "query": "mark rober"
+    },
+    {
+     "label": "Slow motion",
+     "query": "slow mo guys"
+    },
+    {
+     "label": "Home experiments",
+     "query": "science experiments at home"
+    },
+    {
+     "label": "Big experiments",
+     "query": "giant science experiment"
+    }
+   ],
    "synonyms": [
     "experiments"
    ],
@@ -6224,6 +9855,7 @@
      "query": "unsolved science mysteries"
     }
    ],
+   "picks": [],
    "synonyms": [
     "science mysteries"
    ],
@@ -6252,6 +9884,24 @@
     {
      "label": "Big ideas",
      "query": "math big ideas explained"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Visual math",
+     "query": "visual math explained"
+    },
+    {
+     "label": "Algebra",
+     "query": "algebra explained"
+    },
+    {
+     "label": "Geometry",
+     "query": "geometry explained"
+    },
+    {
+     "label": "Calculus",
+     "query": "calculus explained simply"
     }
    ],
    "synonyms": [
@@ -6287,6 +9937,7 @@
      "query": "logic riddle"
     }
    ],
+   "picks": [],
    "synonyms": [
     "brain teasers"
    ],
@@ -6316,6 +9967,7 @@
      "query": "probability explained"
     }
    ],
+   "picks": [],
    "synonyms": [
     "stats"
    ],
@@ -6346,6 +9998,7 @@
      "query": "mathematician biography"
     }
    ],
+   "picks": [],
    "synonyms": [
     "history of math"
    ],
@@ -6376,6 +10029,7 @@
      "query": "speed math"
     }
    ],
+   "picks": [],
    "synonyms": [
     "math tricks"
    ],
@@ -6402,6 +10056,24 @@
     {
      "label": "Telescopes",
      "query": "beginner telescope guide"
+    }
+   ],
+   "picks": [
+    {
+     "label": "What's in the sky",
+     "query": "night sky this month"
+    },
+    {
+     "label": "Telescopes",
+     "query": "telescope for beginners"
+    },
+    {
+     "label": "Meteor showers",
+     "query": "meteor shower"
+    },
+    {
+     "label": "Northern lights",
+     "query": "northern lights"
     }
    ],
    "synonyms": [
@@ -6439,6 +10111,32 @@
     {
      "label": "Houseplants",
      "query": "houseplant care"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Vegetables",
+     "query": "vegetable garden for beginners"
+    },
+    {
+     "label": "Tomatoes",
+     "query": "growing tomatoes"
+    },
+    {
+     "label": "Houseplants",
+     "query": "houseplant care"
+    },
+    {
+     "label": "Roses",
+     "query": "rose care"
+    },
+    {
+     "label": "Raised beds",
+     "query": "raised bed garden"
+    },
+    {
+     "label": "Garden tours",
+     "query": "garden tour"
     }
    ],
    "synonyms": [
@@ -6481,6 +10179,28 @@
      "query": "how to use tools"
     }
    ],
+   "picks": [
+    {
+     "label": "Plumbing",
+     "query": "diy plumbing repair"
+    },
+    {
+     "label": "Drywall",
+     "query": "drywall repair"
+    },
+    {
+     "label": "Painting walls",
+     "query": "how to paint a room"
+    },
+    {
+     "label": "Tools",
+     "query": "tools for beginners"
+    },
+    {
+     "label": "Tiling",
+     "query": "how to tile"
+    }
+   ],
    "synonyms": [
     "fix my house",
     "handyman"
@@ -6516,6 +10236,28 @@
      "query": "furniture making"
     }
    ],
+   "picks": [
+    {
+     "label": "Beginner projects",
+     "query": "woodworking projects for beginners"
+    },
+    {
+     "label": "Furniture",
+     "query": "furniture making"
+    },
+    {
+     "label": "Wood turning",
+     "query": "wood turning"
+    },
+    {
+     "label": "Hand tools",
+     "query": "hand tool woodworking"
+    },
+    {
+     "label": "Cutting boards",
+     "query": "cutting board making"
+    }
+   ],
    "synonyms": [
     "carpentry"
    ],
@@ -6547,6 +10289,24 @@
     {
      "label": "Decluttering",
      "query": "decluttering tips"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Decluttering",
+     "query": "decluttering tips"
+    },
+    {
+     "label": "Cleaning motivation",
+     "query": "clean with me"
+    },
+    {
+     "label": "Kitchen organizing",
+     "query": "kitchen organization"
+    },
+    {
+     "label": "Laundry",
+     "query": "laundry tips"
     }
    ],
    "synonyms": [
@@ -6585,6 +10345,24 @@
      "query": "tiny house tour"
     }
    ],
+   "picks": [
+    {
+     "label": "Room makeovers",
+     "query": "room makeover"
+    },
+    {
+     "label": "Tiny homes",
+     "query": "tiny home tour"
+    },
+    {
+     "label": "Kitchen remodel",
+     "query": "kitchen remodel"
+    },
+    {
+     "label": "Before and after",
+     "query": "home renovation before and after"
+    }
+   ],
    "synonyms": [
     "renovation"
    ],
@@ -6616,6 +10394,28 @@
     {
      "label": "Furniture restoration",
      "query": "furniture restoration"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Tools",
+     "query": "rusty tool restoration"
+    },
+    {
+     "label": "Furniture",
+     "query": "furniture restoration"
+    },
+    {
+     "label": "Old toys",
+     "query": "toy restoration"
+    },
+    {
+     "label": "Watches",
+     "query": "watch restoration"
+    },
+    {
+     "label": "Cars",
+     "query": "car restoration"
     }
    ],
    "synonyms": [
@@ -6650,6 +10450,24 @@
      "query": "homesteading"
     }
    ],
+   "picks": [
+    {
+     "label": "Chickens",
+     "query": "backyard chickens"
+    },
+    {
+     "label": "Off-grid living",
+     "query": "off grid living"
+    },
+    {
+     "label": "Canning",
+     "query": "canning for beginners"
+    },
+    {
+     "label": "Cabin building",
+     "query": "building a log cabin"
+    }
+   ],
    "synonyms": [
     "farm life"
    ],
@@ -6680,6 +10498,28 @@
     {
      "label": "Crochet",
      "query": "crochet for beginners"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Crochet for beginners",
+     "query": "crochet for beginners"
+    },
+    {
+     "label": "Knitting for beginners",
+     "query": "knitting for beginners"
+    },
+    {
+     "label": "Blankets",
+     "query": "crochet blanket"
+    },
+    {
+     "label": "Sweaters",
+     "query": "knit a sweater"
+    },
+    {
+     "label": "Granny squares",
+     "query": "granny square"
     }
    ],
    "synonyms": [
@@ -6714,6 +10554,24 @@
     {
      "label": "Quilting",
      "query": "quilting for beginners"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Quilting",
+     "query": "quilting for beginners"
+    },
+    {
+     "label": "Sewing machine basics",
+     "query": "sewing machine for beginners"
+    },
+    {
+     "label": "Clothes",
+     "query": "sewing clothes"
+    },
+    {
+     "label": "Embroidery",
+     "query": "embroidery for beginners"
     }
    ],
    "synonyms": [
@@ -6755,6 +10613,28 @@
      "query": "oil painting tutorial"
     }
    ],
+   "picks": [
+    {
+     "label": "Bob Ross",
+     "query": "bob ross"
+    },
+    {
+     "label": "Watercolor",
+     "query": "watercolor for beginners"
+    },
+    {
+     "label": "Drawing basics",
+     "query": "drawing for beginners"
+    },
+    {
+     "label": "Oil painting",
+     "query": "oil painting for beginners"
+    },
+    {
+     "label": "Portraits",
+     "query": "portrait drawing"
+    }
+   ],
    "synonyms": [
     "art tutorials"
    ],
@@ -6790,6 +10670,20 @@
      "query": "hand building pottery"
     }
    ],
+   "picks": [
+    {
+     "label": "Wheel throwing",
+     "query": "pottery wheel for beginners"
+    },
+    {
+     "label": "Hand building",
+     "query": "hand building pottery"
+    },
+    {
+     "label": "Glazing",
+     "query": "pottery glazing"
+    }
+   ],
    "synonyms": [
     "ceramics"
    ],
@@ -6821,6 +10715,28 @@
     {
      "label": "Scale models",
      "query": "scale model building"
+    }
+   ],
+   "picks": [
+    {
+     "label": "LEGO sets",
+     "query": "lego set review"
+    },
+    {
+     "label": "LEGO Technic",
+     "query": "lego technic"
+    },
+    {
+     "label": "Model trains",
+     "query": "model train layout"
+    },
+    {
+     "label": "Scale models",
+     "query": "scale model build"
+    },
+    {
+     "label": "Gundam",
+     "query": "gundam model build"
     }
    ],
    "synonyms": [
@@ -6858,6 +10774,24 @@
      "query": "dollhouse miniature"
     }
    ],
+   "picks": [
+    {
+     "label": "Dollhouses",
+     "query": "dollhouse miniature"
+    },
+    {
+     "label": "Dioramas",
+     "query": "diorama build"
+    },
+    {
+     "label": "Tiny food",
+     "query": "miniature cooking"
+    },
+    {
+     "label": "Painting minis",
+     "query": "miniature painting"
+    }
+   ],
    "synonyms": [
     "dioramas"
    ],
@@ -6887,6 +10821,7 @@
      "query": "hand lettering sign painting"
     }
    ],
+   "picks": [],
    "synonyms": [
     "lettering"
    ],
@@ -6916,6 +10851,20 @@
     {
      "label": "Scrapbooking",
      "query": "scrapbooking ideas"
+    }
+   ],
+   "picks": [
+    {
+     "label": "Origami",
+     "query": "origami for beginners"
+    },
+    {
+     "label": "Card making",
+     "query": "card making"
+    },
+    {
+     "label": "Scrapbooking",
+     "query": "scrapbooking"
     }
    ],
    "synonyms": [
