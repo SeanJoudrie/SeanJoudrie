@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { COPY } from '../copy'
-import { findCulprit, GROUPS, searchCulprits, searchTopics, TOPIC_LIST } from '../data/library'
+import { findCulprit, findTopic, GROUPS, searchLessOf, searchTopics, TOPIC_LIST } from '../data/library'
 import { PLATFORMS } from '../data/playbooks'
 import { MAX_CATEGORIES } from '../data/topics'
 import { norm } from '../lib/search'
@@ -11,6 +11,28 @@ import { Mascot } from './Mascot'
 import { Button, Chip, StepHeader, inputClass } from './ui'
 
 type Update = (patch: Partial<Session>) => void
+/** What's typed in a question's box. Kept by the page so Next can use it. */
+type Draft = { text: string; setText: (t: string) => void }
+
+const MAX_LESS = 8
+const clean = (t: string) => t.trim().replace(/\s+/g, ' ').slice(0, 40)
+
+/** Add a typed name to "Show me less of", using the name we know if it's clearly the same thing. */
+export function withLessOf(s: Session, typed: string): Partial<Session> {
+  const v = clean(typed)
+  const name = findCulprit(v)?.label ?? findTopic(v)?.label ?? v
+  if (!name || s.turnDown.length >= MAX_LESS || s.turnDown.some((t) => norm(t) === norm(name))) return {}
+  return { turnDown: [...s.turnDown, name], problems: s.problems.filter((p) => p !== 'stale') }
+}
+
+/** Add a typed topic to "more of": a known topic if it's the same name, else their own words. */
+export function withMoreOf(s: Session, typed: string): Partial<Session> {
+  const v = clean(typed)
+  if (!v || s.likes.length >= MAX_CATEGORIES) return {}
+  const exact = TOPIC_LIST.find((t) => norm(t.label) === norm(v))
+  if (exact) return s.likes.includes(exact.id) ? {} : { likes: [...s.likes, exact.id] }
+  return s.likes.some((l) => norm(l) === norm(v)) ? {} : { likes: [...s.likes, v] }
+}
 
 /* ---------- Landing ---------- */
 
@@ -59,22 +81,16 @@ export function Landing({ onStart, onResume }: { onStart: () => void; onResume: 
 
 /** Shown before anything is typed: a spread that fits most ages. */
 const COMMON = ['Political commentary', 'Game of Thrones', 'Celebrity gossip', 'Minecraft', 'Shorts', 'Reaction videos', 'Star Wars', 'True crime']
-const MAX_LESS = 8
-
-export function TakingOver({ s, update }: { s: Session; update: Update }) {
+export function TakingOver({ s, update, draft: { text, setText } }: { s: Session; update: Update; draft: Draft }) {
   const c = COPY.q1
-  const [text, setText] = useState('')
   const bored = s.problems.includes('stale') && s.turnDown.length === 0
   const full = s.turnDown.length >= MAX_LESS
   const has = (name: string) => s.turnDown.some((t) => norm(t) === norm(name))
-  const add = (name: string) => {
-    const v = name.trim().replace(/\s+/g, ' ').slice(0, 40)
-    if (!v || full || has(v)) return
-    update({ turnDown: [...s.turnDown, v], problems: s.problems.filter((p) => p !== 'stale') })
-  }
+  const add = (name: string) => update(withLessOf(s, name))
   const remove = (name: string) => update({ turnDown: s.turnDown.filter((t) => t !== name) })
-  const matches = text.trim() ? searchCulprits(text, 8).filter((m) => !has(m.label)) : []
-  const shown = text.trim() ? matches.map((m) => m.label) : COMMON.filter((x) => !has(x))
+  const shown = text.trim() ? searchLessOf(text, 16).filter((m) => !has(m)).slice(0, 8) : COMMON.filter((x) => !has(x))
+  const own = clean(text)
+  const ownNew = own && !has(own) && !shown.some((x) => norm(x) === norm(own)) && !findCulprit(own) && !findTopic(own)
   const platform = PLATFORMS.find((p) => p.id === s.platform)!
 
   return (
@@ -104,8 +120,7 @@ export function TakingOver({ s, update }: { s: Session; update: Update }) {
         className="flex flex-wrap gap-2"
         onSubmit={(e) => {
           e.preventDefault()
-          // Use the name we know if it's clearly the same thing ("got" → Game of Thrones).
-          add(findCulprit(text)?.label ?? text)
+          add(text)
           setText('')
         }}
       >
@@ -137,7 +152,7 @@ export function TakingOver({ s, update }: { s: Session; update: Update }) {
         </div>
       )}
 
-      {shown.length > 0 && !full && (
+      {(shown.length > 0 || ownNew) && !full && (
         <>
           <p className="m-0 mt-5 mb-2 text-base text-ink-2">{text.trim() ? c.matches : c.common}</p>
           <div className="flex flex-wrap gap-2">
@@ -154,6 +169,18 @@ export function TakingOver({ s, update }: { s: Session; update: Update }) {
                 + {name}
               </Chip>
             ))}
+            {ownNew && (
+              <Chip
+                selected={false}
+                tone="alarm"
+                onClick={() => {
+                  add(own)
+                  setText('')
+                }}
+              >
+                {c.useOwn(own)}
+              </Chip>
+            )}
           </div>
         </>
       )}
@@ -214,9 +241,8 @@ export function EstimateOptions({ selected, onPick }: { selected: number | null;
 
 /* ---------- Question 3: What do you want to see more of? ---------- */
 
-export function WantMore({ s, update }: { s: Session; update: Update }) {
+export function WantMore({ s, update, draft: { text, setText } }: { s: Session; update: Update; draft: Draft }) {
   const c = COPY.q3
-  const [text, setText] = useState('')
   const [showAll, setShowAll] = useState(false)
   const full = s.likes.length >= MAX_CATEGORIES
   const toggle = (id: string) => update({ likes: s.likes.includes(id) ? s.likes.filter((x) => x !== id) : full ? s.likes : [...s.likes, id] })
@@ -226,13 +252,9 @@ export function WantMore({ s, update }: { s: Session; update: Update }) {
   const results = q ? searchTopics(q, 12) : []
   const picked = TOPIC_LIST.filter((t) => s.likes.includes(t.id))
   const suggested = TOPIC_LIST.filter((t) => t.suggested && !s.likes.includes(t.id))
+  const exactTopic = q ? TOPIC_LIST.find((t) => norm(t.label) === norm(q)) : undefined
   const add = () => {
-    const v = q.replace(/\s+/g, ' ').slice(0, 40)
-    if (!v || full) return
-    const exact = TOPIC_LIST.find((t) => norm(t.label) === norm(v))
-    if (exact) {
-      if (!s.likes.includes(exact.id)) update({ likes: [...s.likes, exact.id] })
-    } else if (!s.likes.some((l) => norm(l) === norm(v))) update({ likes: [...s.likes, v] })
+    update(withMoreOf(s, q))
     setText('')
   }
   const chip = (t: { id: string; label: string }) => (
@@ -261,10 +283,18 @@ export function WantMore({ s, update }: { s: Session; update: Update }) {
       </form>
 
       {q ? (
-        <div className="flex flex-wrap gap-2">
-          {results.map(chip)}
-          {results.length === 0 && !full && <p className="m-0 text-base text-ink-2">{c.notFound}</p>}
-        </div>
+        <>
+          {results.length > 0 && <p className="m-0 mb-2 text-base text-ink-2">{c.matches}</p>}
+          <div className="flex flex-wrap gap-2">
+            {results.map(chip)}
+            {!full && !exactTopic && !s.likes.some((l) => norm(l) === norm(q)) && (
+              <Chip selected={false} onClick={add}>
+                {c.useOwn(clean(q))}
+              </Chip>
+            )}
+          </div>
+          {results.length === 0 && !full && <p className="m-0 mt-3 text-base text-ink-2">{c.notFound}</p>}
+        </>
       ) : (
         <div className="flex flex-wrap gap-2">
           {picked.map(chip)}

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { norm, score } from '../lib/search'
-import { CULPRIT_LIST, findCulprit, GROUPS, inferProblems, POOL, poolFor, searchCulprits, searchTopics, suggestFor, TOPIC_LIST, topicById } from './library'
+import { CULPRIT_LIST, findCulprit, GROUPS, inferProblems, POOL, poolFor, searchCulprits, searchLessOf, searchTopics, suggestFor, TOPIC_LIST, topicById } from './library'
 
 describe('taxonomy integrity', () => {
   it('has 200+ topics in 15-20 groups with unique ids', () => {
@@ -54,6 +54,87 @@ describe('search', () => {
     expect(searchTopics('gardning')[0].id).toBe('gardening')
     expect(searchTopics('hymns')[0].id).toBe('gospel-worship')
     expect(searchTopics('church music')[0].id).toBe('gospel-worship')
+  })
+
+  it('finds the right topic from everyday words, first', () => {
+    const cases: [string, string][] = [
+      ['lipstick', 'beauty-makeup'],
+      ['lipstik', 'beauty-makeup'],
+      ['matte lipstick', 'beauty-makeup'],
+      ['mascara', 'beauty-makeup'],
+      ['skincare', 'beauty-makeup'],
+      ['nail art', 'beauty-makeup'],
+      ['sourdough', 'baking'],
+      ['air fryer', 'easy-recipes'],
+      ['brisket', 'bbq-grilling'],
+      ['ramen', 'asian-cooking'],
+      ['tacos', 'mexican-food'],
+      ['espresso', 'coffee-tea'],
+      ['taylor swift', 'pop'],
+      ['beethoven', 'classical'],
+      ['ukulele', 'learn-an-instrument'],
+      ['stardew valley', 'cozy-games'],
+      ['catan', 'board-games'],
+      ['wordle', 'puzzles-crosswords'],
+      ['snl', 'sketch-comedy'],
+      ['iphone', 'gadgets'],
+      ['python', 'coding'],
+      ['pyramids', 'ancient-history'],
+      ['ww2', 'world-war-ii'],
+      ['nba', 'basketball'],
+      ['premier league', 'soccer'],
+      ['pickleball', 'tennis'],
+      ['bass fishing', 'fishing'],
+      ['pilates', 'yoga-stretching'],
+      ['anxiety', 'mental-health'],
+      ['roth ira', 'investing-basics'],
+      ['sharks', 'ocean-life'],
+      ['owls', 'birds-birdwatching'],
+      ['puppies', 'pets'],
+      ['bible', 'faith-spirituality'],
+      ['stoicism', 'philosophy'],
+      ['toddlers', 'parenting'],
+      ['learn spanish', 'languages'],
+      ['sneakers', 'streetwear'],
+      ['black holes', 'space'],
+      ['tornadoes', 'earth-weather'],
+      ['t rex', 'dinosaurs'],
+      ['raised beds', 'gardening'],
+      ['crochet', 'knitting-crochet'],
+      ['watercolor', 'painting-drawing'],
+      ['origami', 'paper-crafts'],
+      ['bob ross', 'painting-drawing'],
+      ['pressure washing', 'satisfying'],
+      ['ms rachel', 'nursery-sing-alongs'],
+      ['excavators', 'heavy-machinery'],
+      ['harley davidson', 'motorcycles'],
+    ]
+    const wrong = cases.filter(([q, id]) => searchTopics(q)[0]?.id !== id).map(([q, id]) => `${q}: wanted ${id}, got ${searchTopics(q)[0]?.id}`)
+    expect(wrong).toEqual([])
+  })
+
+  it('ranks a direct name above a related word', () => {
+    // "Gardening" is a name; "garden tour" is only a related word elsewhere.
+    expect(searchTopics('gardening')[0].id).toBe('gardening')
+    expect(searchTopics('classic films')[0].id).toBe('classic-films')
+  })
+
+  it('does not match short words in the middle of other words', () => {
+    expect(score('art', ['party'])).toBe(0)
+    expect(score('art', ['Art history'])).toBe(85)
+    expect(score('lip', ['red lipstick'])).toBe(70)
+  })
+
+  it('offers whole topics on "What is taking over", after known shows', () => {
+    expect(searchLessOf('lipstick')[0]).toBe('Beauty & makeup')
+    expect(searchLessOf('GOT')[0]).toBe('Game of Thrones')
+    expect(searchLessOf('makeup')).toContain('Makeup drama')
+    expect(searchLessOf('makeup')).toContain('Beauty & makeup')
+  })
+
+  it('never suggests the topic someone is sick of, even by a related word', () => {
+    expect(suggestFor(['lipstick'], 20)).not.toContain('beauty-makeup')
+    expect(suggestFor(['Taylor Swift'], 20)).not.toContain('pop')
   })
 
   it('normalizes and scores', () => {

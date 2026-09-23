@@ -6,7 +6,7 @@ A free tool that fixes a feed stuck on one topic, in about a minute and five tap
 
 - **Product review and roadmap:** [`docs/REVIEW.md`](docs/REVIEW.md) (every feature graded, MVP cut line, API keys and costs, brand, risks, 7-day plan).
 - **UX audit and what changed:** [`docs/UX_AUDIT.md`](docs/UX_AUDIT.md) (measured before/after, the "grandma rules", copy deck).
-- **Topic library:** [`docs/ux/TAXONOMY.md`](docs/ux/TAXONOMY.md), data in `src/data/taxonomy.json` (202 topics, 194 "show me less of" entries). Hand-picked videos in `src/data/pool.json`.
+- **Topic library:** [`docs/ux/TAXONOMY.md`](docs/ux/TAXONOMY.md), data in `src/data/taxonomy.json` (202 topics with about 2,000 related words so "lipstick" finds Beauty & makeup, 194 "show me less of" entries). Hand-picked videos in `src/data/pool.json`.
 - **Words:** every string the app shows is in `src/copy.ts`; `npm test` fails if one reads above a 6th-grade level or uses retired jargon.
 - **Working name.** The name lives in one constant, `src/data/brand.ts`.
 

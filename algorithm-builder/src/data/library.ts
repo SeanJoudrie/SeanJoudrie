@@ -1,4 +1,4 @@
-import { rank, score } from '../lib/search'
+import { norm, rank, score } from '../lib/search'
 import type { ProblemId } from '../lib/types'
 import pool from './pool.json'
 import taxonomy from './taxonomy.json'
@@ -14,6 +14,8 @@ export interface Topic {
   group: string
   subtopics: { label: string; query: string }[]
   synonyms: string[]
+  /** Looser words that lead here ("lipstick" → Beauty & makeup). */
+  keywords: string[]
   audience: string
   suggested: boolean
   popularWith: string[]
@@ -45,12 +47,38 @@ export const GROUPS = [...new Set(TOPIC_LIST.map((t) => t.group))]
 const byId = new Map(TOPIC_LIST.map((t) => [t.id, t]))
 export const topicById = (id: string) => byId.get(id)
 
-export const searchTopics = (q: string, limit = 12) => rank(q, TOPIC_LIST, (t) => [t.label, ...t.synonyms, ...t.subtopics.map((s) => s.label)], limit)
-export const searchCulprits = (q: string, limit = 8) => rank(q, CULPRIT_LIST, (c) => [c.label, ...c.synonyms], limit)
+const topicNames = (t: Topic) => [t.label, ...t.synonyms]
+const topicRelated = (t: Topic) => [...t.subtopics.map((s) => s.label), ...t.keywords, t.group]
+const culpritNames = (c: Culprit) => [c.label, ...c.synonyms]
+
+export const searchTopics = (q: string, limit = 12) => rank(q, TOPIC_LIST, topicNames, limit, topicRelated)
+export const searchCulprits = (q: string, limit = 8) => rank(q, CULPRIT_LIST, culpritNames, limit)
+
+/**
+ * Names to offer on "What's taking over your feed?": the shows and people we
+ * know first, then whole topics, so "lipstick" still finds Beauty & makeup.
+ */
+export function searchLessOf(q: string, limit = 8): string[] {
+  const hits = [
+    ...CULPRIT_LIST.map((c, i) => ({ label: c.label, s: score(q, culpritNames(c)), i })),
+    ...TOPIC_LIST.map((t, i) => ({ label: t.label, s: score(q, topicNames(t), topicRelated(t)), i: CULPRIT_LIST.length + i })),
+  ]
+    .filter((x) => x.s > 0)
+    .sort((a, b) => b.s - a.s || a.i - b.i)
+  const out: string[] = []
+  for (const h of hits) if (out.length < limit && !out.some((o) => norm(o) === norm(h.label))) out.push(h.label)
+  return out
+}
 
 /** The culprit a typed name refers to, if we know it well enough. */
 export function findCulprit(name: string): Culprit | undefined {
-  return CULPRIT_LIST.find((c) => score(name, [c.label, ...c.synonyms]) >= 80)
+  // 90+ is the name, a nickname or a plural: "star" alone isn't Star Wars.
+  return CULPRIT_LIST.find((c) => score(name, culpritNames(c)) >= 90)
+}
+
+/** The topic a typed name refers to by its name or a nickname ("makeup"). */
+export function findTopic(name: string): Topic | undefined {
+  return TOPIC_LIST.find((t) => score(name, topicNames(t)) >= 90)
 }
 
 /** What people commonly want back when their feed is taken over. */
@@ -65,7 +93,7 @@ export function suggestFor(turnDown: string[], n = 3): string[] {
   const out: string[] = []
   const clashes = (id: string) => {
     const t = byId.get(id)
-    return !t || turnDown.some((d) => score(d, [t.label, ...t.synonyms]) >= 60)
+    return !t || turnDown.some((d) => score(d, topicNames(t), t.keywords) >= 60)
   }
   for (const d of turnDown) for (const a of findCulprit(d)?.alternatives ?? []) if (!out.includes(a) && !clashes(a)) out.push(a)
   for (const a of DEFAULT_SUGGESTIONS) if (!out.includes(a) && !clashes(a)) out.push(a)

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { AdjustSheet } from './components/AdjustSheet'
-import { HowMuch, Landing, TakingOver, WantMore } from './components/Flow'
+import { HowMuch, Landing, TakingOver, WantMore, withLessOf, withMoreOf } from './components/Flow'
 import { Privacy, Terms } from './components/Legal'
 import { Mascot } from './components/Mascot'
 import { Results } from './components/Results'
@@ -41,6 +41,7 @@ export default function App() {
   const [returning, setReturning] = useState(!!fromLink)
   const [legal, setLegal] = useState<Legal>(legalFromHash)
   const [adjusting, setAdjusting] = useState(false)
+  const [draft, setDraft] = useState('')
   const seeded = useRef(false)
   const main = useRef<HTMLElement>(null)
 
@@ -79,6 +80,7 @@ export default function App() {
 
   // Move focus to the new question for keyboard and screen-reader users.
   useEffect(() => {
+    setDraft('')
     window.scrollTo({ top: 0 })
     main.current?.querySelector<HTMLElement>('h1')?.focus({ preventScroll: true })
   }, [step, legal])
@@ -108,9 +110,17 @@ export default function App() {
 
   const qs = questions(s)
   const idx = qs.indexOf(step)
-  const next = () => go(idx < qs.length - 1 ? qs[idx + 1] : 'results')
+  const next = () => {
+    // Something typed but not added yet counts: nobody should have to find "Add".
+    const patch = !draft.trim() ? {} : step === 'q1' ? withLessOf(s, draft) : step === 'q3' ? withMoreOf(s, draft) : {}
+    const after = { ...s, ...patch }
+    if (Object.keys(patch).length) setS((prev) => ({ ...prev, ...patch }))
+    const q = questions(after)
+    const i = q.indexOf(step)
+    go(i < q.length - 1 ? q[i + 1] : 'results')
+  }
   const back = () => go(idx > 0 ? qs[idx - 1] : 'landing')
-  const canGo = step !== 'q1' || s.turnDown.length > 0 || isBored(s)
+  const canGo = step !== 'q1' || s.turnDown.length > 0 || isBored(s) || draft.trim() !== ''
 
   const reset = () => {
     clearLocal()
@@ -179,9 +189,9 @@ export default function App() {
                 onResume={resumable ? () => go('results') : null}
               />
             )}
-            {step === 'q1' && <TakingOver s={s} update={update} />}
+            {step === 'q1' && <TakingOver s={s} update={update} draft={{ text: draft, setText: setDraft }} />}
             {step === 'q2' && <HowMuch s={s} update={update} next={next} />}
-            {step === 'q3' && <WantMore s={s} update={update} />}
+            {step === 'q3' && <WantMore s={s} update={update} draft={{ text: draft, setText: setDraft }} />}
             {step === 'results' && (
               <Results s={s} returning={returning} onAdjust={() => setAdjusting(true)} onReset={reset} onFollowUp={(t) => update({ followUp: t })} />
             )}
