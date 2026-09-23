@@ -128,7 +128,7 @@ export default function App() {
           {legal === 'privacy' ? <Privacy /> : <Terms />}
         </main>
       ) : (
-        <main id="main" ref={main} className={`flex-1 ${step === 'mix' || step === 'results' ? '' : 'mx-auto w-full max-w-[680px]'}`} tabIndex={-1}>
+        <main id="main" ref={main} className={`flex-1 ${idx >= 0 ? 'pb-32' : ''} ${step === 'mix' || step === 'results' ? '' : 'mx-auto w-full max-w-[680px]'}`} tabIndex={-1}>
           <div className="[&_h1]:outline-none" key={step}>
             {step === 'landing' && (
               <Landing
@@ -165,30 +165,25 @@ export default function App() {
           </div>
 
           {idx >= 0 && (
-            <div className="sticky bottom-0 -mx-4 mt-8 flex items-center justify-between gap-3 safe-bottom border-t border-line bg-paper px-4 pt-3 sm:static sm:pb-0 sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0">
-              <Button variant="secondary" onClick={back}>
-                Back
-              </Button>
-              <div className="flex items-center gap-2">
-                {idx >= 2 && step !== 'mix' && (
-                  <Button variant="ghost" onClick={() => go('results')} className="hidden sm:inline-flex">
-                    Skip to my fix
-                  </Button>
-                )}
-                {step !== 'platform' && (
-                  <Button onClick={next}>
+            // Fixed (not sticky) and keyed by step: iOS WebKit can skip repainting a
+            // sticky bar's children after a big content change, which hid Next (O-1).
+            <div key={`bar-${step}`} className="fixed inset-x-0 bottom-0 z-10 border-t border-line bg-paper">
+              <div className="safe-bottom mx-auto flex w-full max-w-[980px] items-center justify-between gap-3 px-4 pt-3 sm:px-6">
+                <Button variant="secondary" onClick={back}>
+                  Back
+                </Button>
+                <div className="flex items-center gap-2">
+                  {idx >= 2 && step !== 'mix' && (
+                    <button onClick={() => go('results')} className="min-h-11 px-2 text-sm font-semibold text-ink-2 underline underline-offset-4">
+                      Skip to my fix
+                    </button>
+                  )}
+                  <Button onClick={next} disabled={step === 'platform'} title={step === 'platform' ? 'Pick an app to continue' : undefined}>
                     {step === 'mix' ? 'Looks good, build my fix' : step === 'tally' && !s.baseline ? 'Skip' : 'Next'}
                   </Button>
-                )}
+                </div>
               </div>
             </div>
-          )}
-          {idx >= 2 && step !== 'mix' && (
-            <p className="m-0 mt-2 text-center sm:hidden">
-              <button onClick={() => go('results')} className="min-h-11 text-sm font-semibold text-ink-2 underline underline-offset-4">
-                Skip to my fix
-              </button>
-            </p>
           )}
         </main>
       )}

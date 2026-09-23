@@ -126,8 +126,10 @@ async function screen(page, label) {
       .map((el) => `${el.tagName}.${String(el.className?.baseVal ?? el.className).slice(0, 40)}`)
     const banned = document.body.innerText.match(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}✓✕↗▶—]/gu)
     const durations = document.getAnimations().map((a) => Math.round(Number(a.effect?.getTiming().duration) || 0))
-    return { W, sw: document.documentElement.scrollWidth, wide, banned, durations }
+    const h1 = document.querySelectorAll('h1').length
+    return { W, sw: document.documentElement.scrollWidth, wide, banned, durations, h1 }
   })
+  check(r.h1 === 1, `${label}: exactly one page heading (got ${r.h1})`)
   check(r.sw <= r.W, `${label}: fits the screen ${r.sw > r.W ? JSON.stringify(r.wide) : ''}`)
   check(!r.banned, `${label}: no emoji, glyph icons or em dashes ${r.banned ? r.banned.join(' ') : ''}`)
   const odd = r.durations.filter((d) => d > 0 && !ALLOWED_MS.has(d) && !isHoverFade(d))
@@ -231,6 +233,7 @@ async function runFull() {
   await click(page.getByRole('button', { name: 'Next' }))
 
   // Tally: +, -, cap at 20.
+  check((await page.getByRole('button', { name: 'Skip to my fix' }).count()) === 1, `${name}: Skip to my fix shown once (O-2)`)
   check((await page.getByRole('button', { name: 'Skip', exact: true }).count()) === 1, `${name}: tally offers Skip before counting`)
   for (let i = 0; i < 22; i++) await click(page.getByRole('button', { name: /^One more: Game of Thrones/ }))
   check((await page.getByText('20 of 20 counted').count()) === 1, `${name}: tally caps at 20`)
