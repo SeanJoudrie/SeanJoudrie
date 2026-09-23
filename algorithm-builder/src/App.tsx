@@ -8,6 +8,7 @@ import { Button } from './components/ui'
 import { COPY } from './copy'
 import { BRAND } from './data/brand'
 import { inferProblems, suggestFor } from './data/library'
+import { loadFeed } from './lib/feed'
 import { clearLocal, decodeRecipe, encodeRecipe, likeFor, loadLocal, newSession, reconcileMix, saveLocal } from './lib/session'
 import type { Platform, Session } from './lib/types'
 
@@ -77,6 +78,11 @@ export default function App() {
     window.addEventListener('popstate', onPop)
     return () => window.removeEventListener('popstate', onPop)
   }, [])
+
+  // Start fetching this week's channel videos once they begin the questions.
+  useEffect(() => {
+    if (step !== 'landing') loadFeed()
+  }, [step])
 
   // Move focus to the new question for keyboard and screen-reader users.
   useEffect(() => {
