@@ -4,6 +4,7 @@ import { normalize, rebalance } from '../lib/mix'
 import { slugify } from '../lib/session'
 import type { Category, Mix, SubTopic } from '../lib/types'
 import { categoryColor, childColor, MixChart, ViewToggle, type View } from './MixChart'
+import { CloseIcon, LockIcon } from './icons'
 import { Card, StepHeader } from './ui'
 
 const VIEW_KEY = 'algorithm-builder:view'
@@ -44,7 +45,7 @@ export function MixStep({ mix, onChange }: { mix: Mix; onChange: (m: Mix) => voi
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
         <Card className="lg:sticky lg:top-4">
           <div className="mb-4 flex items-center justify-between gap-2">
-            <h2 className="font-display m-0 text-lg font-extrabold">Your mix</h2>
+            <h2 className="font-display m-0 text-lg font-bold">Your mix</h2>
             <ViewToggle view={view} onChange={setView} />
           </div>
           <MixChart mix={mix} view={view} selected={selected} onSelect={(id) => setSelected(id === selected ? null : id)} />
@@ -54,8 +55,8 @@ export function MixStep({ mix, onChange }: { mix: Mix; onChange: (m: Mix) => voi
         <div className="space-y-4">
           <Card>
             <div className="mb-3 flex items-baseline justify-between">
-              <h2 className="font-display m-0 text-lg font-extrabold">Topics</h2>
-              <span className="rounded-full bg-paper-2 px-2.5 py-0.5 text-sm font-semibold tabular-nums text-ink-2" aria-live="polite">
+              <h2 className="font-display m-0 text-lg font-bold">Topics</h2>
+              <span className="rounded-full bg-paper-2 px-3 py-1 text-sm font-semibold tabular-nums text-ink-2" aria-live="polite">
                 Total {cats.reduce((a, c) => a + c.weight, 0)}%
               </span>
             </div>
@@ -100,7 +101,7 @@ export function MixStep({ mix, onChange }: { mix: Mix; onChange: (m: Mix) => voi
           )}
 
           <Card>
-            <h2 className="font-display m-0 text-lg font-extrabold">Time capsule</h2>
+            <h2 className="font-display m-0 text-lg font-bold">Time capsule</h2>
             <p className="m-0 mt-1 text-sm text-ink-2">Great videos from years ago that the algorithm forgot.</p>
             <div className="mt-3 flex flex-wrap gap-2" role="radiogroup" aria-label="Upload date">
               {[null, 2020, 2015, 2010].map((y) => (
@@ -109,7 +110,7 @@ export function MixStep({ mix, onChange }: { mix: Mix; onChange: (m: Mix) => voi
                   role="radio"
                   aria-checked={mix.before === y}
                   onClick={() => onChange({ ...mix, before: y })}
-                  className={`min-h-11 rounded-full border-2 px-4 text-[15px] font-medium ${
+                  className={`min-h-11 rounded-full border-2 px-4 text-base font-medium ${
                     mix.before === y ? 'border-ink bg-accent-soft text-ink' : 'border-line bg-card text-ink-2'
                   }`}
                 >
@@ -147,22 +148,22 @@ function SliderRow({
 }) {
   const id = useId()
   return (
-    <li className={`rounded-xl px-2 py-1.5 ${editing ? 'bg-paper-2' : ''}`}>
+    <li className={`rounded-xl px-2 py-2 ${editing ? 'bg-paper-2' : ''}`}>
       <div className="flex items-center justify-between gap-2">
-        <label htmlFor={id} className="flex min-w-0 items-center gap-2 text-[15px] font-medium text-ink">
-          <span className="inline-block h-3 w-3 shrink-0 rounded-sm" style={{ background: color }} aria-hidden />
+        <label htmlFor={id} className="flex min-w-0 items-center gap-2 text-base font-medium text-ink">
+          <span className="inline-block h-3 w-3 shrink-0 rounded-full" style={{ background: color }} aria-hidden />
           <span className="truncate">{label}</span>
         </label>
         <span className="flex shrink-0 items-center gap-1">
-          <span className="font-display w-11 text-right text-lg font-extrabold tabular-nums">{value}%</span>
+          <span className="font-display w-11 text-right text-lg font-bold tabular-nums">{value}%</span>
           {onEdit && (
-            <button onClick={onEdit} className="h-9 rounded-full px-2.5 text-sm font-semibold text-accent-ink hover:underline" aria-expanded={editing}>
+            <button onClick={onEdit} className="h-9 rounded-full px-3 text-sm font-semibold text-accent-ink hover:underline" aria-expanded={editing}>
               {editing ? 'Done' : 'Split'}
             </button>
           )}
           {onRemove && (
             <button onClick={onRemove} className="grid h-9 w-9 place-items-center rounded-full text-lg text-muted hover:text-alarm" aria-label={`Remove ${label}`}>
-              ×
+              <CloseIcon />
             </button>
           )}
           <button
@@ -193,21 +194,12 @@ function SliderRow({
   )
 }
 
-function LockIcon({ closed }: { closed: boolean }) {
-  return (
-    <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-      <rect x="3" y="7" width="10" height="7" rx="1.5" fill="currentColor" stroke="none" />
-      <path d={closed ? 'M5 7V5a3 3 0 0 1 6 0v2' : 'M5 7V5a3 3 0 0 1 5.6-1.5'} />
-    </svg>
-  )
-}
-
 function SubTopics({ cat, color, onChange, onClose }: { cat: Category; color: string; onChange: (k: SubTopic[]) => void; onClose: () => void }) {
   const kids = cat.children
   return (
     <Card className="anim-pop">
       <div className="mb-2 flex items-center justify-between">
-        <h2 className="font-display m-0 text-lg font-extrabold">Inside {cat.label}</h2>
+        <h2 className="font-display m-0 text-lg font-bold">Inside {cat.label}</h2>
         <button onClick={onClose} className="h-9 rounded-full px-3 text-sm font-semibold text-ink-2 hover:text-ink">
           Close
         </button>
@@ -257,7 +249,7 @@ function AddTopic({
   const [open, setOpen] = useState(false)
   if (!open)
     return (
-      <button onClick={() => setOpen(true)} disabled={disabled} className="mt-3 min-h-11 text-[15px] font-semibold text-accent-ink hover:underline disabled:opacity-50">
+      <button onClick={() => setOpen(true)} disabled={disabled} className="mt-3 min-h-11 text-base font-semibold text-accent-ink hover:underline disabled:opacity-50">
         + {label}
       </button>
     )
@@ -281,7 +273,7 @@ function AddTopic({
         value={v}
         onChange={(e) => setV(e.target.value)}
         placeholder={placeholder}
-        className="min-h-11 flex-1 rounded-full border-2 border-line bg-card px-4 text-[15px] text-ink placeholder:text-muted focus:border-ink"
+        className="min-h-11 flex-1 rounded-full border-2 border-line bg-card px-4 text-base text-ink placeholder:text-muted focus:border-ink"
       />
       <button type="submit" className="min-h-11 rounded-full border-2 border-ink px-4 font-semibold">
         Add

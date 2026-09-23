@@ -3,7 +3,8 @@ import { BRAND } from '../data/brand'
 import { PLATFORMS } from '../data/playbooks'
 import { matchProblems, PROBLEMS } from '../data/problems'
 import { CULPRITS, MAX_CATEGORIES, TOPICS } from '../data/topics'
-import type { Platform, Session, Tally } from '../lib/types'
+import type { Session, Tally } from '../lib/types'
+import { CloseIcon, PlatformIcon } from './icons'
 import { Mascot } from './Mascot'
 import { Button, Card, Chip, StepHeader } from './ui'
 
@@ -16,9 +17,9 @@ export function Landing({ onStart, onResume }: { onStart: () => void; onResume: 
     <div className="anim-rise">
       <div className="flex flex-col items-center text-center">
         <Mascot pose="wave" size={150} />
-        <h1 tabIndex={-1} className="font-display m-0 mt-4 max-w-[16ch] text-4xl font-extrabold leading-[1.05] text-ink sm:text-5xl">{BRAND.tagline}</h1>
+        <h1 tabIndex={-1} className="font-display m-0 mt-4 max-w-[16ch] text-4xl font-bold leading-[1.05] text-ink sm:text-5xl">{BRAND.tagline}</h1>
         <p className="m-0 mt-4 max-w-[46ch] text-lg text-ink-2">
-          Tell us what you’re sick of and what you actually want. You’ll get the exact buttons to press and a playlist to retrain your feed.
+          Tell us what took over your YouTube, Instagram, TikTok or X feed and what you’d rather see. You get the exact settings to change and a playlist that pulls your feed back toward your mix.
         </p>
         <div className="mt-7 flex flex-col items-center gap-3">
           <Button onClick={onStart} className="px-7 text-lg">
@@ -34,7 +35,7 @@ export function Landing({ onStart, onResume }: { onStart: () => void; onResume: 
       </div>
 
       <section className="mt-14" aria-labelledby="how">
-        <h2 id="how" className="font-display m-0 mb-4 text-center text-xl font-extrabold">
+        <h2 id="how" className="font-display m-0 mb-4 text-center text-xl font-bold">
           Why feeds get stuck
         </h2>
         <ol className="m-0 grid list-none gap-3 p-0 sm:grid-cols-3">
@@ -43,8 +44,8 @@ export function Landing({ onStart, onResume }: { onStart: () => void; onResume: 
             ['2', 'More of the same', 'Your feed fills with it. Short on time, you pick one anyway.'],
             ['3', 'The loop locks in', 'Every pick confirms it. Soon it’s 20 of the same thing.'],
           ].map(([n, t, d]) => (
-            <li key={n} className="rounded-2xl border border-line bg-card p-4">
-              <span className="font-display text-2xl font-extrabold text-accent-ink">{n}</span>
+            <li key={n} className="rounded-xl border border-line bg-card p-4">
+              <span className="font-display text-2xl font-bold text-accent-ink">{n}</span>
               <h3 className="m-0 mt-1 text-base font-semibold">{t}</h3>
               <p className="m-0 mt-1 text-sm text-ink-2">{d}</p>
             </li>
@@ -60,8 +61,6 @@ export function Landing({ onStart, onResume }: { onStart: () => void; onResume: 
 
 /* ---------- Platform (F-01) ---------- */
 
-const ICON: Record<Platform, string> = { youtube: '▶', instagram: '◎', tiktok: '♪', x: '✕' }
-
 export function PlatformStep({ s, update, next }: { s: Session; update: Update; next: () => void }) {
   return (
     <div className="anim-rise">
@@ -75,13 +74,11 @@ export function PlatformStep({ s, update, next }: { s: Session; update: Update; 
               update({ platform: p.id })
               next()
             }}
-            className={`flex min-h-28 flex-col items-start justify-between rounded-2xl border-2 p-4 text-left transition ${
+            className={`flex min-h-28 flex-col items-start justify-between rounded-xl border-2 p-4 text-left transition ${
               s.platform === p.id ? 'border-ink bg-accent-soft' : 'border-line bg-card hover:border-ink-2'
             }`}
           >
-            <span className="font-display text-2xl" aria-hidden>
-              {ICON[p.id]}
-            </span>
+            <PlatformIcon id={p.id} className="text-ink-2" />
             <span>
               <span className="block font-semibold text-ink">{p.label}</span>
               <span className={`text-sm ${p.depth === 'full' ? 'text-accent-ink font-semibold' : 'text-muted'}`}>
@@ -114,12 +111,12 @@ export function LikesStep({ s, update }: { s: Session; update: Update }) {
       <div className="flex flex-wrap gap-2">
         {TOPICS.map((t) => (
           <Chip key={t.id} selected={s.likes.includes(t.id)} onClick={() => toggle(t.id)} disabled={full && !s.likes.includes(t.id)}>
-            <span aria-hidden>{t.emoji}</span> {t.label}
+            {t.label}
           </Chip>
         ))}
         {customLikes.map((l) => (
           <Chip key={l} selected onClick={() => toggle(l)}>
-            {l} <span aria-hidden>×</span>
+            {l} <CloseIcon />
           </Chip>
         ))}
       </div>
@@ -139,7 +136,7 @@ export function LikesStep({ s, update }: { s: Session; update: Update }) {
           onChange={(e) => setCustom(e.target.value)}
           placeholder="Add your own (e.g. Lego Technic)"
           disabled={full}
-          className="min-h-11 flex-1 rounded-full border-2 border-line bg-card px-4 text-[15px] text-ink placeholder:text-muted focus:border-ink"
+          className="min-h-11 flex-1 rounded-full border-2 border-line bg-card px-4 text-base text-ink placeholder:text-muted focus:border-ink"
         />
         <Button variant="secondary" type="submit" disabled={!custom.trim() || full}>
           Add
@@ -164,13 +161,10 @@ export function ProblemStep({ s, update }: { s: Session; update: Update }) {
             key={p.id}
             aria-pressed={s.problems.includes(p.id)}
             onClick={() => toggle(p.id)}
-            className={`flex min-h-16 items-center gap-3 rounded-2xl border-2 px-4 py-3 text-left transition ${
+            className={`flex min-h-16 items-center gap-3 rounded-xl border-2 px-4 py-3 text-left transition ${
               s.problems.includes(p.id) ? 'border-ink bg-accent-soft' : 'border-line bg-card hover:border-ink-2'
             }`}
           >
-            <span className="text-2xl" aria-hidden>
-              {p.emoji}
-            </span>
             <span>
               <span className="block font-semibold text-ink">{p.label}</span>
               <span className="text-sm text-muted">{p.hint}</span>
@@ -192,7 +186,7 @@ export function ProblemStep({ s, update }: { s: Session; update: Update }) {
           update({ note, problems: found.length ? [...s.problems, ...found] : s.problems })
         }}
         placeholder="My feed is only Game of Thrones since I rewatched one scene…"
-        className="mt-1.5 w-full rounded-2xl border-2 border-line bg-card p-3 text-[15px] text-ink placeholder:text-muted focus:border-ink"
+        className="mt-2 w-full rounded-xl border-2 border-line bg-card p-3 text-base text-ink placeholder:text-muted focus:border-ink"
       />
     </div>
   )
@@ -229,7 +223,7 @@ export function TooMuchStep({ s, update }: { s: Session; update: Update }) {
           onChange={(e) => setText(e.target.value)}
           placeholder="e.g. Game of Thrones"
           autoComplete="off"
-          className="min-h-11 flex-1 rounded-full border-2 border-line bg-card px-4 text-[15px] text-ink placeholder:text-muted focus:border-ink"
+          className="min-h-11 flex-1 rounded-full border-2 border-line bg-card px-4 text-base text-ink placeholder:text-muted focus:border-ink"
         />
         <Button variant="secondary" type="submit" disabled={!text.trim()}>
           Add
@@ -237,17 +231,17 @@ export function TooMuchStep({ s, update }: { s: Session; update: Update }) {
       </form>
 
       {s.turnDown.length > 0 && (
-        <div className="mt-4 rounded-2xl border-2 border-alarm bg-alarm-soft p-4">
+        <div className="mt-4 rounded-xl border-2 border-alarm bg-alarm-soft p-4">
           <p className="m-0 mb-2 text-sm font-semibold text-alarm">Turn down ({s.turnDown.length})</p>
           <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
             {s.turnDown.map((t) => (
               <li key={t}>
                 <button
                   onClick={() => remove(t)}
-                  className="inline-flex min-h-10 items-center gap-2 rounded-full border-2 border-alarm bg-card px-3 text-[15px] font-medium text-ink"
+                  className="inline-flex min-h-10 items-center gap-2 rounded-full border-2 border-alarm bg-card px-3 text-base font-medium text-ink"
                   aria-label={`Remove ${t}`}
                 >
-                  {t} <span aria-hidden>×</span>
+                  {t} <CloseIcon />
                 </button>
               </li>
             ))}
@@ -301,7 +295,7 @@ export function TallyStep({
         <ul className="m-0 list-none space-y-3 p-0">
           {rows.map((r) => (
             <li key={r.k} className="flex items-center justify-between gap-3">
-              <span className="flex items-center gap-2 text-[15px] font-medium">
+              <span className="flex items-center gap-2 text-base font-medium">
                 <span className="inline-block h-3 w-3 rounded-full" style={{ background: r.color }} aria-hidden />
                 {r.label}
               </span>
@@ -309,7 +303,7 @@ export function TallyStep({
                 <button className="h-11 w-11 rounded-full border-2 border-line bg-card text-xl font-bold" onClick={() => set(r.k, -1)} aria-label={`One less: ${r.label}`}>
                   −
                 </button>
-                <output className="font-display w-8 text-center text-2xl font-extrabold tabular-nums" aria-live="polite">
+                <output className="font-display w-8 text-center text-2xl font-bold tabular-nums" aria-live="polite">
                   {t[r.k]}
                 </output>
                 <button className="h-11 w-11 rounded-full border-2 border-ink bg-accent-soft text-xl font-bold" onClick={() => set(r.k, 1)} aria-label={`One more: ${r.label}`}>

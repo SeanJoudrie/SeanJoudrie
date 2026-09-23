@@ -37,7 +37,7 @@ export function ViewToggle({ view, onChange }: { view: View; onChange: (v: View)
           role="radio"
           aria-checked={view === o.id}
           onClick={() => onChange(o.id)}
-          className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition-colors ${
+          className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
             view === o.id ? 'bg-ink text-paper' : 'text-ink-2 hover:text-ink'
           }`}
         >
@@ -275,7 +275,7 @@ function FragmentRows({ c, cats }: { c: Category; cats: Category[] }) {
     <>
       <tr className="border-b border-line">
         <th scope="row" className="py-2 text-left font-semibold text-ink">
-          <span className="mr-2 inline-block h-3 w-3 rounded-sm align-[-1px]" style={{ background: base }} aria-hidden />
+          <span className="mr-2 inline-block h-3 w-3 rounded-full align-[-1px]" style={{ background: base }} aria-hidden />
           {c.label}
         </th>
         <td className="py-2 text-right font-display font-semibold tabular-nums">{c.weight}%</td>
@@ -284,7 +284,7 @@ function FragmentRows({ c, cats }: { c: Category; cats: Category[] }) {
         c.children.map((k, i) => (
           <tr key={k.id} className="text-ink-2">
             <th scope="row" className="py-1 pl-5 text-left font-normal">
-              <span className="mr-2 inline-block h-2.5 w-2.5 rounded-sm align-[-1px]" style={{ background: childColor(base, i) }} aria-hidden />
+              <span className="mr-2 inline-block h-2 w-2 rounded-full align-[-1px]" style={{ background: childColor(base, i) }} aria-hidden />
               {k.label}
             </th>
             <td className="py-1 text-right tabular-nums">{Math.round((c.weight * k.weight) / 100)}%</td>
@@ -296,10 +296,10 @@ function FragmentRows({ c, cats }: { c: Category; cats: Category[] }) {
 
 function Legend({ mix }: { mix: Mix }) {
   return (
-    <ul className="mt-4 flex list-none flex-wrap justify-center gap-x-4 gap-y-1.5 p-0 text-sm text-ink-2" aria-hidden>
+    <ul className="mt-4 flex list-none flex-wrap justify-center gap-x-4 gap-y-2 p-0 text-sm text-ink-2" aria-hidden>
       {mix.categories.map((c) => (
-        <li key={c.id} className="flex items-center gap-1.5">
-          <span className="inline-block h-3 w-3 rounded-sm" style={{ background: categoryColor(mix.categories, c.id) }} />
+        <li key={c.id} className="flex items-center gap-2">
+          <span className="inline-block h-3 w-3 rounded-full" style={{ background: categoryColor(mix.categories, c.id) }} />
           {c.label} <span className="tabular-nums text-muted">{c.weight}%</span>
         </li>
       ))}

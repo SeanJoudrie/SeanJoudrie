@@ -23,7 +23,9 @@ function devApi(apiKey: string | undefined): Plugin {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
-    base: '/',
+    // Relative base so the same build works at a domain root (Netlify) and
+    // under a sub-path (GitHub Pages: /SeanJoudrie/algorithm-builder/).
+    base: './',
     plugins: [react(), tailwindcss(), devApi(env.YOUTUBE_API_KEY)],
     test: { include: ['src/**/*.test.ts', 'server/**/*.test.ts'] },
   }

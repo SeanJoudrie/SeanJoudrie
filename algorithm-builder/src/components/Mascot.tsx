@@ -15,7 +15,7 @@ export function Mascot({ pose = 'wave', size = 120, className = '' }: { pose?: P
       role="img"
       aria-label={`Gus the mechanic, ${pose === 'wave' ? 'waving' : pose === 'diagnose' ? 'checking a clipboard' : pose === 'celebrate' ? 'celebrating' : 'scratching his head'}`}
     >
-      <g className="anim-bob" strokeLinejoin="round" strokeLinecap="round">
+      <g strokeLinejoin="round" strokeLinecap="round">
         {/* body */}
         <ellipse cx="80" cy="96" rx="46" ry="44" fill="#f3d9b1" stroke={stroke} strokeWidth="5" />
         {/* overalls bib */}

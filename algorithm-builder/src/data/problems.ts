@@ -1,11 +1,11 @@
 import type { ProblemId } from '../lib/types'
 
-export const PROBLEMS: { id: ProblemId; label: string; hint: string; emoji: string }[] = [
-  { id: 'one-topic', label: 'Too much of one thing', hint: '20 videos of the same show in a row', emoji: '🔁' },
-  { id: 'too-new', label: 'Only new stuff', hint: 'Great older videos never show up', emoji: '🆕' },
-  { id: 'rage-bait', label: 'It makes me angry', hint: 'Outrage, drama, arguments', emoji: '😤' },
-  { id: 'no-discovery', label: 'Nothing surprises me', hint: 'Same channels, no discoveries', emoji: '🧭' },
-  { id: 'stale', label: 'It just feels stale', hint: 'Nothing I actually want to click', emoji: '🥱' },
+export const PROBLEMS: { id: ProblemId; label: string; hint: string }[] = [
+  { id: 'one-topic', label: 'Too much of one thing', hint: '20 videos of the same show in a row' },
+  { id: 'too-new', label: 'Only new stuff', hint: 'Great older videos never show up' },
+  { id: 'rage-bait', label: 'It makes me angry', hint: 'Outrage, drama, arguments' },
+  { id: 'no-discovery', label: 'Nothing surprises me', hint: 'Same channels, no discoveries' },
+  { id: 'stale', label: 'It just feels stale', hint: 'Nothing I actually want to click' },
 ]
 
 /** Free-text keyword match (F-03 without AI): nudges the presets. */

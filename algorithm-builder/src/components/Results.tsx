@@ -6,6 +6,7 @@ import { download, tuneUpIcs } from '../lib/ics'
 import { allocate, filterVideos, platformSearchUrl, playAllUrl, searchUrl, searchVideos, type Slot } from '../lib/playlist'
 import { recipeUrl } from '../lib/session'
 import type { Session, Tally, Video } from '../lib/types'
+import { ExternalIcon, PlayIcon } from './icons'
 import { Mascot } from './Mascot'
 import { categoryColor } from './MixChart'
 import { TallyStep } from './Steps'
@@ -40,7 +41,7 @@ export function Results({
       <header className="flex items-center gap-4">
         <Mascot pose="celebrate" size={84} className="shrink-0" />
         <div>
-          <h1 tabIndex={-1} className="font-display m-0 text-3xl font-extrabold leading-tight sm:text-4xl">
+          <h1 tabIndex={-1} className="font-display m-0 text-3xl font-bold leading-tight sm:text-4xl">
             {returning ? 'Welcome back. Tune-up time.' : 'Here’s your fix.'}
           </h1>
           <p className="m-0 mt-1 text-ink-2">
@@ -79,7 +80,7 @@ function MixSummary({ s, onEdit }: { s: Session; onEdit: () => void }) {
   return (
     <Card className="!p-4">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="font-display m-0 text-base font-extrabold">Your target mix</h2>
+        <h2 className="font-display m-0 text-base font-bold">Your target mix</h2>
         <button onClick={onEdit} className="min-h-10 text-sm font-semibold text-accent-ink hover:underline">
           Edit mix
         </button>
@@ -120,7 +121,7 @@ function Checklist({ s }: { s: Session }) {
   return (
     <Card>
       <div className="flex items-baseline justify-between gap-2">
-        <h2 className="font-display m-0 text-xl font-extrabold">
+        <h2 className="font-display m-0 text-xl font-bold">
           <span className="text-accent-ink">Step 1.</span> Clean up
         </h2>
         <span className="text-sm font-semibold tabular-nums text-ink-2" aria-live="polite">
@@ -134,15 +135,15 @@ function Checklist({ s }: { s: Session }) {
           return (
             <li key={it.id} className={`rounded-xl border-2 p-3 transition ${checked ? 'border-good/40 bg-paper-2' : 'border-line'}`}>
               <label className="flex cursor-pointer items-start gap-3">
-                <input type="checkbox" checked={checked} onChange={() => toggle(it.id)} className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--good)]" />
+                <input type="checkbox" checked={checked} onChange={() => toggle(it.id)} className="mt-1 h-5 w-5 shrink-0 accent-[var(--good)]" />
                 <span>
-                  <span className={`block text-[15px] font-medium ${checked ? 'text-muted line-through' : 'text-ink'}`}>{it.text}</span>
-                  {it.detail && <span className="mt-0.5 block text-sm text-ink-2">{it.detail}</span>}
+                  <span className={`block text-base font-medium ${checked ? 'text-muted line-through' : 'text-ink'}`}>{it.text}</span>
+                  {it.detail && <span className="mt-1 block text-sm text-ink-2">{it.detail}</span>}
                 </span>
               </label>
               {it.link && (
                 <a href={it.link.href} target="_blank" rel="noopener noreferrer" className="ml-8 mt-1 inline-block text-sm font-semibold text-accent-ink underline underline-offset-4">
-                  {it.link.label} ↗
+                  {it.link.label} <ExternalIcon className="inline align-[-2px]" />
                 </a>
               )}
             </li>
@@ -195,7 +196,7 @@ function Playlist({ s }: { s: Session }) {
 
   return (
     <Card>
-      <h2 className="font-display m-0 text-xl font-extrabold">
+      <h2 className="font-display m-0 text-xl font-bold">
         <span className="text-accent-ink">Step 2.</span> Watch your rehab playlist
       </h2>
       <p className="m-0 mt-1 text-sm text-ink-2">
@@ -208,7 +209,7 @@ function Playlist({ s }: { s: Session }) {
           ['Subscribe to one or two', 'Only if you’d actually miss them.'],
         ].map(([t, d], i) => (
           <li key={t} className="rounded-xl bg-paper-2 p-3">
-            <span className="font-display font-extrabold text-accent-ink">{i + 1}</span> <span className="text-[15px] font-semibold">{t}</span>
+            <span className="font-display font-bold text-accent-ink">{i + 1}</span> <span className="text-base font-semibold">{t}</span>
             <span className="block text-sm text-ink-2">{d}</span>
           </li>
         ))}
@@ -232,7 +233,7 @@ function Playlist({ s }: { s: Session }) {
         <>
           <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
             <a href={playAllUrl(videos)} target="_blank" rel="noopener noreferrer" className={buttonClass('primary')}>
-              ▶ Play all on YouTube
+              <PlayIcon /> Play all on YouTube
             </a>
             <span className="text-xs text-muted">Videos and data from YouTube</span>
           </div>
@@ -248,8 +249,8 @@ function Playlist({ s }: { s: Session }) {
                   >
                     {v.thumb && <img src={v.thumb} alt="" width={120} height={68} loading="lazy" className="h-[68px] w-[120px] shrink-0 rounded-lg object-cover" />}
                     <span className="min-w-0">
-                      <span className="line-clamp-2 block text-[15px] font-medium leading-snug text-ink">{v.title}</span>
-                      <span className="mt-0.5 block truncate text-xs text-muted">
+                      <span className="line-clamp-2 block text-base font-medium leading-snug text-ink">{v.title}</span>
+                      <span className="mt-1 block truncate text-xs text-muted">
                         {v.channel} · {v.published.slice(0, 4)} · <span className="text-ink-2">{slot.label}</span>
                       </span>
                     </span>
@@ -278,12 +279,12 @@ function Playlist({ s }: { s: Session }) {
                   className="flex min-h-14 items-center justify-between gap-3 rounded-xl border-2 border-line bg-card px-4 py-2 transition hover:border-ink"
                 >
                   <span className="min-w-0">
-                    <span className="block truncate text-[15px] font-semibold text-ink">{slot.label}</span>
+                    <span className="block truncate text-base font-semibold text-ink">{slot.label}</span>
                     <span className="block truncate text-xs text-muted">
                       Search “{slot.query}”{s.mix.before ? `, before ${s.mix.before}` : ''} · pick {slot.count}
                     </span>
                   </span>
-                  <span aria-hidden className="text-accent-ink">↗</span>
+                  <ExternalIcon className="text-accent-ink" />
                 </a>
               </li>
             ))}
@@ -301,7 +302,7 @@ function SearchTerms({ s }: { s: Session }) {
   const platform = s.platform as 'instagram' | 'tiktok' | 'x'
   return (
     <Card>
-      <h2 className="font-display m-0 text-xl font-extrabold">
+      <h2 className="font-display m-0 text-xl font-bold">
         <span className="text-accent-ink">Step 2.</span> Seed your feed
       </h2>
       <p className="m-0 mt-1 text-sm text-ink-2">Search for these in the app. Watch a few fully and save the good ones, rather than liking them.</p>
@@ -311,12 +312,12 @@ function SearchTerms({ s }: { s: Session }) {
           const body = (
             <>
               <span className="min-w-0">
-                <span className="block truncate text-[15px] font-semibold text-ink">{slot.label}</span>
+                <span className="block truncate text-base font-semibold text-ink">{slot.label}</span>
                 <span className="block truncate text-xs text-muted">
                   “{slot.query}” · {slot.count} {slot.count === 1 ? 'video' : 'videos'}
                 </span>
               </span>
-              {href && <span aria-hidden className="text-accent-ink">↗</span>}
+              {href && <ExternalIcon className="text-accent-ink" />}
             </>
           )
           return (
@@ -343,12 +344,12 @@ function Tips({ s }: { s: Session }) {
   const tips = tipsFor(s.platform, s.problems)
   return (
     <Card>
-      <h2 className="font-display m-0 text-xl font-extrabold">Keep it healthy</h2>
+      <h2 className="font-display m-0 text-xl font-bold">Keep it healthy</h2>
       <p className="m-0 mt-1 text-sm text-ink-2">Your thumb is a vote, even when you don’t mean it.</p>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div className="rounded-xl border-2 border-good/50 p-4">
           <h3 className="m-0 text-base font-bold text-good">Want MORE of it?</h3>
-          <ul className="m-0 mt-2 space-y-1.5 pl-5 text-sm text-ink">
+          <ul className="m-0 mt-2 space-y-2 pl-5 text-sm text-ink">
             {SIGNALS.more.map((t) => (
               <li key={t}>{t}</li>
             ))}
@@ -356,7 +357,7 @@ function Tips({ s }: { s: Session }) {
         </div>
         <div className="rounded-xl border-2 border-alarm/50 p-4">
           <h3 className="m-0 text-base font-bold text-alarm">Want LESS of it?</h3>
-          <ul className="m-0 mt-2 space-y-1.5 pl-5 text-sm text-ink">
+          <ul className="m-0 mt-2 space-y-2 pl-5 text-sm text-ink">
             {SIGNALS.less.map((t) => (
               <li key={t}>{t}</li>
             ))}
@@ -364,7 +365,7 @@ function Tips({ s }: { s: Session }) {
         </div>
       </div>
       <h3 className="m-0 mt-5 text-base font-bold">{platform.label} tips</h3>
-      <ul className="m-0 mt-2 space-y-2 pl-5 text-[15px] text-ink">
+      <ul className="m-0 mt-2 space-y-2 pl-5 text-base text-ink">
         {tips.slice(0, 5).map((t) => (
           <li key={t.text}>{t.text}</li>
         ))}
@@ -392,12 +393,12 @@ function SaveCard({ s, onReset }: { s: Session; onReset: () => void }) {
   }
   return (
     <Card>
-      <h2 className="font-display m-0 text-xl font-extrabold">Come back in a week</h2>
+      <h2 className="font-display m-0 text-xl font-bold">Come back in a week</h2>
       <p className="m-0 mt-1 text-sm text-ink-2">
         Your recipe link holds your whole mix. Bookmark it, no account needed. Next week, open it, re-count your homepage and adjust.
       </p>
       <div className="mt-4 flex flex-wrap gap-2">
-        <Button onClick={copy}>{copied ? 'Copied ✓' : 'Copy my recipe link'}</Button>
+        <Button onClick={copy}>{copied ? 'Link copied' : 'Copy my recipe link'}</Button>
         <Button variant="secondary" onClick={() => download('feed-tune-up.ics', tuneUpIcs(link), 'text/calendar')}>
           Add tune-up to calendar
         </Button>
@@ -434,7 +435,7 @@ function TuneUp({ s, onFollowUp }: { s: Session; onFollowUp: (t: Tally) => void 
   )
   return (
     <Card>
-      <h2 className="font-display m-0 text-xl font-extrabold">Your homepage check</h2>
+      <h2 className="font-display m-0 text-xl font-bold">Your homepage check</h2>
       <div className="mt-3 space-y-3">
         {row('Before', b)}
         {f && row('After', f)}

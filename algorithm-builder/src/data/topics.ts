@@ -8,7 +8,6 @@
 export interface TopicPreset {
   id: string
   label: string
-  emoji: string
   children: { label: string; query: string }[]
 }
 
@@ -16,7 +15,6 @@ export const TOPICS: TopicPreset[] = [
   {
     id: 'video-essays',
     label: 'Video essays',
-    emoji: '🎬',
     children: [
       { label: 'Film & TV essays', query: 'film analysis video essay' },
       { label: 'Culture essays', query: 'internet culture video essay' },
@@ -25,7 +23,6 @@ export const TOPICS: TopicPreset[] = [
   {
     id: 'science',
     label: 'Science',
-    emoji: '🔭',
     children: [
       { label: 'Space', query: 'space science explained' },
       { label: 'Biology', query: 'biology explained documentary' },
@@ -35,7 +32,6 @@ export const TOPICS: TopicPreset[] = [
   {
     id: 'math',
     label: 'Math',
-    emoji: '📐',
     children: [
       { label: 'Math explainers', query: 'math explained visually' },
       { label: 'Math puzzles', query: 'math puzzle explained' },
@@ -44,7 +40,6 @@ export const TOPICS: TopicPreset[] = [
   {
     id: 'comedy',
     label: 'Comedy',
-    emoji: '😂',
     children: [
       { label: 'Stand-up', query: 'stand up comedy special clip' },
       { label: 'Sketches', query: 'sketch comedy' },
@@ -53,7 +48,6 @@ export const TOPICS: TopicPreset[] = [
   {
     id: 'history',
     label: 'History',
-    emoji: '🏛️',
     children: [
       { label: 'World history', query: 'world history documentary' },
       { label: 'Odd history', query: 'strange history explained' },
@@ -62,19 +56,16 @@ export const TOPICS: TopicPreset[] = [
   {
     id: 'psychology',
     label: 'Psychology',
-    emoji: '🧠',
     children: [{ label: 'Psychology', query: 'psychology explained video essay' }],
   },
   {
     id: 'true-crime',
     label: 'True crime',
-    emoji: '🔎',
     children: [{ label: 'Case deep dives', query: 'true crime case documentary' }],
   },
   {
     id: 'tv-film',
     label: 'TV & film',
-    emoji: '📺',
     children: [
       { label: 'Behind the scenes', query: 'behind the scenes filmmaking' },
       { label: 'Reviews', query: 'movie review' },
@@ -83,7 +74,6 @@ export const TOPICS: TopicPreset[] = [
   {
     id: 'music',
     label: 'Music',
-    emoji: '🎧',
     children: [
       { label: 'Live sessions', query: 'live session performance' },
       { label: 'Music theory', query: 'music theory explained' },
@@ -92,7 +82,6 @@ export const TOPICS: TopicPreset[] = [
   {
     id: 'gaming',
     label: 'Gaming',
-    emoji: '🎮',
     children: [
       { label: 'Game design', query: 'game design analysis' },
       { label: 'Let’s plays', query: 'lets play' },
@@ -101,13 +90,11 @@ export const TOPICS: TopicPreset[] = [
   {
     id: 'cooking',
     label: 'Cooking',
-    emoji: '🍳',
     children: [{ label: 'Recipes', query: 'easy recipe cooking' }],
   },
   {
     id: 'makeup',
     label: 'Makeup & style',
-    emoji: '💄',
     children: [{ label: 'Tutorials', query: 'makeup tutorial' }],
   },
 ]

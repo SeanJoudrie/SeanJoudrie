@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 /* ============================================================
-   "Garage" theme — warm paper, asphalt ink, one safety-orange accent
+   "Garage" theme: warm paper, asphalt ink, one safety-orange accent
    (the mascot's hard hat). Alarm red is reserved for the turn-down list.
    ============================================================ */
 @theme {
   --font-display: "Bricolage Grotesque", ui-rounded, system-ui, sans-serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
 
   --color-paper: var(--paper);
   --color-paper-2: var(--paper-2);
@@ -112,13 +112,9 @@ h1[tabindex="-1"]:focus {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
 }
-@keyframes pop {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: none; }
-}
-@keyframes bob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 @keyframes blink {
   0%, 94%, 100% { transform: scaleY(1); }
@@ -128,9 +124,10 @@ h1[tabindex="-1"]:focus {
   from { background-position: -200px 0; }
   to { background-position: 200px 0; }
 }
-.anim-rise { animation: rise 360ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
-.anim-pop { animation: pop 300ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
-.anim-bob { animation: bob 3.2s ease-in-out infinite; }
+/* Motion is limited to: a short fade/rise when a screen changes, chart values
+   easing to their new size, and the mascot blinking. Nothing else moves. */
+.anim-rise { animation: rise 240ms ease-out both; }
+.anim-pop { animation: fade 200ms ease-out both; }
 .anim-blink { animation: blink 4.5s infinite; transform-box: fill-box; transform-origin: center; }
 .skeleton {
   background: linear-gradient(90deg, var(--paper-2), var(--line), var(--paper-2));
@@ -140,7 +137,7 @@ h1[tabindex="-1"]:focus {
 .bar-seg { transition: width 380ms cubic-bezier(0.2, 0.7, 0.2, 1); }
 
 @media (prefers-reduced-motion: reduce) {
-  .anim-rise, .anim-pop, .anim-bob, .anim-blink, .skeleton { animation: none; }
+  .anim-rise, .anim-pop, .anim-blink, .skeleton { animation: none; }
   .bar-seg { transition: none; }
 }
 
@@ -181,3 +178,15 @@ input[type="range"].slider::-moz-range-thumb {
   border: 3px solid var(--ink);
 }
 input[type="range"].slider:disabled { cursor: not-allowed; opacity: 0.55; }
+
+/* ---------- Legal pages ---------- */
+.legal p { margin: 0; }
+.legal h2 {
+  margin: 24px 0 0;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.legal h2:first-of-type { margin-top: 8px; }
+.legal a { color: var(--accent-ink); font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }

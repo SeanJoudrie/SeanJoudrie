@@ -40,7 +40,7 @@ async function stubApi(page, mode) {
     if (mode === 'none') return route.fulfill({ json: { status: 'unconfigured' } })
     const items = Array.from({ length: 10 }, (_, i) => ({
       id: `vid${n++}`,
-      title: i === 0 ? `Game of Thrones recap ${q}` : `${q} — part ${i}`,
+      title: i === 0 ? `Game of Thrones recap ${q}` : `${q}, part ${i}`,
       channel: `Channel ${i}`,
       published: '2014-05-01T00:00:00Z',
       thumb,
@@ -56,9 +56,11 @@ async function shot(page, path) {
       .filter((el) => el.getBoundingClientRect().right > W + 0.5)
       .slice(0, 3)
       .map((el) => `${el.tagName}.${String(el.className?.baseVal ?? el.className).slice(0, 50)}`)
-    return { W, sw: document.documentElement.scrollWidth, wide }
+    const emoji = document.body.innerText.match(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}✓✕↗▶—]/gu)
+    return { W, sw: document.documentElement.scrollWidth, wide, emoji }
   })
   check(r.sw <= r.W, `${path}: no horizontal overflow ${r.sw > r.W ? JSON.stringify(r) : ''}`)
+  check(!r.emoji, `${path}: no emoji, glyph icons or em dashes in the UI ${r.emoji ? r.emoji.join(' ') : ''}`)
   await page.screenshot({ path: `shots/${path}.png`, fullPage: true })
 }
 
@@ -71,6 +73,15 @@ async function runFlow({ name, viewport, scheme, api }) {
   await stubApi(page, api)
   await page.goto(BASE)
   await shot(page, `${name}-0-landing`)
+
+  // Legal pages are real, reachable pages.
+  await page.getByRole('link', { name: 'Privacy' }).click()
+  check(await page.getByRole('heading', { name: 'Privacy policy' }).waitFor({ timeout: 5000 }).then(() => true, () => false), `${name}: privacy page`)
+  await shot(page, `${name}-0-privacy`)
+  await page.getByRole('button', { name: 'Back to the app' }).click()
+  await page.getByRole('link', { name: 'Terms' }).click()
+  check(await page.getByRole('heading', { name: 'Terms of use' }).waitFor({ timeout: 5000 }).then(() => true, () => false), `${name}: terms page`)
+  await page.getByRole('button', { name: 'Back to the app' }).click()
 
   await page.getByRole('button', { name: /Start my tune-up/ }).click()
   await page.getByRole('button', { name: /YouTube/ }).click()

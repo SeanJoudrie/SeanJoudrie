@@ -1,5 +1,7 @@
 # Algorithm Builder
 
+**Live:** https://seanjoudrie.github.io/SeanJoudrie/algorithm-builder/
+
 A free, two-minute web tool that fixes a stuck recommendation feed. Tell it what you're sick of and what you actually want; it gives you the exact buttons to press (remove first), a rehab playlist matched to your mix (then add), and a recipe link to come back to in a week. No login, and nothing is stored on a server.
 
 - **Product review and roadmap:** [`docs/REVIEW.md`](docs/REVIEW.md) (every feature graded, MVP cut line, API keys and costs, brand, risks, 7-day plan).
@@ -31,7 +33,11 @@ The default quota is **100 search calls per day**. Each search is cached for 24 
 
 Optional: `VITE_TIP_URL=https://buymeacoffee.com/you` shows the one-line tip jar on the results page.
 
-## Deploy (Netlify)
+## Deploy
+
+**GitHub Pages (current).** `.github/workflows/deploy.yml` builds this app alongside the portfolio on every push to `main` and serves it at `/SeanJoudrie/algorithm-builder/`. Pages can't run server code, so that build sets `VITE_SEARCH_API=off` and the playlist uses YouTube search links. Everything else works the same.
+
+**Netlify (for real videos).**
 
 `netlify.toml` builds the static app and serves `/api/search` from `netlify/functions/search.ts`. Set `YOUTUBE_API_KEY` in the site's environment variables. The same handler (`server/search.ts`) runs inside `vite dev`.
 
@@ -41,6 +47,7 @@ Optional: `VITE_TIP_URL=https://buymeacoffee.com/you` shows the one-line tip jar
 npm test           # logic + API handler (Vitest)
 npm run build      # typecheck + production build
 npm run smoke      # walks the whole flow in Chromium, screenshots in ./shots
+node scripts/og.mjs  # regenerates the share image and home-screen icon
 ```
 
 ## Layout

@@ -5,7 +5,8 @@
 export const BRAND = {
   name: 'Algorithm Builder',
   mascot: 'Gus',
-  tagline: 'Your feed’s stuck on repeat. Let’s fix it.',
+  tagline: 'Fix a feed that’s stuck on one topic.',
+  repo: 'https://github.com/SeanJoudrie/SeanJoudrie/tree/main/algorithm-builder',
   /** Buy Me a Coffee / Ko-fi page. Set VITE_TIP_URL; the tip line hides when empty. */
   tipUrl: (import.meta.env.VITE_TIP_URL as string | undefined) ?? '',
 }

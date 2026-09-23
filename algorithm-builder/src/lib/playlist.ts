@@ -63,10 +63,14 @@ export type SearchResult =
   | { status: 'unconfigured' | 'quota' | 'error' | 'rate-limited' }
 
 export async function searchVideos(query: string, before: number | null, signal?: AbortSignal): Promise<SearchResult> {
+  // Static hosts (GitHub Pages) have no search server: go straight to links.
+  if (import.meta.env.VITE_SEARCH_API === 'off') return { status: 'unconfigured' }
   const params = new URLSearchParams({ q: query })
   if (before) params.set('before', String(before))
   try {
-    const res = await fetch(`/api/search?${params}`, { signal })
+    const res = await fetch(`${import.meta.env.BASE_URL}api/search?${params}`, { signal })
+    // No search server on this host (e.g. a static GitHub Pages build): use links.
+    if (res.status === 404) return { status: 'unconfigured' }
     if (!res.ok && res.status !== 429 && res.status !== 503) return { status: 'error' }
     const body = (await res.json()) as SearchResult
     return body && typeof body === 'object' && 'status' in body ? body : { status: 'error' }
