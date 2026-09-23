@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseFeed, tidy } from './youtube.mjs'
+import { isLive, parseFeed, tidy } from './youtube.mjs'
 
 const entry = (id, { link = `https://www.youtube.com/watch?v=${id}`, title = 'A video', published = '2026-09-01T00:00:00+00:00', views = 10 } = {}) =>
   `<entry><yt:videoId>${id}</yt:videoId><title>${title}</title><link rel="alternate" href="${link}"/><published>${published}</published><media:statistics views="${views}"/></entry>`
@@ -15,11 +15,14 @@ describe('channel feed parsing', () => {
       entry('eeeeeeeeeee', { published: '2020-01-01T00:00:00+00:00' }),
       entry('ggggggggggg', { title: 'Life on the spectrum (2/2)' }),
       entry('hhhhhhhhhhh', { title: 'The Big Story, Part 2' }),
+      entry('iiiiiiiiiii', { title: 'LIVE: Murder Trial - Day 4' }),
+      entry('jjjjjjjjjjj', { title: '24/7 lofi radio' }),
+      entry('kkkkkkkkkkk', { title: 'Tiny Desk: Live at the NPR office' }),
       entry('fffffffffff'),
     ].join('')}</feed>`
     expect(parseFeed(xml, now).videos).toEqual([
       { id: 'aaaaaaaaaaa', title: 'Tom & Jerry "live"', published: '2026-09-01' },
-      { id: 'fffffffffff', title: 'A video', published: '2026-09-01' },
+      { id: 'kkkkkkkkkkk', title: 'Tiny Desk: Live at the NPR office', published: '2026-09-01' },
     ])
   })
 
@@ -48,5 +51,12 @@ describe('tidy titles', () => {
     expect(tidy('Books 📖 |')).toBe('Books')
     expect(tidy('🇯🇵 Tokyo walk')).toBe('Tokyo walk')
     expect(tidy('Kurzgesagt – In a Nutshell')).toBe('Kurzgesagt – In a Nutshell')
+  })
+})
+
+describe('live streams', () => {
+  it('spots live streams but not songs or shows with "live" in the name', () => {
+    for (const t of ['LIVE: Murder Trial - Day 4', 'LIVE LISTEN PREMIERE: Princess Caraboo', 'Live stream replay', '24/7 lofi radio', 'live - the big game']) expect(isLive(t), t).toBe(true)
+    for (const t of ['Live at the Apollo 1962', 'Tiny Desk: Live at the NPR office', 'How to live on $20 a week', 'Queen - Live Aid 1985']) expect(isLive(t), t).toBe(false)
   })
 })

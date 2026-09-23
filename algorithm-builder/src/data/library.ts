@@ -230,6 +230,10 @@ export function channelNamed(label: string): Channel | undefined {
   })
 }
 
+/** Fine when chosen, too heavy to spring on someone as a surprise. */
+const NO_SURPRISE = new Set(['true-crime', 'detectives-forensics', 'courtroom', 'mysteries', 'horror', 'horror-games', 'military-history', 'world-war-ii'])
+const HEAVY = /\b(kill\w*|murder\w*|dead|death|dies?|died|suicide|massacre|execut\w*|shoot\w*|terror\w*|abuse\w*|gore|blood\w*|nazi\w*|crash\w*|war)\b/i
+
 /**
  * "Surprise pick": a recent video from a good channel on a topic they didn't
  * choose, the same one all day (`seed` is the day). Never from politics,
@@ -238,12 +242,12 @@ export function channelNamed(label: string): Channel | undefined {
 export function surpriseFrom(feed: Feed, topicIds: string[], hidden: string[], turnDown: string[], seed: number): { id: string; title: string; channel: string; published: string; topic: string } | null {
   const bad = turnDown.map(norm).filter(Boolean)
   const ok = (text: string) => !bad.some((b) => norm(text).includes(b))
-  const topics = TOPIC_LIST.filter((t) => !topicIds.includes(t.id) && !isHandPickedOnly(t.id) && t.group !== 'Kids & family' && ok(t.label))
+  const topics = TOPIC_LIST.filter((t) => !topicIds.includes(t.id) && !isHandPickedOnly(t.id) && !NO_SURPRISE.has(t.id) && t.group !== 'Kids & family' && ok(t.label))
   for (let i = 0; i < topics.length; i++) {
     const t = topics[(Math.abs(seed) + i * 7) % topics.length]
     for (const c of channelsFor(t.id)) {
       const v = feed.channels[c.id]?.videos[0]
-      if (v && !hidden.includes(c.id) && ok(c.name) && ok(v.title)) return { ...v, channel: feed.channels[c.id].name, topic: t.id }
+      if (v && !hidden.includes(c.id) && ok(c.name) && ok(v.title) && !HEAVY.test(v.title)) return { ...v, channel: feed.channels[c.id].name, topic: t.id }
     }
   }
   return null

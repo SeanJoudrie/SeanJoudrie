@@ -311,7 +311,6 @@
   ],
   "animated-comedy": [
     "The Simpsons",
-    "Adult Swim",
     "Cartoon Network"
   ],
   "improv": [
@@ -471,7 +470,6 @@
   "true-crime": [
     "JCS - Criminal Psychology",
     "Dateline NBC",
-    "Explore With Us",
     "48 Hours"
   ],
   "heists-scams": [
@@ -1378,5 +1376,6 @@
     "Jo Nakashima",
     "Tadashi Mori",
     "Peachy Paper Crafts"
-  ]
+  ],
+  "_removedWhy": "Taken out after a content check: Explore With Us (graphic bodycam clickbait) and Adult Swim (adults-only humour under a general topic)."
 }

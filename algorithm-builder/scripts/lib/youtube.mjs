@@ -36,6 +36,9 @@ export const tidy = (s) =>
     .replace(/(\s*[-|]\s*)+$/g, '')
     .trim()
 
+/** "LIVE: Day 4 of the trial", "LIVE LISTEN PREMIERE", "24/7 radio" (but not "Live at the Apollo"). */
+export const isLive = (title) => /^LIVE\b/.test(title) || /^(live|livestream)\b\s*[:|!-]|\blive ?stream(ing)?\b|\b24\/7\b/i.test(title)
+
 const DAY = 86_400_000
 const MAX_AGE_DAYS = 730
 // The site shows one video per channel; the second is a spare if the first is filtered out.
@@ -64,6 +67,8 @@ export function parseFeed(xml, now = Date.now()) {
     const age = (now - Date.parse(published)) / DAY
     if (age <= 60) rates.push(views / Math.max(1, age))
     if (age <= 30) recent++
+    // Live streams aren't something to watch later ("LIVE: Day 4 of the trial").
+    if (isLive(name)) continue
     // Start people at the start of a series, not "Part 2".
     if (/\(([2-9])\s*\/\s*\d\)|\bpart\s*([2-9]|ii+)\b/i.test(name)) continue
     if (age > MAX_AGE_DAYS || videos.length >= PER_CHANNEL) continue
