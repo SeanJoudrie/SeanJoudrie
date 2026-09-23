@@ -46,6 +46,8 @@ export interface Session {
   mix: Mix
   baseline: Tally | null
   followUp: Tally | null
+  /** Channels they said "not for me" to (YouTube channel ids). */
+  hidden: string[]
 }
 
 export interface Video {

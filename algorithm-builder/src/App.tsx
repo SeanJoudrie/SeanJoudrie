@@ -193,7 +193,7 @@ export default function App() {
             {step === 'q2' && <HowMuch s={s} update={update} next={next} />}
             {step === 'q3' && <WantMore s={s} update={update} draft={{ text: draft, setText: setDraft }} />}
             {step === 'results' && (
-              <Results s={s} returning={returning} onAdjust={() => setAdjusting(true)} onReset={reset} onFollowUp={(t) => update({ followUp: t })} />
+              <Results s={s} returning={returning} onAdjust={() => setAdjusting(true)} onReset={reset} onFollowUp={(t) => update({ followUp: t })} onHide={(hidden) => update({ hidden })} />
             )}
           </div>
 

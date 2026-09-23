@@ -8,6 +8,8 @@ A free tool that fixes a feed stuck on one topic, in about a minute and five tap
 - **UX audit and what changed:** [`docs/UX_AUDIT.md`](docs/UX_AUDIT.md) (measured before/after, the "grandma rules", copy deck).
 - **Topic library:** [`docs/ux/TAXONOMY.md`](docs/ux/TAXONOMY.md), data in `src/data/taxonomy.json` (202 topics with about 2,000 related words so "lipstick" finds Beauty & makeup, 194 "show me less of" entries). Hand-picked videos in `src/data/pool.json`.
 - **Good channels and fresh videos:** `docs/ux/channels.candidates.json` lists trusted channels per topic by name. `npm run channels` confirms each one's real channel id (Wikidata first, then YouTube's own channel search with an exact name and 50K+ subscribers) and checks it against the channel's public feed; anything unconfirmed is dropped, never guessed. `npm run feeds` then pulls each channel's latest full-length uploads (no Shorts, nothing unaired, nothing over 2 years old) from those public feeds into `src/data/feed.json`. No API key, no quota. The deploy runs `feeds` before every build and rebuilds weekly.
+- **Channels we recommend:** 5 at a time from the person's topics, ranked by how each channel is doing right now (median views per day of its last 60 days of uploads, from the same feeds). A clear leader gets "Popular this month". X hides a channel for good (kept in the personal link), with Undo; "Show me others" pages through the rest. Politics, news, religion, kids and health stay hand-picked: no ranking, no badge (`_handPickedOnly` in the candidates file).
+- **Finding new channels:** `npm run discover` searches YouTube for each topic and lists big, active, full-length, English channels ranked the same way in `docs/ux/channels.discovered.json`. It never searches the hand-picked-only topics, and nothing it finds reaches the site until a person copies the name into the candidates file.
 - **Words:** every string the app shows is in `src/copy.ts`; `npm test` fails if one reads above a 6th-grade level or uses retired jargon.
 - **Working name.** The name lives in one constant, `src/data/brand.ts`.
 
@@ -59,6 +61,7 @@ npm run smoke      # clicks every button in Chromium (phone + desktop, light + d
 npm run verify:pool  # re-checks every hand-picked video with YouTube (run monthly)
 npm run channels     # confirms the good-channel list (slow on purpose; resumes where it stopped)
 npm run feeds        # pulls their latest full-length uploads
+npm run discover     # proposes new channels per topic for review (slow on purpose)
 node scripts/og.mjs  # regenerates the share image and home-screen icon
 ```
 

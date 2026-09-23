@@ -437,8 +437,25 @@ async function runBoredNoKey() {
   // No key: real videos still come from good channels' public feeds.
   await page.getByText(/^Good channel ·/).first().waitFor({ timeout: 10000 })
   check((await page.getByText(/^Good channel ·/).count()) >= 3, `${name}: no key → real videos from good channels (${await page.getByText(/^Good channel ·/).count()})`)
-  const follow = page.getByRole('region', { name: 'Follow a few good channels' }).getByRole('link')
-  check((await follow.count()) >= 2 && (await follow.first().getAttribute('href')).startsWith('https://www.youtube.com/channel/UC'), `${name}: good channels to follow, linked to YouTube`)
+  // Channels we recommend: 5 at a time, "not for me" with undo, show others.
+  const rec = page.getByRole('region', { name: 'Channels we recommend' })
+  const recLinks = rec.getByRole('link')
+  await recLinks.first().waitFor({ timeout: 10000 })
+  check((await recLinks.count()) === 5 && (await recLinks.first().getAttribute('href')).startsWith('https://www.youtube.com/channel/UC'), `${name}: 5 recommended channels, linked to YouTube`)
+  const firstName = (await rec.locator('li a span.truncate').first().innerText()).trim()
+  await click(rec.getByRole('button', { name: `Not for me: ${firstName}` }))
+  check((await rec.getByText(`Got it. We won’t show ${firstName} again.`).count()) === 1, `${name}: "not for me" says so`)
+  const more = (await rec.getByRole('button', { name: 'Show me others' }).count()) > 0
+  check((await rec.locator('li a span.truncate', { hasText: firstName }).count()) === 0 && (await recLinks.count()) === (more ? 5 : 4), `${name}: a hidden channel goes, and another takes its place if there is one`)
+  check(decodeURIComponent(page.url()).includes('#r='), `${name}: hiding is saved in the personal link`)
+  await click(rec.getByRole('button', { name: 'Undo' }))
+  check((await rec.locator('li a span.truncate', { hasText: firstName }).count()) === 1, `${name}: undo brings it back`)
+  if ((await rec.getByRole('button', { name: 'Show me others' }).count()) > 0) {
+    const page1 = await rec.locator('li a span.truncate').allInnerTexts()
+    await click(rec.getByRole('button', { name: 'Show me others' }))
+    const page2 = await rec.locator('li a span.truncate').allInnerTexts()
+    check(page2.join() !== page1.join(), `${name}: "Show me others" shows others`)
+  } else check((await recLinks.count()) <= 5, `${name}: no "Show me others" when there are no others`)
   check((await page.getByText(/YouTube is busy/).count()) === 0, `${name}: no error message when there's simply no key`)
   check((await page.getByText('Tap “Not interested” on 3 videos you don’t want.').count()) === 1, `${name}: steps fit the "just boring" case`)
   await click(page.getByRole('button', { name: 'Change it' }))

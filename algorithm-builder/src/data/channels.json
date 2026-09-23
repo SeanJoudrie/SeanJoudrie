@@ -1,4 +1,19 @@
 {
+ "_handPickedOnly": [
+  "news-explained",
+  "politics-explained",
+  "faith-spirituality",
+  "world-religions",
+  "kids-science",
+  "kids-crafts",
+  "read-alouds",
+  "nursery-sing-alongs",
+  "family-movies-talk",
+  "parenting",
+  "mental-health",
+  "medicine",
+  "nutrition"
+ ],
  "movie-reviews": [
   {
    "id": "UCCqEeDAUf4Mg0GgEN658tkA",

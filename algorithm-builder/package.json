@@ -11,7 +11,8 @@
     "smoke": "node scripts/smoke.mjs",
     "verify:pool": "node scripts/verify-pool.mjs",
     "channels": "node scripts/channels.mjs",
-    "feeds": "node scripts/feeds.mjs"
+    "feeds": "node scripts/feeds.mjs",
+    "discover": "node scripts/discover.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",

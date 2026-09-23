@@ -1,5 +1,21 @@
 {
   "_note": "Hand-picked channel names per topic. scripts/channels.mjs resolves each name to a YouTube channel id through Wikidata, confirms it with the channel's own feed, and writes src/data/channels.json. Names that can't be confirmed are dropped, never guessed.",
+  "_handPickedOnly": [
+    "news-explained",
+    "politics-explained",
+    "faith-spirituality",
+    "world-religions",
+    "kids-science",
+    "kids-crafts",
+    "read-alouds",
+    "nursery-sing-alongs",
+    "family-movies-talk",
+    "parenting",
+    "mental-health",
+    "medicine",
+    "nutrition"
+  ],
+  "_handPickedOnlyWhy": "Politics and news: recommending the biggest channels means picking sides, so these stay explainers from across the spectrum, chosen by hand. Religion, kids and health: trust matters more than size. scripts/discover.mjs never searches these, and the site shows no \"Popular this month\" badge on them.",
   "movie-reviews": [
     "Chris Stuckmann",
     "Jeremy Jahns",
