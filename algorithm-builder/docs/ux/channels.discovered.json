@@ -2517,5 +2517,141 @@
     "Why Live to 100 If You Can’t Eat Tacos? | Gabriel Iglesias"
    ]
   }
+ ],
+ "sketch-comedy": [
+  {
+   "name": "MDM Sketch Comedy",
+   "id": "UCedZvSQVma70F1O67NOuYZw",
+   "subs": 1590000,
+   "perDay": 35379,
+   "recent": 3,
+   "latest": [
+    "KwaZodwa Part 1",
+    "Amadando (The 3 of Us) - Part 03",
+    "Amadando (The 3 of Us) - Part 01"
+   ]
+  },
+  {
+   "name": "Don't Tell Comedy",
+   "id": "UC7MgijK9WL_EqCo1juUERwg",
+   "subs": 2410000,
+   "perDay": 20480,
+   "recent": 5,
+   "latest": [
+    "Bad News: I'm American Now | Bianca Cristovao | Stand Up Comedy",
+    "I Get Weird When I Smoke | Curtis Cook | Stand Up Comedy",
+    "Jokes You Can Watch In 2 Hours Or Less | Stand Up Comedy Compilation"
+   ]
+  },
+  {
+   "name": "Montreux Comedy",
+   "id": "UCPHJfLg1VeNBsfzzTszpmmQ",
+   "subs": 2200000,
+   "perDay": 7034,
+   "recent": 3,
+   "latest": [
+    "2 Arabes et 1 Noir sont dans un train pour Lourdes... – Merwane Benlazar (Sketch complet)",
+    "Mon accouchement a duré… 46 heures ! – Mélodie Fontaine (Sketch complet)",
+    "Marty en famille – Thomas Marty (Sketch complet)"
+   ]
+  },
+  {
+   "name": "MDM Sketch Comedy SHORTS",
+   "id": "UCwwOJp2WDUaH8sVpuaqRfqA",
+   "subs": 176000,
+   "perDay": 5122,
+   "recent": 2,
+   "latest": [
+    "uDlamini YiStar and Mzansi Digital Market",
+    "Amadando par2- promo 1",
+    "Amadando - Part1 promo 2"
+   ]
+  },
+  {
+   "name": "LOL JUST FOR LAUGHS",
+   "id": "UCZnlRhSFoDwlKhJYH0aeXMw",
+   "subs": 2310000,
+   "perDay": 3564,
+   "recent": 3,
+   "latest": [
+    "THAT ONE COWORKER // LOL JUST FOR LAUGHS",
+    "CAUGHT ON CAMERA 📸 // LOL JUST FOR LAUGHS",
+    "PAGEANTS ARE CRAZY // LOL JUST FOR LAUGHS"
+   ]
+  },
+  {
+   "name": "Boom Comedy Live",
+   "id": "UCTIf6np9EmkpBbmxWIlFBMA",
+   "subs": 216000,
+   "perDay": 2612,
+   "recent": 3,
+   "latest": [
+    "Tx20: ¡MI TEORIA DEL AMOR Y LA AMISTAD! - Bart - QUE Hpt& TERAPIA",
+    "Ep. 24 - LIGA DE CAMPEONES DEL TOMATE  Los Políticos",
+    "EP. 23 ENTRE LAS PARTES. UNA RELACIÓN...CON EL WIFI"
+   ]
+  }
+ ],
+ "satire": [
+  {
+   "name": "al jokes",
+   "id": "UCupQd0e1leK4-Mj1wSfnkoQ",
+   "subs": 3280000,
+   "perDay": 68954,
+   "recent": 3,
+   "latest": [
+    "addressing the allegations",
+    "I can't believe people aren't talking about this",
+    "jealous women when the perfect boobs lady shows her perfect boobs"
+   ]
+  },
+  {
+   "name": "thejuicemedia",
+   "id": "UCKRw8GAAtm27q4R3Q0kst_g",
+   "subs": 1080000,
+   "perDay": 24957,
+   "recent": 1,
+   "latest": [
+    "Honest Government Ad | Bulls*it™",
+    "Honest Government Ad | Ai Data Centres",
+    "Honest Government Ad | Palantir"
+   ]
+  },
+  {
+   "name": "ZDF Satire",
+   "id": "UCT8fbPYycfhjYzLbsU1dl3Q",
+   "subs": 708000,
+   "perDay": 14951,
+   "recent": 10,
+   "latest": [
+    "Tankrabatt | Satire Toll!",
+    "Ist Satire noch zu retten? Rückblick auf 40 Jahre | 40 Jahre 3satFestival - Die Jubiläumssendung",
+    "Warum Wirtschaftsprüfer bei Banken wegschauen | Claus von Wagner: Theorie der feinen Menschen"
+   ]
+  },
+  {
+   "name": "AwakenWithJP",
+   "id": "UCwUizOU8pPWXdXNniXypQEQ",
+   "subs": 3020000,
+   "perDay": 6531,
+   "recent": 8,
+   "latest": [
+    "How Ed Sheeran is Doing Right Now…",
+    "Presidential Pardons sold for Big $$$$ – Criminal News Update",
+    "“$5000 Checks Aren’t a Bribe!” – (White House Press Secretary)"
+   ]
+  },
+  {
+   "name": "WKUK: Whitest Kids U’ Know",
+   "id": "UCNwbDMbDV7gu6-rO70lCQJg",
+   "subs": 476000,
+   "perDay": 4889,
+   "recent": 7,
+   "latest": [
+    "The Best of WKUK: Our Favorite Sketches & Episodes",
+    "Tell Us Your Favorite Finger Ring Friends Memories",
+    "This War Is Crazy, Man"
+   ]
+  }
  ]
 }
