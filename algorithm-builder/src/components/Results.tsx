@@ -5,6 +5,7 @@ import { channelNamed, channelsFor, feedFor, picksFor, poolFor, recommend, surpr
 import { PLATFORMS, SIGNALS, tipsFor } from '../data/playbooks'
 import { WILDCARD_ID } from '../data/topics'
 import { buildChecklist, type CheckItem } from '../lib/checklist'
+import { loadFeed } from '../lib/feed'
 import { download, tuneUpIcs } from '../lib/ics'
 import { allocate, filterVideos, platformSearchUrl, playAllUrl, PLAYLIST_SIZE, searchUrl, searchVideos, type Slot } from '../lib/playlist'
 import { MAX_PARTS, pctFromTally, pickId, recipeUrl, tallyFromPct, togglePick } from '../lib/session'
@@ -194,9 +195,6 @@ type Picked = { video: Video; slot: Slot; source: 'pool' | 'channel' | 'api' }
 
 const thumbOf = (id: string) => `https://i.ytimg.com/vi/${id}/mqdefault.jpg`
 
-// Recent uploads from good channels: a separate file, loaded once, only here.
-let feedLoad: Promise<Feed | null> | null = null
-const loadFeed = () => (feedLoad ??= import('../data/feed.json').then((m) => m.default as Feed).catch(() => null))
 
 function useFeed(): Feed | null | undefined {
   const [feed, setFeed] = useState<Feed | null | undefined>(undefined)
