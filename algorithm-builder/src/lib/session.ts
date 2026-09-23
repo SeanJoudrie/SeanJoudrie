@@ -1,9 +1,10 @@
+import { DEFAULT_SUGGESTIONS } from '../data/library'
 import { MAX_CATEGORIES, TOPICS, WILDCARD_ID } from '../data/topics'
 import { apportion, evenly } from './mix'
 import type { Category, Mix, Platform, ProblemId, Session, SubTopic, Tally } from './types'
 
 export const DEFAULT_WILDCARD = 5
-const STARTER_LIKES = ['comedy', 'science']
+const STARTER_LIKES = DEFAULT_SUGGESTIONS
 
 export function slugify(s: string): string {
   return (
@@ -64,10 +65,13 @@ const categoryId = (like: string) => (TOPICS.some((t) => t.id === like) ? like :
  */
 export function reconcileMix(mix: Mix, likes: string[]): Mix {
   const picked = (likes.length ? likes : STARTER_LIKES).slice(0, MAX_CATEGORIES)
-  const wantIds = picked.map(categoryId)
+  // A like that already names a category in this mix keeps it, even if the
+  // library has since renamed that topic (links shared before the change).
+  const idFor = (like: string) => (mix.categories.some((c) => c.id === like) ? like : categoryId(like))
+  const wantIds = picked.map(idFor)
   const kept = mix.categories.filter((c) => c.id === WILDCARD_ID || c.id.startsWith('added-') || wantIds.includes(c.id))
   const have = new Set(kept.map((c) => c.id))
-  const fresh = picked.filter((l) => !have.has(categoryId(l))).map(categoryFor)
+  const fresh = picked.filter((l) => !have.has(idFor(l))).map(categoryFor)
   if (!fresh.length && kept.length === mix.categories.length) return mix
   const share = Math.max(1, Math.round(100 / Math.max(1, kept.length + fresh.length)))
   const wild = kept.findIndex((c) => c.id === WILDCARD_ID)

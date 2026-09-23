@@ -1,0 +1,6654 @@
+{
+ "version": 1,
+ "topics": [
+  {
+   "id": "movie-reviews",
+   "label": "Movie reviews",
+   "group": "Movies & TV",
+   "subtopics": [
+    {
+     "label": "New releases",
+     "query": "new movie review"
+    },
+    {
+     "label": "Hidden gems",
+     "query": "underrated movies review"
+    }
+   ],
+   "synonyms": [
+    "film reviews",
+    "cinema"
+   ],
+   "audience": "general",
+   "suggested": true,
+   "popularWith": []
+  },
+  {
+   "id": "behind-the-scenes",
+   "label": "Behind the scenes",
+   "group": "Movies & TV",
+   "subtopics": [
+    {
+     "label": "How movies are made",
+     "query": "how movies are made behind the scenes"
+    },
+    {
+     "label": "Special effects",
+     "query": "practical effects behind the scenes"
+    }
+   ],
+   "synonyms": [
+    "making of",
+    "bts"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "classic-films",
+   "label": "Classic films",
+   "group": "Movies & TV",
+   "subtopics": [
+    {
+     "label": "Golden age Hollywood",
+     "query": "classic hollywood film"
+    },
+    {
+     "label": "Film noir",
+     "query": "film noir explained"
+    },
+    {
+     "label": "Silent films",
+     "query": "silent film comedy"
+    }
+   ],
+   "synonyms": [
+    "old movies",
+    "black and white movies"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "horror",
+   "label": "Horror",
+   "group": "Movies & TV",
+   "subtopics": [
+    {
+     "label": "Horror explained",
+     "query": "horror movie explained"
+    },
+    {
+     "label": "Scary short films",
+     "query": "horror short film"
+    }
+   ],
+   "synonyms": [
+    "scary movies"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "sci-fi",
+   "label": "Sci-fi",
+   "group": "Movies & TV",
+   "subtopics": [
+    {
+     "label": "Sci-fi explained",
+     "query": "science fiction movie explained"
+    },
+    {
+     "label": "Sci-fi short films",
+     "query": "sci fi short film"
+    }
+   ],
+   "synonyms": [
+    "science fiction",
+    "scifi"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "fantasy",
+   "label": "Fantasy",
+   "group": "Movies & TV",
+   "subtopics": [
+    {
+     "label": "Fantasy worlds",
+     "query": "fantasy world building explained"
+    },
+    {
+     "label": "Fantasy books on screen",
+     "query": "fantasy adaptation analysis"
+    }
+   ],
+   "synonyms": [
+    "fantasy movies"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "anime",
+   "label": "Anime",
+   "group": "Movies & TV",
+   "subtopics": [
+    {
+     "label": "Anime reviews",
+     "query": "anime review"
+    },
+    {
+     "label": "Anime explained",
+     "query": "anime analysis video essay"
+    },
+    {
+     "label": "Studio Ghibli",
+     "query": "studio ghibli analysis"
+    }
+   ],
+   "synonyms": [
+    "manga",
+    "japanimation"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "teens"
+   ]
+  },
+  {
+   "id": "k-dramas",
+   "label": "K-dramas",
+   "group": "Movies & TV",
+   "subtopics": [
+    {
+     "label": "K-drama reviews",
+     "query": "kdrama review"
+    },
+    {
+     "label": "Korean film",
+     "query": "korean film analysis"
+    }
+   ],
+   "synonyms": [
+    "korean drama",
+    "kdrama"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "documentaries",
+   "label": "Documentaries",
+   "group": "Movies & TV",
+   "subtopics": [
+    {
+     "label": "Nature documentaries",
+     "query": "nature documentary full"
+    },
+    {
+     "label": "History documentaries",
+     "query": "history documentary full"
+    },
+    {
+     "label": "Science documentaries",
+     "query": "science documentary full"
+    }
+   ],
+   "synonyms": [
+    "docs"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "reality-tv",
+   "label": "Reality TV",
+   "group": "Movies & TV",
+   "subtopics": [
+    {
+     "label": "Reality TV explained",
+     "query": "reality tv behind the scenes"
+    },
+    {
+     "label": "Competition shows",
+     "query": "cooking competition show"
+    }
+   ],
+   "synonyms": [
+    "reality shows"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "sitcoms",
+   "label": "Sitcoms",
+   "group": "Movies & TV",
+   "subtopics": [
+    {
+     "label": "Sitcom history",
+     "query": "sitcom history"
+    },
+    {
+     "label": "Best sitcom moments",
+     "query": "classic sitcom scenes"
+    }
+   ],
+   "synonyms": [
+    "comedy shows",
+    "tv comedy"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "film-essays",
+   "label": "Film essays",
+   "group": "Movies & TV",
+   "subtopics": [
+    {
+     "label": "Directors",
+     "query": "director style video essay"
+    },
+    {
+     "label": "Screenwriting",
+     "query": "screenwriting explained"
+    },
+    {
+     "label": "Cinematography",
+     "query": "cinematography explained"
+    }
+   ],
+   "synonyms": [
+    "video essays about film",
+    "film analysis"
+   ],
+   "audience": "general",
+   "suggested": true,
+   "popularWith": []
+  },
+  {
+   "id": "short-films",
+   "label": "Short films",
+   "group": "Movies & TV",
+   "subtopics": [
+    {
+     "label": "Animated shorts",
+     "query": "animated short film"
+    },
+    {
+     "label": "Live-action shorts",
+     "query": "award winning short film"
+    }
+   ],
+   "synonyms": [
+    "shorts films"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "westerns",
+   "label": "Westerns",
+   "group": "Movies & TV",
+   "subtopics": [
+    {
+     "label": "Classic westerns",
+     "query": "classic western movie"
+    },
+    {
+     "label": "Western history",
+     "query": "real wild west history"
+    }
+   ],
+   "synonyms": [
+    "cowboy movies"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "live-music",
+   "label": "Live music",
+   "group": "Music",
+   "subtopics": [
+    {
+     "label": "Live sessions",
+     "query": "live session performance"
+    },
+    {
+     "label": "Concerts",
+     "query": "full concert live"
+    },
+    {
+     "label": "Tiny Desk",
+     "query": "tiny desk concert"
+    }
+   ],
+   "synonyms": [
+    "concerts",
+    "live performances"
+   ],
+   "audience": "general",
+   "suggested": true,
+   "popularWith": []
+  },
+  {
+   "id": "music-theory",
+   "label": "Music theory",
+   "group": "Music",
+   "subtopics": [
+    {
+     "label": "Why songs work",
+     "query": "why this song works music theory"
+    },
+    {
+     "label": "Chords and harmony",
+     "query": "chords explained"
+    }
+   ],
+   "synonyms": [
+    "songwriting theory"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "learn-an-instrument",
+   "label": "Learn an instrument",
+   "group": "Music",
+   "subtopics": [
+    {
+     "label": "Guitar",
+     "query": "beginner guitar lesson"
+    },
+    {
+     "label": "Piano",
+     "query": "beginner piano lesson"
+    },
+    {
+     "label": "Drums",
+     "query": "beginner drum lesson"
+    }
+   ],
+   "synonyms": [
+    "music lessons",
+    "how to play"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "classical",
+   "label": "Classical",
+   "group": "Music",
+   "subtopics": [
+    {
+     "label": "Orchestra",
+     "query": "orchestra full performance"
+    },
+    {
+     "label": "Great composers",
+     "query": "composer biography documentary"
+    }
+   ],
+   "synonyms": [
+    "classical music",
+    "symphony"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "jazz",
+   "label": "Jazz",
+   "group": "Music",
+   "subtopics": [
+    {
+     "label": "Jazz standards",
+     "query": "jazz standards live"
+    },
+    {
+     "label": "Jazz history",
+     "query": "history of jazz"
+    }
+   ],
+   "synonyms": [
+    "swing",
+    "bebop"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "gospel-worship",
+   "label": "Gospel & worship",
+   "group": "Music",
+   "subtopics": [
+    {
+     "label": "Gospel choirs",
+     "query": "gospel choir live"
+    },
+    {
+     "label": "Hymns",
+     "query": "traditional hymns"
+    },
+    {
+     "label": "Worship",
+     "query": "worship music live"
+    }
+   ],
+   "synonyms": [
+    "church music",
+    "christian music",
+    "hymns"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "country",
+   "label": "Country",
+   "group": "Music",
+   "subtopics": [
+    {
+     "label": "Country classics",
+     "query": "classic country music"
+    },
+    {
+     "label": "New country",
+     "query": "country music live"
+    }
+   ],
+   "synonyms": [
+    "country music",
+    "bluegrass"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "rock",
+   "label": "Rock",
+   "group": "Music",
+   "subtopics": [
+    {
+     "label": "Classic rock",
+     "query": "classic rock live"
+    },
+    {
+     "label": "Rock history",
+     "query": "history of rock music"
+    }
+   ],
+   "synonyms": [
+    "rock music"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "hip-hop",
+   "label": "Hip-hop",
+   "group": "Music",
+   "subtopics": [
+    {
+     "label": "Hip-hop history",
+     "query": "hip hop history documentary"
+    },
+    {
+     "label": "Producers",
+     "query": "hip hop producer breakdown"
+    }
+   ],
+   "synonyms": [
+    "rap",
+    "hiphop"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "teens"
+   ]
+  },
+  {
+   "id": "pop",
+   "label": "Pop",
+   "group": "Music",
+   "subtopics": [
+    {
+     "label": "Pop song breakdowns",
+     "query": "pop song breakdown"
+    },
+    {
+     "label": "Pop history",
+     "query": "history of pop music"
+    }
+   ],
+   "synonyms": [
+    "pop music"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "teens"
+   ]
+  },
+  {
+   "id": "electronic",
+   "label": "Electronic",
+   "group": "Music",
+   "subtopics": [
+    {
+     "label": "Synths",
+     "query": "synthesizer explained"
+    },
+    {
+     "label": "DJ sets",
+     "query": "dj set live"
+    }
+   ],
+   "synonyms": [
+    "edm",
+    "electronic music",
+    "techno"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "oldies",
+   "label": "Oldies",
+   "group": "Music",
+   "subtopics": [
+    {
+     "label": "50s and 60s hits",
+     "query": "50s 60s music"
+    },
+    {
+     "label": "Doo-wop",
+     "query": "doo wop live"
+    }
+   ],
+   "synonyms": [
+    "old songs",
+    "oldies music"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "latin-music",
+   "label": "Latin music",
+   "group": "Music",
+   "subtopics": [
+    {
+     "label": "Salsa",
+     "query": "salsa music live"
+    },
+    {
+     "label": "Reggaeton history",
+     "query": "reggaeton history"
+    }
+   ],
+   "synonyms": [
+    "latin",
+    "spanish music"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "covers",
+   "label": "Covers",
+   "group": "Music",
+   "subtopics": [
+    {
+     "label": "Acoustic covers",
+     "query": "acoustic cover"
+    },
+    {
+     "label": "A cappella",
+     "query": "a cappella cover"
+    }
+   ],
+   "synonyms": [
+    "cover songs"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "music-reactions",
+   "label": "Music reactions",
+   "group": "Music",
+   "subtopics": [
+    {
+     "label": "First listen reactions",
+     "query": "first time hearing reaction"
+    },
+    {
+     "label": "Vocal coach reacts",
+     "query": "vocal coach reacts"
+    }
+   ],
+   "synonyms": [
+    "reaction videos music"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "teens"
+   ]
+  },
+  {
+   "id": "game-design",
+   "label": "Game design",
+   "group": "Gaming",
+   "subtopics": [
+    {
+     "label": "Why games work",
+     "query": "game design analysis"
+    },
+    {
+     "label": "Level design",
+     "query": "level design explained"
+    }
+   ],
+   "synonyms": [
+    "game dev"
+   ],
+   "audience": "general",
+   "suggested": true,
+   "popularWith": []
+  },
+  {
+   "id": "retro-games",
+   "label": "Retro games",
+   "group": "Gaming",
+   "subtopics": [
+    {
+     "label": "Retro history",
+     "query": "retro game history"
+    },
+    {
+     "label": "Hidden retro gems",
+     "query": "underrated retro games"
+    }
+   ],
+   "synonyms": [
+    "old games",
+    "classic games",
+    "nintendo"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "speedruns",
+   "label": "Speedruns",
+   "group": "Gaming",
+   "subtopics": [
+    {
+     "label": "Speedruns explained",
+     "query": "speedrun explained"
+    },
+    {
+     "label": "World records",
+     "query": "speedrun world record history"
+    }
+   ],
+   "synonyms": [
+    "speedrunning"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "teens"
+   ]
+  },
+  {
+   "id": "strategy-games",
+   "label": "Strategy games",
+   "group": "Gaming",
+   "subtopics": [
+    {
+     "label": "Strategy explained",
+     "query": "strategy game guide"
+    },
+    {
+     "label": "Chess",
+     "query": "chess explained"
+    }
+   ],
+   "synonyms": [
+    "strategy",
+    "rts"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "cozy-games",
+   "label": "Cozy games",
+   "group": "Gaming",
+   "subtopics": [
+    {
+     "label": "Cozy game reviews",
+     "query": "cozy games review"
+    },
+    {
+     "label": "Stardew-style farming",
+     "query": "farming game"
+    }
+   ],
+   "synonyms": [
+    "relaxing games",
+    "cozy"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "horror-games",
+   "label": "Horror games",
+   "group": "Gaming",
+   "subtopics": [
+    {
+     "label": "Horror game lore",
+     "query": "horror game lore explained"
+    },
+    {
+     "label": "Horror game design",
+     "query": "horror game design analysis"
+    }
+   ],
+   "synonyms": [
+    "scary games"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "esports",
+   "label": "Esports",
+   "group": "Gaming",
+   "subtopics": [
+    {
+     "label": "Esports highlights",
+     "query": "esports highlights"
+    },
+    {
+     "label": "Esports explained",
+     "query": "esports explained"
+    }
+   ],
+   "synonyms": [
+    "competitive gaming"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "teens"
+   ]
+  },
+  {
+   "id": "minecraft-builds",
+   "label": "Minecraft builds",
+   "group": "Gaming",
+   "subtopics": [
+    {
+     "label": "Build tutorials",
+     "query": "minecraft build tutorial"
+    },
+    {
+     "label": "Redstone",
+     "query": "minecraft redstone explained"
+    }
+   ],
+   "synonyms": [
+    "minecraft"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "teens"
+   ]
+  },
+  {
+   "id": "game-lore",
+   "label": "Game lore",
+   "group": "Gaming",
+   "subtopics": [
+    {
+     "label": "Lore explained",
+     "query": "video game lore explained"
+    },
+    {
+     "label": "Story analysis",
+     "query": "video game story analysis"
+    }
+   ],
+   "synonyms": [
+    "lore"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "indie-games",
+   "label": "Indie games",
+   "group": "Gaming",
+   "subtopics": [
+    {
+     "label": "Indie reviews",
+     "query": "indie game review"
+    },
+    {
+     "label": "Indie dev stories",
+     "query": "indie game developer story"
+    }
+   ],
+   "synonyms": [
+    "indie"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "board-games",
+   "label": "Board games",
+   "group": "Gaming",
+   "subtopics": [
+    {
+     "label": "How to play",
+     "query": "how to play board game"
+    },
+    {
+     "label": "Board game reviews",
+     "query": "board game review"
+    }
+   ],
+   "synonyms": [
+    "tabletop",
+    "card games"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "puzzles-crosswords",
+   "label": "Puzzles & crosswords",
+   "group": "Gaming",
+   "subtopics": [
+    {
+     "label": "Crossword tips",
+     "query": "crossword solving tips"
+    },
+    {
+     "label": "Logic puzzles",
+     "query": "logic puzzle explained"
+    },
+    {
+     "label": "Sudoku",
+     "query": "sudoku solving technique"
+    }
+   ],
+   "synonyms": [
+    "crossword",
+    "sudoku",
+    "puzzles"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "stand-up",
+   "label": "Stand-up",
+   "group": "Comedy",
+   "subtopics": [
+    {
+     "label": "Full specials",
+     "query": "stand up comedy special"
+    },
+    {
+     "label": "Clean comedy",
+     "query": "clean stand up comedy"
+    }
+   ],
+   "synonyms": [
+    "standup",
+    "comedians"
+   ],
+   "audience": "general",
+   "suggested": true,
+   "popularWith": []
+  },
+  {
+   "id": "sketch-comedy",
+   "label": "Sketch comedy",
+   "group": "Comedy",
+   "subtopics": [
+    {
+     "label": "Classic sketches",
+     "query": "classic sketch comedy"
+    },
+    {
+     "label": "New sketches",
+     "query": "sketch comedy channel"
+    }
+   ],
+   "synonyms": [
+    "sketches",
+    "skits"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "satire",
+   "label": "Satire",
+   "group": "Comedy",
+   "subtopics": [
+    {
+     "label": "News satire",
+     "query": "news satire comedy"
+    },
+    {
+     "label": "Political satire (light)",
+     "query": "political comedy sketch"
+    }
+   ],
+   "synonyms": [
+    "parody"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "animated-comedy",
+   "label": "Animated comedy",
+   "group": "Comedy",
+   "subtopics": [
+    {
+     "label": "Cartoon comedy",
+     "query": "animated comedy short"
+    },
+    {
+     "label": "Adult animation clips",
+     "query": "adult animation"
+    }
+   ],
+   "synonyms": [
+    "cartoons"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "improv",
+   "label": "Improv",
+   "group": "Comedy",
+   "subtopics": [
+    {
+     "label": "Improv comedy",
+     "query": "improv comedy scene"
+    },
+    {
+     "label": "Whose Line",
+     "query": "whose line is it anyway"
+    }
+   ],
+   "synonyms": [
+    "improvisation"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "funny-animals",
+   "label": "Funny animals",
+   "group": "Comedy",
+   "subtopics": [
+    {
+     "label": "Funny pets",
+     "query": "funny pets compilation"
+    },
+    {
+     "label": "Animal bloopers",
+     "query": "animal bloopers"
+    }
+   ],
+   "synonyms": [
+    "cute animals funny"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "classic-comedy",
+   "label": "Classic comedy",
+   "group": "Comedy",
+   "subtopics": [
+    {
+     "label": "Old comedy teams",
+     "query": "classic comedy duo"
+    },
+    {
+     "label": "Silent comedy",
+     "query": "buster keaton charlie chaplin"
+    }
+   ],
+   "synonyms": [
+    "old comedy"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "magic-illusions",
+   "label": "Magic & illusions",
+   "group": "Comedy",
+   "subtopics": [
+    {
+     "label": "Magic tricks explained",
+     "query": "magic tricks revealed"
+    },
+    {
+     "label": "Stage magic",
+     "query": "stage magic performance"
+    }
+   ],
+   "synonyms": [
+    "magicians",
+    "illusions"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "ai",
+   "label": "AI",
+   "group": "Tech",
+   "subtopics": [
+    {
+     "label": "How AI works",
+     "query": "how ai works explained"
+    },
+    {
+     "label": "AI news explained",
+     "query": "ai explained"
+    }
+   ],
+   "synonyms": [
+    "artificial intelligence",
+    "chatgpt"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "gadgets",
+   "label": "Gadgets",
+   "group": "Tech",
+   "subtopics": [
+    {
+     "label": "Honest reviews",
+     "query": "honest tech review"
+    },
+    {
+     "label": "How it's made",
+     "query": "how smartphones are made"
+    }
+   ],
+   "synonyms": [
+    "tech reviews",
+    "phones"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "coding",
+   "label": "Coding",
+   "group": "Tech",
+   "subtopics": [
+    {
+     "label": "Learn to code",
+     "query": "learn to code beginner"
+    },
+    {
+     "label": "Build projects",
+     "query": "coding project from scratch"
+    }
+   ],
+   "synonyms": [
+    "programming",
+    "software"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "cybersecurity",
+   "label": "Cybersecurity",
+   "group": "Tech",
+   "subtopics": [
+    {
+     "label": "Staying safe online",
+     "query": "online safety tips"
+    },
+    {
+     "label": "Hacks explained",
+     "query": "famous hack explained"
+    }
+   ],
+   "synonyms": [
+    "hacking",
+    "security"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "repair",
+   "label": "Repair",
+   "group": "Tech",
+   "subtopics": [
+    {
+     "label": "Phone repair",
+     "query": "phone repair"
+    },
+    {
+     "label": "Electronics repair",
+     "query": "electronics repair"
+    }
+   ],
+   "synonyms": [
+    "fix it",
+    "right to repair"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "computers-for-beginners",
+   "label": "Computers for beginners",
+   "group": "Tech",
+   "subtopics": [
+    {
+     "label": "Computer basics",
+     "query": "computer basics for beginners"
+    },
+    {
+     "label": "Smartphone help",
+     "query": "smartphone tips for seniors"
+    }
+   ],
+   "synonyms": [
+    "tech help"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "internet-culture",
+   "label": "Internet culture",
+   "group": "Tech",
+   "subtopics": [
+    {
+     "label": "Internet history",
+     "query": "internet history documentary"
+    },
+    {
+     "label": "Online mysteries",
+     "query": "internet mystery explained"
+    }
+   ],
+   "synonyms": [
+    "memes",
+    "online culture"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "teens"
+   ]
+  },
+  {
+   "id": "tech-history",
+   "label": "Tech history",
+   "group": "Tech",
+   "subtopics": [
+    {
+     "label": "Old computers",
+     "query": "vintage computer"
+    },
+    {
+     "label": "Company stories",
+     "query": "tech company history"
+    }
+   ],
+   "synonyms": [
+    "retro tech"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "world-history",
+   "label": "World history",
+   "group": "History",
+   "subtopics": [
+    {
+     "label": "Big picture",
+     "query": "world history overview"
+    },
+    {
+     "label": "Empires",
+     "query": "rise and fall of empires"
+    }
+   ],
+   "synonyms": [
+    "history"
+   ],
+   "audience": "general",
+   "suggested": true,
+   "popularWith": []
+  },
+  {
+   "id": "ancient-history",
+   "label": "Ancient history",
+   "group": "History",
+   "subtopics": [
+    {
+     "label": "Egypt",
+     "query": "ancient egypt documentary"
+    },
+    {
+     "label": "Rome",
+     "query": "ancient rome documentary"
+    },
+    {
+     "label": "Greece",
+     "query": "ancient greece documentary"
+    }
+   ],
+   "synonyms": [
+    "ancient world"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "medieval-history",
+   "label": "Medieval history",
+   "group": "History",
+   "subtopics": [
+    {
+     "label": "Castles",
+     "query": "medieval castle documentary"
+    },
+    {
+     "label": "Knights",
+     "query": "real medieval knights"
+    }
+   ],
+   "synonyms": [
+    "middle ages"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "modern-history",
+   "label": "Modern history",
+   "group": "History",
+   "subtopics": [
+    {
+     "label": "20th century",
+     "query": "20th century history documentary"
+    },
+    {
+     "label": "Cold War",
+     "query": "cold war explained"
+    }
+   ],
+   "synonyms": [
+    "modern"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "world-war-ii",
+   "label": "World War II",
+   "group": "History",
+   "subtopics": [
+    {
+     "label": "WWII history",
+     "query": "world war 2 documentary"
+    },
+    {
+     "label": "Home front",
+     "query": "ww2 home front"
+    }
+   ],
+   "synonyms": [
+    "ww2",
+    "second world war"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "american-history",
+   "label": "American history",
+   "group": "History",
+   "subtopics": [
+    {
+     "label": "Founding",
+     "query": "american revolution documentary"
+    },
+    {
+     "label": "Civil rights",
+     "query": "civil rights movement documentary"
+    }
+   ],
+   "synonyms": [
+    "us history"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "history-of-everyday-life",
+   "label": "History of everyday life",
+   "group": "History",
+   "subtopics": [
+    {
+     "label": "How people lived",
+     "query": "how people lived in the past"
+    },
+    {
+     "label": "Old jobs",
+     "query": "jobs that no longer exist"
+    }
+   ],
+   "synonyms": [
+    "daily life history"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "military-history",
+   "label": "Military history",
+   "group": "History",
+   "subtopics": [
+    {
+     "label": "Battles explained",
+     "query": "famous battle explained"
+    },
+    {
+     "label": "Military tech",
+     "query": "military technology history"
+    }
+   ],
+   "synonyms": [
+    "war history"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "genealogy",
+   "label": "Genealogy",
+   "group": "History",
+   "subtopics": [
+    {
+     "label": "Family history",
+     "query": "how to start family history research"
+    },
+    {
+     "label": "DNA tests",
+     "query": "dna ancestry explained"
+    }
+   ],
+   "synonyms": [
+    "family tree",
+    "ancestry"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "local-history",
+   "label": "Local history",
+   "group": "History",
+   "subtopics": [
+    {
+     "label": "Town histories",
+     "query": "small town history"
+    },
+    {
+     "label": "Old photos",
+     "query": "old photographs history"
+    }
+   ],
+   "synonyms": [
+    "hometown history"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "odd-history",
+   "label": "Odd history",
+   "group": "History",
+   "subtopics": [
+    {
+     "label": "Strange stories",
+     "query": "strange history stories"
+    },
+    {
+     "label": "History myths",
+     "query": "history myths debunked"
+    }
+   ],
+   "synonyms": [
+    "weird history"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "famous-speeches",
+   "label": "Famous speeches",
+   "group": "History",
+   "subtopics": [
+    {
+     "label": "Speeches",
+     "query": "famous speech full"
+    },
+    {
+     "label": "Speech analysis",
+     "query": "famous speech analysis"
+    }
+   ],
+   "synonyms": [
+    "speeches"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "true-crime",
+   "label": "True crime",
+   "group": "True crime & mysteries",
+   "subtopics": [
+    {
+     "label": "Case deep dives",
+     "query": "true crime case documentary"
+    },
+    {
+     "label": "Solved cases",
+     "query": "solved cold case"
+    }
+   ],
+   "synonyms": [
+    "crime stories"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "heists-scams",
+   "label": "Heists & scams",
+   "group": "True crime & mysteries",
+   "subtopics": [
+    {
+     "label": "Famous heists",
+     "query": "famous heist explained"
+    },
+    {
+     "label": "Scams explained",
+     "query": "scam explained"
+    }
+   ],
+   "synonyms": [
+    "cons",
+    "fraud"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "mysteries",
+   "label": "Mysteries",
+   "group": "True crime & mysteries",
+   "subtopics": [
+    {
+     "label": "Unsolved mysteries",
+     "query": "unsolved mysteries"
+    },
+    {
+     "label": "Lost places",
+     "query": "lost city mystery"
+    }
+   ],
+   "synonyms": [
+    "unexplained"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "courtroom",
+   "label": "Courtroom",
+   "group": "True crime & mysteries",
+   "subtopics": [
+    {
+     "label": "Trials explained",
+     "query": "famous trial explained"
+    },
+    {
+     "label": "How courts work",
+     "query": "how courts work"
+    }
+   ],
+   "synonyms": [
+    "law",
+    "trials"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "detectives-forensics",
+   "label": "Detectives & forensics",
+   "group": "True crime & mysteries",
+   "subtopics": [
+    {
+     "label": "Forensics",
+     "query": "forensic science explained"
+    },
+    {
+     "label": "Detective stories",
+     "query": "real detective story"
+    }
+   ],
+   "synonyms": [
+    "forensics"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "easy-recipes",
+   "label": "Easy recipes",
+   "group": "Food & cooking",
+   "subtopics": [
+    {
+     "label": "Weeknight dinners",
+     "query": "easy weeknight dinner recipe"
+    },
+    {
+     "label": "One-pot meals",
+     "query": "one pot recipe"
+    }
+   ],
+   "synonyms": [
+    "recipes",
+    "cooking"
+   ],
+   "audience": "general",
+   "suggested": true,
+   "popularWith": []
+  },
+  {
+   "id": "baking",
+   "label": "Baking",
+   "group": "Food & cooking",
+   "subtopics": [
+    {
+     "label": "Bread",
+     "query": "bread baking for beginners"
+    },
+    {
+     "label": "Cakes and pies",
+     "query": "cake baking tutorial"
+    },
+    {
+     "label": "Cookies",
+     "query": "cookie recipe"
+    }
+   ],
+   "synonyms": [
+    "bread",
+    "cakes"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "food-science",
+   "label": "Food science",
+   "group": "Food & cooking",
+   "subtopics": [
+    {
+     "label": "Why cooking works",
+     "query": "food science explained"
+    },
+    {
+     "label": "Kitchen myths",
+     "query": "cooking myths tested"
+    }
+   ],
+   "synonyms": [
+    "kitchen science"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "italian-food",
+   "label": "Italian food",
+   "group": "Food & cooking",
+   "subtopics": [
+    {
+     "label": "Pasta",
+     "query": "homemade pasta"
+    },
+    {
+     "label": "Pizza",
+     "query": "neapolitan pizza at home"
+    }
+   ],
+   "synonyms": [
+    "italian"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "mexican-food",
+   "label": "Mexican food",
+   "group": "Food & cooking",
+   "subtopics": [
+    {
+     "label": "Tacos",
+     "query": "authentic tacos recipe"
+    },
+    {
+     "label": "Salsa",
+     "query": "homemade salsa"
+    }
+   ],
+   "synonyms": [
+    "mexican"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "asian-cooking",
+   "label": "Asian cooking",
+   "group": "Food & cooking",
+   "subtopics": [
+    {
+     "label": "Chinese",
+     "query": "chinese cooking at home"
+    },
+    {
+     "label": "Japanese",
+     "query": "japanese home cooking"
+    },
+    {
+     "label": "Indian",
+     "query": "indian curry recipe"
+    }
+   ],
+   "synonyms": [
+    "asian food"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "southern-soul-food",
+   "label": "Southern & soul food",
+   "group": "Food & cooking",
+   "subtopics": [
+    {
+     "label": "Southern classics",
+     "query": "southern cooking recipe"
+    },
+    {
+     "label": "Soul food",
+     "query": "soul food recipe"
+    }
+   ],
+   "synonyms": [
+    "southern food"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "bbq-grilling",
+   "label": "BBQ & grilling",
+   "group": "Food & cooking",
+   "subtopics": [
+    {
+     "label": "Smoking meat",
+     "query": "bbq smoking for beginners"
+    },
+    {
+     "label": "Grilling",
+     "query": "grilling tips"
+    }
+   ],
+   "synonyms": [
+    "barbecue",
+    "bbq"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "budget-cooking",
+   "label": "Budget cooking",
+   "group": "Food & cooking",
+   "subtopics": [
+    {
+     "label": "Cheap meals",
+     "query": "cheap healthy meals"
+    },
+    {
+     "label": "Meal prep",
+     "query": "meal prep for the week"
+    }
+   ],
+   "synonyms": [
+    "frugal cooking"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "healthy-cooking",
+   "label": "Healthy cooking",
+   "group": "Food & cooking",
+   "subtopics": [
+    {
+     "label": "Healthy recipes",
+     "query": "healthy easy recipe"
+    },
+    {
+     "label": "Vegetarian",
+     "query": "vegetarian recipe"
+    }
+   ],
+   "synonyms": [
+    "healthy food"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "street-food-food-travel",
+   "label": "Street food & food travel",
+   "group": "Food & cooking",
+   "subtopics": [
+    {
+     "label": "Street food",
+     "query": "street food tour"
+    },
+    {
+     "label": "Food history",
+     "query": "food history documentary"
+    }
+   ],
+   "synonyms": [
+    "food tours"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "canning-preserving",
+   "label": "Canning & preserving",
+   "group": "Food & cooking",
+   "subtopics": [
+    {
+     "label": "Canning",
+     "query": "home canning for beginners"
+    },
+    {
+     "label": "Pickling",
+     "query": "pickling at home"
+    }
+   ],
+   "synonyms": [
+    "preserving"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "coffee-tea",
+   "label": "Coffee & tea",
+   "group": "Food & cooking",
+   "subtopics": [
+    {
+     "label": "Coffee",
+     "query": "how to make better coffee"
+    },
+    {
+     "label": "Tea",
+     "query": "tea brewing guide"
+    }
+   ],
+   "synonyms": [
+    "coffee",
+    "tea"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "car-reviews",
+   "label": "Car reviews",
+   "group": "Cars & machines",
+   "subtopics": [
+    {
+     "label": "Honest reviews",
+     "query": "car review"
+    },
+    {
+     "label": "Used car advice",
+     "query": "used car buying tips"
+    }
+   ],
+   "synonyms": [
+    "cars"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "how-cars-work",
+   "label": "How cars work",
+   "group": "Cars & machines",
+   "subtopics": [
+    {
+     "label": "Engines",
+     "query": "how car engine works"
+    },
+    {
+     "label": "Car maintenance",
+     "query": "basic car maintenance"
+    }
+   ],
+   "synonyms": [
+    "mechanics"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "classic-cars",
+   "label": "Classic cars",
+   "group": "Cars & machines",
+   "subtopics": [
+    {
+     "label": "Restorations",
+     "query": "classic car restoration"
+    },
+    {
+     "label": "Car history",
+     "query": "car history documentary"
+    }
+   ],
+   "synonyms": [
+    "vintage cars"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "motorsport",
+   "label": "Motorsport",
+   "group": "Cars & machines",
+   "subtopics": [
+    {
+     "label": "Formula 1",
+     "query": "formula 1 explained"
+    },
+    {
+     "label": "NASCAR",
+     "query": "nascar history"
+    },
+    {
+     "label": "Rally",
+     "query": "rally racing"
+    }
+   ],
+   "synonyms": [
+    "racing",
+    "f1"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "trains-planes",
+   "label": "Trains & planes",
+   "group": "Cars & machines",
+   "subtopics": [
+    {
+     "label": "Trains",
+     "query": "train documentary"
+    },
+    {
+     "label": "Planes",
+     "query": "how planes fly"
+    },
+    {
+     "label": "Airports",
+     "query": "how airports work"
+    }
+   ],
+   "synonyms": [
+    "aviation",
+    "railways"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "heavy-machinery",
+   "label": "Heavy machinery",
+   "group": "Cars & machines",
+   "subtopics": [
+    {
+     "label": "Big machines",
+     "query": "biggest machines"
+    },
+    {
+     "label": "Construction",
+     "query": "construction machines"
+    }
+   ],
+   "synonyms": [
+    "tractors",
+    "trucks"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "engineering",
+   "label": "Engineering",
+   "group": "Cars & machines",
+   "subtopics": [
+    {
+     "label": "How it's built",
+     "query": "engineering explained"
+    },
+    {
+     "label": "Disasters explained",
+     "query": "engineering disaster explained"
+    }
+   ],
+   "synonyms": [
+    "engineers"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "motorcycles",
+   "label": "Motorcycles",
+   "group": "Cars & machines",
+   "subtopics": [
+    {
+     "label": "Motorcycle reviews",
+     "query": "motorcycle review"
+    },
+    {
+     "label": "Learning to ride",
+     "query": "motorcycle riding for beginners"
+    }
+   ],
+   "synonyms": [
+    "bikes",
+    "motorbikes"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "sports-analysis",
+   "label": "Sports analysis",
+   "group": "Sports",
+   "subtopics": [
+    {
+     "label": "Tactics",
+     "query": "sports tactics breakdown"
+    },
+    {
+     "label": "Great plays",
+     "query": "greatest plays ever"
+    }
+   ],
+   "synonyms": [
+    "sports breakdown"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "football-nfl",
+   "label": "Football (NFL)",
+   "group": "Sports",
+   "subtopics": [
+    {
+     "label": "NFL breakdowns",
+     "query": "nfl film breakdown"
+    },
+    {
+     "label": "NFL history",
+     "query": "nfl history"
+    }
+   ],
+   "synonyms": [
+    "american football"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "soccer",
+   "label": "Soccer",
+   "group": "Sports",
+   "subtopics": [
+    {
+     "label": "Tactics",
+     "query": "soccer tactics explained"
+    },
+    {
+     "label": "Soccer history",
+     "query": "soccer history"
+    }
+   ],
+   "synonyms": [
+    "football",
+    "futbol"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "basketball",
+   "label": "Basketball",
+   "group": "Sports",
+   "subtopics": [
+    {
+     "label": "NBA breakdowns",
+     "query": "nba breakdown"
+    },
+    {
+     "label": "Basketball history",
+     "query": "basketball history"
+    }
+   ],
+   "synonyms": [
+    "nba"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "baseball",
+   "label": "Baseball",
+   "group": "Sports",
+   "subtopics": [
+    {
+     "label": "Baseball history",
+     "query": "baseball history"
+    },
+    {
+     "label": "Baseball explained",
+     "query": "baseball explained"
+    }
+   ],
+   "synonyms": [
+    "mlb"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "golf",
+   "label": "Golf",
+   "group": "Sports",
+   "subtopics": [
+    {
+     "label": "Golf tips",
+     "query": "golf tips for beginners"
+    },
+    {
+     "label": "Golf history",
+     "query": "golf history"
+    }
+   ],
+   "synonyms": [
+    "golfing"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "tennis",
+   "label": "Tennis",
+   "group": "Sports",
+   "subtopics": [
+    {
+     "label": "Tennis tips",
+     "query": "tennis tips"
+    },
+    {
+     "label": "Classic matches",
+     "query": "classic tennis match"
+    }
+   ],
+   "synonyms": [
+    "tennis"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "fishing",
+   "label": "Fishing",
+   "group": "Sports",
+   "subtopics": [
+    {
+     "label": "Fishing tips",
+     "query": "fishing for beginners"
+    },
+    {
+     "label": "Fly fishing",
+     "query": "fly fishing"
+    }
+   ],
+   "synonyms": [
+    "angling"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "outdoor-adventure",
+   "label": "Outdoor adventure",
+   "group": "Sports",
+   "subtopics": [
+    {
+     "label": "Hiking",
+     "query": "hiking tips"
+    },
+    {
+     "label": "Camping",
+     "query": "camping for beginners"
+    },
+    {
+     "label": "Climbing",
+     "query": "rock climbing documentary"
+    }
+   ],
+   "synonyms": [
+    "outdoors"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "skateboarding-bmx",
+   "label": "Skateboarding & BMX",
+   "group": "Sports",
+   "subtopics": [
+    {
+     "label": "Skate parts",
+     "query": "skateboarding video part"
+    },
+    {
+     "label": "Skate history",
+     "query": "skateboarding history"
+    }
+   ],
+   "synonyms": [
+    "skate",
+    "skating"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "teens"
+   ]
+  },
+  {
+   "id": "martial-arts-boxing",
+   "label": "Martial arts & boxing",
+   "group": "Sports",
+   "subtopics": [
+    {
+     "label": "Boxing history",
+     "query": "boxing history"
+    },
+    {
+     "label": "Technique",
+     "query": "martial arts technique explained"
+    }
+   ],
+   "synonyms": [
+    "mma",
+    "boxing"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "olympics",
+   "label": "Olympics",
+   "group": "Sports",
+   "subtopics": [
+    {
+     "label": "Olympic moments",
+     "query": "greatest olympic moments"
+    },
+    {
+     "label": "Olympic sports explained",
+     "query": "olympic sport explained"
+    }
+   ],
+   "synonyms": [
+    "olympic games"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "strength-training",
+   "label": "Strength training",
+   "group": "Health & fitness",
+   "subtopics": [
+    {
+     "label": "Beginner strength",
+     "query": "strength training for beginners"
+    },
+    {
+     "label": "Form tips",
+     "query": "exercise form tips"
+    }
+   ],
+   "synonyms": [
+    "weights",
+    "gym"
+   ],
+   "audience": "general",
+   "suggested": true,
+   "popularWith": []
+  },
+  {
+   "id": "running",
+   "label": "Running",
+   "group": "Health & fitness",
+   "subtopics": [
+    {
+     "label": "Running form",
+     "query": "running form tips"
+    },
+    {
+     "label": "First 5K",
+     "query": "couch to 5k"
+    }
+   ],
+   "synonyms": [
+    "jogging"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "yoga-stretching",
+   "label": "Yoga & stretching",
+   "group": "Health & fitness",
+   "subtopics": [
+    {
+     "label": "Gentle yoga",
+     "query": "gentle yoga for beginners"
+    },
+    {
+     "label": "Stretching",
+     "query": "daily stretching routine"
+    }
+   ],
+   "synonyms": [
+    "yoga",
+    "stretching"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "walking-low-impact",
+   "label": "Walking & low-impact",
+   "group": "Health & fitness",
+   "subtopics": [
+    {
+     "label": "Walking workouts",
+     "query": "indoor walking workout"
+    },
+    {
+     "label": "Chair exercises",
+     "query": "chair exercises for seniors"
+    }
+   ],
+   "synonyms": [
+    "seniors exercise"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "nutrition",
+   "label": "Nutrition",
+   "group": "Health & fitness",
+   "subtopics": [
+    {
+     "label": "Eating well",
+     "query": "nutrition explained"
+    },
+    {
+     "label": "Myths",
+     "query": "nutrition myths"
+    }
+   ],
+   "synonyms": [
+    "diet",
+    "healthy eating"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "sleep",
+   "label": "Sleep",
+   "group": "Health & fitness",
+   "subtopics": [
+    {
+     "label": "Better sleep",
+     "query": "how to sleep better"
+    },
+    {
+     "label": "Sleep science",
+     "query": "sleep science explained"
+    }
+   ],
+   "synonyms": [
+    "sleeping"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "mental-health",
+   "label": "Mental health",
+   "group": "Health & fitness",
+   "subtopics": [
+    {
+     "label": "Stress",
+     "query": "how to manage stress"
+    },
+    {
+     "label": "Anxiety",
+     "query": "anxiety explained"
+    }
+   ],
+   "synonyms": [
+    "wellbeing",
+    "mental wellness"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "meditation",
+   "label": "Meditation",
+   "group": "Health & fitness",
+   "subtopics": [
+    {
+     "label": "Guided meditation",
+     "query": "guided meditation 10 minutes"
+    },
+    {
+     "label": "Breathing",
+     "query": "breathing exercise"
+    }
+   ],
+   "synonyms": [
+    "mindfulness"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "healthy-aging",
+   "label": "Healthy aging",
+   "group": "Health & fitness",
+   "subtopics": [
+    {
+     "label": "Staying active",
+     "query": "healthy aging tips"
+    },
+    {
+     "label": "Memory",
+     "query": "memory tips"
+    }
+   ],
+   "synonyms": [
+    "aging well",
+    "seniors"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "personal-finance",
+   "label": "Personal finance",
+   "group": "Money & work",
+   "subtopics": [
+    {
+     "label": "Budgeting",
+     "query": "budgeting for beginners"
+    },
+    {
+     "label": "Saving",
+     "query": "how to save money"
+    }
+   ],
+   "synonyms": [
+    "money tips",
+    "finance"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "investing-basics",
+   "label": "Investing basics",
+   "group": "Money & work",
+   "subtopics": [
+    {
+     "label": "Index funds",
+     "query": "index funds explained"
+    },
+    {
+     "label": "Retirement",
+     "query": "retirement planning explained"
+    }
+   ],
+   "synonyms": [
+    "investing",
+    "stocks"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "frugal-living",
+   "label": "Frugal living",
+   "group": "Money & work",
+   "subtopics": [
+    {
+     "label": "Money-saving tips",
+     "query": "frugal living tips"
+    },
+    {
+     "label": "Thrifting",
+     "query": "thrift store finds"
+    }
+   ],
+   "synonyms": [
+    "cheap living"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "economics",
+   "label": "Economics",
+   "group": "Money & work",
+   "subtopics": [
+    {
+     "label": "Big ideas",
+     "query": "economics explained"
+    },
+    {
+     "label": "Why prices change",
+     "query": "inflation explained"
+    }
+   ],
+   "synonyms": [
+    "econ"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "business-stories",
+   "label": "Business stories",
+   "group": "Money & work",
+   "subtopics": [
+    {
+     "label": "Company histories",
+     "query": "company history documentary"
+    },
+    {
+     "label": "Brand stories",
+     "query": "brand history"
+    }
+   ],
+   "synonyms": [
+    "business"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "startups-side-hustles",
+   "label": "Startups & side hustles",
+   "group": "Money & work",
+   "subtopics": [
+    {
+     "label": "Founder stories",
+     "query": "startup founder story"
+    },
+    {
+     "label": "Small business",
+     "query": "small business tips"
+    }
+   ],
+   "synonyms": [
+    "entrepreneur"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "careers",
+   "label": "Careers",
+   "group": "Money & work",
+   "subtopics": [
+    {
+     "label": "Job skills",
+     "query": "job interview tips"
+    },
+    {
+     "label": "Career stories",
+     "query": "day in the life job"
+    }
+   ],
+   "synonyms": [
+    "work",
+    "jobs"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "real-estate",
+   "label": "Real estate",
+   "group": "Money & work",
+   "subtopics": [
+    {
+     "label": "Home buying",
+     "query": "first time home buyer tips"
+    },
+    {
+     "label": "House tours",
+     "query": "house tour"
+    }
+   ],
+   "synonyms": [
+    "housing"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "travel",
+   "label": "Travel",
+   "group": "Places & travel",
+   "subtopics": [
+    {
+     "label": "City guides",
+     "query": "city travel guide"
+    },
+    {
+     "label": "Travel on a budget",
+     "query": "budget travel tips"
+    }
+   ],
+   "synonyms": [
+    "trips",
+    "vacation"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "geography",
+   "label": "Geography",
+   "group": "Places & travel",
+   "subtopics": [
+    {
+     "label": "Maps explained",
+     "query": "geography explained maps"
+    },
+    {
+     "label": "Weird borders",
+     "query": "weird borders explained"
+    }
+   ],
+   "synonyms": [
+    "maps"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "cities-architecture",
+   "label": "Cities & architecture",
+   "group": "Places & travel",
+   "subtopics": [
+    {
+     "label": "Buildings explained",
+     "query": "architecture explained"
+    },
+    {
+     "label": "City design",
+     "query": "urban planning explained"
+    }
+   ],
+   "synonyms": [
+    "architecture"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "slow-travel",
+   "label": "Slow travel",
+   "group": "Places & travel",
+   "subtopics": [
+    {
+     "label": "Train journeys",
+     "query": "scenic train journey"
+    },
+    {
+     "label": "Walking tours",
+     "query": "walking tour 4k"
+    }
+   ],
+   "synonyms": [
+    "walking tours"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "national-parks",
+   "label": "National parks",
+   "group": "Places & travel",
+   "subtopics": [
+    {
+     "label": "Park guides",
+     "query": "national park guide"
+    },
+    {
+     "label": "Wildlife in parks",
+     "query": "national park wildlife"
+    }
+   ],
+   "synonyms": [
+    "parks"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "abandoned-places",
+   "label": "Abandoned places",
+   "group": "Places & travel",
+   "subtopics": [
+    {
+     "label": "Urban exploring",
+     "query": "abandoned places"
+    },
+    {
+     "label": "Ghost towns",
+     "query": "ghost town"
+    }
+   ],
+   "synonyms": [
+    "urbex"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "road-trips",
+   "label": "Road trips",
+   "group": "Places & travel",
+   "subtopics": [
+    {
+     "label": "Road trip guides",
+     "query": "road trip itinerary"
+    },
+    {
+     "label": "Route 66",
+     "query": "route 66"
+    }
+   ],
+   "synonyms": [
+    "road trips"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "local-culture",
+   "label": "Local culture",
+   "group": "Places & travel",
+   "subtopics": [
+    {
+     "label": "Traditions",
+     "query": "cultural traditions explained"
+    },
+    {
+     "label": "Festivals",
+     "query": "festival documentary"
+    }
+   ],
+   "synonyms": [
+    "culture"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "language-dialects",
+   "label": "Language & dialects",
+   "group": "Places & travel",
+   "subtopics": [
+    {
+     "label": "Accents",
+     "query": "accents explained"
+    },
+    {
+     "label": "Dialects",
+     "query": "dialects explained"
+    }
+   ],
+   "synonyms": [
+    "accents"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "food-cultures",
+   "label": "Food cultures",
+   "group": "Places & travel",
+   "subtopics": [
+    {
+     "label": "Food traditions",
+     "query": "food traditions around the world"
+    },
+    {
+     "label": "Markets",
+     "query": "market tour"
+    }
+   ],
+   "synonyms": [
+    "food culture"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "holidays-traditions",
+   "label": "Holidays & traditions",
+   "group": "Places & travel",
+   "subtopics": [
+    {
+     "label": "Holiday history",
+     "query": "holiday history"
+    },
+    {
+     "label": "Christmas traditions",
+     "query": "christmas traditions around the world"
+    }
+   ],
+   "synonyms": [
+    "holidays"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "wildlife",
+   "label": "Wildlife",
+   "group": "Nature & animals",
+   "subtopics": [
+    {
+     "label": "Wildlife documentaries",
+     "query": "wildlife documentary"
+    },
+    {
+     "label": "Big cats",
+     "query": "big cats documentary"
+    }
+   ],
+   "synonyms": [
+    "animals"
+   ],
+   "audience": "general",
+   "suggested": true,
+   "popularWith": []
+  },
+  {
+   "id": "birds-birdwatching",
+   "label": "Birds & birdwatching",
+   "group": "Nature & animals",
+   "subtopics": [
+    {
+     "label": "Birdwatching",
+     "query": "birdwatching for beginners"
+    },
+    {
+     "label": "Bird songs",
+     "query": "bird songs identification"
+    }
+   ],
+   "synonyms": [
+    "birds",
+    "birding"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "pets",
+   "label": "Pets",
+   "group": "Nature & animals",
+   "subtopics": [
+    {
+     "label": "Dog training",
+     "query": "dog training basics"
+    },
+    {
+     "label": "Cat care",
+     "query": "cat care tips"
+    }
+   ],
+   "synonyms": [
+    "dogs",
+    "cats"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "ocean-life",
+   "label": "Ocean life",
+   "group": "Nature & animals",
+   "subtopics": [
+    {
+     "label": "Ocean animals",
+     "query": "ocean animals documentary"
+    },
+    {
+     "label": "Coral reefs",
+     "query": "coral reef documentary"
+    }
+   ],
+   "synonyms": [
+    "sea life"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "insects-bugs",
+   "label": "Insects & bugs",
+   "group": "Nature & animals",
+   "subtopics": [
+    {
+     "label": "Insects",
+     "query": "insect documentary"
+    },
+    {
+     "label": "Bees",
+     "query": "beekeeping"
+    }
+   ],
+   "synonyms": [
+    "bugs",
+    "insects"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "farm-animals",
+   "label": "Farm animals",
+   "group": "Nature & animals",
+   "subtopics": [
+    {
+     "label": "Farm life",
+     "query": "farm life"
+    },
+    {
+     "label": "Animal rescue",
+     "query": "farm animal rescue"
+    }
+   ],
+   "synonyms": [
+    "farms"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "nature-relaxing",
+   "label": "Nature relaxing",
+   "group": "Nature & animals",
+   "subtopics": [
+    {
+     "label": "Nature sounds",
+     "query": "nature sounds 1 hour"
+    },
+    {
+     "label": "Forest walks",
+     "query": "forest walk 4k"
+    }
+   ],
+   "synonyms": [
+    "nature videos"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "faith-spirituality",
+   "label": "Faith & spirituality",
+   "group": "Faith & philosophy",
+   "subtopics": [
+    {
+     "label": "Sermons",
+     "query": "sermon"
+    },
+    {
+     "label": "Bible study",
+     "query": "bible study"
+    }
+   ],
+   "synonyms": [
+    "religion",
+    "church"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "world-religions",
+   "label": "World religions",
+   "group": "Faith & philosophy",
+   "subtopics": [
+    {
+     "label": "Religions explained",
+     "query": "world religions explained"
+    },
+    {
+     "label": "Religious history",
+     "query": "history of religion"
+    }
+   ],
+   "synonyms": [
+    "religion"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "philosophy",
+   "label": "Philosophy",
+   "group": "Faith & philosophy",
+   "subtopics": [
+    {
+     "label": "Big questions",
+     "query": "philosophy explained"
+    },
+    {
+     "label": "Philosophers",
+     "query": "philosopher ideas explained"
+    }
+   ],
+   "synonyms": [
+    "philosophy"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "psychology",
+   "label": "Psychology",
+   "group": "Faith & philosophy",
+   "subtopics": [
+    {
+     "label": "How the mind works",
+     "query": "psychology explained"
+    },
+    {
+     "label": "Famous experiments",
+     "query": "famous psychology experiments"
+    }
+   ],
+   "synonyms": [
+    "mind",
+    "behavior"
+   ],
+   "audience": "general",
+   "suggested": true,
+   "popularWith": []
+  },
+  {
+   "id": "parenting",
+   "label": "Parenting",
+   "group": "People & learning",
+   "subtopics": [
+    {
+     "label": "Parenting tips",
+     "query": "parenting tips"
+    },
+    {
+     "label": "Toddlers",
+     "query": "toddler development"
+    }
+   ],
+   "synonyms": [
+    "family",
+    "kids"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "relationships",
+   "label": "Relationships",
+   "group": "People & learning",
+   "subtopics": [
+    {
+     "label": "Communication",
+     "query": "relationship communication tips"
+    },
+    {
+     "label": "Friendship",
+     "query": "making friends as an adult"
+    }
+   ],
+   "synonyms": [
+    "dating",
+    "marriage"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "study-skills",
+   "label": "Study skills",
+   "group": "People & learning",
+   "subtopics": [
+    {
+     "label": "Study tips",
+     "query": "how to study effectively"
+    },
+    {
+     "label": "Note-taking",
+     "query": "note taking method"
+    }
+   ],
+   "synonyms": [
+    "studying",
+    "school"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "languages",
+   "label": "Languages",
+   "group": "People & learning",
+   "subtopics": [
+    {
+     "label": "Learn Spanish",
+     "query": "learn spanish beginner"
+    },
+    {
+     "label": "Learn French",
+     "query": "learn french beginner"
+    },
+    {
+     "label": "Linguistics",
+     "query": "linguistics explained"
+    }
+   ],
+   "synonyms": [
+    "language learning"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "books",
+   "label": "Books",
+   "group": "People & learning",
+   "subtopics": [
+    {
+     "label": "Book reviews",
+     "query": "book review"
+    },
+    {
+     "label": "Classic novels",
+     "query": "classic novel explained"
+    }
+   ],
+   "synonyms": [
+    "reading",
+    "booktube"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "writing",
+   "label": "Writing",
+   "group": "People & learning",
+   "subtopics": [
+    {
+     "label": "Writing tips",
+     "query": "writing tips"
+    },
+    {
+     "label": "Storytelling",
+     "query": "storytelling explained"
+    }
+   ],
+   "synonyms": [
+    "authors"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "art-history",
+   "label": "Art history",
+   "group": "People & learning",
+   "subtopics": [
+    {
+     "label": "Famous paintings",
+     "query": "famous painting explained"
+    },
+    {
+     "label": "Art movements",
+     "query": "art history explained"
+    }
+   ],
+   "synonyms": [
+    "art"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "design",
+   "label": "Design",
+   "group": "People & learning",
+   "subtopics": [
+    {
+     "label": "Graphic design",
+     "query": "graphic design explained"
+    },
+    {
+     "label": "Everyday design",
+     "query": "design of everyday things"
+    }
+   ],
+   "synonyms": [
+    "design"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "fashion",
+   "label": "Fashion",
+   "group": "People & learning",
+   "subtopics": [
+    {
+     "label": "Fashion history",
+     "query": "fashion history"
+    },
+    {
+     "label": "Style tips",
+     "query": "style tips"
+    }
+   ],
+   "synonyms": [
+    "clothes",
+    "style"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "streetwear",
+   "label": "Streetwear",
+   "group": "People & learning",
+   "subtopics": [
+    {
+     "label": "Sneakers",
+     "query": "sneaker history"
+    },
+    {
+     "label": "Streetwear brands",
+     "query": "streetwear history"
+    }
+   ],
+   "synonyms": [
+    "sneakers"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "teens"
+   ]
+  },
+  {
+   "id": "beauty-makeup",
+   "label": "Beauty & makeup",
+   "group": "People & learning",
+   "subtopics": [
+    {
+     "label": "Makeup tutorials",
+     "query": "makeup tutorial beginner"
+    },
+    {
+     "label": "Skincare",
+     "query": "skincare routine"
+    }
+   ],
+   "synonyms": [
+    "makeup",
+    "skincare"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "news-explained",
+   "label": "News explained",
+   "group": "People & learning",
+   "subtopics": [
+    {
+     "label": "Explainers",
+     "query": "news explained in depth"
+    },
+    {
+     "label": "How the world works",
+     "query": "how the world works explained"
+    }
+   ],
+   "synonyms": [
+    "current events"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "politics-explained",
+   "label": "Politics explained",
+   "group": "People & learning",
+   "subtopics": [
+    {
+     "label": "How government works",
+     "query": "how government works explained"
+    },
+    {
+     "label": "Elections explained",
+     "query": "elections explained"
+    }
+   ],
+   "synonyms": [
+    "civics"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "interviews-long-talks",
+   "label": "Interviews & long talks",
+   "group": "People & learning",
+   "subtopics": [
+    {
+     "label": "Interviews",
+     "query": "long form interview"
+    },
+    {
+     "label": "Lectures",
+     "query": "university lecture"
+    }
+   ],
+   "synonyms": [
+    "podcasts",
+    "talks"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "old-time-radio",
+   "label": "Old-time radio",
+   "group": "People & learning",
+   "subtopics": [
+    {
+     "label": "Radio dramas",
+     "query": "old time radio drama"
+    },
+    {
+     "label": "Radio comedy",
+     "query": "old time radio comedy"
+    }
+   ],
+   "synonyms": [
+    "radio shows"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "asmr",
+   "label": "ASMR",
+   "group": "Relaxing",
+   "subtopics": [
+    {
+     "label": "Soft-spoken",
+     "query": "asmr soft spoken"
+    },
+    {
+     "label": "Tapping",
+     "query": "asmr tapping"
+    }
+   ],
+   "synonyms": [
+    "tingles"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "slow-tv",
+   "label": "Slow TV",
+   "group": "Relaxing",
+   "subtopics": [
+    {
+     "label": "Train rides",
+     "query": "slow tv train"
+    },
+    {
+     "label": "Fireplace",
+     "query": "fireplace 1 hour"
+    }
+   ],
+   "synonyms": [
+    "slow tv"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "ambient-lo-fi",
+   "label": "Ambient & lo-fi",
+   "group": "Relaxing",
+   "subtopics": [
+    {
+     "label": "Lo-fi",
+     "query": "lofi music study"
+    },
+    {
+     "label": "Ambient",
+     "query": "ambient music"
+    }
+   ],
+   "synonyms": [
+    "study music",
+    "chill"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "satisfying",
+   "label": "Satisfying",
+   "group": "Relaxing",
+   "subtopics": [
+    {
+     "label": "Satisfying videos",
+     "query": "oddly satisfying"
+    },
+    {
+     "label": "Restoration timelapse",
+     "query": "restoration timelapse"
+    }
+   ],
+   "synonyms": [
+    "satisfying"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "kids-science",
+   "label": "Kids science",
+   "group": "Kids & family",
+   "subtopics": [
+    {
+     "label": "Science for kids",
+     "query": "science for kids"
+    },
+    {
+     "label": "Space for kids",
+     "query": "space for kids"
+    }
+   ],
+   "synonyms": [
+    "kids learning"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "kids-crafts",
+   "label": "Kids crafts",
+   "group": "Kids & family",
+   "subtopics": [
+    {
+     "label": "Crafts for kids",
+     "query": "easy crafts for kids"
+    },
+    {
+     "label": "Drawing for kids",
+     "query": "how to draw for kids"
+    }
+   ],
+   "synonyms": [
+    "kids art"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "family-movies-talk",
+   "label": "Family movies talk",
+   "group": "Kids & family",
+   "subtopics": [
+    {
+     "label": "Family movie reviews",
+     "query": "family movie review"
+    },
+    {
+     "label": "Classic cartoons",
+     "query": "classic cartoons"
+    }
+   ],
+   "synonyms": [
+    "family"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "read-alouds",
+   "label": "Read-alouds",
+   "group": "Kids & family",
+   "subtopics": [
+    {
+     "label": "Picture books",
+     "query": "children's book read aloud"
+    },
+    {
+     "label": "Bedtime stories",
+     "query": "bedtime story read aloud"
+    }
+   ],
+   "synonyms": [
+    "story time"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "nursery-sing-alongs",
+   "label": "Nursery & sing-alongs",
+   "group": "Kids & family",
+   "subtopics": [
+    {
+     "label": "Sing-alongs",
+     "query": "kids sing along songs"
+    },
+    {
+     "label": "Nursery rhymes",
+     "query": "nursery rhymes"
+    }
+   ],
+   "synonyms": [
+    "songs for kids"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "space",
+   "label": "Space",
+   "group": "Science & math",
+   "subtopics": [
+    {
+     "label": "Planets",
+     "query": "planets explained"
+    },
+    {
+     "label": "Space missions",
+     "query": "space mission documentary"
+    },
+    {
+     "label": "Astronomy",
+     "query": "astronomy for beginners"
+    }
+   ],
+   "synonyms": [
+    "astronomy",
+    "nasa",
+    "universe"
+   ],
+   "audience": "general",
+   "suggested": true,
+   "popularWith": []
+  },
+  {
+   "id": "physics",
+   "label": "Physics",
+   "group": "Science & math",
+   "subtopics": [
+    {
+     "label": "Big ideas",
+     "query": "physics explained simply"
+    },
+    {
+     "label": "Experiments",
+     "query": "physics experiment"
+    }
+   ],
+   "synonyms": [
+    "physics"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "chemistry",
+   "label": "Chemistry",
+   "group": "Science & math",
+   "subtopics": [
+    {
+     "label": "Reactions",
+     "query": "chemistry experiment"
+    },
+    {
+     "label": "Everyday chemistry",
+     "query": "everyday chemistry explained"
+    }
+   ],
+   "synonyms": [
+    "chem"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "biology",
+   "label": "Biology",
+   "group": "Science & math",
+   "subtopics": [
+    {
+     "label": "Human body",
+     "query": "human body explained"
+    },
+    {
+     "label": "Cells",
+     "query": "cell biology explained"
+    },
+    {
+     "label": "Evolution",
+     "query": "evolution explained"
+    }
+   ],
+   "synonyms": [
+    "life science"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "earth-weather",
+   "label": "Earth & weather",
+   "group": "Science & math",
+   "subtopics": [
+    {
+     "label": "Weather explained",
+     "query": "how weather works"
+    },
+    {
+     "label": "Volcanoes",
+     "query": "volcano documentary"
+    },
+    {
+     "label": "Earthquakes",
+     "query": "earthquake explained"
+    }
+   ],
+   "synonyms": [
+    "geology",
+    "meteorology"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "oceans",
+   "label": "Oceans",
+   "group": "Science & math",
+   "subtopics": [
+    {
+     "label": "Deep sea",
+     "query": "deep sea creatures documentary"
+    },
+    {
+     "label": "Ocean science",
+     "query": "ocean explained"
+    }
+   ],
+   "synonyms": [
+    "sea",
+    "marine"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "dinosaurs",
+   "label": "Dinosaurs",
+   "group": "Science & math",
+   "subtopics": [
+    {
+     "label": "Dinosaur science",
+     "query": "dinosaur documentary"
+    },
+    {
+     "label": "Fossils",
+     "query": "fossil hunting"
+    }
+   ],
+   "synonyms": [
+    "dinos",
+    "paleontology"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "medicine",
+   "label": "Medicine",
+   "group": "Science & math",
+   "subtopics": [
+    {
+     "label": "How medicine works",
+     "query": "how medicine works explained"
+    },
+    {
+     "label": "Medical history",
+     "query": "history of medicine"
+    }
+   ],
+   "synonyms": [
+    "doctors",
+    "health science"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "climate",
+   "label": "Climate",
+   "group": "Science & math",
+   "subtopics": [
+    {
+     "label": "Climate explained",
+     "query": "climate change explained"
+    },
+    {
+     "label": "Clean energy",
+     "query": "renewable energy explained"
+    }
+   ],
+   "synonyms": [
+    "environment"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "science-experiments",
+   "label": "Science experiments",
+   "group": "Science & math",
+   "subtopics": [
+    {
+     "label": "Home experiments",
+     "query": "science experiment at home"
+    },
+    {
+     "label": "Big experiments",
+     "query": "large scale experiment"
+    }
+   ],
+   "synonyms": [
+    "experiments"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "weird-science",
+   "label": "Weird science",
+   "group": "Science & math",
+   "subtopics": [
+    {
+     "label": "Strange facts",
+     "query": "strange science facts"
+    },
+    {
+     "label": "Unsolved science",
+     "query": "unsolved science mysteries"
+    }
+   ],
+   "synonyms": [
+    "science mysteries"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "math-explained",
+   "label": "Math explained",
+   "group": "Science & math",
+   "subtopics": [
+    {
+     "label": "Visual math",
+     "query": "math explained visually"
+    },
+    {
+     "label": "Big ideas",
+     "query": "math big ideas explained"
+    }
+   ],
+   "synonyms": [
+    "maths"
+   ],
+   "audience": "general",
+   "suggested": true,
+   "popularWith": []
+  },
+  {
+   "id": "math-puzzles",
+   "label": "Math puzzles",
+   "group": "Science & math",
+   "subtopics": [
+    {
+     "label": "Puzzles",
+     "query": "math puzzle explained"
+    },
+    {
+     "label": "Riddles",
+     "query": "logic riddle"
+    }
+   ],
+   "synonyms": [
+    "brain teasers"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "statistics",
+   "label": "Statistics",
+   "group": "Science & math",
+   "subtopics": [
+    {
+     "label": "Stats explained",
+     "query": "statistics explained simply"
+    },
+    {
+     "label": "Probability",
+     "query": "probability explained"
+    }
+   ],
+   "synonyms": [
+    "stats"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "math-history",
+   "label": "Math history",
+   "group": "Science & math",
+   "subtopics": [
+    {
+     "label": "Famous problems",
+     "query": "famous unsolved math problems"
+    },
+    {
+     "label": "Mathematicians",
+     "query": "mathematician biography"
+    }
+   ],
+   "synonyms": [
+    "history of math"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "mental-math",
+   "label": "Mental math",
+   "group": "Science & math",
+   "subtopics": [
+    {
+     "label": "Tricks",
+     "query": "mental math tricks"
+    },
+    {
+     "label": "Speed math",
+     "query": "speed math"
+    }
+   ],
+   "synonyms": [
+    "math tricks"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "stargazing",
+   "label": "Stargazing",
+   "group": "Science & math",
+   "subtopics": [
+    {
+     "label": "What's in the sky",
+     "query": "stargazing for beginners"
+    },
+    {
+     "label": "Telescopes",
+     "query": "beginner telescope guide"
+    }
+   ],
+   "synonyms": [
+    "night sky",
+    "telescope"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "gardening",
+   "label": "Gardening",
+   "group": "Home, garden & crafts",
+   "subtopics": [
+    {
+     "label": "Vegetable gardens",
+     "query": "vegetable garden for beginners"
+    },
+    {
+     "label": "Flowers",
+     "query": "flower garden tips"
+    },
+    {
+     "label": "Houseplants",
+     "query": "houseplant care"
+    }
+   ],
+   "synonyms": [
+    "garden",
+    "plants"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "diy-home-repair",
+   "label": "DIY & home repair",
+   "group": "Home, garden & crafts",
+   "subtopics": [
+    {
+     "label": "Home repair",
+     "query": "home repair for beginners"
+    },
+    {
+     "label": "Tools",
+     "query": "how to use tools"
+    }
+   ],
+   "synonyms": [
+    "fix my house",
+    "handyman"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "woodworking",
+   "label": "Woodworking",
+   "group": "Home, garden & crafts",
+   "subtopics": [
+    {
+     "label": "Beginner projects",
+     "query": "woodworking project for beginners"
+    },
+    {
+     "label": "Furniture",
+     "query": "furniture making"
+    }
+   ],
+   "synonyms": [
+    "carpentry"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "cleaning-organizing",
+   "label": "Cleaning & organizing",
+   "group": "Home, garden & crafts",
+   "subtopics": [
+    {
+     "label": "Cleaning tips",
+     "query": "cleaning tips"
+    },
+    {
+     "label": "Decluttering",
+     "query": "decluttering tips"
+    }
+   ],
+   "synonyms": [
+    "tidy",
+    "organize"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "home-makeovers",
+   "label": "Home makeovers",
+   "group": "Home, garden & crafts",
+   "subtopics": [
+    {
+     "label": "Room makeovers",
+     "query": "room makeover"
+    },
+    {
+     "label": "Tiny homes",
+     "query": "tiny house tour"
+    }
+   ],
+   "synonyms": [
+    "renovation"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "restoration",
+   "label": "Restoration",
+   "group": "Home, garden & crafts",
+   "subtopics": [
+    {
+     "label": "Tool restoration",
+     "query": "tool restoration"
+    },
+    {
+     "label": "Furniture restoration",
+     "query": "furniture restoration"
+    }
+   ],
+   "synonyms": [
+    "restore"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "homesteading",
+   "label": "Homesteading",
+   "group": "Home, garden & crafts",
+   "subtopics": [
+    {
+     "label": "Chickens",
+     "query": "backyard chickens"
+    },
+    {
+     "label": "Self-sufficient living",
+     "query": "homesteading"
+    }
+   ],
+   "synonyms": [
+    "farm life"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "knitting-crochet",
+   "label": "Knitting & crochet",
+   "group": "Home, garden & crafts",
+   "subtopics": [
+    {
+     "label": "Knitting",
+     "query": "knitting for beginners"
+    },
+    {
+     "label": "Crochet",
+     "query": "crochet for beginners"
+    }
+   ],
+   "synonyms": [
+    "yarn"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "sewing-quilting",
+   "label": "Sewing & quilting",
+   "group": "Home, garden & crafts",
+   "subtopics": [
+    {
+     "label": "Sewing",
+     "query": "sewing for beginners"
+    },
+    {
+     "label": "Quilting",
+     "query": "quilting for beginners"
+    }
+   ],
+   "synonyms": [
+    "quilts"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": [
+    "60+"
+   ]
+  },
+  {
+   "id": "painting-drawing",
+   "label": "Painting & drawing",
+   "group": "Home, garden & crafts",
+   "subtopics": [
+    {
+     "label": "Drawing",
+     "query": "drawing for beginners"
+    },
+    {
+     "label": "Watercolor",
+     "query": "watercolor painting tutorial"
+    },
+    {
+     "label": "Oil painting",
+     "query": "oil painting tutorial"
+    }
+   ],
+   "synonyms": [
+    "art tutorials"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "pottery",
+   "label": "Pottery",
+   "group": "Home, garden & crafts",
+   "subtopics": [
+    {
+     "label": "Wheel throwing",
+     "query": "pottery wheel beginner"
+    },
+    {
+     "label": "Hand building",
+     "query": "hand building pottery"
+    }
+   ],
+   "synonyms": [
+    "ceramics"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "lego-models",
+   "label": "Lego & models",
+   "group": "Home, garden & crafts",
+   "subtopics": [
+    {
+     "label": "Lego builds",
+     "query": "lego build"
+    },
+    {
+     "label": "Model trains",
+     "query": "model train layout"
+    },
+    {
+     "label": "Scale models",
+     "query": "scale model building"
+    }
+   ],
+   "synonyms": [
+    "lego",
+    "legos",
+    "models"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "miniatures",
+   "label": "Miniatures",
+   "group": "Home, garden & crafts",
+   "subtopics": [
+    {
+     "label": "Tiny worlds",
+     "query": "miniature diorama"
+    },
+    {
+     "label": "Dollhouses",
+     "query": "dollhouse miniature"
+    }
+   ],
+   "synonyms": [
+    "dioramas"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "calligraphy-lettering",
+   "label": "Calligraphy & lettering",
+   "group": "Home, garden & crafts",
+   "subtopics": [
+    {
+     "label": "Calligraphy",
+     "query": "calligraphy for beginners"
+    },
+    {
+     "label": "Sign painting",
+     "query": "hand lettering sign painting"
+    }
+   ],
+   "synonyms": [
+    "lettering"
+   ],
+   "audience": "general",
+   "suggested": false,
+   "popularWith": []
+  },
+  {
+   "id": "paper-crafts",
+   "label": "Paper crafts",
+   "group": "Home, garden & crafts",
+   "subtopics": [
+    {
+     "label": "Origami",
+     "query": "origami tutorial"
+    },
+    {
+     "label": "Scrapbooking",
+     "query": "scrapbooking ideas"
+    }
+   ],
+   "synonyms": [
+    "origami"
+   ],
+   "audience": "kids-safe",
+   "suggested": false,
+   "popularWith": []
+  }
+ ],
+ "culprits": [
+  {
+   "id": "game-of-thrones",
+   "label": "Game of Thrones",
+   "synonyms": [
+    "got",
+    "thrones",
+    "house of the dragon"
+   ],
+   "alternatives": [
+    "medieval-history",
+    "books",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "star-wars",
+   "label": "Star Wars",
+   "synonyms": [
+    "mandalorian",
+    "jedi"
+   ],
+   "alternatives": [
+    "space",
+    "film-essays",
+    "short-films"
+   ]
+  },
+  {
+   "id": "marvel",
+   "label": "Marvel",
+   "synonyms": [
+    "mcu",
+    "avengers"
+   ],
+   "alternatives": [
+    "space",
+    "film-essays",
+    "short-films"
+   ]
+  },
+  {
+   "id": "dc",
+   "label": "DC",
+   "synonyms": [
+    "batman",
+    "superman"
+   ],
+   "alternatives": [
+    "space",
+    "film-essays",
+    "short-films"
+   ]
+  },
+  {
+   "id": "harry-potter",
+   "label": "Harry Potter",
+   "synonyms": [
+    "hogwarts"
+   ],
+   "alternatives": [
+    "medieval-history",
+    "books",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "lord-of-the-rings",
+   "label": "Lord of the Rings",
+   "synonyms": [
+    "lotr",
+    "rings of power"
+   ],
+   "alternatives": [
+    "medieval-history",
+    "books",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "breaking-bad",
+   "label": "Breaking Bad",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "courtroom",
+    "history-of-everyday-life"
+   ]
+  },
+  {
+   "id": "better-call-saul",
+   "label": "Better Call Saul",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "courtroom",
+    "history-of-everyday-life"
+   ]
+  },
+  {
+   "id": "the-office",
+   "label": "The Office",
+   "synonyms": [],
+   "alternatives": [
+    "stand-up",
+    "sketch-comedy",
+    "classic-comedy"
+   ]
+  },
+  {
+   "id": "friends",
+   "label": "Friends",
+   "synonyms": [],
+   "alternatives": [
+    "stand-up",
+    "sketch-comedy",
+    "classic-comedy"
+   ]
+  },
+  {
+   "id": "stranger-things",
+   "label": "Stranger Things",
+   "synonyms": [],
+   "alternatives": [
+    "space",
+    "film-essays",
+    "short-films"
+   ]
+  },
+  {
+   "id": "the-walking-dead",
+   "label": "The Walking Dead",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "courtroom",
+    "history-of-everyday-life"
+   ]
+  },
+  {
+   "id": "the-simpsons",
+   "label": "The Simpsons",
+   "synonyms": [],
+   "alternatives": [
+    "stand-up",
+    "sketch-comedy",
+    "classic-comedy"
+   ]
+  },
+  {
+   "id": "family-guy",
+   "label": "Family Guy",
+   "synonyms": [],
+   "alternatives": [
+    "stand-up",
+    "sketch-comedy",
+    "classic-comedy"
+   ]
+  },
+  {
+   "id": "spongebob",
+   "label": "SpongeBob",
+   "synonyms": [],
+   "alternatives": [
+    "kids-science",
+    "read-alouds",
+    "kids-crafts"
+   ]
+  },
+  {
+   "id": "rick-and-morty",
+   "label": "Rick and Morty",
+   "synonyms": [],
+   "alternatives": [
+    "stand-up",
+    "sketch-comedy",
+    "classic-comedy"
+   ]
+  },
+  {
+   "id": "pokemon",
+   "label": "Pokémon",
+   "synonyms": [
+    "pokemon"
+   ],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "minecraft",
+   "label": "Minecraft",
+   "synonyms": [],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "fortnite",
+   "label": "Fortnite",
+   "synonyms": [],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "roblox",
+   "label": "Roblox",
+   "synonyms": [],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "call-of-duty",
+   "label": "Call of Duty",
+   "synonyms": [
+    "cod"
+   ],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "gta",
+   "label": "GTA",
+   "synonyms": [
+    "grand theft auto"
+   ],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "red-dead-redemption-2",
+   "label": "Red Dead Redemption 2",
+   "synonyms": [
+    "rdr2",
+    "red dead"
+   ],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "elden-ring",
+   "label": "Elden Ring",
+   "synonyms": [
+    "souls games",
+    "dark souls"
+   ],
+   "alternatives": [
+    "medieval-history",
+    "books",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "zelda",
+   "label": "Zelda",
+   "synonyms": [],
+   "alternatives": [
+    "medieval-history",
+    "books",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "mario",
+   "label": "Mario",
+   "synonyms": [],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "among-us",
+   "label": "Among Us",
+   "synonyms": [],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "league-of-legends",
+   "label": "League of Legends",
+   "synonyms": [
+    "lol"
+   ],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "valorant",
+   "label": "Valorant",
+   "synonyms": [],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "counter-strike",
+   "label": "Counter-Strike",
+   "synonyms": [
+    "cs2",
+    "csgo"
+   ],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "overwatch",
+   "label": "Overwatch",
+   "synonyms": [],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "the-sims",
+   "label": "The Sims",
+   "synonyms": [],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "five-nights-at-freddys",
+   "label": "Five Nights at Freddy's",
+   "synonyms": [
+    "fnaf"
+   ],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "skibidi-toilet",
+   "label": "Skibidi Toilet",
+   "synonyms": [],
+   "alternatives": [
+    "kids-science",
+    "read-alouds",
+    "kids-crafts"
+   ]
+  },
+  {
+   "id": "lego",
+   "label": "Lego",
+   "synonyms": [
+    "legos"
+   ],
+   "alternatives": [
+    "woodworking",
+    "miniatures",
+    "cities-architecture"
+   ]
+  },
+  {
+   "id": "anime-clips",
+   "label": "Anime clips",
+   "synonyms": [],
+   "alternatives": [
+    "painting-drawing",
+    "short-films",
+    "film-essays"
+   ]
+  },
+  {
+   "id": "one-piece",
+   "label": "One Piece",
+   "synonyms": [],
+   "alternatives": [
+    "medieval-history",
+    "books",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "naruto",
+   "label": "Naruto",
+   "synonyms": [],
+   "alternatives": [
+    "medieval-history",
+    "books",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "dragon-ball",
+   "label": "Dragon Ball",
+   "synonyms": [],
+   "alternatives": [
+    "medieval-history",
+    "books",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "taylor-swift",
+   "label": "Taylor Swift",
+   "synonyms": [
+    "swifties"
+   ],
+   "alternatives": [
+    "documentaries",
+    "books",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "kardashians",
+   "label": "Kardashians",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "books",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "royal-family",
+   "label": "Royal family",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "books",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "celebrity-gossip",
+   "label": "Celebrity gossip",
+   "synonyms": [
+    "celebrity drama"
+   ],
+   "alternatives": [
+    "documentaries",
+    "books",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "influencer-drama",
+   "label": "Influencer drama",
+   "synonyms": [
+    "youtuber drama",
+    "tea channels"
+   ],
+   "alternatives": [
+    "documentaries",
+    "books",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "mr-beast",
+   "label": "Mr Beast",
+   "synonyms": [
+    "mrbeast"
+   ],
+   "alternatives": [
+    "documentaries",
+    "books",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "logan-paul",
+   "label": "Logan Paul",
+   "synonyms": [
+    "jake paul"
+   ],
+   "alternatives": [
+    "documentaries",
+    "books",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "joe-rogan-clips",
+   "label": "Joe Rogan clips",
+   "synonyms": [
+    "jre",
+    "rogan"
+   ],
+   "alternatives": [
+    "psychology",
+    "philosophy",
+    "books"
+   ]
+  },
+  {
+   "id": "podcast-clips",
+   "label": "Podcast clips",
+   "synonyms": [],
+   "alternatives": [
+    "psychology",
+    "philosophy",
+    "books"
+   ]
+  },
+  {
+   "id": "andrew-tate",
+   "label": "Andrew Tate",
+   "synonyms": [],
+   "alternatives": [
+    "psychology",
+    "philosophy",
+    "books"
+   ]
+  },
+  {
+   "id": "jordan-peterson",
+   "label": "Jordan Peterson",
+   "synonyms": [],
+   "alternatives": [
+    "psychology",
+    "philosophy",
+    "books"
+   ]
+  },
+  {
+   "id": "ben-shapiro",
+   "label": "Ben Shapiro",
+   "synonyms": [],
+   "alternatives": [
+    "news-explained",
+    "world-history",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "political-commentary",
+   "label": "Political commentary",
+   "synonyms": [
+    "politics"
+   ],
+   "alternatives": [
+    "news-explained",
+    "world-history",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "election-coverage",
+   "label": "Election coverage",
+   "synonyms": [],
+   "alternatives": [
+    "news-explained",
+    "world-history",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "cable-news-clips",
+   "label": "Cable news clips",
+   "synonyms": [],
+   "alternatives": [
+    "news-explained",
+    "world-history",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "conspiracy-theories",
+   "label": "Conspiracy theories",
+   "synonyms": [],
+   "alternatives": [
+    "news-explained",
+    "world-history",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "rage-bait",
+   "label": "Rage bait",
+   "synonyms": [
+    "outrage"
+   ],
+   "alternatives": [
+    "news-explained",
+    "world-history",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "reaction-videos",
+   "label": "Reaction videos",
+   "synonyms": [
+    "reacts"
+   ],
+   "alternatives": [
+    "short-films",
+    "science-experiments",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "prank-videos",
+   "label": "Prank videos",
+   "synonyms": [
+    "pranks"
+   ],
+   "alternatives": [
+    "short-films",
+    "science-experiments",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "shorts",
+   "label": "Shorts",
+   "synonyms": [
+    "youtube shorts"
+   ],
+   "alternatives": [
+    "short-films",
+    "science-experiments",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "mukbang",
+   "label": "Mukbang",
+   "synonyms": [],
+   "alternatives": [
+    "short-films",
+    "science-experiments",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "asmr",
+   "label": "ASMR",
+   "synonyms": [],
+   "alternatives": [
+    "short-films",
+    "science-experiments",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "unboxing-videos",
+   "label": "Unboxing videos",
+   "synonyms": [
+    "unboxing"
+   ],
+   "alternatives": [
+    "short-films",
+    "science-experiments",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "tech-rumors",
+   "label": "Tech rumors",
+   "synonyms": [
+    "leaks"
+   ],
+   "alternatives": [
+    "tech-history",
+    "engineering",
+    "math-explained"
+   ]
+  },
+  {
+   "id": "crypto",
+   "label": "Crypto",
+   "synonyms": [
+    "bitcoin",
+    "nfts"
+   ],
+   "alternatives": [
+    "personal-finance",
+    "economics",
+    "frugal-living"
+   ]
+  },
+  {
+   "id": "stock-tips",
+   "label": "Stock tips",
+   "synonyms": [
+    "day trading",
+    "trading"
+   ],
+   "alternatives": [
+    "personal-finance",
+    "economics",
+    "frugal-living"
+   ]
+  },
+  {
+   "id": "get-rich-quick",
+   "label": "Get-rich-quick",
+   "synonyms": [
+    "side hustle hype",
+    "passive income"
+   ],
+   "alternatives": [
+    "personal-finance",
+    "economics",
+    "frugal-living"
+   ]
+  },
+  {
+   "id": "real-estate-flipping",
+   "label": "Real estate flipping",
+   "synonyms": [],
+   "alternatives": [
+    "personal-finance",
+    "economics",
+    "frugal-living"
+   ]
+  },
+  {
+   "id": "luxury-lifestyle",
+   "label": "Luxury lifestyle",
+   "synonyms": [
+    "rich lifestyle"
+   ],
+   "alternatives": [
+    "personal-finance",
+    "economics",
+    "frugal-living"
+   ]
+  },
+  {
+   "id": "hustle-culture",
+   "label": "Hustle culture",
+   "synonyms": [
+    "grindset",
+    "sigma"
+   ],
+   "alternatives": [
+    "psychology",
+    "philosophy",
+    "books"
+   ]
+  },
+  {
+   "id": "self-improvement-hype",
+   "label": "Self-improvement hype",
+   "synonyms": [
+    "alpha",
+    "motivation"
+   ],
+   "alternatives": [
+    "psychology",
+    "philosophy",
+    "books"
+   ]
+  },
+  {
+   "id": "dating-advice",
+   "label": "Dating advice",
+   "synonyms": [
+    "red pill",
+    "pickup"
+   ],
+   "alternatives": [
+    "psychology",
+    "philosophy",
+    "books"
+   ]
+  },
+  {
+   "id": "relationship-drama",
+   "label": "Relationship drama",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "books",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "cheating-tests",
+   "label": "Cheating tests",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "books",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "diet-fads",
+   "label": "Diet fads",
+   "synonyms": [
+    "keto",
+    "carnivore"
+   ],
+   "alternatives": [
+    "yoga-stretching",
+    "nutrition",
+    "walking-low-impact"
+   ]
+  },
+  {
+   "id": "gym-bro-content",
+   "label": "Gym bro content",
+   "synonyms": [
+    "gymtok"
+   ],
+   "alternatives": [
+    "yoga-stretching",
+    "nutrition",
+    "walking-low-impact"
+   ]
+  },
+  {
+   "id": "supplements",
+   "label": "Supplements",
+   "synonyms": [],
+   "alternatives": [
+    "yoga-stretching",
+    "nutrition",
+    "walking-low-impact"
+   ]
+  },
+  {
+   "id": "bodybuilding",
+   "label": "Bodybuilding",
+   "synonyms": [],
+   "alternatives": [
+    "yoga-stretching",
+    "nutrition",
+    "walking-low-impact"
+   ]
+  },
+  {
+   "id": "true-crime",
+   "label": "True crime",
+   "synonyms": [
+    "murder cases"
+   ],
+   "alternatives": [
+    "documentaries",
+    "courtroom",
+    "history-of-everyday-life"
+   ]
+  },
+  {
+   "id": "serial-killers",
+   "label": "Serial killers",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "courtroom",
+    "history-of-everyday-life"
+   ]
+  },
+  {
+   "id": "paranormal",
+   "label": "Paranormal",
+   "synonyms": [
+    "ghosts",
+    "haunted"
+   ],
+   "alternatives": [
+    "mysteries",
+    "space",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "aliens",
+   "label": "Aliens",
+   "synonyms": [
+    "ufos"
+   ],
+   "alternatives": [
+    "mysteries",
+    "space",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "doomsday",
+   "label": "Doomsday",
+   "synonyms": [
+    "prepping",
+    "collapse"
+   ],
+   "alternatives": [
+    "mysteries",
+    "space",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "war-footage",
+   "label": "War footage",
+   "synonyms": [
+    "combat footage"
+   ],
+   "alternatives": [
+    "news-explained",
+    "world-history",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "car-crashes",
+   "label": "Car crashes",
+   "synonyms": [
+    "dashcam"
+   ],
+   "alternatives": [
+    "how-cars-work",
+    "engineering",
+    "road-trips"
+   ]
+  },
+  {
+   "id": "fails-compilations",
+   "label": "Fails compilations",
+   "synonyms": [
+    "fails"
+   ],
+   "alternatives": [
+    "short-films",
+    "science-experiments",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "satisfying-videos",
+   "label": "Satisfying videos",
+   "synonyms": [],
+   "alternatives": [
+    "short-films",
+    "science-experiments",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "kids-unboxing",
+   "label": "Kids unboxing",
+   "synonyms": [
+    "toy videos"
+   ],
+   "alternatives": [
+    "kids-science",
+    "read-alouds",
+    "kids-crafts"
+   ]
+  },
+  {
+   "id": "cocomelon",
+   "label": "Cocomelon",
+   "synonyms": [
+    "nursery rhymes"
+   ],
+   "alternatives": [
+    "kids-science",
+    "read-alouds",
+    "kids-crafts"
+   ]
+  },
+  {
+   "id": "family-vloggers",
+   "label": "Family vloggers",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "books",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "daily-vlogs",
+   "label": "Daily vlogs",
+   "synonyms": [
+    "vlogs"
+   ],
+   "alternatives": [
+    "documentaries",
+    "books",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "mommy-influencers",
+   "label": "Mommy influencers",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "books",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "makeup-drama",
+   "label": "Makeup drama",
+   "synonyms": [
+    "beauty drama"
+   ],
+   "alternatives": [
+    "documentaries",
+    "books",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "fast-fashion-hauls",
+   "label": "Fast fashion hauls",
+   "synonyms": [
+    "hauls"
+   ],
+   "alternatives": [
+    "sewing-quilting",
+    "fashion",
+    "frugal-living"
+   ]
+  },
+  {
+   "id": "sneaker-hype",
+   "label": "Sneaker hype",
+   "synonyms": [],
+   "alternatives": [
+    "personal-finance",
+    "economics",
+    "frugal-living"
+   ]
+  },
+  {
+   "id": "luxury-watches",
+   "label": "Luxury watches",
+   "synonyms": [],
+   "alternatives": [
+    "personal-finance",
+    "economics",
+    "frugal-living"
+   ]
+  },
+  {
+   "id": "car-reviews",
+   "label": "Car reviews",
+   "synonyms": [],
+   "alternatives": [
+    "how-cars-work",
+    "engineering",
+    "road-trips"
+   ]
+  },
+  {
+   "id": "supercars",
+   "label": "Supercars",
+   "synonyms": [],
+   "alternatives": [
+    "how-cars-work",
+    "engineering",
+    "road-trips"
+   ]
+  },
+  {
+   "id": "motorcycles",
+   "label": "Motorcycles",
+   "synonyms": [],
+   "alternatives": [
+    "how-cars-work",
+    "engineering",
+    "road-trips"
+   ]
+  },
+  {
+   "id": "guns",
+   "label": "Guns",
+   "synonyms": [
+    "firearms"
+   ],
+   "alternatives": [
+    "birds-birdwatching",
+    "national-parks",
+    "wildlife"
+   ]
+  },
+  {
+   "id": "hunting",
+   "label": "Hunting",
+   "synonyms": [],
+   "alternatives": [
+    "birds-birdwatching",
+    "national-parks",
+    "wildlife"
+   ]
+  },
+  {
+   "id": "fishing",
+   "label": "Fishing",
+   "synonyms": [],
+   "alternatives": [
+    "birds-birdwatching",
+    "national-parks",
+    "wildlife"
+   ]
+  },
+  {
+   "id": "poker",
+   "label": "Poker",
+   "synonyms": [
+    "gambling"
+   ],
+   "alternatives": [
+    "sports-analysis",
+    "olympics",
+    "outdoor-adventure"
+   ]
+  },
+  {
+   "id": "sports-betting",
+   "label": "Sports betting",
+   "synonyms": [
+    "betting"
+   ],
+   "alternatives": [
+    "sports-analysis",
+    "olympics",
+    "outdoor-adventure"
+   ]
+  },
+  {
+   "id": "fantasy-football",
+   "label": "Fantasy football",
+   "synonyms": [],
+   "alternatives": [
+    "sports-analysis",
+    "olympics",
+    "outdoor-adventure"
+   ]
+  },
+  {
+   "id": "nfl",
+   "label": "NFL",
+   "synonyms": [],
+   "alternatives": [
+    "sports-analysis",
+    "olympics",
+    "outdoor-adventure"
+   ]
+  },
+  {
+   "id": "nba",
+   "label": "NBA",
+   "synonyms": [],
+   "alternatives": [
+    "sports-analysis",
+    "olympics",
+    "outdoor-adventure"
+   ]
+  },
+  {
+   "id": "soccer",
+   "label": "Soccer",
+   "synonyms": [
+    "football"
+   ],
+   "alternatives": [
+    "sports-analysis",
+    "olympics",
+    "outdoor-adventure"
+   ]
+  },
+  {
+   "id": "wwe",
+   "label": "WWE",
+   "synonyms": [
+    "wrestling"
+   ],
+   "alternatives": [
+    "sports-analysis",
+    "olympics",
+    "outdoor-adventure"
+   ]
+  },
+  {
+   "id": "ufc",
+   "label": "UFC",
+   "synonyms": [
+    "mma"
+   ],
+   "alternatives": [
+    "sports-analysis",
+    "olympics",
+    "outdoor-adventure"
+   ]
+  },
+  {
+   "id": "boxing",
+   "label": "Boxing",
+   "synonyms": [],
+   "alternatives": [
+    "sports-analysis",
+    "olympics",
+    "outdoor-adventure"
+   ]
+  },
+  {
+   "id": "f1",
+   "label": "F1",
+   "synonyms": [
+    "formula 1"
+   ],
+   "alternatives": [
+    "sports-analysis",
+    "olympics",
+    "outdoor-adventure"
+   ]
+  },
+  {
+   "id": "golf",
+   "label": "Golf",
+   "synonyms": [],
+   "alternatives": [
+    "sports-analysis",
+    "olympics",
+    "outdoor-adventure"
+   ]
+  },
+  {
+   "id": "chess-drama",
+   "label": "Chess drama",
+   "synonyms": [],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "speedruns",
+   "label": "Speedruns",
+   "synonyms": [],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "retro-gaming",
+   "label": "Retro gaming",
+   "synonyms": [],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "horror-games",
+   "label": "Horror games",
+   "synonyms": [],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "lets-plays",
+   "label": "Let's plays",
+   "synonyms": [
+    "lets plays"
+   ],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "streamer-clips",
+   "label": "Streamer clips",
+   "synonyms": [
+    "twitch clips"
+   ],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "vtubers",
+   "label": "VTubers",
+   "synonyms": [],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "esports",
+   "label": "Esports",
+   "synonyms": [],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "tier-lists",
+   "label": "Tier lists",
+   "synonyms": [],
+   "alternatives": [
+    "game-design",
+    "board-games",
+    "retro-games"
+   ]
+  },
+  {
+   "id": "top-10-lists",
+   "label": "Top 10 lists",
+   "synonyms": [
+    "listicles"
+   ],
+   "alternatives": [
+    "short-films",
+    "science-experiments",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "ai-hype",
+   "label": "AI hype",
+   "synonyms": [
+    "chatgpt",
+    "ai news"
+   ],
+   "alternatives": [
+    "tech-history",
+    "engineering",
+    "math-explained"
+   ]
+  },
+  {
+   "id": "iphone",
+   "label": "iPhone",
+   "synonyms": [
+    "apple"
+   ],
+   "alternatives": [
+    "tech-history",
+    "engineering",
+    "math-explained"
+   ]
+  },
+  {
+   "id": "android",
+   "label": "Android",
+   "synonyms": [],
+   "alternatives": [
+    "tech-history",
+    "engineering",
+    "math-explained"
+   ]
+  },
+  {
+   "id": "elon-musk",
+   "label": "Elon Musk",
+   "synonyms": [
+    "tesla",
+    "spacex"
+   ],
+   "alternatives": [
+    "tech-history",
+    "engineering",
+    "math-explained"
+   ]
+  },
+  {
+   "id": "productivity-hacks",
+   "label": "Productivity hacks",
+   "synonyms": [
+    "productivity"
+   ],
+   "alternatives": [
+    "psychology",
+    "philosophy",
+    "books"
+   ]
+  },
+  {
+   "id": "study-with-me",
+   "label": "Study with me",
+   "synonyms": [],
+   "alternatives": [
+    "psychology",
+    "philosophy",
+    "books"
+   ]
+  },
+  {
+   "id": "minimalism",
+   "label": "Minimalism",
+   "synonyms": [],
+   "alternatives": [
+    "psychology",
+    "philosophy",
+    "books"
+   ]
+  },
+  {
+   "id": "van-life",
+   "label": "Van life",
+   "synonyms": [],
+   "alternatives": [
+    "national-parks",
+    "slow-travel",
+    "geography"
+   ]
+  },
+  {
+   "id": "tiny-houses",
+   "label": "Tiny houses",
+   "synonyms": [],
+   "alternatives": [
+    "gardening",
+    "woodworking",
+    "restoration"
+   ]
+  },
+  {
+   "id": "home-renovation-flips",
+   "label": "Home renovation flips",
+   "synonyms": [],
+   "alternatives": [
+    "gardening",
+    "woodworking",
+    "restoration"
+   ]
+  },
+  {
+   "id": "cleaning-videos",
+   "label": "Cleaning videos",
+   "synonyms": [
+    "cleantok"
+   ],
+   "alternatives": [
+    "gardening",
+    "woodworking",
+    "restoration"
+   ]
+  },
+  {
+   "id": "organizing",
+   "label": "Organizing",
+   "synonyms": [],
+   "alternatives": [
+    "gardening",
+    "woodworking",
+    "restoration"
+   ]
+  },
+  {
+   "id": "cooking-hacks",
+   "label": "Cooking hacks",
+   "synonyms": [],
+   "alternatives": [
+    "food-science",
+    "baking",
+    "easy-recipes"
+   ]
+  },
+  {
+   "id": "fast-food-reviews",
+   "label": "Fast food reviews",
+   "synonyms": [],
+   "alternatives": [
+    "food-science",
+    "baking",
+    "easy-recipes"
+   ]
+  },
+  {
+   "id": "eating-challenges",
+   "label": "Eating challenges",
+   "synonyms": [
+    "food challenge"
+   ],
+   "alternatives": [
+    "short-films",
+    "science-experiments",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "street-food",
+   "label": "Street food",
+   "synonyms": [],
+   "alternatives": [
+    "food-science",
+    "baking",
+    "easy-recipes"
+   ]
+  },
+  {
+   "id": "travel-vlogs",
+   "label": "Travel vlogs",
+   "synonyms": [],
+   "alternatives": [
+    "national-parks",
+    "slow-travel",
+    "geography"
+   ]
+  },
+  {
+   "id": "airport-vlogs",
+   "label": "Airport vlogs",
+   "synonyms": [],
+   "alternatives": [
+    "national-parks",
+    "slow-travel",
+    "geography"
+   ]
+  },
+  {
+   "id": "cruise-vlogs",
+   "label": "Cruise vlogs",
+   "synonyms": [],
+   "alternatives": [
+    "national-parks",
+    "slow-travel",
+    "geography"
+   ]
+  },
+  {
+   "id": "theme-parks",
+   "label": "Theme parks",
+   "synonyms": [
+    "disney parks"
+   ],
+   "alternatives": [
+    "national-parks",
+    "slow-travel",
+    "geography"
+   ]
+  },
+  {
+   "id": "disney",
+   "label": "Disney",
+   "synonyms": [],
+   "alternatives": [
+    "space",
+    "film-essays",
+    "short-films"
+   ]
+  },
+  {
+   "id": "pixar",
+   "label": "Pixar",
+   "synonyms": [],
+   "alternatives": [
+    "space",
+    "film-essays",
+    "short-films"
+   ]
+  },
+  {
+   "id": "barbie",
+   "label": "Barbie",
+   "synonyms": [],
+   "alternatives": [
+    "space",
+    "film-essays",
+    "short-films"
+   ]
+  },
+  {
+   "id": "musicals",
+   "label": "Musicals",
+   "synonyms": [
+    "broadway"
+   ],
+   "alternatives": [
+    "music-theory",
+    "live-music",
+    "classical"
+   ]
+  },
+  {
+   "id": "k-pop",
+   "label": "K-pop",
+   "synonyms": [
+    "bts",
+    "blackpink"
+   ],
+   "alternatives": [
+    "documentaries",
+    "books",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "rap-beef",
+   "label": "Rap beef",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "books",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "country-music",
+   "label": "Country music",
+   "synonyms": [],
+   "alternatives": [
+    "music-theory",
+    "live-music",
+    "classical"
+   ]
+  },
+  {
+   "id": "christmas-music",
+   "label": "Christmas music",
+   "synonyms": [],
+   "alternatives": [
+    "music-theory",
+    "live-music",
+    "classical"
+   ]
+  },
+  {
+   "id": "lofi",
+   "label": "Lofi",
+   "synonyms": [],
+   "alternatives": [
+    "music-theory",
+    "live-music",
+    "classical"
+   ]
+  },
+  {
+   "id": "guitar-covers",
+   "label": "Guitar covers",
+   "synonyms": [],
+   "alternatives": [
+    "music-theory",
+    "live-music",
+    "classical"
+   ]
+  },
+  {
+   "id": "drum-covers",
+   "label": "Drum covers",
+   "synonyms": [],
+   "alternatives": [
+    "music-theory",
+    "live-music",
+    "classical"
+   ]
+  },
+  {
+   "id": "piano-covers",
+   "label": "Piano covers",
+   "synonyms": [],
+   "alternatives": [
+    "music-theory",
+    "live-music",
+    "classical"
+   ]
+  },
+  {
+   "id": "movie-trailers",
+   "label": "Movie trailers",
+   "synonyms": [
+    "trailers"
+   ],
+   "alternatives": [
+    "space",
+    "film-essays",
+    "short-films"
+   ]
+  },
+  {
+   "id": "movie-explained",
+   "label": "Movie explained",
+   "synonyms": [
+    "ending explained"
+   ],
+   "alternatives": [
+    "space",
+    "film-essays",
+    "short-films"
+   ]
+  },
+  {
+   "id": "easter-eggs",
+   "label": "Easter eggs",
+   "synonyms": [
+    "hidden details"
+   ],
+   "alternatives": [
+    "space",
+    "film-essays",
+    "short-films"
+   ]
+  },
+  {
+   "id": "fan-theories",
+   "label": "Fan theories",
+   "synonyms": [],
+   "alternatives": [
+    "space",
+    "film-essays",
+    "short-films"
+   ]
+  },
+  {
+   "id": "lore-videos",
+   "label": "Lore videos",
+   "synonyms": [],
+   "alternatives": [
+    "space",
+    "film-essays",
+    "short-films"
+   ]
+  },
+  {
+   "id": "reddit-stories",
+   "label": "Reddit stories",
+   "synonyms": [
+    "aita",
+    "reddit readings"
+   ],
+   "alternatives": [
+    "mysteries",
+    "space",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "text-message-stories",
+   "label": "Text message stories",
+   "synonyms": [],
+   "alternatives": [
+    "mysteries",
+    "space",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "scary-stories",
+   "label": "Scary stories",
+   "synonyms": [
+    "creepypasta"
+   ],
+   "alternatives": [
+    "mysteries",
+    "space",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "mystery-boxes",
+   "label": "Mystery boxes",
+   "synonyms": [],
+   "alternatives": [
+    "kids-science",
+    "read-alouds",
+    "kids-crafts"
+   ]
+  },
+  {
+   "id": "life-hacks",
+   "label": "Life hacks",
+   "synonyms": [
+    "5-minute crafts"
+   ],
+   "alternatives": [
+    "short-films",
+    "science-experiments",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "slime",
+   "label": "Slime",
+   "synonyms": [],
+   "alternatives": [
+    "kids-science",
+    "read-alouds",
+    "kids-crafts"
+   ]
+  },
+  {
+   "id": "painting-timelapses",
+   "label": "Painting timelapses",
+   "synonyms": [],
+   "alternatives": [
+    "short-films",
+    "science-experiments",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "satisfying-cleaning",
+   "label": "Satisfying cleaning",
+   "synonyms": [
+    "pressure washing"
+   ],
+   "alternatives": [
+    "short-films",
+    "science-experiments",
+    "documentaries"
+   ]
+  },
+  {
+   "id": "military-videos",
+   "label": "Military videos",
+   "synonyms": [],
+   "alternatives": [
+    "news-explained",
+    "world-history",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "plane-crash-analysis",
+   "label": "Plane crash analysis",
+   "synonyms": [
+    "air disasters"
+   ],
+   "alternatives": [
+    "documentaries",
+    "classic-films",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "survival-shows",
+   "label": "Survival shows",
+   "synonyms": [],
+   "alternatives": [
+    "birds-birdwatching",
+    "national-parks",
+    "wildlife"
+   ]
+  },
+  {
+   "id": "zoo-animals",
+   "label": "Zoo animals",
+   "synonyms": [],
+   "alternatives": [
+    "wildlife",
+    "ocean-life",
+    "insects-bugs"
+   ]
+  },
+  {
+   "id": "cat-videos",
+   "label": "Cat videos",
+   "synonyms": [
+    "cats"
+   ],
+   "alternatives": [
+    "wildlife",
+    "ocean-life",
+    "insects-bugs"
+   ]
+  },
+  {
+   "id": "dog-videos",
+   "label": "Dog videos",
+   "synonyms": [
+    "dogs"
+   ],
+   "alternatives": [
+    "wildlife",
+    "ocean-life",
+    "insects-bugs"
+   ]
+  },
+  {
+   "id": "birds",
+   "label": "Birds",
+   "synonyms": [],
+   "alternatives": [
+    "wildlife",
+    "ocean-life",
+    "insects-bugs"
+   ]
+  },
+  {
+   "id": "dinosaurs",
+   "label": "Dinosaurs",
+   "synonyms": [],
+   "alternatives": [
+    "wildlife",
+    "ocean-life",
+    "insects-bugs"
+   ]
+  },
+  {
+   "id": "space",
+   "label": "Space",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "classic-films",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "physics",
+   "label": "Physics",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "classic-films",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "history-shorts",
+   "label": "History shorts",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "classic-films",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "geography-trivia",
+   "label": "Geography trivia",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "classic-films",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "language-learning",
+   "label": "Language learning",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "classic-films",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "math-tricks",
+   "label": "Math tricks",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "classic-films",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "chess",
+   "label": "Chess",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "classic-films",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "rubiks-cube",
+   "label": "Rubik's cube",
+   "synonyms": [
+    "cubing"
+   ],
+   "alternatives": [
+    "documentaries",
+    "classic-films",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "magic-tricks",
+   "label": "Magic tricks",
+   "synonyms": [
+    "magicians"
+   ],
+   "alternatives": [
+    "documentaries",
+    "classic-films",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "stand-up-clips",
+   "label": "Stand-up clips",
+   "synonyms": [],
+   "alternatives": [
+    "stand-up",
+    "sketch-comedy",
+    "classic-comedy"
+   ]
+  },
+  {
+   "id": "sitcom-clips",
+   "label": "Sitcom clips",
+   "synonyms": [],
+   "alternatives": [
+    "stand-up",
+    "sketch-comedy",
+    "classic-comedy"
+   ]
+  },
+  {
+   "id": "late-night-clips",
+   "label": "Late night clips",
+   "synonyms": [
+    "talk show clips"
+   ],
+   "alternatives": [
+    "stand-up",
+    "sketch-comedy",
+    "classic-comedy"
+   ]
+  },
+  {
+   "id": "award-shows",
+   "label": "Award shows",
+   "synonyms": [],
+   "alternatives": [
+    "documentaries",
+    "books",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "interviews",
+   "label": "Interviews",
+   "synonyms": [],
+   "alternatives": [
+    "psychology",
+    "philosophy",
+    "books"
+   ]
+  },
+  {
+   "id": "commencement-speeches",
+   "label": "Commencement speeches",
+   "synonyms": [],
+   "alternatives": [
+    "psychology",
+    "philosophy",
+    "books"
+   ]
+  },
+  {
+   "id": "motivational-speeches",
+   "label": "Motivational speeches",
+   "synonyms": [],
+   "alternatives": [
+    "psychology",
+    "philosophy",
+    "books"
+   ]
+  },
+  {
+   "id": "religious-debates",
+   "label": "Religious debates",
+   "synonyms": [],
+   "alternatives": [
+    "news-explained",
+    "world-history",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "atheism-debates",
+   "label": "Atheism debates",
+   "synonyms": [],
+   "alternatives": [
+    "news-explained",
+    "world-history",
+    "nature-relaxing"
+   ]
+  },
+  {
+   "id": "flat-earth",
+   "label": "Flat earth",
+   "synonyms": [],
+   "alternatives": [
+    "news-explained",
+    "world-history",
+    "nature-relaxing"
+   ]
+  }
+ ]
+}
