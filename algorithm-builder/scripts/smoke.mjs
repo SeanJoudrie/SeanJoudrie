@@ -346,6 +346,20 @@ async function runFull() {
     if (!/^https:\/\//.test(href ?? '') || (await a.getAttribute('rel')) !== 'noopener noreferrer') check(false, `${name}: safe external link (${href})`)
   }
   await screen(page, `${name}-4-results`, { phone: true })
+  // Keyboard: tabbing along the swipe rows keeps each card fully on screen.
+  await page.evaluate(() => document.querySelector('h1')?.focus())
+  const cut = []
+  for (let i = 0; i < 60; i++) {
+    await page.keyboard.press('Tab')
+    const f = await page.evaluate(() => {
+      const el = document.activeElement
+      if (!el || el === document.body) return null
+      const r = el.getBoundingClientRect()
+      return r.right > innerWidth + 1 || r.left < -1 ? (el.getAttribute('aria-label') || el.innerText).slice(0, 30) : null
+    })
+    if (f) cut.push(f)
+  }
+  check(cut.length === 0, `${name}: keyboard focus never lands on a card cut off the edge ${cut.length ? JSON.stringify(cut.slice(0, 3)) : ''}`)
 
   // Change it: the editor sheet.
   await click(page.getByRole('button', { name: 'Change it' }))

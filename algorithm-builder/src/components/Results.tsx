@@ -210,6 +210,16 @@ function useFeed(): Feed | null | undefined {
 
 type Videos = { picked: Picked[]; missing: Slot[]; busy: boolean; loading: boolean }
 
+/*
+ * The swipe rows only scroll by touch; a keyboard user tabbing along would
+ * land on a card half off the edge. Bring whatever gets focus fully into view.
+ */
+const revealFocused = (e: React.FocusEvent) => {
+  // Line the card up where the row snaps to, so snapping doesn't pull it back out of view.
+  const card = (e.target as HTMLElement).closest('li, span.shrink-0') ?? (e.target as HTMLElement)
+  card.scrollIntoView({ block: 'nearest', inline: 'start' })
+}
+
 /** Find this week's videos: hand-picked, then good channels, then YouTube search, then search links. */
 function useVideos(s: Session, slots: Slot[]): Videos {
   const [state, setState] = useState<Videos>({ picked: [], missing: [], busy: false, loading: true })
@@ -458,7 +468,7 @@ function Shelf({
         ) : (
           (mine.length > 0 || links.length > 0) && (
             // Swipe on a phone (the next card peeks in), a grid on bigger screens.
-            <ul className="-mx-5 mt-4 flex list-none snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-3">
+            <ul onFocus={revealFocused} className="-mx-5 mt-4 flex list-none snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-3">
               {mine.map(({ video: v, slot, source }) => (
                 <li key={v.id} className="w-[78%] shrink-0 snap-start sm:w-auto">
                   <a href={`https://www.youtube.com/watch?v=${v.id}`} target="_blank" rel="noopener noreferrer" className="block h-full rounded-xl border border-line p-2 transition hover:border-ink-2">
@@ -511,7 +521,7 @@ function Picks({ cat, picks, mix, onMix }: { cat: Category; picks: { label: stri
   return (
     <div className="mt-4">
       <h3 className="m-0 text-base font-semibold text-ink">{r.picksTitle(displayLabel(cat))}</h3>
-      <div className="-mx-5 mt-2 flex gap-2 overflow-x-auto px-5 pb-2 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+      <div onFocus={revealFocused} className="-mx-5 mt-2 flex scroll-px-5 gap-2 overflow-x-auto px-5 pb-2 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
         {picks.map((p) => (
           // Kept at full width so the row scrolls instead of squashing the chips.
           <span key={p.label} className="shrink-0 sm:shrink">
@@ -545,7 +555,7 @@ function ShelfChannels({ s, topic, all, onHide }: { s: Session; topic: string; a
     <div className="mt-4" role="region" aria-label={r.channelsFor(topicById(topic)?.label ?? topic)}>
       <h3 className="m-0 text-base font-semibold text-ink">{r.channelsTitle}</h3>
       {shown.length > 0 && (
-        <ul className="-mx-5 mt-2 flex list-none snap-x gap-2 overflow-x-auto px-5 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0">
+        <ul onFocus={revealFocused} className="-mx-5 mt-2 flex list-none snap-x scroll-px-5 gap-2 overflow-x-auto px-5 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0">
           {shown.map(({ channel: c, popular, latest }) => (
             <li key={c.id} className="flex w-[72%] min-w-0 shrink-0 snap-start items-start gap-1 rounded-xl border border-line p-2 pl-3 sm:w-auto">
               <a href={`https://www.youtube.com/channel/${c.id}`} target="_blank" rel="noopener noreferrer" className="min-h-12 min-w-0 flex-1 rounded-lg py-1">
