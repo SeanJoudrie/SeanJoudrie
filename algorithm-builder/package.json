@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "test": "vitest run",
     "smoke": "node scripts/smoke.mjs",
-    "verify:pool": "node scripts/verify-pool.mjs"
+    "verify:pool": "node scripts/verify-pool.mjs",
+    "channels": "node scripts/channels.mjs",
+    "feeds": "node scripts/feeds.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",

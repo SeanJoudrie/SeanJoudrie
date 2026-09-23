@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { norm, score } from '../lib/search'
-import { CULPRIT_LIST, findCulprit, GROUPS, inferProblems, POOL, poolFor, searchCulprits, searchLessOf, searchTopics, suggestFor, TOPIC_LIST, topicById } from './library'
+import { channelsFor, CULPRIT_LIST, feedFor, findCulprit, followFor, GROUPS, inferProblems, POOL, poolFor, searchCulprits, searchLessOf, searchTopics, suggestFor, TOPIC_LIST, topicById } from './library'
 
 describe('taxonomy integrity', () => {
   it('has 200+ topics in 15-20 groups with unique ids', () => {
@@ -141,6 +141,31 @@ describe('search', () => {
     expect(norm('  Pokémon: Red!  ')).toBe('pokemon red')
     expect(score('xyz', ['Gardening'])).toBe(0)
     expect(score('garden', ['Gardening'])).toBe(80)
+  })
+})
+
+describe('good channels', () => {
+  it('only lists confirmed channel ids for real topics', () => {
+    for (const t of TOPIC_LIST) for (const c of channelsFor(t.id)) expect(c.id, `${t.id}: ${c.name}`).toMatch(/^UC[A-Za-z0-9_-]{22}$/)
+    expect(TOPIC_LIST.filter((t) => channelsFor(t.id).length > 0).length).toBeGreaterThanOrEqual(150)
+  })
+
+  it('takes turns between channels for videos', () => {
+    const topic = TOPIC_LIST.find((t) => channelsFor(t.id).length >= 2)!
+    const [c1, c2] = channelsFor(topic.id)
+    const v = (id: string) => ({ id, title: id, published: '2026-09-01' })
+    const feed = { fetched: '2026-09-23', channels: { [c1.id]: { name: 'One', videos: [v('1a'), v('1b')] }, [c2.id]: { name: 'Two', videos: [v('2a')] } } }
+    expect(feedFor(topic.id, feed).map((x) => x.id)).toEqual(['1a', '2a', '1b'])
+    expect(feedFor(topic.id, feed)[1].channel).toBe('Two')
+  })
+
+  it('suggests channels to follow across topics, never one they turned down', () => {
+    const list = followFor(['space', 'baking'], [])
+    expect(list.length).toBeGreaterThan(1)
+    expect(list.length).toBeLessThanOrEqual(6)
+    expect(new Set(list.map((c) => c.id)).size).toBe(list.length)
+    const first = channelsFor('space')[0]
+    expect(followFor(['space'], [first.name]).some((c) => c.id === first.id)).toBe(false)
   })
 })
 

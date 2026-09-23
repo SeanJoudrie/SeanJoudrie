@@ -1,5 +1,6 @@
 import { norm, rank, score } from '../lib/search'
 import type { ProblemId } from '../lib/types'
+import channels from './channels.json'
 import pool from './pool.json'
 import taxonomy from './taxonomy.json'
 
@@ -37,6 +38,18 @@ export interface PoolVideo {
   topics: string[]
   source: string
   checked: string
+}
+
+/** A YouTube channel confirmed by scripts/channels.mjs. */
+export interface Channel {
+  id: string
+  name: string
+}
+
+/** Recent uploads per channel, from scripts/feeds.mjs (loaded on the results page). */
+export interface Feed {
+  fetched: string
+  channels: Record<string, { name: string; videos: { id: string; title: string; published: string }[] }>
 }
 
 export const TOPIC_LIST = taxonomy.topics as Topic[]
@@ -114,4 +127,31 @@ export function inferProblems(turnDown: string[], bored: boolean): ProblemId[] {
 /** Hand-picked videos for a topic, optionally only older ones. */
 export function poolFor(topicId: string, before: number | null): PoolVideo[] {
   return POOL.filter((v) => v.topics.includes(topicId) && (!before || (v.year !== null && v.year < before)))
+}
+
+const CHANNELS = channels as Record<string, Channel[]>
+
+/** Good channels for a topic, best first. */
+export const channelsFor = (topicId: string): Channel[] => CHANNELS[topicId] ?? []
+
+/**
+ * Recent videos from a topic's good channels, taking turns between channels
+ * so one channel doesn't fill the list. Only used when older videos aren't
+ * asked for (these are all recent).
+ */
+export function feedFor(topicId: string, feed: Feed): { id: string; title: string; channel: string; published: string }[] {
+  const lists = channelsFor(topicId).map((c) => (feed.channels[c.id]?.videos ?? []).map((v) => ({ ...v, channel: feed.channels[c.id].name })))
+  const out: { id: string; title: string; channel: string; published: string }[] = []
+  for (let i = 0; lists.some((l) => l[i]); i++) for (const l of lists) if (l[i]) out.push(l[i])
+  return out
+}
+
+/** Up to `n` channels worth following for these topics, taking turns between topics. */
+export function followFor(topicIds: string[], turnDown: string[], n = 6): Channel[] {
+  const bad = turnDown.map(norm).filter(Boolean)
+  const lists = topicIds.map((t) => channelsFor(t).filter((c) => !bad.some((b) => norm(c.name).includes(b))))
+  const out: Channel[] = []
+  for (let i = 0; out.length < n && lists.some((l) => l[i]); i++)
+    for (const l of lists) if (l[i] && out.length < n && !out.some((c) => c.id === l[i].id)) out.push(l[i])
+  return out
 }

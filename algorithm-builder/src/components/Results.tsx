@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { COPY, summarize } from '../copy'
 import { BRAND } from '../data/brand'
-import { poolFor } from '../data/library'
+import { channelsFor, feedFor, followFor, poolFor, type Feed } from '../data/library'
 import { PLATFORMS, SIGNALS, tipsFor } from '../data/playbooks'
 import { WILDCARD_ID } from '../data/topics'
 import { buildChecklist, type CheckItem } from '../lib/checklist'
@@ -211,7 +211,13 @@ function Tips({ s }: { s: Session }) {
 
 /* ---------- Videos: hand-picked first, then YouTube, then search links (F-15, G-07) ---------- */
 
-type Picked = { video: Video; slot: Slot; source: 'pool' | 'api' }
+type Picked = { video: Video; slot: Slot; source: 'pool' | 'channel' | 'api' }
+
+const thumbOf = (id: string) => `https://i.ytimg.com/vi/${id}/mqdefault.jpg`
+
+// Recent uploads from good channels: a separate file, loaded once, only here.
+let feedLoad: Promise<Feed | null> | null = null
+const loadFeed = () => (feedLoad ??= import('../data/feed.json').then((m) => m.default as Feed).catch(() => null))
 
 function Watch({ s }: { s: Session }) {
   // Same "Surprise me" pick all day, so it can be cached.
@@ -230,7 +236,7 @@ function Watch({ s }: { s: Session }) {
       const topic = slot.key.split('/')[0]
       const fromPool = topic === WILDCARD_ID ? [] : poolFor(topic, s.mix.before)
       const fresh = filterVideos(
-        fromPool.filter((v) => !channels.has(v.channel)).map((v) => ({ id: v.id, title: v.title, channel: v.channel, published: v.year ? `${v.year}` : '', thumb: `https://i.ytimg.com/vi/${v.id}/mqdefault.jpg` })),
+        fromPool.filter((v) => !channels.has(v.channel)).map((v) => ({ id: v.id, title: v.title, channel: v.channel, published: v.year ? `${v.year}` : '', thumb: thumbOf(v.id) })),
         s.turnDown,
         seen,
         slot.count,
@@ -243,8 +249,37 @@ function Watch({ s }: { s: Session }) {
     }
     setState({ picked, missing: [], busy: false, loading: need.length > 0 })
     if (!need.length) return
-    // 2. Top up from YouTube search; 3. anything still missing becomes a search link.
     ;(async () => {
+      // 2. New uploads from good channels for the topic (no quota either).
+      //    They're all recent, so skip them when older videos were asked for.
+      const feed = s.mix.before ? null : await loadFeed()
+      if (ctl.signal.aborted) return
+      if (feed)
+        for (const n of need) {
+          const topic = n.slot.key.split('/')[0]
+          if (topic === WILDCARD_ID || !channelsFor(topic).length) continue
+          // Checked against a copy: only the videos actually picked count as seen.
+          const vids = filterVideos(
+            feedFor(topic, feed)
+              .filter((v) => !channels.has(v.channel))
+              .map((v) => ({ ...v, thumb: thumbOf(v.id) })),
+            s.turnDown,
+            new Set(seen),
+          )
+          // One video per channel.
+          for (const v of vids) {
+            if (n.count === 0) break
+            if (channels.has(v.channel)) continue
+            channels.add(v.channel)
+            seen.add(v.id)
+            picked.push({ video: v, slot: n.slot, source: 'channel' })
+            n.count--
+          }
+        }
+      const still = need.filter((n) => n.count > 0)
+      if (!still.length) return setState({ picked: [...picked], missing: [], busy: false, loading: false })
+      // 3. Top up from YouTube search; 4. anything still missing becomes a search link.
+      need.splice(0, need.length, ...still)
       const results = await Promise.all(need.map((n) => searchVideos(n.slot.query, s.mix.before, ctl.signal).catch(() => null)))
       if (ctl.signal.aborted) return
       const missing: Slot[] = []
@@ -289,7 +324,8 @@ function Watch({ s }: { s: Session }) {
                     {v.published ? ` · ${v.published.slice(0, 4)}` : ''}
                   </span>
                   <span className="mt-1 inline-block rounded-full bg-paper-2 px-2 text-base text-ink-2">
-                    {source === 'pool' ? r.handPicked : r.fromYouTube} · {slot.label}
+                    {/* Channel videos match the topic, not a sub-topic. */}
+                    {source === 'pool' ? r.handPicked : source === 'channel' ? r.goodChannel : r.fromYouTube} · {source === 'channel' ? slot.category : slot.label}
                   </span>
                 </span>
               </a>
@@ -340,8 +376,41 @@ function Watch({ s }: { s: Session }) {
         </div>
       )}
 
+      <Follow s={s} />
+
       <p className="m-0 mt-4 text-base text-ink-2">{r.creditYouTube}</p>
     </Card>
+  )
+}
+
+/** Subscribing is one of the strongest "more of this" signals YouTube has. */
+function Follow({ s }: { s: Session }) {
+  const list = followFor(
+    s.mix.categories.map((c) => c.id),
+    s.turnDown,
+  )
+  if (!list.length) return null
+  return (
+    <section className="mt-6" aria-labelledby="follow">
+      <h3 id="follow" className="font-display m-0 text-lg font-bold">
+        {r.followTitle}
+      </h3>
+      <p className="m-0 mt-1 text-base text-ink-2">{r.followLead}</p>
+      <ul className="m-0 mt-3 flex list-none flex-wrap gap-2 p-0">
+        {list.map((c) => (
+          <li key={c.id} className="min-w-0 max-w-full">
+            <a
+              href={`https://www.youtube.com/channel/${c.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-12 max-w-full items-center gap-2 rounded-full border-2 border-line bg-card px-4 text-base font-semibold text-ink transition hover:border-ink"
+            >
+              <span className="truncate">{c.name}</span> <ExternalIcon className="shrink-0 text-accent-ink" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 }
 
