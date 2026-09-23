@@ -6,19 +6,11 @@ import { Results } from './components/Results'
 import { Landing, LikesStep, PlatformStep, ProblemStep, TallyStep, TooMuchStep } from './components/Steps'
 import { Button } from './components/ui'
 import { BRAND } from './data/brand'
-import { TOPICS, WILDCARD_ID } from './data/topics'
-import { clearLocal, decodeRecipe, encodeRecipe, initialMix, loadLocal, newSession, saveLocal, slugify } from './lib/session'
+import { clearLocal, decodeRecipe, encodeRecipe, likeFor, loadLocal, newSession, reconcileMix, saveLocal } from './lib/session'
 import type { Session } from './lib/types'
 
 type Step = 'landing' | 'platform' | 'likes' | 'problem' | 'toomuch' | 'tally' | 'mix' | 'results'
 const FLOW: Step[] = ['platform', 'likes', 'problem', 'toomuch', 'tally', 'mix']
-
-/** Does the mix still reflect the chosen likes? If not, rebuild it on the way to the mix step. */
-function mixMatchesLikes(s: Session): boolean {
-  const want = (s.likes.length ? s.likes : ['comedy', 'science']).map((l) => (TOPICS.some((t) => t.id === l) ? l : `custom-${slugify(l)}`))
-  const have = s.mix.categories.filter((c) => c.id !== WILDCARD_ID && !c.id.startsWith('added-')).map((c) => c.id)
-  return want.length === have.length && want.every((w) => have.includes(w))
-}
 
 type Legal = 'privacy' | 'terms' | null
 const legalFromHash = (): Legal => (location.hash === '#privacy' ? 'privacy' : location.hash === '#terms' ? 'terms' : null)
@@ -30,8 +22,8 @@ function fromHash(): Session | null {
 
 export default function App() {
   const [fromLink] = useState(fromHash)
-  const [saved] = useState(() => (fromLink ? null : loadLocal()))
-  const [s, setS] = useState<Session>(() => fromLink ?? saved ?? newSession())
+  const [resumable, setResumable] = useState(() => !fromLink && !!loadLocal())
+  const [s, setS] = useState<Session>(() => fromLink ?? loadLocal() ?? newSession())
   const [step, setStep] = useState<Step>(fromLink ? 'results' : 'landing')
   const [returning, setReturning] = useState(!!fromLink)
   const [legal, setLegal] = useState<Legal>(legalFromHash)
@@ -41,7 +33,7 @@ export default function App() {
 
   useEffect(() => {
     if (step !== 'landing') saveLocal(s)
-    if (step === 'results') history.replaceState(null, '', `#r=${encodeRecipe(s)}`)
+    if (step === 'results') history.replaceState({ step }, '', `#r=${encodeRecipe(s)}`)
   }, [s, step])
 
   useEffect(() => {
@@ -52,7 +44,7 @@ export default function App() {
 
   const closeLegal = () => {
     setLegal(null)
-    history.replaceState(null, '', step === 'results' ? `#r=${encodeRecipe(s)}` : location.pathname)
+    history.replaceState({ step }, '', step === 'results' ? `#r=${encodeRecipe(s)}` : location.pathname)
   }
 
   // Move focus to the new screen for keyboard and screen-reader users.
@@ -61,9 +53,23 @@ export default function App() {
     main.current?.querySelector<HTMLElement>('h1')?.focus({ preventScroll: true })
   }, [step, legal])
 
+  // Each step is a history entry, so the phone's back gesture goes back a
+  // step instead of leaving the site.
+  useEffect(() => {
+    history.replaceState({ step }, '')
+    const onPop = (e: PopStateEvent) => {
+      const st = (e.state as { step?: Step } | null)?.step
+      if (st) setStep(st)
+    }
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+    // Only on mount: later entries are pushed by go().
+  }, [])
+
   const go = (next: Step) => {
-    if ((next === 'mix' || next === 'results') && !mixMatchesLikes(s)) update({ mix: { ...initialMix(s.likes), before: s.mix.before } })
+    if (next === 'mix' || next === 'results') setS((prev) => ({ ...prev, mix: reconcileMix(prev.mix, prev.likes) }))
     if (next === 'results' && step !== 'results') setReturning(false)
+    if (next !== step) history.pushState({ step: next }, '', next === 'results' ? location.hash || location.pathname : location.pathname)
     setStep(next)
   }
   const idx = FLOW.indexOf(step)
@@ -77,9 +83,10 @@ export default function App() {
     } catch {
       /* ignore */
     }
-    history.replaceState(null, '', location.pathname)
+    history.replaceState({ step: 'landing' }, '', location.pathname)
     setS(newSession())
     setReturning(false)
+    setResumable(false)
     setStep('landing')
   }
 
@@ -94,7 +101,7 @@ export default function App() {
         <button
           onClick={() => {
             if (legal) closeLegal()
-            setStep('landing')
+            go('landing')
           }}
           className="flex items-center gap-2 rounded-full pr-2 text-left"
         >
@@ -129,7 +136,7 @@ export default function App() {
                   setReturning(false)
                   go('platform')
                 }}
-                onResume={saved ? () => go('results') : null}
+                onResume={resumable ? () => go('results') : null}
               />
             )}
             {step === 'platform' && <PlatformStep s={s} update={update} next={next} />}
@@ -145,14 +152,20 @@ export default function App() {
                 sickOfLabel={sickOfLabel}
               />
             )}
-            {step === 'mix' && <MixStep mix={s.mix} onChange={(mix) => update({ mix })} />}
+            {step === 'mix' && (
+              <MixStep
+                mix={s.mix}
+                // Removing a category in the mix also un-picks it, so the likes step stays in sync.
+                onChange={(mix) => update({ mix, likes: mix.categories.map(likeFor).filter((l): l is string => l !== null) })}
+              />
+            )}
             {step === 'results' && (
               <Results s={s} returning={returning} onEdit={() => go('mix')} onReset={reset} onFollowUp={(t) => update({ followUp: t })} />
             )}
           </div>
 
           {idx >= 0 && (
-            <div className="sticky bottom-0 -mx-4 mt-8 flex items-center justify-between gap-3 border-t border-line bg-paper px-4 py-3 sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0">
+            <div className="sticky bottom-0 -mx-4 mt-8 flex items-center justify-between gap-3 safe-bottom border-t border-line bg-paper px-4 pt-3 sm:static sm:pb-0 sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0">
               <Button variant="secondary" onClick={back}>
                 Back
               </Button>

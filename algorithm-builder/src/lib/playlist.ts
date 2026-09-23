@@ -62,9 +62,33 @@ export type SearchResult =
   | { status: 'ok'; items: Video[] }
   | { status: 'unconfigured' | 'quota' | 'error' | 'rate-limited' }
 
+const CACHE_KEY = 'algorithm-builder:search'
+
+/** Successful searches are reused for the rest of the visit: saves quota when people edit and come back. */
+function cached(key: string): Video[] | null {
+  try {
+    const all = JSON.parse(sessionStorage.getItem(CACHE_KEY) ?? '{}') as Record<string, Video[]>
+    return all[key] ?? null
+  } catch {
+    return null
+  }
+}
+function remember(key: string, items: Video[]): void {
+  try {
+    const all = JSON.parse(sessionStorage.getItem(CACHE_KEY) ?? '{}') as Record<string, Video[]>
+    all[key] = items
+    sessionStorage.setItem(CACHE_KEY, JSON.stringify(all))
+  } catch {
+    /* storage full or blocked: just don't cache */
+  }
+}
+
 export async function searchVideos(query: string, before: number | null, signal?: AbortSignal): Promise<SearchResult> {
   // Static hosts (GitHub Pages) have no search server: go straight to links.
   if (import.meta.env.VITE_SEARCH_API === 'off') return { status: 'unconfigured' }
+  const key = `${query.toLowerCase()}|${before ?? ''}`
+  const hit = cached(key)
+  if (hit) return { status: 'ok', items: hit }
   const params = new URLSearchParams({ q: query })
   if (before) params.set('before', String(before))
   try {
@@ -73,7 +97,12 @@ export async function searchVideos(query: string, before: number | null, signal?
     if (res.status === 404) return { status: 'unconfigured' }
     if (!res.ok && res.status !== 429 && res.status !== 503) return { status: 'error' }
     const body = (await res.json()) as SearchResult
-    return body && typeof body === 'object' && 'status' in body ? body : { status: 'error' }
+    if (!body || typeof body !== 'object' || !('status' in body)) return { status: 'error' }
+    if (body.status === 'ok') {
+      if (!Array.isArray(body.items)) return { status: 'error' }
+      remember(key, body.items)
+    }
+    return body
   } catch (e) {
     if ((e as Error).name === 'AbortError') throw e
     return { status: 'error' }
@@ -89,6 +118,8 @@ export function filterVideos(videos: Video[], turnDown: string[], seen: Set<stri
     if (seen.has(v.id)) continue
     const hay = `${v.title} ${v.channel}`.toLowerCase()
     if (bad.some((b) => hay.includes(b))) continue
+    // The rehab playlist is for long-form watching; Shorts don't retrain much.
+    if (/#shorts?\b/.test(hay)) continue
     seen.add(v.id)
     out.push(v)
   }

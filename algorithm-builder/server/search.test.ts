@@ -43,6 +43,19 @@ describe('handleSearch', () => {
     expect(f).toHaveBeenCalledTimes(1)
   })
 
+  it('skips live streams and decodes numeric entities', async () => {
+    const live = { ...item, id: { videoId: 'live1' }, snippet: { ...item.snippet, liveBroadcastContent: 'live' } }
+    const quote = { ...item, id: { videoId: 'q1' }, snippet: { ...item.snippet, title: 'It&#39;s &#x27;here&#x27; &amp;lt;3' } }
+    const r = await handleSearch(new URLSearchParams({ q: 'x' }), { client: 'a', apiKey: 'k', fetchImpl: ok([live, quote]) })
+    expect(r.body.status === 'ok' && r.body.items.map((v) => [v.id, v.title])).toEqual([['q1', "It's 'here' &lt;3"]])
+  })
+
+  it('reports a bad key as an error, not quota', async () => {
+    const f = vi.fn(async () => new Response(JSON.stringify({ error: { errors: [{ reason: 'keyInvalid' }] } }), { status: 400 })) as unknown as typeof fetch
+    const r = await handleSearch(new URLSearchParams({ q: 'z' }), { client: 'a', apiKey: 'bad', fetchImpl: f })
+    expect(r.body.status).toBe('error')
+  })
+
   it('rate-limits a single client', async () => {
     const f = ok([])
     let last

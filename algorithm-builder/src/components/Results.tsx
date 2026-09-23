@@ -160,7 +160,8 @@ function Checklist({ s }: { s: Session }) {
 type SlotState = { slot: Slot; videos: Video[] | null; fallback: boolean }
 
 function Playlist({ s }: { s: Session }) {
-  const [seed] = useState(() => Date.now())
+  // Same wildcard pick all day, so it can be cached instead of re-searched.
+  const [seed] = useState(() => Math.floor(Date.now() / 86_400_000))
   const slots = useMemo(() => allocate(s.mix, 10, seed), [s.mix, seed])
   const [state, setState] = useState<SlotState[]>(() => slots.map((slot) => ({ slot, videos: null, fallback: false })))
   const [reason, setReason] = useState<string | null>(null)
@@ -237,7 +238,7 @@ function Playlist({ s }: { s: Session }) {
             </a>
             <span className="text-xs text-muted">Videos and data from YouTube</span>
           </div>
-          <ul className="m-0 mt-4 grid list-none gap-3 p-0 sm:grid-cols-2">
+          <ul className="anim-pop m-0 mt-4 grid list-none gap-3 p-0 sm:grid-cols-2">
             {state.flatMap(({ slot, videos: vids }) =>
               (vids ?? []).map((v) => (
                 <li key={v.id} className="min-w-0">
@@ -263,7 +264,7 @@ function Playlist({ s }: { s: Session }) {
       )}
 
       {!loading && fallbacks.length > 0 && (
-        <div className="mt-4">
+        <div className="anim-pop mt-4">
           {reason && reason !== 'unconfigured' && (
             <p className="m-0 mb-2 flex items-center gap-2 text-sm text-ink-2">
               <Mascot pose="confused" size={36} /> YouTube’s search is busy right now, so here are links that do the same job.
@@ -461,6 +462,7 @@ function TuneUp({ s, onFollowUp }: { s: Session; onFollowUp: (t: Tally) => void 
             title="Count your homepage again"
             say="Same as before: the first 20 videos on your YouTube homepage."
             sickOfLabel={sickLabel}
+            nested
           />
         </div>
       )}

@@ -51,7 +51,7 @@ const QUOTA_BACKOFF_MS = 60 * 60 * 1000
 
 export async function handleSearch(
   params: URLSearchParams,
-  opts: { apiKey?: string; client: string; now?: number; fetchImpl?: typeof fetch },
+  opts: { apiKey?: string; client: string; now?: number; fetchImpl?: typeof fetch; apiUrl?: string },
 ): Promise<SearchResponse> {
   const now = opts.now ?? Date.now()
   const q = (params.get('q') ?? '').trim().slice(0, 120)
@@ -68,7 +68,8 @@ export async function handleSearch(
   if (rateLimited(opts.client, now)) return json(429, { status: 'rate-limited' })
   if (now < quotaOutUntil) return json(503, { status: 'quota' })
 
-  const url = new URL('https://www.googleapis.com/youtube/v3/search')
+  // apiUrl exists for end-to-end tests against a fake YouTube; production uses the default.
+  const url = new URL(opts.apiUrl || 'https://www.googleapis.com/youtube/v3/search')
   url.search = new URLSearchParams({
     part: 'snippet',
     type: 'video',
@@ -95,7 +96,8 @@ export async function handleSearch(
       return json(502, { status: 'error' })
     }
     const items: Video[] = (data.items ?? [])
-      .filter((it) => it.id?.videoId && it.snippet)
+      // Skip live streams and upcoming premieres: they can't be watched as a playlist.
+      .filter((it) => it.id?.videoId && it.snippet && (it.snippet.liveBroadcastContent ?? 'none') === 'none')
       .map((it) => ({
         id: it.id!.videoId!,
         title: decode(it.snippet!.title ?? ''),
@@ -113,12 +115,14 @@ export async function handleSearch(
 
 /** The API returns HTML-escaped titles. */
 function decode(s: string): string {
+  // &amp; goes last so "&amp;lt;" becomes "&lt;", not "<".
   return s
-    .replace(/&amp;/g, '&')
     .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
+    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)))
+    .replace(/&amp;/g, '&')
 }
 
 interface YouTubeSearch {
@@ -128,6 +132,7 @@ interface YouTubeSearch {
       title?: string
       channelTitle?: string
       publishedAt?: string
+      liveBroadcastContent?: string
       thumbnails?: { default?: { url?: string }; medium?: { url?: string } }
     }
   }[]

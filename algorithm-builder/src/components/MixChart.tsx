@@ -73,15 +73,22 @@ export function MixChart({
 
 const reduceMotion = () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches
 
-/** Tween an array of numbers so arcs grow instead of jumping. */
-function useTween(target: number[], ms = 380): number[] {
-  const [value, setValue] = useState(target)
-  const from = useRef(target)
-  const key = target.join(',')
+/** Motion length for chart values; matches --dur-data in index.css. */
+const DUR_DATA = 320
+
+/**
+ * Tween keyed values so arcs grow instead of jumping. Keyed, so adding or
+ * removing a slice animates it in from (or out to) zero rather than snapping.
+ */
+function useTween(target: [string, number][], ms = DUR_DATA): Map<string, number> {
+  const targetMap = new Map(target)
+  const [value, setValue] = useState(targetMap)
+  const from = useRef(targetMap)
+  const key = target.map(([k, v]) => `${k}:${v}`).join(',')
   useEffect(() => {
-    if (reduceMotion() || from.current.length !== target.length) {
-      from.current = target
-      setValue(target)
+    if (reduceMotion()) {
+      from.current = targetMap
+      setValue(targetMap)
       return
     }
     const start = performance.now()
@@ -90,16 +97,17 @@ function useTween(target: number[], ms = 380): number[] {
     const tick = (t: number) => {
       const k = Math.min(1, (t - start) / ms)
       const e = 1 - Math.pow(1 - k, 3)
-      const next = target.map((v, i) => a[i] + (v - a[i]) * e)
+      const next = new Map<string, number>()
+      for (const [id, v] of targetMap) {
+        const v0 = a.get(id) ?? 0
+        next.set(id, v0 + (v - v0) * e)
+      }
+      from.current = next
       setValue(next)
       if (k < 1) raf = requestAnimationFrame(tick)
-      else from.current = target
     }
     raf = requestAnimationFrame(tick)
-    return () => {
-      cancelAnimationFrame(raf)
-      from.current = target
-    }
+    return () => cancelAnimationFrame(raf)
   }, [key])
   return value
 }
@@ -121,21 +129,20 @@ function arc(r0: number, r1: number, a0: number, a1: number): string {
 
 function Sunburst({ mix, selected, onSelect }: { mix: Mix; selected: string | null; onSelect: (id: string) => void }) {
   const cats = mix.categories
-  const flat = cats.flatMap((c) => [c.weight, ...c.children.map((k) => k.weight)])
+  const flat = cats.flatMap((c): [string, number][] => [[c.id, c.weight], ...c.children.map((k): [string, number] => [`${c.id}/${k.id}`, k.weight])])
   const tw = useTween(flat)
   const [hover, setHover] = useState<{ label: string; pct: number } | null>(null)
 
   // Rebuild the tweened values into angles.
-  let idx = 0
   let angle = 0
   const segs = cats.map((c) => {
-    const w = tw[idx++]
+    const w = tw.get(c.id) ?? c.weight
     const a0 = angle
     const a1 = angle + (w / 100) * 2 * Math.PI
     angle = a1
     let inner = a0
     const kids = c.children.map((k) => {
-      const kw = tw[idx++]
+      const kw = tw.get(`${c.id}/${k.id}`) ?? k.weight
       const k0 = inner
       const k1 = inner + ((a1 - a0) * kw) / 100
       inner = k1
@@ -187,10 +194,10 @@ function Sunburst({ mix, selected, onSelect }: { mix: Mix; selected: string | nu
             </g>
           )
         })}
-        <text textAnchor="middle" y={center ? -2 : 4} className="font-display" fontSize={center ? 22 : 24} fontWeight={800} fill="var(--ink)">
+        <text pointerEvents="none" textAnchor="middle" y={center ? -2 : 4} className="font-display" fontSize={center ? 22 : 24} fontWeight={800} fill="var(--ink)">
           {center ? `${center.pct}%` : '100%'}
         </text>
-        <text textAnchor="middle" y={center ? 14 : 20} fontSize={center ? 8 : 9} fill="var(--muted)">
+        <text pointerEvents="none" textAnchor="middle" y={center ? 14 : 20} fontSize={center ? 8 : 9} fill="var(--muted)">
           {center ? truncate(center.label, 22) : 'your feed'}
         </text>
       </svg>

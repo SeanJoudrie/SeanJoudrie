@@ -49,6 +49,34 @@ export function initialMix(likes: string[]): Mix {
   return { categories, before: null }
 }
 
+/** The like each mix category came from (preset id, or the custom label). */
+export function likeFor(c: Category): string | null {
+  if (c.id === WILDCARD_ID || c.id.startsWith('added-')) return null
+  return c.id.startsWith('custom-') ? c.label : c.id
+}
+
+const categoryId = (like: string) => (TOPICS.some((t) => t.id === like) ? like : `custom-${slugify(like)}`)
+
+/**
+ * Bring the mix in line with the likes without throwing away tuning: kept
+ * categories keep their weights and sub-topics, dropped ones go, new ones
+ * come in at an even share, then everything is rescaled to 100.
+ */
+export function reconcileMix(mix: Mix, likes: string[]): Mix {
+  const picked = (likes.length ? likes : STARTER_LIKES).slice(0, MAX_CATEGORIES)
+  const wantIds = picked.map(categoryId)
+  const kept = mix.categories.filter((c) => c.id === WILDCARD_ID || c.id.startsWith('added-') || wantIds.includes(c.id))
+  const have = new Set(kept.map((c) => c.id))
+  const fresh = picked.filter((l) => !have.has(categoryId(l))).map(categoryFor)
+  if (!fresh.length && kept.length === mix.categories.length) return mix
+  const share = Math.max(1, Math.round(100 / Math.max(1, kept.length + fresh.length)))
+  const wild = kept.findIndex((c) => c.id === WILDCARD_ID)
+  const ordered = wild === -1 ? [...kept, ...fresh.map((c) => ({ ...c, weight: share }))] : [...kept.slice(0, wild), ...fresh.map((c) => ({ ...c, weight: share })), ...kept.slice(wild)]
+  const withWild = ordered.some((c) => c.id === WILDCARD_ID) ? ordered : [...ordered, wildcardCategory(0)]
+  const parts = apportion(100, withWild.map((c) => c.weight))
+  return { ...mix, categories: withWild.map((c, i) => ({ ...c, weight: parts[i] })) }
+}
+
 export function newSession(platform: Platform = 'youtube'): Session {
   return {
     v: 1,

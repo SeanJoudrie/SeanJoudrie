@@ -1,6 +1,6 @@
 import { useId, useState } from 'react'
 import { WILDCARD_ID } from '../data/topics'
-import { normalize, rebalance } from '../lib/mix'
+import { rebalance, removeAt } from '../lib/mix'
 import { slugify } from '../lib/session'
 import type { Category, Mix, SubTopic } from '../lib/types'
 import { categoryColor, childColor, MixChart, ViewToggle, type View } from './MixChart'
@@ -72,6 +72,14 @@ export function MixStep({ mix, onChange }: { mix: Mix; onChange: (m: Mix) => voi
                   onLock={() => toggleLock(i)}
                   onEdit={c.id === WILDCARD_ID ? undefined : () => setSelected(c.id === selected ? null : c.id)}
                   editing={selected === c.id}
+                  onRemove={
+                    c.id !== WILDCARD_ID && cats.filter((x) => x.id !== WILDCARD_ID).length > 1
+                      ? () => {
+                          if (selected === c.id) setSelected(null)
+                          setCats(removeAt(cats, i))
+                        }
+                      : undefined
+                  }
                 />
               ))}
             </ul>
@@ -215,7 +223,7 @@ function SubTopics({ cat, color, onChange, onClose }: { cat: Category; color: st
             locked={!!k.locked}
             onChange={(v) => onChange(rebalance(kids, i, v))}
             onLock={() => onChange(kids.map((x, j) => (j === i ? { ...x, locked: !x.locked || undefined } : x)))}
-            onRemove={kids.length > 1 ? () => onChange(normalize(kids.filter((_, j) => j !== i))) : undefined}
+            onRemove={kids.length > 1 ? () => onChange(removeAt(kids, i)) : undefined}
           />
         ))}
       </ul>
