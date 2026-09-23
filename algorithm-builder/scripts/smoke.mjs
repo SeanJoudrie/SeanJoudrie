@@ -421,6 +421,9 @@ async function runFull() {
   check(await waitTrue(page.getByRole('heading', { name: 'Your new feed', level: 1 })), `${name}: resume goes to the results`)
   await click(page.getByRole('button', { name: /Go to the start/ }))
   check(await waitTrue(page.getByRole('heading', { name: /stuck on one thing/ })), `${name}: logo goes to the start`)
+  // "Fix my feed" starts fresh; only "Pick up where I left off" keeps the old answers.
+  await click(page.getByRole('button', { name: 'Fix my feed' }))
+  check((await page.getByRole('button', { name: 'Remove Minecraft' }).count()) === 0, `${name}: "Fix my feed" starts fresh`)
 
   check(errors.length === 0, `${name}: no console errors ${errors.length ? JSON.stringify(errors) : ''}`)
   await ctx.close()
