@@ -237,6 +237,13 @@ describe('picks and surprises', () => {
       expect(isHandPickedOnly(v!.topic), v!.topic).toBe(false)
       expect(topicById(v!.topic)?.group).not.toBe('Kids & family')
     }
+    // Heavy topics are fine when chosen, never a surprise; nor are violent-sounding titles.
+    for (let day = 0; day < 60; day++) {
+      const v = surpriseFrom(feed, [], [], [], day)
+      expect(['true-crime', 'horror', 'world-war-ii', 'military-history']).not.toContain(v!.topic)
+    }
+    const grim = { ...feed, channels: Object.fromEntries(Object.entries(feed.channels).map(([k, c]) => [k, { ...c, videos: [{ ...c.videos[0], title: 'The Crash That Killed An Airline' }] }])) }
+    expect(surpriseFrom(grim, [], [], [], 3)).toBeNull()
     // Same day, same surprise.
     expect(surpriseFrom(feed, [], [], [], 5)?.id).toBe(surpriseFrom(feed, [], [], [], 5)?.id)
   })
