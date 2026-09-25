@@ -123,6 +123,7 @@ textarea {
 body {
   margin: 0;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   background: var(--bg);
@@ -2809,6 +2810,48 @@ body.is-focus .site-footer {
 #checklist-count,
 .gauge__read {
   font-variant-numeric: tabular-nums;
+}
+
+/* Guessed answers: the sentence the guess came from highlights as it appears. */
+.guess__quote {
+  padding: 0 2px;
+  color: inherit;
+  background: linear-gradient(color-mix(in srgb, var(--signal) 45%, transparent), color-mix(in srgb, var(--signal) 45%, transparent)) no-repeat 0 100% / 100% 100%;
+  animation: lc-highlight 500ms cubic-bezier(0.2, 0.7, 0.2, 1) 150ms both;
+}
+@keyframes lc-highlight {
+  from { background-size: 0% 100%; }
+  to { background-size: 100% 100%; }
+}
+
+/* Step-by-step deck: horizontal swipes belong to the card, vertical scroll to the page. */
+#focus-card {
+  touch-action: pan-y;
+}
+
+/* A finished phase says Clear, in green. */
+.phase__count.is-clear {
+  color: var(--go);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Progress bars fill in when a screen opens. */
+[data-view="map"] .meter__fill,
+[data-view="projects"] .meter__fill {
+  transform-origin: left center;
+  animation: lc-grow 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes lc-grow {
+  from { transform: scaleX(0); }
+  to { transform: none; }
+}
+
+/* Long checklists only render what's near the screen. */
+.phase {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 640px;
 }
 
 /* ---------- Motion ---------- */
