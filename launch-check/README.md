@@ -20,7 +20,8 @@ Open `index.html` by double-clicking it. There's no build step and no server.
 | `app.js` | Routing, answer guessing, the plan engine, copy buttons |
 | `data.js` | The master checklist: phases, steps, conditions and sources |
 | `RESEARCH.md` | Sourced facts, rejection statistics and marketing lines |
-| `scripts/build-artifact.py` | Builds a copy for publishing as a claude.ai Artifact |
+| `config.js` | Account sync settings (empty means projects stay in the browser) |
+| `supabase.sql` | The database table and security rules for accounts |
 
 ## How a plan is built
 
@@ -47,34 +48,41 @@ Each item in `data.js` has `when(c)`, which decides whether it applies. Its `tit
 
 ## Design system
 
-The direction is **careful paper**: a warm off-white page, near-black ink, one deep green accent, and serif headings. It should read like a trustworthy checklist, not a SaaS dashboard.
+The direction is **pre-flight check**: ink and cool white, runway yellow for the one thing to do next, green for done and red for must-fix. Headlines are condensed and uppercase, so they take less room and read like a checklist.
 
-- **Spacing:** a 4px scale: 4, 8, 12, 16, 24, 32, 48, 64, 96.
-- **Type:** Source Serif 4 (600) for headings, Source Sans 3 (400/600) for text. Nothing is smaller than 16px.
-- **Color:** one accent (`#1d5c45` light, `#7cc9a5` dark), used only for the main action and the focus ring. Severity is shown in ink and words, not in color.
-- **Shape:** 8px radius everywhere, no shadows, 1px borders, a 720px column.
-- **Accessibility:**
-  - 44px or larger tap targets
-  - a visible focus ring
-  - full keyboard use
-  - reduced motion respected
-  - text contrast of at least 6.3:1
+- **Type:**
+  - Archivo, a variable font with a width axis: condensed (68–75%) for headings, normal width for text.
+  - JetBrains Mono for counters and labels.
+- **Color:**
+  - Yellow `#ffc700` with ink text for the main action.
+  - Red `#c2302a` (dark mode `#ff6b61`) for must-fix, green `#0f7a45` (dark mode `#3dd68c`) for done.
+  - The header, hero, results report and step-by-step bar stay dark in both themes.
+- **Shape and spacing:** a 10px radius, 2px borders, no shadows, and a 4px spacing scale.
+- **Contrast:** checked for both themes. Text is at least 4.6:1, and borders and the focus ring are at least 3:1.
 
-## User testing
+## Do this now: one step at a time
 
-Three simulated beginners went through the prototype:
-- a meditation app built with Cursor and Expo
-- a recipe-sharing site built with Lovable
-- a kids' spelling game built with Replit, answered mostly "Not sure"
+Results open with the next step on its own screen. Each screen has:
+- what to do, why, and the numbered actions
+- sources, collapsed under the step
 
-Their findings are fixed in this version:
-- guesses now respect "no" and "maybe later"
-- every "Not sure" answer leads to a step
-- websites get their own wording and steps
-- kids' apps get an early section for both stores
-- the must-fix count matches the labels
-- database advice now fits public content
+To move through the steps:
+- **Done, next** marks the step done and moves on.
+- **Skip for now** moves on without marking it done.
+- On a phone, swipe left for the next step and right to go back. Arrow keys work on a keyboard.
+
+## Projects and accounts
+
+Each check is saved as a project in the browser (`localStorage`), with its name, answers and progress. Pasted code is never stored. **My projects** lists them with progress bars.
+
+Sign-in is built but off until a database is chosen. To turn it on:
+1. Create a Supabase project and run `supabase.sql`.
+2. Under Authentication → Providers, enable Google. This needs a Google Cloud OAuth client. Email links also work.
+3. Add your GitHub Pages address to the redirect URLs.
+4. Put the project URL and publishable key in `config.js`.
+
+Signed-in projects sync both ways, and the newer copy wins.
 
 ## Publishing
 
-`python3 scripts/build-artifact.py OUT_DIR` writes a copy without the outer `<html>`, `<head>` and `<body>` tags, for hosts that add their own.
+Pushing to `main` deploys to GitHub Pages at https://seanjoudrie.github.io/SeanJoudrie/launch-check/ through `.github/workflows/deploy.yml`.

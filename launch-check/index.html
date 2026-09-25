@@ -8,12 +8,11 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Launch Check: what's left before your app can launch" />
     <meta property="og:description" content="A short, ordered list of what's still missing before release. Design prototype." />
-    <meta name="theme-color" content="#faf8f4" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#151513" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#0b0e12" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
     <script>
       // Apply a saved theme before first paint so the page doesn't flash.
@@ -29,10 +28,13 @@
     <header class="site-header">
       <div class="container site-header__inner">
         <a class="wordmark" href="#start" aria-label="Launch Check, home">
-          <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><rect x="2.75" y="2.75" width="14.5" height="14.5" rx="3" /><path d="M6.5 10.25l2.5 2.5 4.5-5" /></svg>
+          <span class="wordmark__mark" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5.5 10.5l3 3 6-7" /></svg></span>
           <span>Launch Check</span>
         </a>
-        <span class="tag">Prototype</span>
+        <nav class="site-nav" aria-label="Account">
+          <a class="site-nav__link" href="#projects" id="nav-projects">My projects</a>
+          <button type="button" class="button button--ghost button--small" id="auth-button" hidden>Sign in</button>
+        </nav>
       </div>
     </header>
 
@@ -40,19 +42,37 @@
       <!-- ============ Landing ============ -->
       <section class="view" data-view="landing" aria-labelledby="landing-title">
         <div class="container">
-          <div class="hero">
-            <h1 id="landing-title" class="display" tabindex="-1">See what's left to do before your app can launch.</h1>
-            <p class="lead">Describe the app you built with AI. You'll get a short, ordered list of what's still missing, like a privacy policy or secure storage for your users' data.</p>
-            <div class="hero__action">
-              <a class="button button--primary" href="#describe">Check my app</a>
-              <p class="muted">For phone apps, websites and web apps. About 2 minutes, no account.</p>
+        </div>
+        <div class="hero">
+          <div class="container hero__inner">
+            <div class="hero__copy">
+              <p class="hero__kicker mono">Pre-flight check for apps built with AI</p>
+              <h1 id="landing-title" class="display" tabindex="-1">Is your app cleared for launch?</h1>
+              <p class="hero__lead">Describe what you built. Get the exact list of what's still missing, like a privacy policy, a locked database or a developer account, and do it one step at a time.</p>
+              <div class="hero__action">
+                <a class="button button--signal button--large" href="#describe">Check my app
+                  <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M8.25 5.25L13 10l-4.75 4.75" /></svg></a>
+                <p class="hero__note">Phone apps, websites and web apps. About 2 minutes.</p>
+              </div>
+            </div>
+            <div class="board" aria-hidden="true">
+              <p class="board__head mono"><span>Stillwater · iPhone</span><span>3 of 43</span></p>
+              <p class="board__row"><span class="board__item">Privacy policy</span><span class="status status--alert">Missing</span></p>
+              <p class="board__row"><span class="board__item">Database locked</span><span class="status status--alert">Check</span></p>
+              <p class="board__row"><span class="board__item">Apple developer account</span><span class="status status--alert">Missing</span></p>
+              <p class="board__row"><span class="board__item">App icon</span><span class="status status--go">Done</span></p>
+              <p class="board__row"><span class="board__item">Support email</span><span class="status status--go">Done</span></p>
             </div>
           </div>
-
-          <section class="band" aria-labelledby="why-title">
-            <h2 id="why-title">About 1 in 4 App Store submissions get sent back</h2>
-            <p>In 2025 Apple turned away 2,093,244 of the 9.1 million app submissions it reviewed. The most common problems aren't hard to fix: Apple says over 40% of unresolved review issues come from incomplete apps, meaning crashes, placeholder content and missing login details for reviewers. Privacy problems added another 443,000 rejections.</p>
-            <p class="muted source-line">Sources: <a href="https://www.apple.com/legal/app-store/transparency/2025/" target="_blank" rel="noopener">Apple App Store Transparency Report 2025<span class="sr-only"> (opens in a new tab)</span></a> · <a href="https://developer.apple.com/distribute/app-review/" target="_blank" rel="noopener">Apple: Avoiding common issues<span class="sr-only"> (opens in a new tab)</span></a> · <a href="https://www.apple.com/newsroom/2026/05/the-app-store-stopped-over-2-point-2-billion-usd-in-fraudulent-transactions-in-2025/" target="_blank" rel="noopener">Apple Newsroom, May 2026<span class="sr-only"> (opens in a new tab)</span></a></p>
+        </div>
+        <div class="container">
+          <section class="band stat" aria-labelledby="why-title">
+            <p class="stat__number" aria-hidden="true">1 in 4</p>
+            <div>
+              <h2 id="why-title">App Store submissions got sent back in 2025</h2>
+              <p>Apple turned away 2,093,244 of the 9.1 million submissions it reviewed. Most problems aren't hard: Apple says over 40% of unresolved review issues come from unfinished apps, like crashes, placeholder text and no login for the reviewer. Privacy problems caused another 443,000 rejections.</p>
+              <p class="muted source-line">Sources: <a href="https://www.apple.com/legal/app-store/transparency/2025/" target="_blank" rel="noopener">Apple Transparency Report 2025<span class="sr-only"> (opens in a new tab)</span></a> · <a href="https://developer.apple.com/distribute/app-review/" target="_blank" rel="noopener">Apple: Avoiding common issues<span class="sr-only"> (opens in a new tab)</span></a> · <a href="https://www.apple.com/newsroom/2026/05/the-app-store-stopped-over-2-point-2-billion-usd-in-fraudulent-transactions-in-2025/" target="_blank" rel="noopener">Apple Newsroom<span class="sr-only"> (opens in a new tab)</span></a></p>
+            </div>
           </section>
 
           <section class="band" aria-labelledby="how-title">
@@ -75,8 +95,8 @@
               <li>
                 <span class="steps__num" aria-hidden="true">3</span>
                 <div>
-                  <h3>Get your gaps and checklist</h3>
-                  <p>The biggest problems first, then every step in order: what to do, why, and a link to the rule it comes from.</p>
+                  <h3>Do it one step at a time</h3>
+                  <p>Your biggest problems first, then every step in order. Each one says what to do right now, why, and where the rule comes from. Swipe to the next when you're done.</p>
                 </div>
               </li>
             </ol>
@@ -99,7 +119,7 @@
           </section>
 
           <section class="band band--action" aria-label="Start">
-            <a class="button button--primary" href="#describe">Check my app</a>
+            <a class="button button--signal button--large" href="#describe">Check my app</a>
           </section>
         </div>
       </section>
@@ -342,19 +362,32 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
 
       <!-- ============ Results ============ -->
       <section class="view" data-view="results" aria-labelledby="results-title" hidden>
-        <div class="container container--flow">
-          <h1 id="results-title" tabindex="-1">Your launch plan</h1>
-          <p class="basis" id="basis"></p>
+        <div class="report">
+          <div class="container report__inner">
+            <label class="report__name">
+              <span class="mono report__label">Project</span>
+              <input type="text" id="project-name" maxlength="60" autocomplete="off" aria-describedby="save-note" />
+            </label>
+            <h1 id="results-title" class="report__title" tabindex="-1">Your launch plan</h1>
+            <p class="report__basis" id="basis"></p>
+            <div class="meter" aria-hidden="true"><span class="meter__fill" id="meter-fill"></span></div>
+            <p class="report__stats mono" id="report-stats"></p>
+            <div class="report__actions">
+              <a class="button button--signal button--large" href="#next" id="start-next">Do the next step
+                <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M8.25 5.25L13 10l-4.75 4.75" /></svg></a>
+              <a class="button button--ghost-dark" href="#checklist-title" id="see-all">See the full checklist</a>
+            </div>
+            <p class="report__save" id="save-note"></p>
+          </div>
+        </div>
 
+        <div class="container container--flow">
+          <h2 class="section-title">Must fix first</h2>
           <div id="gaps"></div>
           <p class="gaps-more" id="gaps-more" hidden></p>
 
-          <div class="legal" role="note">
-            <p><strong>This isn't legal advice.</strong> Every step links to the rule or guide it comes from, checked in <span data-checked-date></span>. Store rules change, and no checklist covers every app, so read the linked rules before you submit and have a lawyer look over your privacy policy and terms.</p>
-          </div>
-
           <section class="cost-section" id="cost-section" aria-labelledby="cost-title">
-            <h2 id="cost-title">What it will cost and how long it takes</h2>
+            <h2 id="cost-title" class="section-title">Cost and time</h2>
             <div class="table-wrap">
               <table class="cost">
                 <thead><tr><th scope="col">What</th><th scope="col">Cost</th><th scope="col">Time</th></tr></thead>
@@ -365,24 +398,94 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
 
           <section class="checklist-section" aria-labelledby="checklist-title">
             <div class="checklist-head">
-              <h2 id="checklist-title">Your launch checklist</h2>
-              <p class="muted" id="checklist-count" aria-live="polite">0 of 0 done</p>
+              <h2 id="checklist-title" class="section-title" tabindex="-1">Full checklist</h2>
+              <p class="muted mono" id="checklist-count" aria-live="polite">0 of 0 done</p>
             </div>
-            <p>Roughly in the order to do them. Open any step to see what to do and where the rule comes from.</p>
-            <nav class="phase-nav" aria-label="Checklist sections">
-              <ol id="phase-nav"></ol>
-            </nav>
-            <label class="check check--filter">
-              <input type="checkbox" id="must-only" />
-              <span>Show only “Must fix” steps</span>
-            </label>
+            <div class="checklist-tools">
+              <nav class="phase-nav" aria-label="Checklist sections">
+                <ol id="phase-nav"></ol>
+              </nav>
+              <label class="check check--filter">
+                <input type="checkbox" id="must-only" />
+                <span>Only “Must fix”</span>
+              </label>
+            </div>
             <div id="checklist"></div>
           </section>
+
+          <div class="legal" role="note">
+            <p><strong>This isn't legal advice.</strong> Every step links to the rule or guide it comes from, checked in <span data-checked-date></span>. Store rules change and no checklist covers every app, so read the linked rules before you submit, and have a lawyer look over your privacy policy and terms.</p>
+          </div>
 
           <p class="sr-only" role="status" aria-live="polite" id="copy-plan-status"></p>
           <div class="nav-row nav-row--end">
             <a class="button button--secondary" href="#describe" id="start-over">Check another app</a>
-            <button type="button" class="button button--primary" id="copy-plan"><span>Copy checklist as text</span></button>
+            <button type="button" class="button button--secondary" id="copy-plan"><span>Copy checklist as text</span></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Focus: one step at a time ============ -->
+      <section class="view focus" data-view="next" aria-labelledby="focus-title" hidden>
+        <div class="focus__bar">
+          <div class="container focus__bar-inner">
+            <a class="focus__close" href="#results">
+              <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" /></svg>
+              <span>Plan</span>
+            </a>
+            <p class="mono focus__count" id="focus-count"></p>
+            <p class="mono focus__done" id="focus-done"></p>
+          </div>
+          <div class="meter meter--thin" aria-hidden="true"><span class="meter__fill" id="focus-meter"></span></div>
+        </div>
+
+        <div class="container focus__stage" id="focus-stage">
+          <article class="card" id="focus-card" aria-live="polite">
+            <p class="card__meta"><span class="chip" id="focus-level"></span><span class="mono card__phase" id="focus-phase"></span></p>
+            <h1 class="card__title" id="focus-title" tabindex="-1"></h1>
+            <p class="card__why" id="focus-why"></p>
+            <h2 class="card__label mono">Do this now</h2>
+            <ol class="card__steps" id="focus-steps"></ol>
+            <details class="card__sources">
+              <summary>Where this rule comes from</summary>
+              <ul class="sources" id="focus-sources"></ul>
+            </details>
+          </article>
+
+          <div class="cleared" id="focus-cleared" hidden>
+            <p class="cleared__stamp mono">Cleared</p>
+            <h1 class="cleared__title" tabindex="-1">Every step is done.</h1>
+            <p>Read the linked rules one more time before you submit, and run Launch Check again whenever the app changes.</p>
+            <a class="button button--signal button--large" href="#results">Back to your plan</a>
+          </div>
+        </div>
+
+        <div class="focus__controls">
+          <div class="container focus__controls-inner">
+            <button type="button" class="button button--secondary focus__prev" id="focus-prev">
+              <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M11.75 5.25L7 10l4.75 4.75" /></svg>
+              <span>Back</span>
+            </button>
+            <button type="button" class="button button--secondary" id="focus-skip">Skip for now</button>
+            <button type="button" class="button button--signal focus__done-btn" id="focus-complete">
+              <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.75 10.5l3.5 3.5 7-8" /></svg>
+              <span>Done, next</span>
+            </button>
+          </div>
+          <p class="focus__hint muted">Swipe left for the next step, right to go back. Arrow keys work too.</p>
+        </div>
+      </section>
+
+      <!-- ============ Projects ============ -->
+      <section class="view" data-view="projects" aria-labelledby="projects-title" hidden>
+        <div class="container container--flow">
+          <h1 id="projects-title" tabindex="-1">My projects</h1>
+          <p class="lead" id="projects-lead"></p>
+          <div class="account" id="account-box"></div>
+          <ul class="projects" id="project-list"></ul>
+          <p class="empty" id="projects-empty" hidden>No projects yet. <a href="#describe">Check your first app</a> and it will be saved here.</p>
+          <div class="nav-row">
+            <a class="button button--signal" href="#describe">Check a new app</a>
           </div>
         </div>
       </section>
@@ -390,7 +493,7 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
 
     <footer class="site-footer">
       <div class="container site-footer__inner">
-        <p class="muted">Launch Check is a design prototype. Nothing you enter leaves your browser.</p>
+        <p class="muted" id="footer-note">Launch Check prototype. Projects are saved in this browser unless you sign in.</p>
         <div class="theme-field">
           <label for="theme" class="muted">Appearance</label>
           <div class="select select--compact">
@@ -405,6 +508,7 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
       </div>
     </footer>
 
+    <script src="config.js"></script>
     <script src="data.js"></script>
     <script src="app.js"></script>
   </body>
