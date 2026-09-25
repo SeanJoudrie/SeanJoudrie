@@ -290,12 +290,11 @@ One style: a **surface ladder**, no shadows.
   came from; that sentence highlights while the chip is focused or hovered.
 - **Gap row:** must-fix item. 4px alert edge, the MUST FIX stamp, what/why in one line, "Do it".
 - **Task row:** one checklist step on the timeline rail. Tick, title, one-line why, sources on demand.
-- **Rocket and launch pad:** a flat rocket in the site's colours (night-ink body, signal nose, night-muted
-  fins) at the bottom of the landing hero, with "Swipe the rocket up to start" (touch) or "Or launch the
-  rocket" (mouse). Only the rocket takes the swipe (`touch-action: none` on it alone), so the page still
-  scrolls. Dragging lifts it with resistance up to 64px. Letting go past 40px, a fast flick, a tap, Enter,
-  or the Check my app button all launch. It flies above its own trail, and the trail is always the next
-  screen's `--bg`. It plays once per visit, on the way in.
+- **Rocket and launch pad:** a flat rocket in the site's colours (night-ink body, signal nose,
+  night-muted fins), centred under the hero copy, with "Tap the rocket to start" (touch) or "Click the rocket
+  to start" (mouse) under it. Tapping, Enter, or the Check my app button launches it; dragging it up past
+  40px also works. It flies above its own curtain, and the curtain is always the next screen's `--bg`.
+  It plays once per visit, on the way in.
 - **Split-flap tiles:** mono characters on `night-2` half-cards. Used for the landing headline, phase
   names turning to CLEAR, and "COPIED". Nowhere else.
 - **Runway lights:** one per question in the progress row. Off, current, answered, done.
@@ -316,7 +315,8 @@ timeline sits inside `gsap.matchMedia()`; CSS animations have a reduced variant.
 
 | Moment | Animation | Why it exists | Duration | Reduced motion |
 |---|---|---|---|---|
-| Start (signature moment) | Rocket launch: drag the rocket up (or press Check my app); it launches and its trail widens into the next screen's background, so the smoke becomes the "Describe your app" page | The one signature device: starting feels like take-off, and the move reads as one continuous step instead of a page swap | ≈0.9s launch, 220ms reveal | Straight to the next screen |
+| Start (signature moment) | Rocket launch: tap the rocket (or press Check my app); it launches and pulls the next screen up behind it like a curtain: a flat edge rising from the bottom with a pointed tip that stays on the rocket's tail | The one signature device: starting feels like take-off, and the move reads as one continuous step instead of a page swap | 1.1s launch, 220ms reveal | Straight to the next screen |
+| Rocket nudge | Every 6s the rocket twitches (up 6px, a 3° wobble). Only while it's on screen; stops after five nudges or as soon as someone touches, focuses or presses a key | Says "tap me" without more words. The one deliberate exception to "motion only follows what the person did", kept small and finite | 700ms, every 6s, max 5 | None |
 | Landing headline | "CLEARED FOR LAUNCH?" settles on split-flap tiles, once | Sets the pre-flight idea in one glance | ≤1.2s total, 12-18 tiles | Static headline |
 | Paste | A signal line sweeps the textarea edge; a mono counter reads "412 CHARACTERS RECEIVED" | Confirms the paste landed and how much | 400ms | Counter only |
 | Guessed answers | The source sentence highlights; the chip travels (Flip) into its answer slot | Shows how each guess was made, so people trust or correct it | 400ms | Static highlight and outline |
