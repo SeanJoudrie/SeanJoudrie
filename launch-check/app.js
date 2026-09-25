@@ -155,6 +155,15 @@
     { id: 'support', label: 'A support email address', when: function () { return true; } }
   ];
 
+  // Things that carry specific legal rules. Ticked on the questions screen.
+  var DOES = [
+    { id: 'emails', label: 'Sends marketing emails or a newsletter' },
+    { id: 'texts', label: 'Sends text messages (SMS)' },
+    { id: 'faces', label: 'Scans faces, fingerprints or voices (not just unlocking with Face ID)' },
+    { id: 'pixel', label: 'Uses an ad-tracking pixel, like the Meta or TikTok pixel' },
+    { id: 'aiclaims', label: 'Its marketing says what AI can do, like “AI-powered” or “AI lawyer”' }
+  ];
+
   var PRODUCT_NAMES = {
     ios: 'an iPhone or iPad app',
     android: 'an Android app',
@@ -169,7 +178,8 @@
     return {
       product: '', category: '', detail: '',
       kids: '', accounts: '', money: '', data: '', tracking: '', ai: '', ugc: '', host: '',
-      have: {}
+      have: {},
+      does: {}
     };
   }
 
@@ -263,7 +273,7 @@
 
   function guess(text) {
     var list = sentences(text || '');
-    var g = { src: {}, have: {} };
+    var g = { src: {}, have: {}, does: {} };
     function set(key, value, from) {
       g[key] = value;
       if (from) g.src[key] = clip(from);
@@ -347,6 +357,17 @@
     else if ((from = mentioned(list, ['vercel']))) g.host = 'vercel';
     else if ((from = mentioned(list, ['netlify']))) g.host = 'netlify';
     if (g.host) g.src.host = clip(from);
+
+    // Legal-risk features, only when the text says the app does them.
+    [
+      ['emails', ['newsletters?', 'marketing emails?', 'email campaigns?', 'mailchimp', 'convertkit', 'klaviyo', 'promotional emails?']],
+      ['texts', ['sms', 'text messages?', 'texts', 'twilio']],
+      ['faces', ['face scan\\w*', 'facial', 'selfies?', 'biometric\\w*', 'fingerprints?', 'voiceprints?', 'face recognition']],
+      ['pixel', ['meta pixel', 'facebook pixel', 'tiktok pixel', 'ads pixel', 'tracking pixel', 'conversions api']],
+      ['aiclaims', ['ai-powered', 'powered by ai', 'ai lawyer', 'ai doctor', 'ai coach', 'ai therapist']]
+    ].forEach(function (pair) {
+      if (affirmed(list, pair[1])) g.does[pair[0]] = true;
+    });
 
     // "What's already set up": only things the text says exist.
     [
@@ -760,6 +781,29 @@
         clearError(null, '#' + id + '-error');
       });
     });
+    a.does = a.does || {};
+    $('#does-list').innerHTML =
+      DOES.map(function (d) {
+        return (
+          '<label class="check check--row"><input type="checkbox" name="does" value="' + d.id + '"' +
+          (a.does[d.id] ? ' checked' : '') + ' /><span>' + d.label + '</span></label>'
+        );
+      }).join('') +
+      '<label class="check check--row"><input type="checkbox" name="does" value="none"' +
+      (a.does.none ? ' checked' : '') + ' /><span>None of these / I don’t know</span></label>';
+    $all('#does-list input').forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        a.does[cb.value] = cb.checked;
+        if (!cb.checked) return;
+        $all('#does-list input').forEach(function (o) {
+          if (o !== cb && (cb.value === 'none' || o.value === 'none')) {
+            o.checked = false;
+            a.does[o.value] = false;
+          }
+        });
+      });
+    });
+
     // "Nothing yet / I don't know" and the other boxes rule each other out.
     $all('#have-list input').forEach(function (c) {
       c.addEventListener('change', function () {
@@ -824,7 +868,8 @@
       kids: a.kids === 'yes' || a.category === 'kids' || a.detail === 'children',
       finance: a.category === 'finance',
       moneyMoving: ['bank', 'payments', 'investing', 'lending'].indexOf(a.detail) > -1,
-      have: a.have
+      have: a.have,
+      does: a.does || {}
     };
   }
 
@@ -849,6 +894,7 @@
           needs: it.needs || [],
           title: val(it.title, c),
           why: val(it.why, c),
+          risk: val(it.risk, c) || '',
           steps: val(it.steps, c),
           sources: val(it.sources, c),
           gap: gap,
@@ -1269,7 +1315,7 @@
       '<input type="checkbox" data-task="' + it.id + '"' + (done ? ' checked' : '') + ' aria-label="Mark done: ' + esc(it.title) + '" />' +
       '<button type="button" class="task__main" data-focus="' + it.id + '">' +
       '<span class="task__what">' + esc(it.title) + '</span>' +
-      '<span class="task__meta">' + (done ? 'Done' : levelText(it)) + ' · ' + stepsDoneIn(it) + ' of ' + n + (n === 1 ? ' step' : ' steps') + '</span>' +
+      '<span class="task__meta">' + (done ? 'Done' : levelText(it)) + (it.risk && !done ? ' · Legal risk' : '') + ' · ' + stepsDoneIn(it) + ' of ' + n + (n === 1 ? ' step' : ' steps') + '</span>' +
       '</button>' +
       '</li>'
     );
@@ -1498,6 +1544,7 @@
                 '<span class="node__meta">' + label + '</span></span></button>' +
                 '<div class="node__body" id="node-' + it.id + '" hidden>' +
                 '<p>' + esc(it.why) + '</p>' +
+                (it.risk ? '<p class="node__risk"><strong>Legal risk:</strong> ' + esc(it.risk) + '</p>' : '') +
                 '<label class="check"><input type="checkbox" data-node="' + it.id + '"' + (status === 'done' ? ' checked' : '') + ' />' +
                 '<span>Mark this task done</span></label>' +
                 '<button type="button" class="button button--secondary button--small" data-focus="' + it.id + '">Open its ' + it.steps.length + ' steps</button>' +
@@ -1629,6 +1676,8 @@
     $('#focus-phase').textContent = it.phaseTitle || '';
     $('#focus-title').textContent = it.title;
     $('#focus-why').textContent = it.why;
+    $('#focus-risk').hidden = !it.risk;
+    $('#focus-risk-text').textContent = it.risk;
     var ticks = stepTicks(it);
     var all = isDone(it);
     $('#focus-steps').innerHTML = it.steps
@@ -1797,6 +1846,7 @@
         lines.push('');
         lines.push(n + '. [' + (isDone(it) ? 'x' : ' ') + '] ' + it.title + ' (' + LEVELS[it.severity] + ')');
         lines.push('   Why: ' + it.why);
+        if (it.risk) lines.push('   Legal risk: ' + it.risk);
         var ticks = stepTicks(it);
         var all = isDone(it);
         it.steps.forEach(function (st, i) {

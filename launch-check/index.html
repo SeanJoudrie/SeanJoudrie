@@ -332,6 +332,12 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
             <div id="questions"></div>
 
             <fieldset class="field have">
+              <legend class="field-label">Does it do any of these?</legend>
+              <p class="hint hint--above">Each one comes with legal rules that small apps get sued over. Tick all that apply.</p>
+              <div id="does-list" class="have__list"></div>
+            </fieldset>
+
+            <fieldset class="field have">
               <legend class="field-label">What do you already have?</legend>
               <p class="hint hint--above">Tick only what's finished. Everything else goes on your checklist.</p>
               <div id="have-list" class="have__list"></div>
@@ -460,6 +466,7 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
             <p class="card__meta"><span class="chip" id="focus-level"></span><span class="mono card__phase" id="focus-phase"></span></p>
             <h1 class="card__title" id="focus-title" tabindex="-1"></h1>
             <p class="card__why" id="focus-why"></p>
+            <p class="card__risk" id="focus-risk" hidden><strong>Legal risk:</strong> <span id="focus-risk-text"></span></p>
             <h2 class="card__label mono"><span>Do this now</span><span id="focus-steps-count"></span></h2>
             <ol class="card__steps" id="focus-steps"></ol>
             <details class="card__sources">
