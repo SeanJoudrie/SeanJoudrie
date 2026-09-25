@@ -1,19 +1,21 @@
-/* Launch Check prototype. No backend: every screen after "Narrow it down"
-   shows the same labeled example for a student budgeting app. */
+/* Launch Check prototype. No backend: the checklist is built in the browser
+   from the answers, using the sourced rules in data.js. Nothing is sent. */
 (function () {
   'use strict';
+
+  var DATA = window.LC_DATA;
 
   // ---------- Example content ----------
 
   var EXAMPLE_SUMMARY =
-    'Pocket Budget is an iPhone app that helps college students track spending against a monthly budget. ' +
-    'People sign up with an email and password. They can link a bank account through Plaid to import transactions, or enter spending by hand. ' +
-    'The app stores names, emails, transaction history and budget categories in a Supabase database. Logins are handled by Supabase Auth. ' +
-    "I'm not sure whether the transaction data is encrypted. It uses Google Analytics. " +
-    'There is a $2.99 a month premium tier for savings goals, paid through Stripe. ' +
-    "It will launch on the App Store first. There's no privacy policy or terms yet, and no way to delete an account.";
-
-  var EXAMPLE_ANSWERS = { product: 'ios', category: 'finance', detail: 'bank' };
+    'Stillwater is a meditation app for iPhone for people who want a calm 10-minute routine. ' +
+    'People sign up with email and password to save their streaks and favorite sessions. ' +
+    'It stores names, emails, session history and mood check-ins in a Supabase database. ' +
+    "I'm not sure whether row level security is on. The audio files are in the app. " +
+    'It uses Google Analytics. There is a $4.99 a month subscription through Stripe that unlocks all sessions. ' +
+    'An AI coach writes a short reflection from the mood check-in using the OpenAI API. ' +
+    "Users can't see each other's posts. The code is on GitHub. " +
+    "I don't have an Apple developer account, a website, a privacy policy or terms yet.";
 
   // Third question, only for categories with extra rules.
   var DETAILS = {
@@ -34,6 +36,7 @@
       options: [
         ['fitness', 'Workouts or activity'],
         ['nutrition', 'Food and nutrition'],
+        ['mindfulness', 'Meditation, sleep or relaxation'],
         ['mental', 'Mood or mental health'],
         ['medical', 'Symptoms, conditions or medical records']
       ]
@@ -67,13 +70,59 @@
     }
   };
 
-  var CATEGORY_CHECKS = {
-    finance: 'Extra rules for finance apps',
-    health: 'Extra rules for health apps',
-    kids: 'Extra rules for apps used by children',
-    social: 'Extra rules for apps where people talk to each other',
-    education: 'Extra rules for education apps'
-  };
+  var QUESTIONS = [
+    {
+      id: 'accounts',
+      label: 'Do people sign up or log in?',
+      options: [['yes', 'Yes'], ['no', 'No'], ['unsure', 'Not sure']]
+    },
+    {
+      id: 'money',
+      label: 'Does it charge money?',
+      options: [
+        ['none', 'No, it’s free'],
+        ['digital', 'Yes, subscriptions or purchases that unlock things in the app'],
+        ['physical', 'Yes, for physical products or real-world services'],
+        ['unsure', 'Not sure']
+      ]
+    },
+    {
+      id: 'data',
+      label: 'Where does it keep people’s data?',
+      options: [
+        ['device', 'Only on their phone or in their browser'],
+        ['supabase', 'Supabase'],
+        ['firebase', 'Firebase'],
+        ['other', 'Another service or its own server'],
+        ['unsure', 'Not sure']
+      ]
+    },
+    {
+      id: 'tracking',
+      label: 'Does it use analytics or show ads?',
+      options: [['yes', 'Yes'], ['no', 'No'], ['unsure', 'Not sure']]
+    },
+    {
+      id: 'ai',
+      label: 'Does it send what people type or upload to an AI service?',
+      hint: 'For example ChatGPT, Claude or Gemini working behind the scenes.',
+      options: [['yes', 'Yes'], ['no', 'No'], ['unsure', 'Not sure']]
+    },
+    {
+      id: 'ugc',
+      label: 'Can people see things other users post or send?',
+      options: [['yes', 'Yes'], ['no', 'No']]
+    }
+  ];
+
+  var HAVES = [
+    { id: 'apple', label: 'An Apple Developer Program membership', when: function (f) { return f.ios; } },
+    { id: 'google', label: 'A Google Play developer account', when: function (f) { return f.android; } },
+    { id: 'website', label: 'A website on your own domain', when: function () { return true; } },
+    { id: 'privacy', label: 'A privacy policy', when: function () { return true; } },
+    { id: 'terms', label: 'Terms of service', when: function () { return true; } },
+    { id: 'support', label: 'A support email address', when: function () { return true; } }
+  ];
 
   var PRODUCT_NAMES = {
     ios: 'an iPhone or iPad app',
@@ -83,84 +132,21 @@
     extension: 'a browser extension'
   };
 
-  var PRODUCT_CHECKS = {
-    ios: 'App Store requirements',
-    android: 'Google Play requirements',
-    both: 'App Store and Google Play requirements',
-    web: 'Requirements for public websites',
-    extension: 'Extension store requirements'
-  };
-
-  var GAPS = [
-    {
-      level: 'blocker',
-      title: 'No privacy policy',
-      why: 'Apple rejects apps that collect personal data without one.'
-    },
-    {
-      level: 'blocker',
-      title: 'Bank data may not be protected',
-      why: "The summary isn't sure transaction history, the app's most sensitive data, is encrypted."
-    },
-    {
-      level: 'blocker',
-      title: 'Premium is sold through Stripe',
-      why: 'Apple generally requires its own in-app purchase for subscriptions inside iPhone apps.'
-    },
-    {
-      level: 'blocker',
-      title: 'No way to delete an account',
-      why: 'Apple requires apps with sign-up to let people delete their account in the app.'
-    },
-    {
-      level: 'before',
-      title: 'No terms of service',
-      why: "Terms set what users can expect and limit what you're responsible for."
-    }
-  ];
-
-  var GAP_LEVELS = [
-    ['blocker', 'Blocks release'],
-    ['before', 'Fix before launch']
-  ];
-
-  var CHECKLIST = [
-    {
-      phase: 'Before you submit',
-      tasks: [
-        ['Make sure each user can only read their own data.', 'A database that any signed-in user can query is one of the most common gaps in apps built quickly.'],
-        ['Encrypt stored bank and transaction data.', 'If it ever leaks, encrypted data is far less harmful to the students who trusted you with it.'],
-        ['Write a privacy policy that lists everything you collect, including analytics.', 'Apple rejects apps without one, and it has to match what the app actually does.'],
-        ['Write terms of service.', 'They set the rules for using the app and limit what you can be blamed for.'],
-        ['Move the premium tier to Apple in-app purchase.', 'Selling it through Stripe inside the app is a common reason for rejection.'],
-        ['Add a way to delete an account inside the app.', 'Apple requires it for any app with sign-up.'],
-        ["Get approved for live bank connections by your bank-data provider.", 'Providers like Plaid usually review an app before it can connect real accounts.']
-      ]
-    },
-    {
-      phase: 'When you submit',
-      tasks: [
-        ["Fill in the App Store privacy details.", 'They appear on your listing, and they must match your privacy policy and the analytics you use.'],
-        ['Add a support link to your listing.', 'Apple asks for one on every app, and it is where users will reach you.'],
-        ['Give reviewers a test account with sample data.', "Reviewers can't see features behind a login without one, and will send the app back."]
-      ]
-    },
-    {
-      phase: 'After launch',
-      tasks: [
-        ['Update your privacy policy and privacy details whenever you add a feature that collects new data.', 'A mismatch can get later updates rejected.']
-      ]
-    }
-  ];
-
-  var PROMPT_FALLBACK_NOTE = 'Select the prompt text and copy it';
-
   // ---------- State ----------
+
+  function freshAnswers() {
+    return {
+      product: '', category: '', detail: '',
+      accounts: '', money: '', data: '', tracking: '', ai: '', ugc: '',
+      have: {}
+    };
+  }
 
   var state = {
     method: 'summary',
-    usedExample: false,
-    answers: { product: '', category: '', detail: '' },
+    guessedFrom: '',
+    answers: freshAnswers(),
+    guessed: {},
     done: {}
   };
 
@@ -175,15 +161,114 @@
     return Array.prototype.slice.call(document.querySelectorAll(sel));
   }
 
+  function esc(t) {
+    return String(t).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
   function icon(path) {
     return '<svg class="icon" viewBox="0 0 20 20" aria-hidden="true">' + path + '</svg>';
   }
 
   var CHECK_ICON = icon('<path d="M4.75 10.5l3.5 3.5 7-8" />');
+  var CHEVRON = icon('<path d="M5.25 8.25L10 13l4.75-4.75" />');
+  var ARROW = icon('<path d="M8.25 5.25L13 10l-4.75 4.75" />');
+  var EXTERNAL = icon('<path d="M8.75 4.75h-4v10.5h10.5v-4M11.25 4.75h4v4M15 5l-6 6" />');
+
+  // ---------- Guessing answers from the description ----------
+  // A plain keyword guess, shown to the person as a guess to check. It is
+  // not analysis, and every guessed answer stays editable.
+
+  function has(text, words) {
+    return words.some(function (w) {
+      return new RegExp('\\b' + w + '\\b', 'i').test(text);
+    });
+  }
+
+  function guess(text) {
+    var g = {};
+    var t = text || '';
+    var no = /\b(no|not|don't|doesn't|can't|cannot|without|haven't)\b/i;
+
+    var ios = has(t, ['iphone', 'ipad', 'ios', 'app store', 'swiftui', 'xcode']);
+    var android = has(t, ['android', 'google play', 'play store', 'kotlin']);
+    if (ios && android) g.product = 'both';
+    else if (ios) g.product = 'ios';
+    else if (android) g.product = 'android';
+    else if (has(t, ['react native', 'expo', 'flutter'])) g.product = 'both';
+    else if (has(t, ['website', 'web app', 'next\\.js', 'nextjs', 'browser'])) g.product = 'web';
+
+    if (has(t, ['meditat\\w*', 'mindful\\w*', 'sleep', 'fitness', 'workout\\w*', 'health', 'therapy', 'mood', 'nutrition', 'calorie\\w*', 'symptom\\w*'])) {
+      g.category = 'health';
+      if (has(t, ['meditat\\w*', 'mindful\\w*', 'sleep', 'relax\\w*', 'breath\\w*'])) g.detail = 'mindfulness';
+      else if (has(t, ['symptom\\w*', 'medical', 'diagnos\\w*', 'medication\\w*'])) g.detail = 'medical';
+      else if (has(t, ['therapy', 'anxiety', 'depression'])) g.detail = 'mental';
+      else if (has(t, ['nutrition', 'calorie\\w*', 'diet', 'food'])) g.detail = 'nutrition';
+      else if (has(t, ['fitness', 'workout\\w*', 'exercise'])) g.detail = 'fitness';
+    } else if (has(t, ['budget\\w*', 'finance', 'bank\\w*', 'invest\\w*', 'crypto', 'loan\\w*', 'expense\\w*'])) {
+      g.category = 'finance';
+      if (has(t, ['plaid', 'bank accounts?'])) g.detail = 'bank';
+      else if (has(t, ['invest\\w*', 'crypto', 'stock\\w*'])) g.detail = 'investing';
+      else g.detail = 'tracking';
+    } else if (has(t, ['kids', 'children', 'child'])) {
+      g.category = 'kids';
+    } else if (has(t, ['game', 'puzzle'])) {
+      g.category = 'games';
+    }
+
+    if (has(t, ['sign up', 'sign in', 'log in', 'login', 'accounts?', 'passwords?'])) g.accounts = 'yes';
+
+    if (has(t, ['subscriptions?', 'premium', 'in-app purchases?', 'unlocks?', 'paywall'])) g.money = 'digital';
+    else if (has(t, ['shop', 'orders?', 'delivery', 'bookings?'])) g.money = 'physical';
+    else if (/\b(it's free|is free|no payments|doesn't charge)\b/i.test(t)) g.money = 'none';
+
+    if (has(t, ['supabase'])) g.data = 'supabase';
+    else if (has(t, ['firebase', 'firestore'])) g.data = 'firebase';
+    else if (has(t, ['localstorage', 'on the device', 'on device', 'stays on the phone'])) g.data = 'device';
+    else if (has(t, ['database', 'server', 'backend', 'mongodb', 'postgres\\w*'])) g.data = 'other';
+
+    if (has(t, ['analytics', 'ads', 'admob', 'mixpanel', 'posthog', 'amplitude'])) g.tracking = 'yes';
+    if (has(t, ['openai', 'gpt', 'chatgpt', 'claude', 'anthropic', 'gemini', 'ai'])) g.ai = 'yes';
+
+    // "Users can't see each other's posts" should not read as yes.
+    var ugcSentence = (t.match(/[^.]*\b(post\w*|comment\w*|chat|messag\w*)\b[^.]*/i) || [''])[0];
+    if (ugcSentence) g.ugc = no.test(ugcSentence) ? 'no' : 'yes';
+
+    // "What's already set up": only mark things the text says exist, never
+    // anything it says is missing.
+    g.have = {};
+    [
+      ['apple', /apple developer (account|program|membership)/i],
+      ['google', /(google play|play console) (developer )?account/i],
+      ['website', /\b(website|domain)\b/i],
+      ['privacy', /privacy policy/i],
+      ['terms', /\bterms\b/i],
+      ['support', /support (email|address)/i]
+    ].forEach(function (pair) {
+      var m = t.match(new RegExp('[^.]*' + pair[1].source + '[^.]*', 'i'));
+      if (m && !no.test(m[0])) g.have[pair[0]] = true;
+    });
+    return g;
+  }
+
+  function applyGuess(text) {
+    if (state.guessedFrom === text) return;
+    var g = guess(text);
+    var a = freshAnswers();
+    Object.keys(g).forEach(function (k) {
+      a[k] = g[k];
+    });
+    state.answers = a;
+    state.guessed = g;
+    state.guessedFrom = text;
+    state.done = {};
+  }
 
   // ---------- Routing ----------
 
-  var VIEWS = ['landing', 'describe', 'narrow', 'analyzing', 'results'];
+  var VIEWS = ['landing', 'describe', 'narrow', 'details', 'analyzing', 'results'];
+  var firstRender = true;
 
   function currentView() {
     var name = (location.hash || '').replace(/^#\/?/, '');
@@ -198,15 +283,36 @@
     else location.hash = hash;
   }
 
+  function answered(a) {
+    return a.product && a.category && QUESTIONS.every(function (q) {
+      return a[q.id];
+    });
+  }
+
   function render() {
     var name = currentView();
     clearTimeout(analyzeTimer);
+
+    // Later screens need earlier answers; send people back to fill them in.
+    if (['narrow', 'details', 'analyzing', 'results'].indexOf(name) > -1 && !describedText()) {
+      go('describe', true);
+      return;
+    }
+    if (name === 'details' && !(state.answers.product && state.answers.category)) {
+      go('narrow', true);
+      return;
+    }
+    if ((name === 'analyzing' || name === 'results') && !answered(state.answers)) {
+      go('details', true);
+      return;
+    }
 
     $all('.view').forEach(function (v) {
       v.hidden = v.getAttribute('data-view') !== name;
     });
 
     if (name === 'narrow') enterNarrow();
+    if (name === 'details') enterDetails();
     if (name === 'analyzing') enterAnalyzing();
     if (name === 'results') enterResults();
 
@@ -214,8 +320,9 @@
       landing: "Launch Check: what's left before your app can launch",
       describe: 'Describe your app · Launch Check',
       narrow: 'Narrow it down · Launch Check',
+      details: 'A few quick questions · Launch Check',
       analyzing: 'Checking your app · Launch Check',
-      results: 'Example results · Launch Check'
+      results: 'Your launch plan · Launch Check'
     };
     document.title = titles[name];
 
@@ -227,7 +334,6 @@
     firstRender = false;
   }
 
-  var firstRender = true;
   window.addEventListener('hashchange', render);
 
   // ---------- Step 1: Describe ----------
@@ -236,6 +342,10 @@
   var summaryEl = $('#summary');
   var codeEl = $('#code');
   var consentEl = $('#code-consent');
+
+  function describedText() {
+    return state.method === 'summary' ? summaryEl.value.trim() : consentEl.checked ? codeEl.value.trim() : '';
+  }
 
   function setMethod(method) {
     state.method = method;
@@ -269,13 +379,11 @@
 
   $('#use-example').addEventListener('click', function () {
     summaryEl.value = EXAMPLE_SUMMARY;
-    state.usedExample = true;
     clearError(summaryEl, '#summary-error');
     summaryEl.focus();
   });
 
   summaryEl.addEventListener('input', function () {
-    if (summaryEl.value !== EXAMPLE_SUMMARY) state.usedExample = false;
     if (summaryEl.value.trim()) clearError(summaryEl, '#summary-error');
   });
 
@@ -324,14 +432,14 @@
         $('#copy-status').textContent = 'Prompt copied. Paste it into your AI chat.';
       },
       function () {
-        // Fall back to selecting the text so the person can copy it themselves.
+        // Select the text so the person can copy it themselves.
         var range = document.createRange();
         range.selectNodeContents($('#prompt-text'));
         var sel = window.getSelection();
         sel.removeAllRanges();
         sel.addRange(range);
         copyLabel.textContent = 'Copy prompt';
-        $('#copy-status').textContent = PROMPT_FALLBACK_NOTE + ' with your keyboard.';
+        $('#copy-status').textContent = 'Select the prompt text and copy it with your keyboard.';
       }
     );
     clearTimeout(copyReset);
@@ -344,14 +452,15 @@
     var err = $(errorSel);
     err.textContent = message;
     err.hidden = false;
-    field.setAttribute('aria-invalid', 'true');
+    if (field) field.setAttribute('aria-invalid', 'true');
   }
 
   function clearError(field, errorSel) {
     var err = $(errorSel);
+    if (!err) return;
     err.textContent = '';
     err.hidden = true;
-    field.removeAttribute('aria-invalid');
+    if (field) field.removeAttribute('aria-invalid');
   }
 
   describeForm.addEventListener('submit', function (e) {
@@ -374,6 +483,7 @@
         return;
       }
     }
+    applyGuess(describedText());
     go('narrow');
   });
 
@@ -404,15 +514,9 @@
   }
 
   function enterNarrow() {
-    var prefill = state.usedExample && state.method === 'summary';
-    if (prefill && !state.answers.product && !state.answers.category) {
-      state.answers = {
-        product: EXAMPLE_ANSWERS.product,
-        category: EXAMPLE_ANSWERS.category,
-        detail: EXAMPLE_ANSWERS.detail
-      };
-    }
-    $('#prefill-note').hidden = !(prefill && state.answers.category === EXAMPLE_ANSWERS.category);
+    var g = state.guessed;
+    $('#prefill-note').hidden = !(g.product || g.category);
+    $('#prefill-note').textContent = 'We guessed these from your description. Change anything that’s wrong.';
     productEl.value = state.answers.product;
     categoryEl.value = state.answers.category;
     fillDetail(state.answers.category, state.answers.detail);
@@ -454,41 +558,178 @@
       first.focus();
       return;
     }
+    go('details');
+  });
+
+  // ---------- Step 3: Details ----------
+
+  function flags(a) {
+    return {
+      ios: a.product === 'ios' || a.product === 'both',
+      android: a.product === 'android' || a.product === 'both',
+      web: a.product === 'web',
+      extension: a.product === 'extension'
+    };
+  }
+
+  function enterDetails() {
+    var a = state.answers;
+    var f = flags(a);
+    var anyGuess = QUESTIONS.some(function (q) {
+      return state.guessed[q.id];
+    });
+    $('#guess-note').hidden = !anyGuess;
+
+    $('#questions').innerHTML = QUESTIONS.map(function (q) {
+      var name = 'q-' + q.id;
+      return (
+        '<fieldset class="field question" id="field-' + q.id + '">' +
+        '<legend class="field-label">' + q.label + '</legend>' +
+        (q.hint ? '<p class="hint hint--above">' + q.hint + '</p>' : '') +
+        '<div class="options">' +
+        q.options
+          .map(function (o) {
+            return (
+              '<label class="option"><input type="radio" name="' + name + '" value="' + o[0] + '"' +
+              (a[q.id] === o[0] ? ' checked' : '') + ' aria-describedby="' + q.id + '-error" /><span>' + o[1] + '</span></label>'
+            );
+          })
+          .join('') +
+        '</div>' +
+        '<p class="error" id="' + q.id + '-error" hidden></p>' +
+        '</fieldset>'
+      );
+    }).join('');
+
+    $('#have-list').innerHTML = HAVES.filter(function (h) {
+      return h.when(f);
+    })
+      .map(function (h) {
+        return (
+          '<label class="check check--row"><input type="checkbox" name="have" value="' + h.id + '"' +
+          (a.have[h.id] ? ' checked' : '') + ' /><span>' + h.label + '</span></label>'
+        );
+      })
+      .join('');
+
+    $all('#questions input[type="radio"]').forEach(function (r) {
+      r.addEventListener('change', function () {
+        var id = r.name.replace('q-', '');
+        state.answers[id] = r.value;
+        $('#field-' + id).removeAttribute('data-invalid');
+        clearError(null, '#' + id + '-error');
+      });
+    });
+    $all('#have-list input').forEach(function (c) {
+      c.addEventListener('change', function () {
+        state.answers.have[c.value] = c.checked;
+      });
+    });
+  }
+
+  $('#details-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var first = null;
+    QUESTIONS.forEach(function (q) {
+      if (!state.answers[q.id]) {
+        $('#field-' + q.id).setAttribute('data-invalid', 'true');
+        showError(null, '#' + q.id + '-error', 'Choose an answer. “Not sure” is fine.');
+        first = first || $('#field-' + q.id + ' input');
+      }
+    });
+    if (first) {
+      first.focus();
+      return;
+    }
     go('analyzing');
   });
 
+  // ---------- Building the plan ----------
+
+  function context() {
+    var a = state.answers;
+    var f = flags(a);
+    return {
+      a: a,
+      ios: f.ios,
+      android: f.android,
+      web: f.web,
+      extension: f.extension,
+      store: f.ios || f.android,
+      accounts: a.accounts !== 'no',
+      digital: a.money === 'digital' || a.money === 'unsure',
+      physical: a.money === 'physical',
+      cloud: a.data !== 'device',
+      tracking: a.tracking !== 'no',
+      ai: a.ai !== 'no',
+      ugc: a.ugc === 'yes',
+      health: a.category === 'health',
+      medical: a.detail === 'medical' || a.detail === 'mental',
+      kids: a.category === 'kids' || a.detail === 'children',
+      finance: a.category === 'finance',
+      moneyMoving: ['bank', 'payments', 'investing', 'lending'].indexOf(a.detail) > -1,
+      have: a.have
+    };
+  }
+
+  function buildPlan() {
+    var c = context();
+    var items = DATA.items.filter(function (it) {
+      return it.when(c);
+    });
+    items.forEach(function (it) {
+      it.severity = typeof it.sev === 'function' ? it.sev(c) : it.sev;
+      it._done = !!(it.have && c.have[it.have]);
+    });
+    var gaps = items
+      .filter(function (it) {
+        return it.gap && !it._done && it.severity === 'blocker';
+      })
+      .sort(function (x, y) {
+        return (x.gap.rank || 99) - (y.gap.rank || 99);
+      });
+    return { items: items, gaps: gaps, context: c };
+  }
+
   // ---------- Analyzing ----------
 
-  function checksFor(answers) {
-    var list = [PRODUCT_CHECKS[answers.product] || 'Store requirements', 'Privacy and the data you collect', 'Sign-up, login and accounts'];
-    if (CATEGORY_CHECKS[answers.category]) list.push(CATEGORY_CHECKS[answers.category]);
-    list.push('Payments and subscriptions');
+  function checksFor(c) {
+    var list = [];
+    if (c.ios) list.push('App Store requirements');
+    if (c.android) list.push('Google Play requirements');
+    if (c.web || c.extension) list.push('What every public site needs');
+    if (c.cloud) list.push('Where your data lives and who can read it');
+    list.push('Privacy policy and terms');
+    if (c.accounts) list.push('Sign-up, login and account deletion');
+    if (c.a.money !== 'none') list.push('Payments and subscriptions');
+    if (c.ai) list.push('Sending data to AI services');
+    if (c.health) list.push('Extra rules for health and wellness apps');
+    if (c.finance) list.push('Extra rules for finance apps');
+    if (c.kids) list.push('Extra rules for apps used by children');
     return list;
   }
 
   function enterAnalyzing() {
-    var a = state.answers;
-    // Arriving here without answers (for example from a bookmark) runs the example.
-    if (!a.product || !a.category) a = EXAMPLE_ANSWERS;
-
-    var catName = categoryEl.querySelector('option[value="' + a.category + '"]');
+    var c = context();
+    var catName = categoryEl.querySelector('option[value="' + c.a.category + '"]');
     $('#analyzing-lead').textContent =
-      'Working out which extra steps apply to ' + PRODUCT_NAMES[a.product] + ' about ' +
+      'Working out which steps apply to ' + PRODUCT_NAMES[c.a.product] + ' about ' +
       (catName ? catName.textContent.toLowerCase() : 'your topic') + '.';
 
-    var checks = checksFor(a);
+    var checks = checksFor(c);
     var listEl = $('#checking-list');
     listEl.innerHTML = checks
-      .map(function (c) {
-        return '<li data-state="pending"><span class="pending-dot" aria-hidden="true"></span><span>' + c + '</span><span class="state">Waiting</span></li>';
+      .map(function (label) {
+        return '<li data-state="pending"><span class="pending-dot" aria-hidden="true"></span><span>' + label + '</span><span class="state">Waiting</span></li>';
       })
       .join('');
 
     var items = $all('#checking-list li');
     var status = $('#checking-status');
     var i = 0;
-    // About half a second per check: long enough to read, short enough not to feel staged.
-    var step = 500;
+    // The rules run instantly; the short pause per line is only so people can
+    // read what was checked. The whole run stays around two seconds.
+    var step = Math.min(350, Math.round(2000 / checks.length));
 
     function mark(li, s) {
       li.setAttribute('data-state', s);
@@ -506,7 +747,7 @@
     function next() {
       if (i > 0) mark(items[i - 1], 'done');
       if (i >= items.length) {
-        status.textContent = 'All checks done. Showing results.';
+        status.textContent = 'All checks done. Showing your plan.';
         analyzeTimer = setTimeout(function () {
           go('results', true);
         }, reduceMotion ? 0 : 300);
@@ -522,50 +763,112 @@
 
   // ---------- Results ----------
 
-  var resultsBuilt = false;
+  var GAP_LIMIT = 5;
 
   function enterResults() {
-    if (resultsBuilt) return updateCount();
-    resultsBuilt = true;
+    var plan = buildPlan();
+    var c = plan.context;
+    var catName = categoryEl.querySelector('option[value="' + c.a.category + '"]');
 
-    $('#gaps').innerHTML = GAP_LEVELS.map(function (lvl) {
-      var items = GAPS.filter(function (g) {
-        return g.level === lvl[0];
-      });
-      return (
-        '<section class="gap-group" data-level="' + lvl[0] + '" aria-label="' + lvl[1] + '">' +
-        '<h2 class="gap-group__label">' + lvl[1] + ' <span class="muted">' + items.length + '</span></h2>' +
-        '<ol class="gaps">' +
-        items
+    $('#basis').innerHTML =
+      'Based on your answers, not your code. <a href="#/details">Edit answers</a>';
+    $('#basis').title = 'For ' + PRODUCT_NAMES[c.a.product] + ' about ' + (catName ? catName.textContent.toLowerCase() : 'your topic');
+
+    var n = plan.gaps.length;
+    $('#results-title').textContent =
+      n === 0 ? 'Nothing blocking launch that we can see' : n === 1 ? '1 thing to fix before launch' : n + ' things to fix before launch';
+
+    var shown = plan.gaps.slice(0, GAP_LIMIT);
+    $('#gaps').innerHTML = shown.length
+      ? '<ol class="gaps">' +
+        shown
           .map(function (g) {
-            return '<li class="gap"><h3>' + g.title + '</h3><p>' + g.why + '</p></li>';
-          })
-          .join('') +
-        '</ol></section>'
-      );
-    }).join('');
-
-    var n = 0;
-    $('#checklist').innerHTML = CHECKLIST.map(function (phase) {
-      return (
-        '<section class="phase"><h3>' + phase.phase + '</h3><ol class="tasks">' +
-        phase.tasks
-          .map(function (t) {
-            n++;
-            var id = 'task-' + n;
             return (
-              '<li><label class="task" for="' + id + '">' +
-              '<input type="checkbox" id="' + id + '" data-task="' + n + '" />' +
-              '<span class="task__num" aria-hidden="true">' + n + '.</span>' +
-              '<span><span class="task__what">' + t[0] + '</span>' +
-              '<span class="task__why">' + t[1] + '</span></span>' +
-              '</label></li>'
+              '<li><a class="gap" href="#step-' + g.id + '" data-open="' + g.id + '">' +
+              '<span class="gap__text"><span class="gap__title">' + esc(g.gap.title) + '</span>' +
+              '<span class="gap__why">' + esc(g.gap.why) + '</span></span>' +
+              '<span class="gap__go"><span class="gap__go-label">What to do</span>' + ARROW + '</span></a></li>'
             );
           })
           .join('') +
-        '</ol></section>'
-      );
-    }).join('');
+        '</ol>'
+      : '<p class="lead">Your answers don’t show anything that would stop a release. Work through the checklist anyway: it covers what reviewers look at.</p>';
+
+    var more = plan.gaps.length - shown.length;
+    $('#gaps-more').hidden = more <= 0;
+    $('#gaps-more').textContent = more > 0 ? 'Plus ' + more + ' more marked “Blocks release” in your checklist below.' : '';
+
+    $all('[data-checked-date]').forEach(function (el) {
+      el.textContent = DATA.checked;
+    });
+
+    renderChecklist(plan);
+
+    $all('[data-open]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        openStep(a.getAttribute('data-open'));
+      });
+    });
+  }
+
+  var LEVELS = { blocker: 'Blocks release', before: 'Before launch', recommended: 'Recommended', after: 'After launch' };
+
+  function renderChecklist(plan) {
+    var n = 0;
+    var html = DATA.phases
+      .map(function (phase) {
+        var items = plan.items.filter(function (it) {
+          return it.phase === phase.id;
+        });
+        if (!items.length) return '';
+        return (
+          '<section class="phase" aria-labelledby="phase-' + phase.id + '">' +
+          '<h3 id="phase-' + phase.id + '">' + esc(phase.title) + '</h3>' +
+          (phase.intro ? '<p class="phase__intro">' + esc(phase.intro) + '</p>' : '') +
+          '<ol class="tasks">' +
+          items
+            .map(function (it) {
+              n++;
+              var cb = 'task-' + it.id;
+              var checked = state.done[it.id] !== undefined ? state.done[it.id] : it._done;
+              return (
+                '<li class="task" id="step-' + it.id + '" data-severity="' + it.severity + '" tabindex="-1">' +
+                '<input type="checkbox" id="' + cb + '" data-task="' + it.id + '"' + (checked ? ' checked' : '') + ' />' +
+                '<span class="task__num" aria-hidden="true">' + n + '.</span>' +
+                '<div class="task__body">' +
+                '<label class="task__what" for="' + cb + '">' + esc(it.title) + '</label>' +
+                '<p class="task__level">' + LEVELS[it.severity] + (it._done ? ' · You said this is done' : '') + '</p>' +
+                '<p class="task__why">' + esc(it.why) + '</p>' +
+                '<button type="button" class="task__toggle" aria-expanded="false" aria-controls="how-' + it.id + '">' +
+                '<span>What to do</span>' + CHEVRON + '</button>' +
+                '<div class="task__how" id="how-' + it.id + '" hidden>' +
+                '<ol class="how">' +
+                it.steps
+                  .map(function (s) {
+                    return '<li>' + s + '</li>';
+                  })
+                  .join('') +
+                '</ol>' +
+                '<p class="sources__label">Sources</p><ul class="sources">' +
+                it.sources
+                  .map(function (s) {
+                    return (
+                      '<li><a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.label) +
+                      '<span class="sr-only"> (opens in a new tab)</span></a></li>'
+                    );
+                  })
+                  .join('') +
+                '</ul></div>' +
+                '</div></li>'
+              );
+            })
+            .join('') +
+          '</ol></section>'
+        );
+      })
+      .join('');
+    $('#checklist').innerHTML = html;
 
     $all('#checklist input[type="checkbox"]').forEach(function (cb) {
       cb.addEventListener('change', function () {
@@ -573,7 +876,27 @@
         updateCount();
       });
     });
+    $all('.task__toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        setOpen(btn, btn.getAttribute('aria-expanded') !== 'true');
+      });
+    });
     updateCount();
+  }
+
+  function setOpen(btn, open) {
+    btn.setAttribute('aria-expanded', String(open));
+    btn.querySelector('span').textContent = open ? 'Hide steps' : 'What to do';
+    document.getElementById(btn.getAttribute('aria-controls')).hidden = !open;
+  }
+
+  function openStep(id) {
+    var li = document.getElementById('step-' + id);
+    if (!li) return;
+    var btn = li.querySelector('.task__toggle');
+    setOpen(btn, true);
+    li.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
+    btn.focus({ preventScroll: true });
   }
 
   function updateCount() {
@@ -585,20 +908,27 @@
   }
 
   $('#print').addEventListener('click', function () {
+    // Print every step's details, not just the open ones.
+    var closed = $all('.task__how[hidden]');
+    closed.forEach(function (el) {
+      el.hidden = false;
+    });
     window.print();
+    closed.forEach(function (el) {
+      el.hidden = true;
+    });
   });
 
   $('#start-over').addEventListener('click', function () {
-    state.usedExample = false;
-    state.answers = { product: '', category: '', detail: '' };
+    state.answers = freshAnswers();
+    state.guessed = {};
+    state.guessedFrom = '';
+    state.done = {};
     summaryEl.value = '';
     codeEl.value = '';
     consentEl.checked = false;
     codeEl.disabled = true;
     setMethod('summary');
-    $all('#checklist input[type="checkbox"]').forEach(function (b) {
-      b.checked = false;
-    });
   });
 
   // ---------- Theme ----------
