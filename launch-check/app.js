@@ -271,12 +271,13 @@
   var firstRender = true;
 
   function currentView() {
+    // Routes are bare tokens (#describe). Older #/describe links still work.
     var name = (location.hash || '').replace(/^#\/?/, '');
     return VIEWS.indexOf(name) > -1 ? name : 'landing';
   }
 
   function go(name, replace) {
-    var hash = name === 'landing' ? '#/' : '#/' + name;
+    var hash = name === 'landing' ? '#start' : '#' + name;
     // replace() keeps the analyzing screen out of history, so Back from
     // results returns to the questions instead of re-running the check.
     if (replace) location.replace(hash);
@@ -317,7 +318,7 @@
     if (name === 'results') enterResults();
 
     var titles = {
-      landing: "Launch Check: what's left before your app can launch",
+      landing: 'Launch Check',
       describe: 'Describe your app · Launch Check',
       narrow: 'Narrow it down · Launch Check',
       details: 'A few quick questions · Launch Check',
@@ -771,7 +772,7 @@
     var catName = categoryEl.querySelector('option[value="' + c.a.category + '"]');
 
     $('#basis').innerHTML =
-      'Based on your answers, not your code. <a href="#/details">Edit answers</a>';
+      'Based on your answers, not your code. <a href="#details">Edit answers</a>';
     $('#basis').title = 'For ' + PRODUCT_NAMES[c.a.product] + ' about ' + (catName ? catName.textContent.toLowerCase() : 'your topic');
 
     var n = plan.gaps.length;
@@ -907,16 +908,65 @@
     $('#checklist-count').textContent = done + ' of ' + boxes.length + ' done';
   }
 
-  $('#print').addEventListener('click', function () {
-    // Print every step's details, not just the open ones.
-    var closed = $all('.task__how[hidden]');
-    closed.forEach(function (el) {
-      el.hidden = false;
+  // Plain-text version of the plan, for pasting into notes, a doc or an AI chat.
+  function planAsText() {
+    var plan = buildPlan();
+    var lines = [$('#results-title').textContent, 'From Launch Check (prototype). Checked ' + DATA.checked + '. Not legal advice.', ''];
+    if (plan.gaps.length) {
+      lines.push('BIGGEST GAPS');
+      plan.gaps.forEach(function (g) {
+        lines.push('- ' + g.gap.title + ': ' + g.gap.why);
+      });
+      lines.push('');
+    }
+    var n = 0;
+    DATA.phases.forEach(function (phase) {
+      var items = plan.items.filter(function (it) {
+        return it.phase === phase.id;
+      });
+      if (!items.length) return;
+      lines.push(phase.title.toUpperCase());
+      items.forEach(function (it) {
+        n++;
+        var done = state.done[it.id] !== undefined ? state.done[it.id] : it._done;
+        lines.push('');
+        lines.push(n + '. [' + (done ? 'x' : ' ') + '] ' + it.title + ' (' + LEVELS[it.severity] + ')');
+        lines.push('   Why: ' + it.why);
+        it.steps.forEach(function (st, i) {
+          var tmp = document.createElement('div');
+          tmp.innerHTML = st;
+          lines.push('   ' + String.fromCharCode(97 + i) + ') ' + tmp.textContent.replace(/ \(opens in a new tab\)/g, ''));
+        });
+        it.sources.forEach(function (src) {
+          lines.push('   Source: ' + src.label + ' ' + src.url);
+        });
+      });
+      lines.push('');
     });
-    window.print();
-    closed.forEach(function (el) {
-      el.hidden = true;
-    });
+    return lines.join('\n');
+  }
+
+  var copyPlanBtn = $('#copy-plan');
+  copyPlanBtn.addEventListener('click', function () {
+    var text = planAsText();
+    var label = copyPlanBtn.querySelector('span');
+    var done = function (msg) {
+      label.textContent = msg;
+      $('#copy-plan-status').textContent = msg === 'Copied' ? 'Checklist copied as text.' : 'Couldn’t copy. Your browser blocked it.';
+      setTimeout(function () {
+        label.textContent = 'Copy checklist as text';
+      }, 3000);
+    };
+    // Call the clipboard inside the click so browsers and embedded viewers allow it.
+    var p = navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(text) : Promise.reject();
+    p.then(
+      function () {
+        done('Copied');
+      },
+      function () {
+        done(copyWithCommand(text) ? 'Copied' : 'Couldn’t copy');
+      }
+    );
   });
 
   $('#start-over').addEventListener('click', function () {
