@@ -2737,7 +2737,7 @@ body.is-focus .site-footer {
 /* Must-fix rows: one by one, each stamped. Only on arrival, not on every re-render. */
 .stamp {
   display: inline-block;
-  align-self: flex-start;
+  justify-self: start;
   margin-bottom: var(--s-1);
   margin-right: var(--s-2);
   padding: 0 var(--s-2);
