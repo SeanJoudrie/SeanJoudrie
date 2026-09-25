@@ -45,7 +45,7 @@
             <p class="lead">Describe the app you built with AI. You'll get a short, ordered list of what's still missing, like a privacy policy or secure storage for your users' data.</p>
             <div class="hero__action">
               <a class="button button--primary" href="#describe">Check my app</a>
-              <p class="muted">About 2 minutes. No account, nothing to install.</p>
+              <p class="muted">For phone apps, websites and web apps. About 2 minutes, no account.</p>
             </div>
           </div>
 
@@ -168,7 +168,7 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
                 <li>
                   <label class="flow-steps__title" for="summary">Paste the reply here</label>
                   <textarea id="summary" name="summary" rows="8" aria-describedby="summary-hint summary-error"></textarea>
-                  <p class="hint" id="summary-hint">No AI chat handy? <button type="button" class="text-button" id="use-example">Use the example summary</button> for a budgeting app for students.</p>
+                  <p class="hint" id="summary-hint">No AI chat handy? <button type="button" class="text-button" id="use-example">Use the example summary</button> for a meditation app.</p>
                   <p class="error" id="summary-error" hidden></p>
                 </li>
               </ol>
@@ -181,23 +181,24 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
                   <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><rect x="4.75" y="8.75" width="10.5" height="8.5" rx="2" /><path d="M7.25 8.75v-2.5a2.75 2.75 0 0 1 5.5 0v2.5" /></svg>
                   Before you paste code
                 </h2>
-                <p>To check code, Launch Check has to receive it. Once it's sent, someone other than you has a copy, and no website can promise it will never be breached. A summary gets you the same checklist without that risk.</p>
+                <p>In the real product, checking code means sending it to Launch Check's servers. Then someone other than you has a copy, and no website can promise it will never be breached. A summary gets you the same checklist without that risk.</p>
                 <p class="notice__subhead">If you still want to paste code:</p>
                 <ul class="list list--tight">
-                  <li><strong>Keep private repos private.</strong> If your GitHub repo is private for a reason, don't paste it here. Use a summary.</li>
-                  <li><strong>Remove secrets first:</strong> <code>.env</code> files, API keys, passwords and any real customer data.</li>
-                  <li><strong>Change any key that was ever in your code.</strong> Deleting it from a file doesn't remove it from your GitHub history. <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository" target="_blank" rel="noopener">GitHub explains why<span class="sr-only"> (opens in a new tab)</span></a>.</li>
-                  <li><strong>Only paste code you'd be fine with a stranger reading.</strong></li>
+                  <li><strong>Keep private code private.</strong> If your project is private on GitHub, Replit or anywhere else, use a summary instead.</li>
+                  <li><strong>Leave out passwords and keys.</strong> They usually sit in a file called <code>.env</code>, or in your builder's Secrets settings (in Replit: Tools → Secrets). Never paste those.</li>
+                  <li><strong>Leave out real people's data,</strong> like names, emails or scores in sample files.</li>
+                  <li><strong>If a key was ever in your code or a chat, make a new one.</strong> In that service's dashboard, create a new key, use it, then delete the old one. Deleting it from a file doesn't remove it from your project's history. <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository" target="_blank" rel="noopener">GitHub explains why<span class="sr-only"> (opens in a new tab)</span></a>.</li>
                 </ul>
                 <label class="check">
-                  <input type="checkbox" id="code-consent" />
-                  <span>I understand someone else will have a copy of this code, and I've removed keys and passwords.</span>
+                  <input type="checkbox" id="code-consent" aria-describedby="code-error" />
+                  <span>I understand someone else would have a copy of this code, and I've left out passwords, keys and real people's data.</span>
                 </label>
+                <p class="error" id="code-error" hidden></p>
               </div>
               <label class="field-label" for="code">Your code</label>
-              <textarea id="code" name="code" rows="10" class="mono" disabled aria-describedby="code-hint code-error"></textarea>
-              <p class="hint" id="code-hint">Demo: in this prototype, nothing you paste leaves your browser. <button type="button" class="text-button" id="switch-to-summary">Use a summary instead</button></p>
-              <p class="error" id="code-error" hidden></p>
+              <p class="hint hint--above" id="code-lock">Locked until you tick the box above.</p>
+              <textarea id="code" name="code" rows="10" class="mono" disabled aria-describedby="code-lock code-hint"></textarea>
+              <p class="hint" id="code-hint">This prototype doesn't send anything: what you paste stays in your browser and isn't read, only scanned for keywords. <button type="button" class="text-button" id="switch-to-summary">Use a summary instead</button></p>
             </div>
 
             <div class="nav-row">
@@ -250,6 +251,8 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
                   <option value="kids">Kids and family</option>
                   <option value="social">Social and messaging</option>
                   <option value="education">Education</option>
+                  <option value="food">Food and cooking</option>
+                  <option value="community">Community and hobbies</option>
                   <option value="shopping">Shopping</option>
                   <option value="productivity">Productivity and tools</option>
                   <option value="games">Games</option>
@@ -290,7 +293,7 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
         <div class="container container--flow">
           <p class="eyebrow">Step 3 of 3</p>
           <h1 id="details-title" tabindex="-1">A few quick questions</h1>
-          <p class="lead">These decide which store rules apply to you. "Not sure" is a fine answer. We'll add a step to find out.</p>
+          <p class="lead">These decide which rules apply to your app or site. "Not sure" is a fine answer: you'll get a step telling you how to find out.</p>
 
           <p class="callout" id="guess-note" hidden>We guessed some answers from your description. Check each one.</p>
 
@@ -350,12 +353,29 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
             <p><strong>This isn't legal advice.</strong> Every step links to the rule or guide it comes from, checked in <span data-checked-date></span>. Store rules change, and no checklist covers every app, so read the linked rules before you submit and have a lawyer look over your privacy policy and terms.</p>
           </div>
 
+          <section class="cost-section" id="cost-section" aria-labelledby="cost-title">
+            <h2 id="cost-title">What it will cost and how long it takes</h2>
+            <div class="table-wrap">
+              <table class="cost">
+                <thead><tr><th scope="col">What</th><th scope="col">Cost</th><th scope="col">Time</th></tr></thead>
+                <tbody id="cost"></tbody>
+              </table>
+            </div>
+          </section>
+
           <section class="checklist-section" aria-labelledby="checklist-title">
             <div class="checklist-head">
               <h2 id="checklist-title">Your launch checklist</h2>
               <p class="muted" id="checklist-count" aria-live="polite">0 of 0 done</p>
             </div>
             <p>Roughly in the order to do them. Open any step to see what to do and where the rule comes from.</p>
+            <nav class="phase-nav" aria-label="Checklist sections">
+              <ol id="phase-nav"></ol>
+            </nav>
+            <label class="check check--filter">
+              <input type="checkbox" id="must-only" />
+              <span>Show only “Must fix” steps</span>
+            </label>
             <div id="checklist"></div>
           </section>
 

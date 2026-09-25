@@ -82,6 +82,11 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Components set display: flex/grid; this keeps the hidden attribute winning. */
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -514,6 +519,7 @@ textarea.mono {
 
 textarea:disabled {
   background: var(--subtle);
+  border-style: dashed;
   color: var(--muted);
   cursor: not-allowed;
 }
@@ -1124,6 +1130,84 @@ fieldset[data-invalid="true"] .option {
 }
 
 /* ---------- Results extras ---------- */
+.guess {
+  margin-bottom: var(--s-2);
+  padding: var(--s-2) var(--s-3);
+  background: var(--subtle);
+  border-radius: var(--radius);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.cost-section {
+  margin-top: var(--s-8);
+}
+
+.cost-section h2 {
+  margin-bottom: var(--s-3);
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.cost {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.cost th,
+.cost td {
+  padding: var(--s-3) var(--s-4);
+  text-align: left;
+  vertical-align: top;
+  border-top: 1px solid var(--border);
+}
+
+.cost thead th {
+  border-top: 0;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.cost tbody th {
+  font-weight: 600;
+}
+
+.cost td:last-child {
+  color: var(--muted);
+}
+
+.phase-nav ol {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-4);
+  margin-top: var(--s-4);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.phase-nav a {
+  display: inline-block;
+  padding: var(--s-2) 0;
+}
+
+.check--filter {
+  margin-top: var(--s-2);
+  font-weight: 400;
+}
+
+.phase h3:focus {
+  outline: none;
+}
+
+
 .basis {
   margin-top: var(--s-2);
   color: var(--muted);
@@ -1241,6 +1325,19 @@ code {
   .gaps {
     gap: var(--s-2);
     margin-top: var(--s-4);
+  }
+
+  .task__how {
+    padding: var(--s-3);
+  }
+
+  .how {
+    padding-left: var(--s-4);
+  }
+
+  .cost th,
+  .cost td {
+    padding: var(--s-2) var(--s-3);
   }
 
   .task {

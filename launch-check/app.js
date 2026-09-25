@@ -72,8 +72,28 @@
 
   var QUESTIONS = [
     {
+      id: 'host',
+      label: 'Where does the site live right now?',
+      when: function (f) { return f.web; },
+      options: [
+        ['lovable', 'Lovable'],
+        ['bolt', 'Bolt'],
+        ['replit', 'Replit'],
+        ['vercel', 'Vercel or Netlify'],
+        ['own', 'My own domain already'],
+        ['none', 'Nowhere yet, or not sure']
+      ]
+    },
+    {
+      id: 'kids',
+      label: 'Is it made for children under 13, or likely to be used by them?',
+      hint: 'Children’s apps have their own privacy law and store rules, even for a simple game.',
+      options: [['yes', 'Yes'], ['no', 'No, it’s for teens and adults'], ['unsure', 'Not sure']]
+    },
+    {
       id: 'accounts',
       label: 'Do people sign up or log in?',
+      hint: 'Count it as yes if people type a name or email that gets saved online.',
       options: [['yes', 'Yes'], ['no', 'No'], ['unsure', 'Not sure']]
     },
     {
@@ -81,8 +101,9 @@
       label: 'Does it charge money?',
       options: [
         ['none', 'No, it’s free'],
-        ['digital', 'Yes, subscriptions or purchases that unlock things in the app'],
+        ['digital', 'Yes, subscriptions or purchases that unlock things'],
         ['physical', 'Yes, for physical products or real-world services'],
+        ['later', 'Not now, maybe later'],
         ['unsure', 'Not sure']
       ]
     },
@@ -93,14 +114,19 @@
         ['device', 'Only on their phone or in their browser'],
         ['supabase', 'Supabase'],
         ['firebase', 'Firebase'],
-        ['other', 'Another service or its own server'],
+        ['other', 'Another service (like Replit’s database) or its own server'],
         ['unsure', 'Not sure']
       ]
     },
     {
       id: 'tracking',
       label: 'Does it use analytics or show ads?',
-      options: [['yes', 'Yes'], ['no', 'No'], ['unsure', 'Not sure']]
+      options: [
+        ['no', 'Neither'],
+        ['analytics', 'Analytics only, like Google Analytics'],
+        ['ads', 'Ads, now or planned'],
+        ['unsure', 'Not sure']
+      ]
     },
     {
       id: 'ai',
@@ -110,15 +136,16 @@
     },
     {
       id: 'ugc',
-      label: 'Can people see things other users post or send?',
-      options: [['yes', 'Yes'], ['no', 'No']]
+      label: 'Can people see things other users post, upload or send?',
+      hint: 'Posts, photos, comments, messages, reviews or public high scores.',
+      options: [['yes', 'Yes'], ['no', 'No'], ['unsure', 'Not sure']]
     }
   ];
 
   var HAVES = [
-    { id: 'apple', label: 'An Apple Developer Program membership', when: function (f) { return f.ios; } },
-    { id: 'google', label: 'A Google Play developer account', when: function (f) { return f.android; } },
-    { id: 'website', label: 'A website on your own domain', when: function () { return true; } },
+    { id: 'apple', label: 'An Apple Developer account (the $99 a year membership you need to publish)', when: function (f) { return f.ios; } },
+    { id: 'google', label: 'A Google Play developer account (the $25 one you need to publish)', when: function (f) { return f.android; } },
+    { id: 'website', label: 'Your own web address, like stillwater.app (not a lovable.app or vercel.app one)', when: function () { return true; } },
     { id: 'privacy', label: 'A privacy policy', when: function () { return true; } },
     { id: 'terms', label: 'Terms of service', when: function () { return true; } },
     { id: 'support', label: 'A support email address', when: function () { return true; } }
@@ -137,7 +164,7 @@
   function freshAnswers() {
     return {
       product: '', category: '', detail: '',
-      accounts: '', money: '', data: '', tracking: '', ai: '', ugc: '',
+      kids: '', accounts: '', money: '', data: '', tracking: '', ai: '', ugc: '', host: '',
       have: {}
     };
   }
@@ -180,74 +207,149 @@
   // A plain keyword guess, shown to the person as a guess to check. It is
   // not analysis, and every guessed answer stays editable.
 
-  function has(text, words) {
-    return words.some(function (w) {
-      return new RegExp('\\b' + w + '\\b', 'i').test(text);
+  // Sentence-level checks, so "No payments or subscriptions" doesn't read as
+  // yes and "Android later" doesn't read as Android now.
+  var NEG = /\b(no|not|don't|doesn't|isn't|aren't|can't|cannot|without|haven't|hasn't|never|none)\b|n't\b/i;
+  var LATER = /\b(later|maybe|might|possibly|possible|someday|eventually|future|thinking of|would be|could be)\b/i;
+
+  function sentences(t) {
+    return t.split(/(?:[.!?]+\s+|\n+)/).map(function (x) {
+      return x.trim();
+    }).filter(Boolean);
+  }
+
+  function matcher(words) {
+    return new RegExp('\\b(?:' + words.join('|') + ')\\b', 'i');
+  }
+
+  function find(list, words, test) {
+    var re = matcher(words);
+    for (var i = 0; i < list.length; i++) {
+      if (re.test(list[i]) && test(list[i])) return list[i];
+    }
+    return '';
+  }
+
+  function affirmed(list, words) {
+    return find(list, words, function (x) {
+      return !NEG.test(x) && !LATER.test(x);
     });
   }
 
+  function mentioned(list, words) {
+    return find(list, words, function () {
+      return true;
+    });
+  }
+
+  function negated(list, words) {
+    return find(list, words, function (x) {
+      return NEG.test(x);
+    });
+  }
+
+  function clip(x) {
+    x = x.replace(/^[-*•\s]+/, '');
+    return x.length > 110 ? x.slice(0, 107).trim() + '…' : x;
+  }
+
   function guess(text) {
-    var g = {};
-    var t = text || '';
-    var no = /\b(no|not|don't|doesn't|can't|cannot|without|haven't)\b/i;
-
-    var ios = has(t, ['iphone', 'ipad', 'ios', 'app store', 'swiftui', 'xcode']);
-    var android = has(t, ['android', 'google play', 'play store', 'kotlin']);
-    if (ios && android) g.product = 'both';
-    else if (ios) g.product = 'ios';
-    else if (android) g.product = 'android';
-    else if (has(t, ['react native', 'expo', 'flutter'])) g.product = 'both';
-    else if (has(t, ['website', 'web app', 'next\\.js', 'nextjs', 'browser'])) g.product = 'web';
-
-    if (has(t, ['meditat\\w*', 'mindful\\w*', 'sleep', 'fitness', 'workout\\w*', 'health', 'therapy', 'mood', 'nutrition', 'calorie\\w*', 'symptom\\w*'])) {
-      g.category = 'health';
-      if (has(t, ['meditat\\w*', 'mindful\\w*', 'sleep', 'relax\\w*', 'breath\\w*'])) g.detail = 'mindfulness';
-      else if (has(t, ['symptom\\w*', 'medical', 'diagnos\\w*', 'medication\\w*'])) g.detail = 'medical';
-      else if (has(t, ['therapy', 'anxiety', 'depression'])) g.detail = 'mental';
-      else if (has(t, ['nutrition', 'calorie\\w*', 'diet', 'food'])) g.detail = 'nutrition';
-      else if (has(t, ['fitness', 'workout\\w*', 'exercise'])) g.detail = 'fitness';
-    } else if (has(t, ['budget\\w*', 'finance', 'bank\\w*', 'invest\\w*', 'crypto', 'loan\\w*', 'expense\\w*'])) {
-      g.category = 'finance';
-      if (has(t, ['plaid', 'bank accounts?'])) g.detail = 'bank';
-      else if (has(t, ['invest\\w*', 'crypto', 'stock\\w*'])) g.detail = 'investing';
-      else g.detail = 'tracking';
-    } else if (has(t, ['kids', 'children', 'child'])) {
-      g.category = 'kids';
-    } else if (has(t, ['game', 'puzzle'])) {
-      g.category = 'games';
+    var list = sentences(text || '');
+    var g = { src: {}, have: {} };
+    function set(key, value, from) {
+      g[key] = value;
+      if (from) g.src[key] = clip(from);
     }
 
-    if (has(t, ['sign up', 'sign in', 'log in', 'login', 'accounts?', 'passwords?'])) g.accounts = 'yes';
+    var iosW = ['iphone', 'ipad', 'ios', 'app store', 'swiftui', 'xcode', 'testflight'];
+    var androidW = ['android', 'google play', 'play store', 'kotlin'];
+    var crossW = ['react native', 'expo', 'flutter', 'capacitor'];
+    var webW = ['website', 'web app', 'web only', 'lovable\\.app', 'vercel\\.app', 'netlify\\.app', 'replit\\.app', 'bolt', 'next\\.js', 'nextjs', 'in the browser'];
+    var ios = affirmed(list, iosW);
+    var android = affirmed(list, androidW);
+    if (ios && android) set('product', 'both', ios);
+    else if (ios) set('product', 'ios', ios);
+    else if (android) set('product', 'android', android);
+    else if (affirmed(list, crossW)) set('product', 'both', affirmed(list, crossW));
+    else if (mentioned(list, webW)) set('product', 'web', mentioned(list, webW));
 
-    if (has(t, ['subscriptions?', 'premium', 'in-app purchases?', 'unlocks?', 'paywall'])) g.money = 'digital';
-    else if (has(t, ['shop', 'orders?', 'delivery', 'bookings?'])) g.money = 'physical';
-    else if (/\b(it's free|is free|no payments|doesn't charge)\b/i.test(t)) g.money = 'none';
+    var catFrom;
+    if ((catFrom = mentioned(list, ['meditat\\w*', 'mindful\\w*', 'sleep', 'fitness', 'workouts?', 'health', 'therapy', 'mood', 'nutrition', 'calories', 'symptoms?']))) {
+      set('category', 'health', catFrom);
+      if (mentioned(list, ['symptoms?', 'medical', 'diagnos\\w*', 'medications?'])) g.detail = 'medical';
+      else if (mentioned(list, ['meditat\\w*', 'mindful\\w*', 'sleep', 'relax\\w*', 'breath\\w*'])) g.detail = 'mindfulness';
+      else if (mentioned(list, ['therapy', 'anxiety', 'depression', 'mood'])) g.detail = 'mental';
+      else if (mentioned(list, ['nutrition', 'calories', 'diet'])) g.detail = 'nutrition';
+      else if (mentioned(list, ['fitness', 'workouts?', 'exercise'])) g.detail = 'fitness';
+    } else if ((catFrom = mentioned(list, ['budget\\w*', 'finance', 'banks?', 'banking', 'invest\\w*', 'crypto', 'loans?', 'expenses?']))) {
+      set('category', 'finance', catFrom);
+      if (mentioned(list, ['plaid', 'bank accounts?'])) g.detail = 'bank';
+      else if (mentioned(list, ['invest\\w*', 'crypto', 'stocks?'])) g.detail = 'investing';
+      else g.detail = 'tracking';
+    } else if ((catFrom = mentioned(list, ['recipes?', 'cooking', 'meals?', 'restaurants?', 'food']))) {
+      set('category', 'food', catFrom);
+    } else if ((catFrom = mentioned(list, ['games?', 'puzzles?', 'spelling']))) {
+      set('category', 'games', catFrom);
+    }
 
-    if (has(t, ['supabase'])) g.data = 'supabase';
-    else if (has(t, ['firebase', 'firestore'])) g.data = 'firebase';
-    else if (has(t, ['localstorage', 'on the device', 'on device', 'stays on the phone'])) g.data = 'device';
-    else if (has(t, ['database', 'server', 'backend', 'mongodb', 'postgres\\w*'])) g.data = 'other';
+    var from;
+    var kidsW = ['kids', 'children', 'child', 'toddlers?', '\\d+[- ]year[- ]olds?', 'ages? \\d+', 'under 13', 'my (?:son|daughter)', 'preschool\\w*', 'elementary'];
+    if ((from = affirmed(list, kidsW))) set('kids', 'yes', from);
+    else if ((from = mentioned(list, ['adults', 'grown-ups', '18\\+', 'teens and adults']))) set('kids', 'no', from);
+    if (from && g.kids === 'yes' && !g.category) set('category', 'kids', from);
 
-    if (has(t, ['analytics', 'ads', 'admob', 'mixpanel', 'posthog', 'amplitude'])) g.tracking = 'yes';
-    if (has(t, ['openai', 'gpt', 'chatgpt', 'claude', 'anthropic', 'gemini', 'ai'])) g.ai = 'yes';
+    if ((from = affirmed(list, ['sign up', 'signs up', 'sign in', 'log in', 'logs in', 'login', 'accounts?', 'passwords?', 'supabase auth', 'firebase auth']))) set('accounts', 'yes', from);
+    else if ((from = negated(list, ['sign up', 'login', 'accounts?']))) set('accounts', 'no', from);
 
-    // "Users can't see each other's posts" should not read as yes.
-    var ugcSentence = (t.match(/[^.]*\b(post\w*|comment\w*|chat|messag\w*)\b[^.]*/i) || [''])[0];
-    if (ugcSentence) g.ugc = no.test(ugcSentence) ? 'no' : 'yes';
+    var paidW = ['subscriptions?', 'premium', 'in-app purchases?', 'paywall', 'charges?', 'unlocks?', 'paid'];
+    if ((from = affirmed(list, paidW))) set('money', 'digital', from);
+    else if ((from = affirmed(list, ['shop', 'orders?', 'delivery', 'bookings?']))) set('money', 'physical', from);
+    else if ((from = find(list, paidW, function (x) { return LATER.test(x) && !/\bno\b/i.test(x.split(/\b(later|maybe)\b/i)[0] || ''); }))) set('money', 'later', from);
+    else if ((from = mentioned(list, ["it's free", 'is free', 'free app', 'no payments', "doesn't charge", 'no money']))) set('money', 'none', from);
 
-    // "What's already set up": only mark things the text says exist, never
-    // anything it says is missing.
-    g.have = {};
+    if (/\bsupabase\b/i.test(text)) set('data', 'supabase', mentioned(list, ['supabase']));
+    else if (/\b(firebase|firestore)\b/i.test(text)) set('data', 'firebase', mentioned(list, ['firebase', 'firestore']));
+    else if ((from = mentioned(list, ['localstorage', 'on the device', 'on device', 'stays on the phone']))) set('data', 'device', from);
+    else if ((from = affirmed(list, ['database', 'server', 'backend', 'mongodb', 'postgres\\w*']))) set('data', 'other', from);
+
+    var adsW = ['ads', 'adsense', 'admob', 'advertising', 'advertisements?'];
+    var analyticsW = ['analytics', 'mixpanel', 'posthog', 'amplitude', 'segment'];
+    if ((from = affirmed(list, adsW)) || (from = find(list, adsW, function (x) { return LATER.test(x); }))) set('tracking', 'ads', from);
+    else if ((from = affirmed(list, analyticsW))) set('tracking', 'analytics', from);
+    else if ((from = negated(list, analyticsW.concat(adsW)))) set('tracking', 'no', from);
+
+    var aiW = ['openai', 'gpt', 'chatgpt', 'claude', 'anthropic', 'gemini', 'ai', 'llm'];
+    if ((from = affirmed(list, aiW))) set('ai', 'yes', from);
+    else if ((from = negated(list, aiW))) set('ai', 'no', from);
+
+    var ugcW = ['posts?', 'posting', 'comments?', 'comment on', 'chat', 'messages?', 'messaging', 'reviews?', 'leaderboards?', 'high scores?'];
+    if ((from = negated(list, ugcW))) set('ugc', 'no', from);
+    else if ((from = affirmed(list, ugcW))) set('ugc', 'yes', from);
+
+    // "I'm not sure whether analytics are on" → Not sure.
+    var UNSURE = /\b(not sure|unsure|don't know|no idea|unclear|may be|might be)\b/i;
+    [['data', ['stor\\w*', 'database', 'firebase', 'saved']], ['tracking', ['analytics', 'ads']], ['ai', ['ai', 'openai', 'gpt']], ['accounts', ['login', 'accounts?', 'sign up']]].forEach(function (pair) {
+      var hit = find(list, pair[1], function (x) { return UNSURE.test(x); });
+      if (hit && (!g[pair[0]] || g[pair[0]] === 'no' || pair[0] === 'data' && /\bmay be\b/i.test(hit))) set(pair[0], 'unsure', hit);
+    });
+
+    if ((from = mentioned(list, ['lovable']))) g.host = 'lovable';
+    else if ((from = mentioned(list, ['bolt']))) g.host = 'bolt';
+    else if ((from = mentioned(list, ['replit']))) g.host = 'replit';
+    else if ((from = mentioned(list, ['vercel']))) g.host = 'vercel';
+    else if ((from = mentioned(list, ['netlify']))) g.host = 'netlify';
+    if (g.host) g.src.host = clip(from);
+
+    // "What's already set up": only things the text says exist.
     [
-      ['apple', /apple developer (account|program|membership)/i],
-      ['google', /(google play|play console) (developer )?account/i],
-      ['website', /\b(website|domain)\b/i],
-      ['privacy', /privacy policy/i],
-      ['terms', /\bterms\b/i],
-      ['support', /support (email|address)/i]
+      ['apple', ['apple developer (?:account|program|membership)']],
+      ['google', ['(?:google play|play console) (?:developer )?account']],
+      ['website', ['custom domain', 'own domain']],
+      ['privacy', ['privacy policy']],
+      ['terms', ['terms of service', 'terms of use', 'terms and conditions']],
+      ['support', ['support (?:email|address)']]
     ].forEach(function (pair) {
-      var m = t.match(new RegExp('[^.]*' + pair[1].source + '[^.]*', 'i'));
-      if (m && !no.test(m[0])) g.have[pair[0]] = true;
+      if (affirmed(list, pair[1])) g.have[pair[0]] = true;
     });
     return g;
   }
@@ -257,7 +359,7 @@
     var g = guess(text);
     var a = freshAnswers();
     Object.keys(g).forEach(function (k) {
-      a[k] = g[k];
+      if (k !== 'src') a[k] = g[k];
     });
     state.answers = a;
     state.guessed = g;
@@ -284,8 +386,15 @@
     else location.hash = hash;
   }
 
+  function activeQuestions(a) {
+    var f = flags(a);
+    return QUESTIONS.filter(function (q) {
+      return !q.when || q.when(f);
+    });
+  }
+
   function answered(a) {
-    return a.product && a.category && QUESTIONS.every(function (q) {
+    return a.product && a.category && activeQuestions(a).every(function (q) {
       return a[q.id];
     });
   }
@@ -356,7 +465,7 @@
       r.checked = r.value === method;
     });
     clearError(summaryEl, '#summary-error');
-    clearError(codeEl, '#code-error');
+    clearError(consentEl, '#code-error');
   }
 
   $all('input[name="method"]').forEach(function (r) {
@@ -372,8 +481,9 @@
 
   consentEl.addEventListener('change', function () {
     codeEl.disabled = !consentEl.checked;
+    $('#code-lock').hidden = consentEl.checked;
     if (consentEl.checked) {
-      clearError(codeEl, '#code-error');
+      clearError(consentEl, '#code-error');
       codeEl.focus();
     }
   });
@@ -389,7 +499,7 @@
   });
 
   codeEl.addEventListener('input', function () {
-    if (codeEl.value.trim()) clearError(codeEl, '#code-error');
+    if (codeEl.value.trim()) clearError(consentEl, '#code-error');
   });
 
   // Copy button
@@ -474,12 +584,12 @@
       }
     } else {
       if (!consentEl.checked) {
-        showError(codeEl, '#code-error', 'Tick the box above to confirm you understand, or use a summary instead.');
+        showError(consentEl, '#code-error', 'Tick this box to confirm you understand, or use a summary instead.');
         consentEl.focus();
         return;
       }
       if (!codeEl.value.trim()) {
-        showError(codeEl, '#code-error', 'Paste your code, or use a summary instead.');
+        showError(consentEl, '#code-error', 'Paste your code in the box below, or use a summary instead.');
         codeEl.focus();
         return;
       }
@@ -517,7 +627,8 @@
   function enterNarrow() {
     var g = state.guessed;
     $('#prefill-note').hidden = !(g.product || g.category);
-    $('#prefill-note').textContent = 'We guessed these from your description. Change anything that’s wrong.';
+    $('#prefill-note').textContent = 'We guessed these from your description' +
+      (g.src && g.src.product ? ', for example “' + g.src.product + '”' : '') + '. Change anything that’s wrong.';
     productEl.value = state.answers.product;
     categoryEl.value = state.answers.category;
     fillDetail(state.answers.category, state.answers.detail);
@@ -576,17 +687,21 @@
   function enterDetails() {
     var a = state.answers;
     var f = flags(a);
-    var anyGuess = QUESTIONS.some(function (q) {
-      return state.guessed[q.id];
+    var qs = activeQuestions(a);
+    var anyGuess = qs.some(function (q) {
+      return state.guessed[q.id] && a[q.id] === state.guessed[q.id];
     });
     $('#guess-note').hidden = !anyGuess;
 
-    $('#questions').innerHTML = QUESTIONS.map(function (q) {
+    $('#questions').innerHTML = qs.map(function (q) {
+      var src = state.guessed.src && state.guessed.src[q.id];
+      var showGuess = src && a[q.id] === state.guessed[q.id];
       var name = 'q-' + q.id;
       return (
         '<fieldset class="field question" id="field-' + q.id + '">' +
         '<legend class="field-label">' + q.label + '</legend>' +
         (q.hint ? '<p class="hint hint--above">' + q.hint + '</p>' : '') +
+        (showGuess ? '<p class="guess"><strong>Guessed from your description:</strong> “' + esc(src) + '”</p>' : '') +
         '<div class="options">' +
         q.options
           .map(function (o) {
@@ -631,7 +746,7 @@
   $('#details-form').addEventListener('submit', function (e) {
     e.preventDefault();
     var first = null;
-    QUESTIONS.forEach(function (q) {
+    activeQuestions(state.answers).forEach(function (q) {
       if (!state.answers[q.id]) {
         $('#field-' + q.id).setAttribute('data-invalid', 'true');
         showError(null, '#' + q.id + '-error', 'Choose an answer. “Not sure” is fine.');
@@ -650,6 +765,9 @@
   function context() {
     var a = state.answers;
     var f = flags(a);
+    var unsure = ['kids', 'accounts', 'tracking', 'ai', 'ugc'].filter(function (k) {
+      return a[k] === 'unsure';
+    });
     return {
       a: a,
       ios: f.ios,
@@ -657,37 +775,63 @@
       web: f.web,
       extension: f.extension,
       store: f.ios || f.android,
-      accounts: a.accounts !== 'no',
-      digital: a.money === 'digital' || a.money === 'unsure',
+      site: f.web || f.extension,
+      builderHost: ['lovable', 'bolt', 'replit'].indexOf(a.host) > -1,
+      accounts: a.accounts === 'yes',
+      digital: a.money === 'digital',
       physical: a.money === 'physical',
-      cloud: a.data !== 'device',
-      tracking: a.tracking !== 'no',
-      ai: a.ai !== 'no',
+      cloud: ['supabase', 'firebase', 'other'].indexOf(a.data) > -1,
+      tracking: a.tracking === 'analytics' || a.tracking === 'ads',
+      ads: a.tracking === 'ads',
+      ai: a.ai === 'yes',
       ugc: a.ugc === 'yes',
+      unsure: unsure,
       health: a.category === 'health',
+      mental: a.detail === 'mental',
       medical: a.detail === 'medical' || a.detail === 'mental',
-      kids: a.category === 'kids' || a.detail === 'children',
+      kids: a.kids === 'yes' || a.category === 'kids' || a.detail === 'children',
       finance: a.category === 'finance',
       moneyMoving: ['bank', 'payments', 'investing', 'lending'].indexOf(a.detail) > -1,
       have: a.have
     };
   }
 
+  // Data fields may be plain values or functions of the context.
+  function val(v, c) {
+    return typeof v === 'function' ? v(c) : v;
+  }
+
   function buildPlan() {
     var c = context();
-    var items = DATA.items.filter(function (it) {
-      return it.when(c);
-    });
-    items.forEach(function (it) {
-      it.severity = typeof it.sev === 'function' ? it.sev(c) : it.sev;
-      it._done = !!(it.have && c.have[it.have]);
-    });
+    var items = DATA.items
+      .filter(function (it) {
+        return it.when(c);
+      })
+      .map(function (it) {
+        var gap = val(it.gap, c);
+        var sev = val(it.sev, c);
+        return {
+          id: it.id,
+          phase: it.phase,
+          title: val(it.title, c),
+          why: val(it.why, c),
+          steps: val(it.steps, c),
+          sources: val(it.sources, c),
+          gap: gap,
+          // Only real problems count as "Must fix"; required paperwork and
+          // build steps are "Required step".
+          severity: sev === 'blocker' && !gap ? 'required' : sev,
+          _done: !!(it.have && c.have[it.have])
+        };
+      });
     var gaps = items
       .filter(function (it) {
         return it.gap && !it._done && it.severity === 'blocker';
       })
       .sort(function (x, y) {
-        return (x.gap.rank || 99) - (y.gap.rank || 99);
+        var rx = x.gap.rank != null ? x.gap.rank : 99;
+        var ry = y.gap.rank != null ? y.gap.rank : 99;
+        return rx - ry;
       });
     return { items: items, gaps: gaps, context: c };
   }
@@ -797,7 +941,8 @@
 
     var more = plan.gaps.length - shown.length;
     $('#gaps-more').hidden = more <= 0;
-    $('#gaps-more').textContent = more > 0 ? 'Plus ' + more + ' more marked “Blocks release” in your checklist below.' : '';
+    $('#gaps-more').textContent = more > 0 ? 'Plus ' + more + ' more marked “Must fix” in your checklist below.' : '';
+    renderCost(c);
 
     $all('[data-checked-date]').forEach(function (el) {
       el.textContent = DATA.checked;
@@ -813,19 +958,40 @@
     });
   }
 
-  var LEVELS = { blocker: 'Blocks release', before: 'Before launch', recommended: 'Recommended', after: 'After launch' };
+  var LEVELS = { blocker: 'Must fix', required: 'Required step', before: 'Before launch', recommended: 'Recommended', after: 'After launch' };
+
+  function phasesFor(plan) {
+    var c = plan.context;
+    return DATA.phases
+      .map(function (phase) {
+        return {
+          id: phase.id,
+          title: val(phase.title, c),
+          intro: val(phase.intro, c),
+          items: plan.items.filter(function (it) {
+            return it.phase === phase.id;
+          })
+        };
+      })
+      .filter(function (phase) {
+        return phase.items.length;
+      });
+  }
 
   function renderChecklist(plan) {
     var n = 0;
-    var html = DATA.phases
-      .map(function (phase) {
-        var items = plan.items.filter(function (it) {
-          return it.phase === phase.id;
-        });
-        if (!items.length) return '';
+    var phases = phasesFor(plan);
+    $('#phase-nav').innerHTML = phases
+      .map(function (phase, i) {
+        return '<li><a href="#phase-' + phase.id + '" data-jump="phase-' + phase.id + '">' + (i + 1) + '. ' + esc(phase.title) + '</a></li>';
+      })
+      .join('');
+    var html = phases
+      .map(function (phase, i) {
+        var items = phase.items;
         return (
           '<section class="phase" aria-labelledby="phase-' + phase.id + '">' +
-          '<h3 id="phase-' + phase.id + '">' + esc(phase.title) + '</h3>' +
+          '<h3 id="phase-' + phase.id + '" tabindex="-1">' + (i + 1) + '. ' + esc(phase.title) + '</h3>' +
           (phase.intro ? '<p class="phase__intro">' + esc(phase.intro) + '</p>' : '') +
           '<ol class="tasks">' +
           items
@@ -870,6 +1036,15 @@
       })
       .join('');
     $('#checklist').innerHTML = html;
+    applyFilter();
+    $all('[data-jump]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        var h = document.getElementById(a.getAttribute('data-jump'));
+        h.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
+        h.focus({ preventScroll: true });
+      });
+    });
 
     $all('#checklist input[type="checkbox"]').forEach(function (cb) {
       cb.addEventListener('change', function () {
@@ -883,6 +1058,36 @@
       });
     });
     updateCount();
+  }
+
+  function applyFilter() {
+    var only = $('#must-only').checked;
+    $all('#checklist .task').forEach(function (li) {
+      li.hidden = only && li.getAttribute('data-severity') !== 'blocker';
+    });
+    $all('#checklist .phase').forEach(function (sec) {
+      sec.hidden = only && !sec.querySelector('.task:not([hidden])');
+    });
+  }
+
+  $('#must-only').addEventListener('change', applyFilter);
+
+  // Rough money and time, from the sources in data.js. Shown as ranges.
+  function renderCost(c) {
+    var rows = [];
+    if (c.ios) rows.push(['Apple Developer Program', '$99 a year', 'Usually a day or two to approve; longer for a company']);
+    if (c.android) rows.push(['Google Play developer account', '$25 once', 'New personal accounts: a 14-day test with 12 people, then up to 7 days of review']);
+    if (!(c.have && c.have.website)) rows.push(['Your own web address', 'About $10–15 a year', 'An hour or two to set up; DNS can take up to a day']);
+    if (c.site && c.builderHost) rows.push(['Custom domain on ' + ({ lovable: 'Lovable', bolt: 'Bolt', replit: 'Replit' })[c.a.host], 'Needs a paid plan', '']);
+    if (c.a.data === 'supabase') rows.push(['Supabase', 'Free plan to start', 'Free projects pause after a week without activity']);
+    if (c.ai) rows.push(['AI provider', 'Pay per use', 'Set a monthly spending limit']);
+    if (c.ios) rows.push(['App Store review', 'Free', 'Apple says 90% of submissions are reviewed within 24 hours']);
+    $('#cost').innerHTML = rows
+      .map(function (r) {
+        return '<tr><th scope="row">' + esc(r[0]) + '</th><td>' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td></tr>';
+      })
+      .join('');
+    $('#cost-section').hidden = !rows.length;
   }
 
   function setOpen(btn, open) {
@@ -920,12 +1125,9 @@
       lines.push('');
     }
     var n = 0;
-    DATA.phases.forEach(function (phase) {
-      var items = plan.items.filter(function (it) {
-        return it.phase === phase.id;
-      });
-      if (!items.length) return;
-      lines.push(phase.title.toUpperCase());
+    phasesFor(plan).forEach(function (phase, pi) {
+      var items = phase.items;
+      lines.push((pi + 1) + '. ' + phase.title.toUpperCase());
       items.forEach(function (it) {
         n++;
         var done = state.done[it.id] !== undefined ? state.done[it.id] : it._done;

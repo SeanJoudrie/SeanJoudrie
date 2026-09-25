@@ -119,26 +119,103 @@
     appleBgModes: { label: 'Apple: Background modes', url: 'https://developer.apple.com/documentation/bundleresources/information-property-list/uibackgroundmodes' },
     appleJune2026: { label: 'Apple: Guideline update, June 8 2026', url: 'https://developer.apple.com/news/?id=a233fmpw' },
     appleTransparency: { label: 'Apple: App Store Transparency Report 2025', url: 'https://www.apple.com/legal/app-store/transparency/2025/' },
+    supaPausing: { label: 'Supabase: Project pausing on the free plan', url: 'https://supabase.com/docs/guides/platform/free-project-pausing' },
+    supaRedirects: { label: 'Supabase: Redirect URLs', url: 'https://supabase.com/docs/guides/auth/redirect-urls' },
+    supaSecrets: { label: 'Supabase: Edge Function secrets', url: 'https://supabase.com/docs/guides/functions/secrets' },
+    supaStorage: { label: 'Supabase: Storage access control', url: 'https://supabase.com/docs/guides/storage/security/access-control' },
+    expoEnv: { label: 'Expo: Environment variables', url: 'https://docs.expo.dev/guides/environment-variables/' },
+    expoPrivacy: { label: 'Expo: Privacy manifests', url: 'https://docs.expo.dev/guides/apple-privacy/' },
+    replitSecrets: { label: 'Replit: Secrets', url: 'https://docs.replit.com/replit-workspace/workspace-features/secrets' },
+    replitDomains: { label: 'Replit: Custom domains', url: 'https://docs.replit.com/cloud-services/deployments/custom-domains' },
+    lovableDomain: { label: 'Lovable: Set up a custom domain', url: 'https://docs.lovable.dev/features/custom-domain' },
+    lovableSecurity: { label: 'Lovable: Security', url: 'https://docs.lovable.dev/features/security' },
+    googleAudience: { label: 'Google Cloud: Manage app audience (Google login)', url: 'https://support.google.com/cloud/answer/15549945' },
+    googleOauthStates: { label: 'Google: OAuth app states', url: 'https://developers.google.com/identity/protocols/oauth2/production-readiness/overview' },
+    adsenseCmp: { label: 'AdSense: Consent requirements in the EEA, UK and Switzerland', url: 'https://support.google.com/adsense/answer/13554116' },
+    adsTxt: { label: 'AdSense: ads.txt FAQ', url: 'https://support.google.com/adsense/answer/9785052' },
+    playAds: { label: 'Google Play: Ads policy', url: 'https://support.google.com/googleplay/android-developer/answer/9857753' },
+    att: { label: 'Apple: App Tracking Transparency', url: 'https://developer.apple.com/documentation/apptrackingtransparency' },
+    applePrivacyUse: { label: 'Apple: User privacy and data use', url: 'https://developer.apple.com/app-store/user-privacy-and-data-use/' },
+    dmca: { label: 'US Copyright Office: DMCA designated agent FAQ', url: 'https://www.copyright.gov/dmca-directory/faq.html' },
+    dsa: { label: 'European Commission: Digital Services Act Q&A', url: 'https://digital-strategy.ec.europa.eu/en/faqs/digital-services-act-questions-and-answers' },
+    gdprArt9: { label: 'GDPR Article 9: Special categories of data (health)', url: 'https://gdpr.eu/article-9-processing-special-categories-of-personal-data-prohibited/' },
+    helplines: { label: 'Find A Helpline: free crisis lines in 130+ countries', url: 'https://findahelpline.com/' },
+    seo: { label: 'Google Search Central: SEO starter guide', url: 'https://developers.google.com/search/docs/fundamentals/seo-starter-guide' },
+    gmailSenders: { label: 'Gmail: Email sender guidelines', url: 'https://support.google.com/a/answer/81126' },
+    appleKids: { label: 'Apple: Kids apps', url: 'https://developer.apple.com/app-store/kids-apps/' },
+    coppaFtc2025: { label: 'FTC: 2025 changes to the children’s privacy rule', url: 'https://www.ftc.gov/news-events/news/press-releases/2025/01/ftc-finalizes-changes-childrens-privacy-rule-limiting-companies-ability-monetize-kids-data' },
+    appleTexas: { label: 'Apple: Update for apps distributed in Texas', url: 'https://developer.apple.com/news/?id=sg176nne' },
+    playStateLaws: { label: 'Google Play: US state app store laws', url: 'https://support.google.com/googleplay/android-developer/answer/16569691' },
+    appleAvailability: { label: 'Apple: Manage availability (countries)', url: 'https://developer.apple.com/help/app-store-connect/manage-your-apps-availability/manage-availability-for-your-app-on-the-app-store' },
+    appleMedDeviceHelp: { label: 'Apple: Declare regulated medical device status', url: 'https://developer.apple.com/help/app-store-connect/manage-app-information/declare-regulated-medical-device-status' },
+    sentry: { label: 'Sentry: Crash reporting for React Native', url: 'https://docs.sentry.io/platforms/react-native/' },
     wcag: { label: 'W3C: WCAG 2.2', url: 'https://www.w3.org/WAI/standards-guidelines/wcag/' },
     androidA11y: { label: 'Android: Accessibility', url: 'https://developer.android.com/guide/topics/ui/accessibility' }
   };
 
   var PHASES = [
-    { id: 'accounts', title: '1. Set up your accounts', intro: 'Some of these take days to approve, so start them first.' },
-    { id: 'secure', title: '2. Lock down your data', intro: 'Before real people sign up. These are the gaps AI-built apps most often ship with.' },
-    { id: 'legal', title: '3. Write your legal pages', intro: 'Stores and privacy laws require these. Generators are fine to start with.' },
-    { id: 'inapp', title: '4. Add what the stores require inside the app', intro: 'Features reviewers look for. Ask your AI to build each one.' },
-    { id: 'build', title: '5. Build and test', intro: 'Get a real build onto real phones and fix what breaks.' },
-    { id: 'listing', title: '6. Fill in your store listing', intro: 'The forms, pictures and answers the store needs before you can submit.' },
-    { id: 'submit', title: '7. Submit for review', intro: '' },
-    { id: 'after', title: '8. After launch', intro: '' }
+    { id: 'decide', title: 'Answer the open questions', intro: 'Your “Not sure” answers change what applies. Sort these out first, then run Launch Check again.' },
+    { id: 'accounts', title: 'Set up your accounts', intro: function (c) { return c.store ? 'Some of these take days to approve, so start them first.' : 'The accounts and address your site needs.'; } },
+    { id: 'kids', title: 'Decide how you’ll handle children', intro: 'This changes how the app is built, so do it before anything else below.' },
+    { id: 'secure', title: 'Lock down your data', intro: 'Before real people sign up. These are the gaps AI-built apps most often ship with.' },
+    { id: 'legal', title: 'Write your legal pages', intro: 'Stores and privacy laws require these. Generators are fine to start with.' },
+    { id: 'inapp', title: function (c) { return c.store ? 'Add what the stores require inside the app' : 'Add what people and privacy laws expect'; }, intro: 'Features reviewers and regulators look for. Ask your AI to build each one.' },
+    { id: 'build', title: function (c) { return c.store ? 'Build and test' : 'Test it'; }, intro: function (c) { return c.store ? 'Get a real build onto real phones and fix what breaks.' : 'Go through it like a new visitor would.'; } },
+    { id: 'listing', title: 'Fill in your store listing', intro: 'The forms, pictures and answers the store needs before you can submit.' },
+    { id: 'submit', title: function (c) { return c.store ? 'Submit for review' : 'Launch'; }, intro: '' },
+    { id: 'after', title: 'After launch', intro: '' }
   ];
 
   var always = function () {
     return true;
   };
 
+  var FIND_OUT = {
+    kids: ['<strong>Children:</strong> decide honestly whether children under 13 will use it. If your app looks like it’s for kids (cartoons, simple games, spelling), the law treats it that way even if you didn’t mean it to be.'],
+    accounts: ['<strong>Sign-up:</strong> ask your AI “Does this app save anything about a person online, like a name, email or score? Does it have login?” If it saves a name or email online, answer Yes.'],
+    tracking: ['<strong>Analytics and ads:</strong> ask your AI “List every analytics, crash-reporting or advertising tool in this app, including anything Firebase adds automatically.”'],
+    ai: ['<strong>AI:</strong> ask your AI “Does this app send anything a person types or uploads to an AI service like OpenAI, Anthropic or Google? Which one?”'],
+    ugc: ['<strong>Content from other people:</strong> can anyone see something another person wrote, uploaded or chose as a name, like a comment, photo, message or leaderboard entry? If so, answer Yes.']
+  };
+
   var ITEMS = [
+    // ---------------- Open questions ----------------
+    {
+      id: 'find-out',
+      phase: 'decide',
+      when: function (c) { return c.unsure.length > 0; },
+      sev: 'blocker',
+      gap: function (c) {
+        var one = c.unsure.length === 1;
+        return { rank: 0, title: one ? 'Answer your “Not sure” question' : 'Answer your “Not sure” questions', why: one ? 'You said “Not sure” once. The answer can add must-fix steps, so find out first.' : 'You said “Not sure” ' + c.unsure.length + ' times. Each answer can add must-fix steps, so find out first.' };
+      },
+      title: 'Find out the answers you weren’t sure about',
+      why: 'Each of these decides which rules apply, so the rest of your plan isn’t complete until you know.',
+      steps: function (c) {
+        var list = [];
+        c.unsure.forEach(function (k) {
+          list = list.concat(FIND_OUT[k]);
+        });
+        return list.concat(['Then run Launch Check again with your new answers. It takes a minute.']);
+      },
+      sources: [SRC.appleGuidelines, SRC.coppa]
+    },
+    {
+      id: 'decide-money',
+      phase: 'decide',
+      when: function (c) { return c.a.money === 'unsure'; },
+      sev: 'blocker',
+      gap: { rank: 0, title: 'Decide whether you’ll charge money', why: 'Charging for features changes your store setup, legal pages and payment tools.' },
+      title: 'Decide how (or whether) the app will make money',
+      why: 'Selling features inside an app means using Apple’s or Google’s payment system, which needs agreements, bank details and extra screens.',
+      steps: [
+        'Decide: free, a one-time unlock, a subscription, ads, or selling real-world things.',
+        'If it’s free for now, that’s the simplest launch. You can add payments in a later update.',
+        'Run Launch Check again with your answer.'
+      ],
+      sources: [SRC.appleGuidelines, SRC.playBilling]
+    },
+
     // ---------------- 1. Accounts ----------------
     {
       id: 'apple-developer',
@@ -177,6 +254,20 @@
       sources: [SRC.playAccount, SRC.playOrg, SRC.playPublic]
     },
     {
+      id: 'apple-app-record',
+      phase: 'accounts',
+      when: function (c) { return c.ios; },
+      sev: 'blocker',
+      title: 'Create your app in App Store Connect',
+      why: 'App Store Connect is Apple’s website for managing your app. In-app purchases, Sign in with Apple and every upload need the app to exist there first.',
+      steps: [
+        'Choose a bundle ID: your app’s permanent ID, written like com.yourname.appname. In Expo it lives in app.json as <code>ios.bundleIdentifier</code>. It can’t change once you upload a build.',
+        'Sign in at ' + link('appstoreconnect.apple.com', 'https://appstoreconnect.apple.com') + ', go to <strong>Apps → + → New App</strong>, and enter the name, language, bundle ID and a SKU (any code you like, such as the app’s name).',
+        'Check the name is free: App Store Connect tells you if someone else already uses it.'
+      ],
+      sources: [SRC.appleNewApp, SRC.appleAppInfo]
+    },
+    {
       id: 'regulated-entity',
       phase: 'accounts',
       when: function (c) { return c.store && c.finance && c.moneyMoving; },
@@ -198,17 +289,35 @@
       when: always,
       sev: function (c) { return c.store ? 'blocker' : 'before'; },
       have: 'website',
-      gap: { rank: 6, title: 'Get a simple website', why: 'Stores need working web links to your privacy policy and support page.' },
-      title: 'Get a simple website on your own domain',
-      why: 'Your privacy policy, terms, support page and account-deletion page all need a public web address.',
-      steps: [
-        'Buy a domain name (about $10–15 a year) from a registrar such as ' + link('Cloudflare Registrar', 'https://developers.cloudflare.com/registrar/') + ', or through your host. Turn on auto-renew.',
-        'Create a free account on Netlify or Vercel, connect your GitHub repo or drag in a folder, and deploy. You get a working address straight away.',
-        'Add your domain in the host’s Domains settings and copy the DNS records it shows into your registrar.',
-        'Make four pages: home, privacy policy, terms, and support (with your email). Ask your AI to write them as plain HTML.',
-        'GitHub Pages also works for a simple info page, but its rules don’t allow running a business on it.'
-      ],
-      sources: [SRC.vercelDomain, SRC.netlifyHttps, SRC.cfRegistrar, SRC.ghPagesLimits]
+      gap: function (c) {
+        return c.store
+          ? { rank: 6, title: 'Get a simple website', why: 'Stores need working web links to your privacy policy and support page.' }
+          : null;
+      },
+      title: function (c) { return c.site ? 'Move your site to your own web address' : 'Get a simple website on your own domain'; },
+      why: function (c) {
+        return c.site
+          ? 'A builder address like name.lovable.app looks temporary, and ad networks, Google login and search all work better on your own domain.'
+          : 'Your privacy policy, terms, support page and account-deletion page all need a public web address.';
+      },
+      steps: function (c) {
+        var buy = 'Buy a domain name (about $10–15 a year) from a registrar such as ' + link('Cloudflare Registrar', 'https://developers.cloudflare.com/registrar/') + ', or through your host. Turn on auto-renew.';
+        if (c.site && c.a.host === 'lovable') return [buy + ' Lovable can also sell you one.', 'In Lovable, open <strong>Project → Settings → Domains</strong> and connect it. Custom domains need a paid Lovable plan.', 'Follow Lovable’s instructions to add the DNS records at your registrar. It can take up to a day to work.', 'Then update your login settings to the new address (see “Make sign-up emails and Google login work”).'];
+        if (c.site && c.a.host === 'replit') return [buy, 'In your Replit deployment’s settings, add the custom domain and copy the DNS records it shows into your registrar.', 'Then update your login settings to the new address (see “Make sign-up emails and Google login work”).'];
+        if (c.site && c.a.host === 'bolt') return [buy, 'Connect the domain wherever your Bolt site is deployed (often Netlify), using its Domains settings.', 'Then update your login settings to the new address.'];
+        if (c.site) return [buy, 'In your host’s Domains settings (Vercel, Netlify or similar), add the domain and copy the DNS records it shows into your registrar.', 'Make sure your privacy policy, terms and support pages are linked in the footer.'];
+        return [
+          buy,
+          'The easiest place for a few simple pages is Netlify or Vercel: create a free account, drag in a folder (or connect GitHub), and deploy. You get a working address straight away. If you built with Lovable or Replit, you can add pages to that project and connect the domain there instead.',
+          'Add your domain in the host’s Domains settings and copy the DNS records it shows into your registrar. Allow an hour or two, and up to a day for the domain to start working.',
+          'Make four pages: home, privacy policy, terms, and support (with your email). Ask your AI to write them as plain HTML.'
+        ];
+      },
+      sources: function (c) {
+        if (c.site && c.a.host === 'lovable') return [SRC.lovableDomain, SRC.cfRegistrar];
+        if (c.site && c.a.host === 'replit') return [SRC.replitDomains, SRC.cfRegistrar];
+        return [SRC.vercelDomain, SRC.netlifyHttps, SRC.cfRegistrar, SRC.ghPagesLimits];
+      }
     },
     {
       id: 'support-email',
@@ -233,11 +342,74 @@
       title: 'Turn on two-factor login for every account behind the app',
       why: 'Anyone who gets into your GitHub, database, hosting or domain account gets your app.',
       steps: [
-        'Turn on two-factor authentication for GitHub, your database (Supabase or Firebase), your host, your domain registrar, your payment provider and your AI builder.',
+        'Turn on two-factor authentication for every account behind the app: your code (GitHub or Replit), your database (Supabase or Firebase), your host, your domain registrar, any payment provider, and your AI builder.',
         'Use an authenticator app or a passkey rather than text messages.',
         'Save the recovery codes somewhere safe, like a password manager.'
       ],
       sources: [SRC.gh2fa, SRC.supaProd]
+    },
+
+    // ---------------- Children ----------------
+    {
+      id: 'coppa',
+      phase: 'kids',
+      when: function (c) { return c.kids; },
+      sev: 'blocker',
+      gap: { rank: 1, title: 'Follow the rules for children’s data', why: 'US law says you need a parent’s verified permission before collecting personal information from a child under 13.' },
+      title: 'Collect as little as possible from children, or get a parent’s permission',
+      why: 'The US children’s privacy law (COPPA) covers apps made for, or used by, children under 13. The FTC enforces it and tightened it in 2025.',
+      steps: [
+        '<strong>The simplest route: don’t collect personal information.</strong> A child’s full name, email, photo, voice, location or a device ID linked to them all count. A first name or nickname on its own usually doesn’t, unless it’s tied to an ID that follows the child.',
+        '<strong>Leaderboards and name screens:</strong> let children pick from preset nicknames instead of typing their name, or keep scores on the device only. Showing a child’s real name publicly counts as sharing it.',
+        'If you must collect personal information: get verifiable permission from a parent first, publish a children’s section in your privacy policy, and let parents see and delete their child’s data.',
+        'Since the 2025 changes, you also need <strong>separate</strong> parent permission before sharing a child’s data with other companies (like ad networks), and a written policy on how long you keep it.',
+        'This is the one area worth paying a lawyer or a COPPA Safe Harbor program to review.'
+      ],
+      sources: [SRC.coppa, SRC.coppaFtc2025, SRC.appleGuidelines]
+    },
+    {
+      id: 'kids-sdks',
+      phase: 'kids',
+      when: function (c) { return c.kids && (c.store || c.site); },
+      sev: 'blocker',
+      title: 'Remove analytics and ad tools that track children',
+      why: 'Both stores restrict third-party analytics and ads in kids’ apps, and tools like Firebase can add Google Analytics without you noticing.',
+      steps: [
+        'Ask your AI: “List every analytics, crash-reporting and advertising package in this app, including anything Firebase adds automatically.”',
+        'Remove anything that tracks individual users. Apple allows third-party analytics in kids’ apps only in limited cases that don’t collect identifiers.',
+        'On Google Play, only use ad tools from Google’s Families self-certified list, and don’t collect the advertising ID from children.'
+      ],
+      sources: [SRC.appleKids, SRC.appleGuidelines, SRC.playFamilies]
+    },
+    {
+      id: 'apple-kids',
+      phase: 'kids',
+      when: function (c) { return c.ios && c.kids; },
+      sev: 'blocker',
+      title: 'Follow Apple’s rules for kids’ apps',
+      why: 'If your listing says the app is for kids, Apple requires the Kids Category and its rules (guideline 1.3 and 2.3.8).',
+      steps: [
+        'Choose “Made for Kids” in App Store Connect and pick an age band: 5 and under, 6–8 or 9–11. If you don’t, your listing can’t say it’s “for kids” anywhere.',
+        'Put a <strong>parental gate</strong> in front of any purchase, link out of the app, or request for permission. A parental gate is a simple task an adult can do and a young child can’t, like typing a number written in words. It doesn’t replace a parent’s consent under COPPA.',
+        'No third-party ads, and don’t send personal or device information to other companies.',
+        'Even if you later leave the Kids Category, Apple says you must keep following these rules for existing users.'
+      ],
+      sources: [SRC.appleKids, SRC.appleGuidelines]
+    },
+    {
+      id: 'play-families',
+      phase: 'kids',
+      when: function (c) { return c.android && c.kids; },
+      sev: 'blocker',
+      title: 'Follow Google Play’s Families policy',
+      why: 'Any Play app whose target audience includes children must follow it, and a wrong audience declaration can get the app removed.',
+      steps: [
+        'In Play Console → <strong>App content → Target audience</strong>, pick the real age groups.',
+        'Don’t collect the Android advertising ID or other device identifiers from children.',
+        'Only use ad tools from Google’s Families self-certified ads list, and disclose any data your tools collect.',
+        'Once you meet the policy, you can apply for Google’s “Teacher Approved” badge, which helps parents find the app.'
+      ],
+      sources: [SRC.playFamilies, SRC.playAudience]
     },
 
     // ---------------- 2. Secure ----------------
@@ -261,17 +433,18 @@
       phase: 'secure',
       when: function (c) { return c.a.data === 'supabase'; },
       sev: 'blocker',
-      gap: { rank: 1, title: 'Lock down your database', why: 'In 2025, 170 of 1,645 Lovable apps checked had databases anyone could read.' },
+      gap: { rank: 1, title: 'Lock down your database', why: 'If it’s not locked, anyone who finds your app’s Supabase address can read every table. In 2025 that was true of 170 of 1,645 Lovable apps checked.' },
       title: 'Turn on Row Level Security for every Supabase table',
       why: 'With it off, anyone who has your project address can read, change or delete everything in that table.',
       steps: [
         'In the Supabase dashboard, open <strong>Table Editor</strong>. Any table marked as unrestricted or without RLS needs fixing.',
-        'Turn on RLS for every table. Tables made through AI tools or the SQL editor often have it off.',
-        'Add policies so people can only see and change their own rows. Ask your AI: “Write Supabase RLS policies so each user can only access their own rows in each table.”',
+        'RLS (Row Level Security) is the setting that decides who can read or change each row. Turn it on for every table. Tables made through AI tools or the SQL editor often have it off.',
+        'Add rules (“policies”). Ask your AI: “Write Supabase RLS policies for every table. Private data, like journals or settings: only the owner can read or change it. Public content, like posts or recipes: anyone can read it, only the author can change or delete it.”',
         'Open <strong>Advisors → Security Advisor</strong> and fix everything marked as an error. Run it again until it’s clean.',
-        'Check <strong>Storage</strong>: a “public” bucket can be read by anyone.'
+        'Check <strong>Storage</strong> (where files and photos live): a “public” bucket can be read by anyone, which is fine for public photos. Make sure only the owner can upload over or delete their files.',
+        'Test it: sign in as a second test user and check you can’t see or change the first user’s private data.'
       ],
-      sources: [SRC.supaRls, SRC.supaAdvisor, SRC.supaProd, SRC.lovableCve]
+      sources: [SRC.supaRls, SRC.supaAdvisor, SRC.supaStorage, SRC.supaProd, SRC.lovableCve]
     },
     {
       id: 'firebase-rules',
@@ -307,30 +480,43 @@
     {
       id: 'secret-keys',
       phase: 'secure',
-      when: function (c) { return c.cloud || c.ai || c.a.money !== 'none'; },
+      when: function (c) { return c.cloud || c.ai || c.digital || c.physical; },
       sev: 'blocker',
-      gap: { rank: 2, title: 'Move secret keys to a server', why: 'Anything inside an app can be copied, and a secret key can run up your bill.' },
+      gap: { rank: 2, title: 'Move secret keys to a server', why: 'Anything inside an app or web page can be copied, and a secret key can run up your bill or open your data.' },
       title: 'Move secret keys out of the app and into a server',
-      why: 'Keys for OpenAI, Stripe or Supabase’s service role give full access. Anything shipped in an app or page can be copied.',
-      steps: [
-        'Ask your AI: “List every API key and secret this app uses, and say whether each one ends up in browser or phone code.”',
-        'Public keys are fine in the app: Supabase’s publishable (anon) key and Firebase’s config are designed for that.',
-        'Move every secret key (OpenAI, Stripe secret, Supabase secret or service_role) into a server function, such as Supabase Edge Functions or Firebase Functions.',
-        'Never put a secret in a variable starting with <code>VITE_</code>, <code>NEXT_PUBLIC_</code> or <code>EXPO_PUBLIC_</code>: those are copied into the app.',
-        'Store secrets in your host’s Environment Variables or Secrets settings, not in files in your repo.'
-      ],
-      sources: [SRC.supaKeys, SRC.vite, SRC.nextEnv, SRC.fbKeys]
+      why: 'Keys for OpenAI, Stripe or Supabase’s service role give full access. Anything shipped in an app or page can be copied by anyone.',
+      steps: function (c) {
+        var list = [
+          'Ask your AI: “List every API key and secret this app uses, and say whether each one ends up in code that runs in the browser or on the phone.”',
+          'Public keys are fine in the app: Supabase’s publishable (anon) key and Firebase’s config are designed for that. Secret keys are not: OpenAI, Stripe’s secret key, Supabase’s secret or service_role key.',
+          'Never put a secret in a variable starting with <code>VITE_</code>, <code>NEXT_PUBLIC_</code> or <code>EXPO_PUBLIC_</code>: those are copied into the app for anyone to read.'
+        ];
+        if (c.a.data === 'supabase') list.push('Ask your AI: “Move every call that uses a secret key into a Supabase Edge Function. Store the key with Supabase secrets, and call the function from the app.”');
+        else if (c.a.data === 'firebase') list.push('Ask your AI: “Move every call that uses a secret key into a Firebase Cloud Function and store the key as a secret.”');
+        else list.push('Ask your AI: “Move every call that uses a secret key onto a server or serverless function, and keep the key in its environment variables.”');
+        if (c.a.host === 'lovable') list.push('In Lovable, keys belong in Supabase Edge Function secrets. Lovable also warns you when you paste a key into its chat.');
+        if (c.a.host === 'replit') list.push('In Replit, keep keys in <strong>Tools → Secrets</strong>, and only use them in server code.');
+        list.push('Then do the next step: replace any key that was ever in the app.');
+        return list;
+      },
+      sources: function (c) {
+        var list = [SRC.supaKeys, SRC.expoEnv, SRC.vite, SRC.nextEnv, SRC.fbKeys];
+        if (c.a.data === 'supabase') list.unshift(SRC.supaSecrets);
+        if (c.a.host === 'lovable') list.push(SRC.lovableSecurity);
+        if (c.a.host === 'replit') list.push(SRC.replitSecrets);
+        return list;
+      }
     },
     {
       id: 'rotate-keys',
       phase: 'secure',
       when: always,
       sev: 'before',
-      title: 'Replace any key that was ever in your code or chat',
-      why: 'Deleting a key from a file doesn’t stop anyone who already copied it, and it stays in your GitHub history.',
+      title: 'Replace any key that was ever in your app, code or chat',
+      why: 'Deleting a key from a file doesn’t stop anyone who already copied it, and it stays in your project’s history.',
       steps: [
-        'Think about every key that was ever pasted into your code, a commit, a screenshot or an AI chat.',
-        'In each provider’s dashboard, create a new key and put it in your secrets settings.',
+        'Think about every secret key that was ever in the app, your code, a commit, a screenshot or an AI chat. If you just moved one to a server, it counts.',
+        'In each provider’s dashboard (for example OpenAI → API keys), create a new key and put it in your server’s secrets settings.',
         'Check the app still works, then delete the old key.',
         'Look at your billing and usage pages for anything you don’t recognise.'
       ],
@@ -380,6 +566,35 @@
       sources: [SRC.supaBackups, SRC.fbBackups]
     },
     {
+      id: 'supabase-awake',
+      phase: 'secure',
+      when: function (c) { return c.a.data === 'supabase'; },
+      sev: 'before',
+      title: 'Keep your Supabase project from pausing',
+      why: 'Free Supabase projects pause after a week without enough activity. A paused backend during review means the app doesn’t work and gets rejected.',
+      steps: [
+        'Check your plan in the Supabase dashboard. Paid projects never pause.',
+        'If you stay on the free plan, open the dashboard shortly before you submit and after launch, and restore the project if it’s paused.',
+        'Before launch, it’s worth moving to a paid plan so real users never hit a paused app.'
+      ],
+      sources: [SRC.supaPausing]
+    },
+    {
+      id: 'auth-redirects',
+      phase: 'secure',
+      when: function (c) { return c.accounts && c.cloud; },
+      sev: 'before',
+      title: 'Make sign-up emails and Google login work outside your computer',
+      why: 'AI-built apps often send confirmation and password-reset links to “localhost”, which only works on the builder’s computer, so a reviewer or new user hits a dead page.',
+      steps: [
+        'In Supabase, open <strong>Authentication → URL Configuration</strong>. Set the Site URL to your real address and add it to the Redirect URLs (for a phone app, your app’s link scheme).',
+        'Sign up as a brand-new user on a real phone and tap the email link. It should open your app or site, not an error page.',
+        'If you offer “Sign in with Google”: in Google Cloud’s OAuth consent screen, add your home page, privacy policy link and domain, then publish it. While it’s in “Testing” mode, only up to 100 listed test users can sign in.',
+        'Whenever your address changes (for example a new custom domain), update these settings the same day.'
+      ],
+      sources: [SRC.supaRedirects, SRC.googleAudience, SRC.googleOauthStates]
+    },
+    {
       id: 'abuse-limits',
       phase: 'secure',
       when: function (c) { return c.accounts || c.ai; },
@@ -388,11 +603,12 @@
       why: 'Bots can create fake accounts, flood your emails or use up your AI credits overnight.',
       steps: [
         'Add a CAPTCHA to sign-up, login and password reset. Supabase supports hCaptcha and Cloudflare Turnstile.',
-        'Set up your own email sender (custom SMTP) before launch. Supabase’s built-in one only sends a few emails an hour.',
+        'Set up your own email-sending service before launch (“custom SMTP”), such as Resend or Postmark. Supabase’s built-in sender only allows a few emails an hour.',
+        'Add the email records your sending service gives you (SPF, DKIM and DMARC) to your domain, so sign-up emails don’t land in spam. Gmail requires them for bulk senders.',
         'Set a monthly spending limit and alerts with your AI provider.',
         'Limit how often one person can call your AI features.'
       ],
-      sources: [SRC.supaRate, SRC.supaCaptcha, SRC.supaProd]
+      sources: [SRC.supaRate, SRC.supaCaptcha, SRC.supaProd, SRC.gmailSenders]
     },
     {
       id: 'https',
@@ -402,7 +618,7 @@
       title: 'Serve your site only over HTTPS',
       why: 'Browsers warn visitors away from sites without it, and passwords sent without it can be read.',
       steps: [
-        'On Netlify or Vercel, HTTPS is automatic once your domain is connected.',
+        'HTTPS is what puts the padlock in the address bar and encrypts what visitors send. On Lovable, Replit, Netlify and Vercel it’s automatic once your domain is connected; just check the padlock appears.',
         'On GitHub Pages, tick <strong>Enforce HTTPS</strong> in Settings → Pages.',
         'Check that typing http:// takes you to https://, and that the app’s own API calls use https.'
       ],
@@ -416,16 +632,31 @@
       when: always,
       sev: 'blocker',
       have: 'privacy',
-      gap: { rank: 4, title: 'Write a privacy policy', why: 'Both app stores reject apps without one, and privacy laws require it.' },
+      gap: function (c) {
+        return {
+          rank: 4,
+          title: 'Write a privacy policy',
+          why: c.store
+            ? 'Both app stores reject apps without one, and privacy laws require it.'
+            : 'California and EU privacy law require one once you collect any personal data, and Google login and Google Analytics require it too.'
+        };
+      },
       title: 'Write and publish a privacy policy',
-      why: 'Stores require a working link to one, and it must match what your app actually does.',
-      steps: [
-        'Make a list: what data you collect (emails, analytics, crash logs count), why, which services receive it (Supabase, Firebase, Stripe, analytics, AI providers), how long you keep it, and how people can delete it.',
-        'Use a generator such as ' + link('Termly', 'https://termly.io/products/privacy-policy-generator/') + ' or ' + link('iubenda', 'https://www.iubenda.com/en/privacy-and-cookie-policy-generator') + ' and answer from your list. Both have free tiers.',
-        'Publish it as a normal web page on your site (not a PDF or a Google Doc).',
-        'Link it inside the app where people can find it easily (for example in Settings), and on your website’s home page. Apple requires both the in-app link and the store link.',
-        'Paste the link into App Store Connect and/or Play Console when you set up the listing.'
-      ],
+      why: function (c) {
+        return c.store ? 'Stores require a working link to one, and it must match what your app actually does.' : 'Privacy laws require one, and so do Google login, Google Analytics and ad networks.';
+      },
+      steps: function (c) {
+        var list = [
+          'Make a list: what data you collect (emails, analytics and crash logs count), why, which services receive it (Supabase, Firebase, Stripe, analytics, AI providers), how long you keep it, and how people can delete it.',
+          'Use a generator such as ' + link('Termly', 'https://termly.io/products/privacy-policy-generator/') + ' or ' + link('iubenda', 'https://www.iubenda.com/en/privacy-and-cookie-policy-generator') + ' and answer from your list. Both have free tiers.'
+        ];
+        if (c.ai) list.push('Name your AI provider and say what text or files you send it.');
+        if (c.health) list.push('Say plainly that you collect health or wellness information, like mood entries or session history, and who can see it.');
+        if (c.kids) list.push('Add a section for children: what you collect from them, why, and how parents can see or delete it.');
+        list.push('Publish it as a normal web page on your site, not a PDF or a Google Doc.');
+        list.push(c.store ? 'Link it inside the app where people can find it easily (for example in Settings), and paste the link into App Store Connect and/or Play Console. Apple requires both.' : 'Link it in your site’s footer and on the sign-up page.');
+        return list;
+      },
       sources: [SRC.caloppa, SRC.gdprNotice, SRC.playUserData, SRC.appleGuidelines, SRC.termly]
     },
     {
@@ -440,6 +671,8 @@
       steps: [
         'Use a generator such as ' + link('Termly', 'https://termly.io/products/terms-and-conditions-generator/') + ' or iubenda.',
         'Make sure it covers: acceptable use, closing accounts, who owns what users create, payments and refunds, disclaimers, and how to contact you.',
+        'Say the minimum age to use it (usually 13, or 16 in some EU countries), unless it’s made for children.',
+        'If people post content, include a licence letting you show what they post, and your rules for what’s not allowed.',
         'If you charge money, make the refund and cancellation wording match the store’s rules.',
         'Publish it next to your privacy policy and link it on the sign-up screen and in the app.'
       ],
@@ -461,21 +694,33 @@
       sources: [SRC.euCookies, SRC.icoCookies]
     },
     {
-      id: 'coppa',
+      id: 'ads-consent',
       phase: 'legal',
-      when: function (c) { return c.kids; },
-      sev: 'blocker',
-      gap: { rank: 2, title: 'Get parental consent for kids', why: 'US law forbids collecting children’s data without a parent’s consent.' },
-      title: 'Follow children’s privacy law (COPPA)',
-      why: 'The FTC enforces it, and the rules were tightened in 2025.',
+      when: function (c) { return c.site && c.ads; },
+      sev: 'before',
+      title: 'Get your site ready for ads',
+      why: 'Google AdSense requires a Google-certified consent tool for visitors in the EU, UK and Switzerland, and approves sites on your own domain.',
       steps: [
-        'Decide honestly whether your app is aimed at, or likely to attract, children under 13.',
-        'If it is: get verifiable parental consent before collecting any personal data, and publish a children’s privacy notice.',
-        'Let parents see and delete their child’s data. Collect as little as possible.',
-        'Don’t use ad or analytics tools that track children.',
-        'This one is worth paying a lawyer or a COPPA Safe Harbor program to check.'
+        'Move to your own domain first. AdSense approves sites by domain, and your <code>ads.txt</code> file must sit at its root (yourdomain.com/ads.txt).',
+        'Use a consent tool certified by Google (AdSense offers its own in <strong>Privacy &amp; messaging</strong>). Without one, ads to EU, UK and Swiss visitors are limited.',
+        'Mention ads and the ad companies in your privacy policy.',
+        'Some US states give people the right to opt out of their data being “sold or shared” for ads. Most consent tools include a US option for this.'
       ],
-      sources: [SRC.coppa, SRC.playFamilies, SRC.appleGuidelines]
+      sources: [SRC.adsenseCmp, SRC.adsTxt]
+    },
+    {
+      id: 'health-consent',
+      phase: 'legal',
+      when: function (c) { return c.health && c.cloud; },
+      sev: 'before',
+      title: 'Ask clearly before collecting health data from people in the EU',
+      why: 'EU privacy law treats health data, including mood and mental health notes, as a special category that usually needs explicit consent.',
+      steps: [
+        'Before someone first saves health information, like a mood entry, show a short screen saying what’s saved, why, and who can see it, with a clear “I agree”.',
+        'Keep health data out of analytics and ad tools.',
+        'Check which region your database is in (shown in your Supabase or Firebase project settings) and mention it in your privacy policy.'
+      ],
+      sources: [SRC.gdprArt9, SRC.gdprNotice]
     },
     {
       id: 'health-breach',
@@ -497,13 +742,19 @@
     {
       id: 'account-deletion',
       phase: 'inapp',
-      when: function (c) { return c.accounts && (c.store || c.web); },
+      when: function (c) { return c.accounts; },
       sev: function (c) { return c.store ? 'blocker' : 'before'; },
-      gap: { rank: 5, title: 'Add account deletion', why: 'Apple and Google require it for any app with sign-up.' },
-      title: 'Add a “Delete account” option inside the app',
-      why: 'Apple and Google require an in-app way to delete an account and its data. Google also requires a web page for it.',
+      gap: function (c) {
+        return c.store ? { rank: 5, title: 'Add account deletion', why: 'Apple and Google require it for any app with sign-up.' } : null;
+      },
+      title: function (c) { return c.store ? 'Add a “Delete account” option inside the app' : 'Let people delete their account'; },
+      why: function (c) {
+        return c.store
+          ? 'Apple and Google require an in-app way to delete an account and its data. Google also requires a web page for it.'
+          : 'EU and California privacy law give people the right to have their data deleted.';
+      },
       steps: [
-        'Add a clear “Delete account” button, for example in Settings → Account. Ask your AI to build it so it deletes the person’s data from your database too. Apple says only deactivating the account isn’t enough.',
+        'Add a clear “Delete account” button, for example in Settings → Account. Ask your AI to build it so it deletes the person’s data and uploaded files too. Apple says only deactivating the account isn’t enough.',
         'Make a page on your website that names your app and explains how to request deletion (an email address is fine).',
         'If people pay through a subscription, tell them how to cancel it too. Deleting the account doesn’t cancel billing.',
         'Test it with a real account and check the data is gone.'
@@ -516,7 +767,7 @@
       when: function (c) { return c.ios && c.accounts; },
       sev: 'before',
       title: 'If you offer Google or Facebook login, add Sign in with Apple too',
-      why: 'Guideline 4.8 requires a private login option alongside social logins. Email-and-password only doesn’t need it.',
+      why: 'Guideline 4.8 requires a privacy-friendly login option alongside social logins, and Sign in with Apple is the simplest way to meet it. Email and password alone doesn’t need it.',
       steps: [
         'Check how people log in. If it’s only your own email and password, skip this step.',
         'If you offer Google, Facebook or another social login, add Sign in with Apple as an equal option.',
@@ -542,6 +793,20 @@
       sources: [SRC.appleGuidelines, SRC.appleAiNews, SRC.playUserData]
     },
     {
+      id: 'ai-disclosure-web',
+      phase: 'inapp',
+      when: function (c) { return c.ai && !c.store; },
+      sev: 'before',
+      title: 'Tell people before their text goes to an AI service',
+      why: 'Privacy laws require telling people who receives their data, and people trust an AI feature more when it’s clear what it sends.',
+      steps: [
+        'Next to the AI button, add one line such as: “Sends this recipe to OpenAI to rewrite it.”',
+        'Name the AI provider in your privacy policy.',
+        'Don’t send more than the feature needs.'
+      ],
+      sources: [SRC.gdprNotice, SRC.caloppa]
+    },
+    {
       id: 'apple-iap',
       phase: 'inapp',
       when: function (c) { return c.ios && c.digital; },
@@ -550,9 +815,9 @@
       title: 'Use Apple’s in-app purchase for subscriptions and unlocks',
       why: 'Guideline 3.1.1 requires it for digital features and content sold inside an iPhone app.',
       steps: [
-        'In App Store Connect, go to your app’s <strong>Subscriptions</strong> (or In-App Purchases) and create your products and prices.',
-        'First, sign the Paid Apps Agreement and add bank and tax details under <strong>Business → Agreements</strong>. You can’t create purchases until you do.',
-        'Connect the app to StoreKit. A service like RevenueCat makes this easier. Ask your AI to set it up.',
+        'Sign the Paid Apps Agreement and add bank and tax details under <strong>Business → Agreements</strong> in App Store Connect. You can’t create purchases until you do.',
+        'Go to your app’s <strong>Subscriptions</strong> (or In-App Purchases) and create your products and prices.',
+        'Connect the app to Apple’s purchase system (StoreKit). RevenueCat is a popular service that makes this easier. Ask your AI to set it up.',
         'Add a “Restore purchases” button.',
         'Keep Stripe for physical goods or real-world services, which must not use in-app purchase.',
         'US only: since May 2025 you may also link to your own web checkout. What Apple can charge for that is still in court. EU: new terms from October 1, 2026 allow other payment options alongside in-app purchase. Read the current rules before relying on either.'
@@ -595,11 +860,13 @@
     {
       id: 'ugc',
       phase: 'inapp',
-      when: function (c) { return c.a.ugc === 'yes'; },
+      when: function (c) { return c.ugc; },
       sev: function (c) { return c.store ? 'blocker' : 'before'; },
-      gap: { rank: 6, title: 'Add report and block', why: 'Apple requires reporting and blocking in apps where people post.' },
+      gap: function (c) { return c.store ? { rank: 6, title: 'Add report and block', why: 'Apple requires reporting and blocking in apps where people post.' } : null; },
       title: 'Add report, block and moderation tools',
-      why: 'Guideline 1.2 requires them for any app where people can see what others post or send.',
+      why: function (c) {
+        return c.store ? 'Guideline 1.2 requires them for any app where people can see what others post or send.' : 'Anything people can post will eventually include spam or abuse, and EU law requires a way to report illegal content.';
+      },
       steps: [
         'Add a “Report” option on every post, comment or message.',
         'Let people block other users.',
@@ -607,7 +874,52 @@
         'Show a way to contact you inside the app, and publish community rules in your terms.',
         'Since June 2026, Apple says removing content that breaks the rules is your responsibility.'
       ],
-      sources: [SRC.appleGuidelines, SRC.appleJune2026]
+      sources: function (c) { return c.store ? [SRC.appleGuidelines, SRC.appleJune2026] : [SRC.dsa]; }
+    },
+    {
+      id: 'uploads',
+      phase: 'inapp',
+      when: function (c) { return c.ugc; },
+      sev: 'before',
+      title: 'Handle uploaded photos and files safely',
+      why: 'Uploads can fill your storage, carry a person’s location, or include content you’re legally responsible for removing.',
+      steps: [
+        'Limit uploads to the file types and sizes you need, such as JPEG or PNG under 5 MB.',
+        'Remove location data from photos before saving them. Phone photos can reveal where someone lives. Ask your AI to strip EXIF data on upload.',
+        'Make sure only the owner can delete or replace their files (see the database step).',
+        'Decide who checks reported images, and remove anything illegal quickly.'
+      ],
+      sources: [SRC.supaStorage, SRC.dsa]
+    },
+    {
+      id: 'copyright',
+      phase: 'inapp',
+      when: function (c) { return c.ugc; },
+      sev: 'before',
+      title: 'Set up a way to handle copyright complaints',
+      why: 'When people post photos or text they don’t own, a US registered agent and a takedown process protect you from being liable for it.',
+      steps: [
+        'Register a “designated agent” with the US Copyright Office. It costs $6 and must be renewed every three years.',
+        'Add a “Report copyright” link and a short takedown process to your terms.',
+        'Remove content when you get a valid complaint, and ban people who repeatedly post others’ work.',
+        'For users in the EU, give a reason when you remove someone’s content and let them respond.'
+      ],
+      sources: [SRC.dmca, SRC.dsa]
+    },
+    {
+      id: 'crisis-safety',
+      phase: 'inapp',
+      when: function (c) { return c.health && (c.mental || c.ai || c.a.detail === 'mindfulness'); },
+      sev: 'before',
+      title: 'Plan for someone in crisis',
+      why: 'People use wellness and mood apps on bad days. Stores expect health apps to point people to real help, and AI replies to personal notes can go wrong.',
+      steps: [
+        'Add a visible “Need help now?” link to crisis lines, such as ' + link('findahelpline.com', 'https://findahelpline.com/') + ', which lists free lines in over 130 countries.',
+        'If AI replies to journal or mood entries: tell it never to give medical advice, and when an entry mentions self-harm, show crisis resources instead of an AI reply.',
+        'Say in the app and store description that it isn’t therapy or medical care, and remind people to talk to a doctor or professional.',
+        'Don’t put journal text or mood details in notifications, where anyone near the phone can read them.'
+      ],
+      sources: [SRC.helplines, SRC.appleGuidelines, SRC.playHealthPolicy]
     },
     {
       id: 'health-claims',
@@ -665,9 +977,8 @@
       why: 'Since April 28, 2026, Apple only accepts builds made with Xcode 26 or later, and since September 2026 they must support iOS 13 or later.',
       steps: [
         'You need either a Mac with the latest Xcode, or a cloud build service. Expo’s EAS Build and Submit work from Windows or Linux if your app uses Expo or React Native.',
-        'Pick a bundle ID in reverse-domain form, like com.yourname.appname. It can’t change once you upload a build.',
-        'In App Store Connect, go to <strong>Apps → + → New App</strong> and enter the name, language, bundle ID and a SKU (any internal code).',
-        'Build and upload. Ask your AI for the exact commands for your setup.',
+        'With Expo: create a free Expo account, then ask your AI to run <code>eas build</code> for iOS and <code>eas submit</code> to upload it. Check EAS’s free-plan build limits.',
+        'With a Mac: open the project in Xcode, choose Product → Archive, then upload from the Organizer.',
         'Note for later: from April 2027, uploads must use the iOS 27 SDK.'
       ],
       sources: [SRC.appleUpcoming, SRC.appleNewApp, SRC.appleUpload, SRC.expoSubmit]
@@ -680,11 +991,11 @@
       title: 'Include a privacy manifest in your iPhone build',
       why: 'Since May 2024, App Store Connect refuses uploads that use certain system features without declaring why.',
       steps: [
-        'Ask your AI: “Add a PrivacyInfo.xcprivacy privacy manifest to this app and declare a reason for every required-reason API it or its packages use.” Expo can generate it from app.json.',
+        'A privacy manifest is a small file listing which sensitive phone features the app uses and why. Ask your AI: “Add a privacy manifest and declare a reason for every required-reason API this app or its packages use.” In Expo it goes under <code>ios.privacyManifests</code> in app.json.',
         'Update packages like Firebase, Google Sign-In and OneSignal to versions that include their own privacy manifests.',
         'After uploading, read Apple’s email. It names anything still missing.'
       ],
-      sources: [SRC.appleReasonApi, SRC.appleSdkReqs]
+      sources: [SRC.appleReasonApi, SRC.appleSdkReqs, SRC.expoPrivacy]
     },
     {
       id: 'testflight',
@@ -697,9 +1008,10 @@
         'In App Store Connect, open <strong>TestFlight</strong> and add yourself and a few friends. Up to 100 internal testers need no review; outside testers need a quick Beta App Review.',
         'Install the app with the TestFlight app and use every screen, including sign-up, payments and deleting an account.',
         'Try it on an older iPhone and on a slow connection if you can.',
-        'Fix what breaks, upload a new build and test again.'
+        'Fix what breaks, upload a new build and test again.',
+        'Consider adding crash reporting, such as Sentry, so you hear about crashes you didn’t see.'
       ],
-      sources: [SRC.appleTestflight, SRC.appleCommon]
+      sources: [SRC.appleTestflight, SRC.appleCommon, SRC.sentry]
     },
     {
       id: 'android-build',
@@ -832,12 +1144,13 @@
       why: 'You can’t submit until the name, description, screenshots and links are filled in, and they must match the app.',
       steps: [
         'Write the text: name and subtitle (up to 30 characters each), keywords (100 characters, commas between), description (up to 4,000 characters), and a category.',
-        'Screenshots: 1 to 10 from the real app in use, not just the login or splash screen. iPhone needs the 6.9-inch size (for example 1290 × 2796). If the app runs on iPad, iPad screenshots are required too, or turn iPad support off.',
+        'Screenshots: 1 to 10 from the real app in use, not just the login or splash screen. iPhone needs the 6.9-inch size (for example 1290 × 2796). If the app runs on iPad, iPad screenshots are required too. Expo apps often have <code>supportsTablet: true</code> in app.json; ask your AI to turn it off if you don’t want to make iPad screenshots.',
+        '<strong>Pricing and Availability:</strong> set the price (Free is fine, and free apps don’t need the Paid Apps Agreement) and choose which countries to release in.',
         'App icon: 1024 × 1024 pixels, set in your project.',
         'Support URL (required, and must lead to real contact details) and privacy policy URL.',
         'Keep it accurate: no prices, competitor names or features that aren’t there (guideline 2.3).'
       ],
-      sources: [SRC.appleScreens, SRC.appleAppInfo, SRC.appleVersionInfo, SRC.appleIcons, SRC.appleGuidelines]
+      sources: [SRC.appleScreens, SRC.appleAppInfo, SRC.appleVersionInfo, SRC.appleIcons, SRC.appleAvailability, SRC.appleGuidelines]
     },
     {
       id: 'apple-privacy-labels',
@@ -849,7 +1162,7 @@
       steps: [
         'In App Store Connect, open <strong>App Privacy</strong>.',
         'For each kind of data (contact info, health, usage data…), say whether you collect it, why, and whether it’s linked to the person.',
-        'Include what your tools collect: analytics, crash reporting, Supabase or Firebase, AI providers.',
+        'Include what your tools collect: analytics, crash reporting, Supabase or Firebase, AI providers. Mood or journal entries count as health and user content, linked to the person, and shared with your AI provider if you send them there.',
         'If you track people across other companies’ apps (common with ad tools), you must ask permission with Apple’s tracking prompt.'
       ],
       sources: [SRC.applePrivacyDetails, { label: 'Apple: User privacy and data use', url: 'https://developer.apple.com/app-store/user-privacy-and-data-use/' }]
@@ -864,9 +1177,25 @@
       steps: [
         'In App Store Connect, open <strong>Age Rating</strong> and answer each question honestly.',
         'Apple’s ratings are now 4+, 9+, 13+, 16+ and 18+. The questions cover messaging, user content, AI chatbots, medical or wellness topics and, since September 2026, social media features. Answer them all.',
-        'If your terms require an older minimum age, choose the higher rating.'
+        'If your terms require an older minimum age, choose the higher rating.',
+        'Some US states now require parent consent for under-18s’ downloads and purchases (Texas since June 2026). Apple and Google handle the consent, but your app may need to respond to it, so read their notes.'
       ],
-      sources: [SRC.appleAgeHow, SRC.appleAgeNews, SRC.appleAgeSocial]
+      sources: [SRC.appleAgeHow, SRC.appleAgeNews, SRC.appleAgeSocial, SRC.appleTexas, SRC.playStateLaws]
+    },
+    {
+      id: 'tracking-permission',
+      phase: 'inapp',
+      when: function (c) { return c.ios && c.ads && !c.kids; },
+      sev: 'blocker',
+      title: 'Ask permission before tracking for ads on iPhone',
+      why: 'Apple requires the App Tracking Transparency prompt before tracking people across other companies’ apps, which most ad tools do.',
+      steps: [
+        'Ask your AI: “Does any package in this app track users across other apps or websites for ads?”',
+        'If yes, show Apple’s tracking permission prompt before that tracking starts, and explain why in one sentence.',
+        'The app must still work if people say no.',
+        'Declare the tracking in your App Store privacy details.'
+      ],
+      sources: [SRC.att, SRC.applePrivacyUse]
     },
     {
       id: 'medical-device',
@@ -880,21 +1209,7 @@
         'Unless you have FDA, CE or UKCA clearance, declare that it isn’t a regulated medical device.',
         'Make sure nothing in your listing or app suggests otherwise.'
       ],
-      sources: [SRC.appleMedDevice]
-    },
-    {
-      id: 'kids-category',
-      phase: 'listing',
-      when: function (c) { return c.ios && c.kids; },
-      sev: 'blocker',
-      title: 'Decide carefully whether to list in the Kids Category',
-      why: 'Kids Category apps can’t use third-party analytics or ads, and once approved the choice can’t be changed.',
-      steps: [
-        'Only choose “Made for Kids” if the app really is for children.',
-        'Remove third-party ads and analytics, and don’t send any personal or device information to other companies.',
-        'Put links out of the app and any purchases behind a parental gate.'
-      ],
-      sources: [SRC.appleGuidelines, SRC.appleAppInfo]
+      sources: [SRC.appleMedDevice, SRC.appleMedDeviceHelp]
     },
     {
       id: 'apple-other-forms',
@@ -904,9 +1219,9 @@
       title: 'Answer the encryption and EU trader questions',
       why: 'App Store Connect asks both before release, and they’re easy to get stuck on.',
       steps: [
-        '<strong>Encryption:</strong> if the app only uses HTTPS or Apple’s built-in encryption, answer that it uses exempt encryption. Ask your AI to set <code>ITSAppUsesNonExemptEncryption</code> to NO so you aren’t asked every time.',
+        '<strong>Encryption:</strong> if the app only uses HTTPS or Apple’s built-in encryption, answer that it uses exempt encryption. Ask your AI to set <code>ITSAppUsesNonExemptEncryption</code> to NO so you aren’t asked every time (in Expo: <code>ios.config.usesNonExemptEncryption: false</code> in app.json).',
         '<strong>EU trader status:</strong> go to <strong>Business → Agreements → Compliance</strong>. You must answer even if you don’t sell in the EU.',
-        'If you earn money from the app, you’re probably a trader, and your phone, email and address will be shown to EU users. Only choose “non-trader” if it’s true. If you don’t want your details shown, leave EU countries out of your availability.'
+        'If you earn money from the app, you’re probably a trader, and your phone, email and address will be shown to EU users. Only choose “non-trader” if it’s true. If you don’t want your details shown, leave EU countries out under Pricing and Availability.'
       ],
       sources: [SRC.appleExport, SRC.appleDsa]
     },
@@ -951,11 +1266,11 @@
       steps: [
         'Content rating: answer the questionnaire honestly.',
         'Target audience: if any age group includes children, the Families policy applies.',
-        'Ads: say whether the app shows ads, including ads from any SDK.',
+        'Ads: say whether the app shows ads, including ads from any SDK. If it does, follow Google Play’s Ads policy.',
         'Health apps and Financial features: every app must fill these in, even to say “none”.',
         'App access: if features are behind a login, give reviewers a test account.'
       ],
-      sources: [SRC.playRating, SRC.playAudience, SRC.playPrepare, SRC.playHealthDecl, SRC.playFinance]
+      sources: [SRC.playRating, SRC.playAudience, SRC.playPrepare, SRC.playHealthDecl, SRC.playFinance, SRC.playAds]
     },
 
     // ---------------- 7. Submit ----------------
@@ -999,24 +1314,84 @@
       steps: [
         'Deploy the final version to your host and connect your domain.',
         'Link your privacy policy, terms and support email in the footer.',
-        'Sign up as a brand-new user and go through the whole app once on a phone.',
-        'For a browser extension, submit it to the Chrome Web Store and fill in its privacy form.'
-      ],
+        'Sign up as a brand-new user and go through the whole app once on a phone.'
+      ].concat([]),
       sources: [SRC.vercelDomain, SRC.netlifyHttps, { label: 'Chrome Web Store: Publish your extension', url: 'https://developer.chrome.com/docs/webstore/publish' }]
     },
 
+    {
+      id: 'extension-store',
+      phase: 'submit',
+      when: function (c) { return c.extension; },
+      sev: 'blocker',
+      title: 'Submit your extension to the Chrome Web Store',
+      why: 'Extensions are installed from the store, which reviews them and requires a privacy form.',
+      steps: [
+        'Register as a Chrome Web Store developer.',
+        'Upload the extension and fill in its privacy practices form, matching your privacy policy.',
+        'Only ask for the permissions the extension really needs. Broad permissions slow down review.'
+      ],
+      sources: [{ label: 'Chrome Web Store: Publish your extension', url: 'https://developer.chrome.com/docs/webstore/publish' }]
+    },
+    {
+      id: 'seo',
+      phase: 'submit',
+      when: function (c) { return c.web; },
+      sev: 'recommended',
+      title: 'Help people find and share your site',
+      why: 'Sites built as single-page apps often show up blank in search results and link previews unless you add the basics.',
+      steps: [
+        'Give every page a clear title and one-sentence description.',
+        'Add a share image and preview tags so links look right in messages and social posts.',
+        'Add your site to Google Search Console and submit a sitemap.',
+        'Ask your AI whether your pages are readable without JavaScript. If not, ask about pre-rendering.'
+      ],
+      sources: [SRC.seo]
+    },
+
     // ---------------- 8. After launch ----------------
+    {
+      id: 'before-charging',
+      phase: 'after',
+      when: function (c) { return c.a.money === 'later' && c.store; },
+      sev: 'after',
+      title: 'Before you add a subscription later',
+      why: 'Charging inside an app brings a set of new store requirements you don’t need today.',
+      steps: [
+        'Use Apple’s in-app purchase and Google Play Billing for anything that unlocks features.',
+        'Sign the Paid Apps Agreement and add bank and tax details first.',
+        'Add a subscription screen with price and renewal details, and a “Restore purchases” button.',
+        'Update your terms and privacy policy, then run Launch Check again.'
+      ],
+      sources: [SRC.appleSubs, SRC.appleAgreements, SRC.playBilling]
+    },
+    {
+      id: 'notifications',
+      phase: 'after',
+      when: function (c) { return c.store; },
+      sev: 'recommended',
+      title: 'If you send notifications, keep them optional and private',
+      why: 'Apple’s guideline 4.5.4 says the app must work without them, marketing ones need permission, and they mustn’t carry sensitive personal information.',
+      steps: [
+        'Make sure the app works if someone says no to notifications.',
+        'Ask separately before sending promotional notifications.',
+        'Keep private details, like journal text or health information, out of the notification itself.'
+      ],
+      sources: [SRC.appleGuidelines]
+    },
     {
       id: 'keep-in-sync',
       phase: 'after',
       when: always,
       sev: 'after',
-      title: 'Update your privacy policy and store forms whenever the app collects something new',
-      why: 'A mismatch between what the app does and what you’ve declared can get later updates rejected or the app pulled.',
-      steps: [
-        'Before adding a feature, ask: does it collect new data or send it somewhere new?',
-        'If so, update the privacy policy, App Privacy details and Data safety form in the same release.'
-      ],
+      title: function (c) { return c.store ? 'Update your privacy policy and store forms whenever the app collects something new' : 'Update your privacy policy whenever the site collects something new'; },
+      why: 'A mismatch between what you do and what you’ve told people breaks privacy law, and in stores it can get updates rejected or the app pulled.',
+      steps: function (c) {
+        return [
+          'Before adding a feature, ask: does it collect new data or send it somewhere new?',
+          c.store ? 'If so, update the privacy policy, App Privacy details and Data safety form in the same release.' : 'If so, update the privacy policy, and your cookie banner if it’s a new tracking tool, in the same release.'
+        ];
+      },
       sources: [SRC.playDataSafety, SRC.applePrivacyDetails]
     },
     {
@@ -1025,12 +1400,13 @@
       when: always,
       sev: 'after',
       title: 'Keep the app’s building blocks up to date',
-      why: 'Security fixes arrive through updates, and stores raise their minimum requirements every year.',
-      steps: [
-        'Merge Dependabot’s security pull requests, then test the app again.',
-        'Each year, check Apple’s minimum Xcode version and Google’s target API level before your next update.',
-        'Watch your email for policy notices from Apple and Google. They give deadlines.'
-      ],
+      why: function (c) { return c.store ? 'Security fixes arrive through updates, and stores raise their minimum requirements every year.' : 'Security fixes arrive through updates to the packages your site uses.'; },
+      steps: function (c) {
+        var list = ['Merge Dependabot’s security pull requests, then test again.'];
+        if (c.store) list.push('Each year, check Apple’s minimum Xcode version and Google’s target API level before your next update.', 'Watch your email for policy notices from Apple and Google. They give deadlines.');
+        else list.push('Keep your builder, database and login settings up to date, and read security emails from them.');
+        return list;
+      },
       sources: [SRC.ghDependabot, SRC.targetSdk, SRC.appleUpcoming]
     }
   ];
