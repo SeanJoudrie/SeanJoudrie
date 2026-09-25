@@ -7,15 +7,19 @@
 
   // ---------- Example content ----------
 
+  // The sample app: a budgeting app for students, category Finance.
   var EXAMPLE_SUMMARY =
-    'Stillwater is a meditation app for iPhone for people who want a calm 10-minute routine. ' +
-    'People sign up with email and password to save their streaks and favorite sessions. ' +
-    'It stores names, emails, session history and mood check-ins in a Supabase database. ' +
-    "I'm not sure whether row level security is on. The audio files are in the app. " +
-    'It uses Google Analytics. There is a $4.99 a month subscription through Stripe that unlocks all sessions. ' +
-    'An AI coach writes a short reflection from the mood check-in using the OpenAI API. ' +
-    "Users can't see each other's posts. The code is on GitHub. " +
+    'Pocket Budget is an iPhone app that helps college students track spending against a monthly budget. ' +
+    'People sign up with an email and password. They can link a bank account through Plaid to import transactions, or type spending in by hand. ' +
+    'It stores names, emails, transaction history and budget categories in a Supabase database. ' +
+    "I'm not sure whether row level security is turned on. It uses Google Analytics. " +
+    'There is a $2.99 a month premium tier for savings goals, paid through Stripe. ' +
+    'It does not use AI. Users cannot see each other’s budgets and there are no posts or messages. ' +
+    'It is for college students, not children. The code is on GitHub. ' +
     "I don't have an Apple developer account, a website, a privacy policy or terms yet.";
+
+  // Answers the sample doesn't state outright, so the example opens straight to results.
+  var EXAMPLE_FILL = { kids: 'no', accounts: 'yes', money: 'digital', data: 'supabase', tracking: 'analytics', ai: 'no', ugc: 'no' };
 
   // Third question, only for categories with extra rules.
   var DETAILS = {
@@ -170,6 +174,7 @@
   }
 
   var state = {
+    steps: {},
     projectId: '',
     focusStart: '',
     focusIndex: 0,
@@ -372,7 +377,7 @@
 
   // ---------- Routing ----------
 
-  var VIEWS = ['landing', 'describe', 'narrow', 'details', 'analyzing', 'results', 'next', 'projects'];
+  var VIEWS = ['landing', 'describe', 'narrow', 'details', 'analyzing', 'results', 'next', 'map', 'projects'];
   var firstRender = true;
 
   function currentView() {
@@ -403,8 +408,13 @@
   }
 
   function render() {
+    if (location.hash === '#example') {
+      loadExample();
+      return;
+    }
     var name = currentView();
     clearTimeout(analyzeTimer);
+    document.body.classList.toggle('is-focus', name === 'next');
 
     // Later screens need earlier answers; send people back to fill them in.
     var hasDescription = describedText() || state.projectId;
@@ -416,7 +426,7 @@
       go('narrow', true);
       return;
     }
-    if (['analyzing', 'results', 'next'].indexOf(name) > -1 && !answered(state.answers)) {
+    if (['analyzing', 'results', 'next', 'map'].indexOf(name) > -1 && !answered(state.answers)) {
       go(hasDescription ? 'details' : 'describe', true);
       return;
     }
@@ -430,6 +440,7 @@
     if (name === 'analyzing') enterAnalyzing();
     if (name === 'results') enterResults();
     if (name === 'next') enterFocus();
+    if (name === 'map') enterMap();
     if (name === 'projects') enterProjects();
 
     var titles = {
@@ -440,6 +451,7 @@
       analyzing: 'Checking your app · Launch Check',
       results: 'Your launch plan · Launch Check',
       next: 'Do this now · Launch Check',
+      map: 'Map · Launch Check',
       projects: 'My projects · Launch Check'
     };
     document.title = titles[name];
@@ -726,16 +738,19 @@
       );
     }).join('');
 
-    $('#have-list').innerHTML = HAVES.filter(function (h) {
-      return h.when(f);
-    })
-      .map(function (h) {
-        return (
-          '<label class="check check--row"><input type="checkbox" name="have" value="' + h.id + '"' +
-          (a.have[h.id] ? ' checked' : '') + ' /><span>' + h.label + '</span></label>'
-        );
+    $('#have-list').innerHTML =
+      HAVES.filter(function (h) {
+        return h.when(f);
       })
-      .join('');
+        .map(function (h) {
+          return (
+            '<label class="check check--row"><input type="checkbox" name="have" value="' + h.id + '"' +
+            (a.have[h.id] ? ' checked' : '') + ' /><span>' + h.label + '</span></label>'
+          );
+        })
+        .join('') +
+      '<label class="check check--row"><input type="checkbox" name="have" value="none"' +
+      (a.have.none ? ' checked' : '') + ' /><span>Nothing yet / I don’t know</span></label>';
 
     $all('#questions input[type="radio"]').forEach(function (r) {
       r.addEventListener('change', function () {
@@ -745,9 +760,17 @@
         clearError(null, '#' + id + '-error');
       });
     });
+    // "Nothing yet / I don't know" and the other boxes rule each other out.
     $all('#have-list input').forEach(function (c) {
       c.addEventListener('change', function () {
         state.answers.have[c.value] = c.checked;
+        if (!c.checked) return;
+        $all('#have-list input').forEach(function (o) {
+          if (o !== c && (c.value === 'none' || o.value === 'none')) {
+            o.checked = false;
+            state.answers.have[o.value] = false;
+          }
+        });
       });
     });
   }
@@ -822,6 +845,8 @@
         return {
           id: it.id,
           phase: it.phase,
+          branch: it.branch,
+          needs: it.needs || [],
           title: val(it.title, c),
           why: val(it.why, c),
           steps: val(it.steps, c),
@@ -971,6 +996,7 @@
     p.summary = state.method === 'summary' ? summaryEl.value.trim() : p.summary || '';
     p.answers = JSON.parse(JSON.stringify(state.answers));
     p.done = JSON.parse(JSON.stringify(state.done));
+    p.steps = JSON.parse(JSON.stringify(state.steps));
     p.updated_at = now;
     if (extra) Object.keys(extra).forEach(function (k) {
       p[k] = extra[k];
@@ -992,6 +1018,7 @@
     state.answers = Object.assign(freshAnswers(), p.answers || {});
     state.answers.have = state.answers.have || {};
     state.done = p.done || {};
+    state.steps = p.steps || {};
     state.guessed = {};
     setMethod('summary');
     summaryEl.value = p.summary || '';
@@ -1000,9 +1027,10 @@
   }
 
   function progressOf(p) {
-    var saved = { answers: state.answers, done: state.done, projectId: state.projectId };
+    var saved = { answers: state.answers, done: state.done, steps: state.steps, projectId: state.projectId };
     state.answers = Object.assign(freshAnswers(), p.answers || {});
     state.done = p.done || {};
+    state.steps = p.steps || {};
     var plan = buildPlan();
     var total = plan.items.length;
     var done = plan.items.filter(function (it) {
@@ -1013,6 +1041,7 @@
     }).length;
     state.answers = saved.answers;
     state.done = saved.done;
+    state.steps = saved.steps;
     return { total: total, done: done, must: must, context: plan.context };
   }
 
@@ -1070,8 +1099,49 @@
 
   var GAP_LIMIT = 5;
 
+  // A task is done when it's ticked as a whole, or when every small step in it is.
+  function stepTicks(it) {
+    var t = state.steps[it.id] || [];
+    return it.steps.map(function (x, i) {
+      return !!t[i];
+    });
+  }
+
   function isDone(it) {
-    return state.done[it.id] !== undefined ? state.done[it.id] : it._done;
+    if (state.done[it.id] !== undefined) return state.done[it.id];
+    if (it._done) return true;
+    var t = stepTicks(it);
+    return t.length > 0 && t.every(Boolean);
+  }
+
+  function stepsDoneIn(it) {
+    if (isDone(it)) return it.steps.length;
+    return stepTicks(it).filter(Boolean).length;
+  }
+
+  function setTaskDone(it, done) {
+    state.done[it.id] = done;
+    state.steps[it.id] = it.steps.map(function () {
+      return done;
+    });
+  }
+
+  function setStepDone(it, i, done) {
+    var t = stepTicks(it);
+    t[i] = done;
+    state.steps[it.id] = t;
+    // The whole task follows its steps.
+    state.done[it.id] = t.every(Boolean);
+  }
+
+  function stepTotals(items) {
+    var total = 0;
+    var done = 0;
+    items.forEach(function (it) {
+      total += it.steps.length;
+      done += stepsDoneIn(it);
+    });
+    return { total: total, done: done };
   }
 
   function orderedItems(plan) {
@@ -1139,13 +1209,16 @@
   function renderReport(plan) {
     var items = plan.items;
     var done = items.filter(isDone).length;
+    var st = stepTotals(items);
     var must = items.filter(function (it) {
       return it.severity === 'blocker' && !isDone(it);
     }).length;
-    $('#meter-fill').style.width = (items.length ? (done / items.length) * 100 : 0) + '%';
-    $('#report-stats').innerHTML = '<strong>' + done + '</strong> of ' + items.length + ' steps done · <strong>' + must + '</strong> must-fix left';
+    $('#meter-fill').style.width = (st.total ? (st.done / st.total) * 100 : 0) + '%';
+    $('#report-stats').innerHTML =
+      '<strong>' + done + '</strong> of ' + items.length + ' tasks · <strong>' + st.done + '</strong> of ' + st.total +
+      ' small steps · <strong>' + must + '</strong> must-fix left';
     var next = $('#start-next');
-    next.firstChild.textContent = done === 0 ? 'Start with step 1 ' : done === items.length ? 'Review your steps ' : 'Do the next step ';
+    next.firstChild.textContent = st.done === 0 ? 'Start with task 1 ' : done === items.length ? 'Review your tasks ' : 'Do the next task ';
     var note = sync.user
       ? 'Saved to your account (' + esc(sync.user.email || 'signed in') + ').'
       : 'Saved in this browser. <a href="#projects">' + (sync.enabled ? 'Sign in to keep it on every device' : 'See my projects') + '</a>';
@@ -1158,13 +1231,6 @@
     saveProject({ name: name });
   });
 
-  $('#see-all').addEventListener('click', function (e) {
-    e.preventDefault();
-    var h = $('#checklist-title');
-    h.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
-    h.focus({ preventScroll: true });
-  });
-
   $('#start-next').addEventListener('click', function (e) {
     e.preventDefault();
     openFocus('');
@@ -1172,9 +1238,9 @@
 
   var LEVELS = { blocker: 'Must fix', required: 'Required', before: 'Before launch', recommended: 'Recommended', after: 'After launch' };
 
-  function chip(it, done) {
-    if (done) return '<span class="chip chip--done">Done</span>';
-    return '<span class="chip chip--' + it.severity + '">' + LEVELS[it.severity] + '</span>';
+  // Status is shown as words; only "Must fix" gets color.
+  function levelText(it) {
+    return it.severity === 'blocker' ? '<span class="flag">Must fix</span>' : LEVELS[it.severity];
   }
 
   function phasesFor(plan) {
@@ -1195,6 +1261,39 @@
       });
   }
 
+  function taskRow(it) {
+    var done = isDone(it);
+    var n = it.steps.length;
+    return (
+      '<li class="task" id="step-' + it.id + '" data-severity="' + it.severity + '"' + (done ? ' data-done="true"' : '') + '>' +
+      '<input type="checkbox" data-task="' + it.id + '"' + (done ? ' checked' : '') + ' aria-label="Mark done: ' + esc(it.title) + '" />' +
+      '<button type="button" class="task__main" data-focus="' + it.id + '">' +
+      '<span class="task__what">' + esc(it.title) + '</span>' +
+      '<span class="task__meta">' + (done ? 'Done' : levelText(it)) + ' · ' + stepsDoneIn(it) + ' of ' + n + (n === 1 ? ' step' : ' steps') + '</span>' +
+      '</button>' +
+      '</li>'
+    );
+  }
+
+  function bindTaskRows(root, rerender) {
+    var byId = {};
+    buildPlan().items.forEach(function (it) {
+      byId[it.id] = it;
+    });
+    $all(root + ' input[data-task]').forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        setTaskDone(byId[cb.getAttribute('data-task')], cb.checked);
+        saveProject();
+        rerender();
+      });
+    });
+    $all(root + ' [data-focus]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        openFocus(btn.getAttribute('data-focus'));
+      });
+    });
+  }
+
   function renderChecklist(plan) {
     var phases = phasesFor(plan);
     $('#phase-nav').innerHTML = phases
@@ -1202,7 +1301,7 @@
         return '<li><a href="#phase-' + phase.id + '" data-jump="phase-' + phase.id + '">' + (i + 1) + '. ' + esc(phase.title) + '</a></li>';
       })
       .join('');
-    var html = phases
+    $('#checklist').innerHTML = phases
       .map(function (phase, i) {
         var left = phase.items.filter(function (it) {
           return !isDone(it);
@@ -1210,31 +1309,11 @@
         return (
           '<section class="phase" aria-labelledby="phase-' + phase.id + '">' +
           '<h3 id="phase-' + phase.id + '" tabindex="-1"><span>' + (i + 1) + '. ' + esc(phase.title) + '</span>' +
-          '<span class="mono">' + (left ? left + ' left' : 'All done') + '</span></h3>' +
-          (phase.intro ? '<p class="phase__intro">' + esc(phase.intro) + '</p>' : '') +
-          '<ol class="tasks">' +
-          phase.items
-            .map(function (it) {
-              var cb = 'task-' + it.id;
-              var done = isDone(it);
-              return (
-                '<li class="task" id="step-' + it.id + '" data-severity="' + it.severity + '">' +
-                '<input type="checkbox" id="' + cb + '" data-task="' + it.id + '"' + (done ? ' checked' : '') + ' />' +
-                '<div class="task__body">' +
-                '<label class="task__what" for="' + cb + '">' + esc(it.title) + '</label><br />' +
-                '<span class="task__level">' + chip(it, false) + '</span>' +
-                '</div>' +
-                '<button type="button" class="task__open" data-focus="' + it.id + '">Open' + ARROW +
-                '<span class="sr-only">: ' + esc(it.title) + '</span></button>' +
-                '</li>'
-              );
-            })
-            .join('') +
-          '</ol></section>'
+          '<span class="phase__count">' + (left ? left + ' left' : 'All done') + '</span></h3>' +
+          '<ol class="tasks">' + phase.items.map(taskRow).join('') + '</ol></section>'
         );
       })
       .join('');
-    $('#checklist').innerHTML = html;
     applyFilter();
     $all('[data-jump]').forEach(function (a) {
       a.addEventListener('click', function (e) {
@@ -1244,18 +1323,12 @@
         h.focus({ preventScroll: true });
       });
     });
-    $all('#checklist input[type="checkbox"]').forEach(function (cb) {
-      cb.addEventListener('change', function () {
-        state.done[cb.getAttribute('data-task')] = cb.checked;
-        saveProject();
-        updateCount();
-        renderReport(buildPlan());
-      });
-    });
-    $all('[data-focus]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        openFocus(btn.getAttribute('data-focus'));
-      });
+    bindTaskRows('#checklist', function () {
+      var y = window.scrollY;
+      var p = buildPlan();
+      renderChecklist(p);
+      renderReport(p);
+      window.scrollTo(0, y);
     });
     updateCount();
   }
@@ -1295,10 +1368,202 @@
     var done = boxes.filter(function (b) {
       return b.checked;
     }).length;
-    $('#checklist-count').textContent = done + ' of ' + boxes.length + ' done';
+    $('#checklist-count').textContent = done + ' of ' + boxes.length + ' tasks done';
   }
 
-  // ---------- Focus: one step at a time ----------
+  // ---------- Map: the skill tree ----------
+
+  var mapOpen = null;
+
+  function goalFor(c) {
+    if (c.ios && c.android) return 'Released on the App Store and Google Play';
+    if (c.ios) return 'Released on the App Store';
+    if (c.android) return 'Released on Google Play';
+    if (c.extension) return 'Published in the Chrome Web Store';
+    return 'Live on your own web address';
+  }
+
+  // Needs that apply to this plan only; a task is ready when all of them are done.
+  function statusOf(it, byId) {
+    if (isDone(it)) return 'done';
+    var waiting = it.needs.filter(function (id) {
+      return byId[id] && !isDone(byId[id]);
+    });
+    return waiting.length ? 'wait' : 'ready';
+  }
+
+  function enterMap() {
+    var plan = buildPlan();
+    var c = plan.context;
+    var items = orderedItems(plan);
+    var byId = {};
+    items.forEach(function (it, i) {
+      it._order = i;
+      byId[it.id] = it;
+    });
+
+    var done = items.filter(isDone).length;
+    var st = stepTotals(items);
+    $('#map-title').textContent = goalFor(c);
+    $('#goal-stats').innerHTML = '<strong>' + done + '</strong> of ' + items.length + ' tasks · <strong>' + st.done + '</strong> of ' + st.total + ' small steps';
+    $('#goal-meter').style.width = (st.total ? (st.done / st.total) * 100 : 0) + '%';
+
+    // Today: everything that isn't waiting on anything, must-fix first.
+    var ready = items
+      .filter(function (it) {
+        return statusOf(it, byId) === 'ready';
+      })
+      .sort(function (x, y) {
+        return (x.severity === 'blocker' ? 0 : 1) - (y.severity === 'blocker' ? 0 : 1) || x._order - y._order;
+      });
+    $('#ready-list').innerHTML = ready.slice(0, 6).map(taskRow).join('') ||
+      '<li class="ready__empty">Nothing is ready right now. Every task left is waiting on another one.</li>';
+
+    // Branches with progress; the weakest one is called out.
+    var branches = DATA.branches
+      .map(function (br) {
+        var list = items.filter(function (it) {
+          return it.branch === br.id;
+        });
+        var d = list.filter(isDone).length;
+        return { id: br.id, title: br.title, items: list, done: d, pct: list.length ? d / list.length : 1 };
+      })
+      .filter(function (br) {
+        return br.items.length;
+      });
+    var open = branches.filter(function (br) {
+      return br.done < br.items.length;
+    });
+    var weakest = open.length
+      ? open.reduce(function (m, br) {
+          return br.pct < m.pct ? br : m;
+        }).id
+      : '';
+    if (!mapOpen) {
+      mapOpen = {};
+      var wide = window.matchMedia('(min-width: 860px)').matches;
+      branches.forEach(function (br) {
+        mapOpen[br.id] = wide || br.id === weakest;
+      });
+    }
+
+    $('#branches').innerHTML = branches
+      .map(function (br) {
+        // Depth inside the branch: one more than the deepest task it waits on in the same branch.
+        var depth = {};
+        function d(it) {
+          if (depth[it.id] !== undefined) return depth[it.id];
+          depth[it.id] = 0;
+          var max = -1;
+          it.needs.forEach(function (id) {
+            var dep = byId[id];
+            if (dep && dep.branch === br.id) max = Math.max(max, d(dep));
+          });
+          depth[it.id] = max + 1;
+          return depth[it.id];
+        }
+        var nodes = br.items.slice().sort(function (x, y) {
+          return d(x) - d(y) || x._order - y._order;
+        });
+        var isOpen = !!mapOpen[br.id];
+        return (
+          '<section class="branch' + (br.id === weakest ? ' branch--weakest' : '') + '">' +
+          '<h3 class="branch__head"><button type="button" class="branch__toggle" aria-expanded="' + isOpen + '" aria-controls="branch-' + br.id + '" data-branch="' + br.id + '">' +
+          '<span class="branch__title">' + esc(br.title) + '</span>' +
+          '<span class="branch__count">' + br.done + ' of ' + br.items.length + '</span>' +
+          CHEVRON + '</button></h3>' +
+          (br.id === weakest ? '<p class="branch__note">Furthest behind</p>' : '') +
+          '<div class="meter meter--light" aria-hidden="true"><span class="meter__fill" style="width:' + br.pct * 100 + '%"></span></div>' +
+          '<ol class="tree" id="branch-' + br.id + '"' + (isOpen ? '' : ' hidden') + '>' +
+          nodes
+            .map(function (it) {
+              var status = statusOf(it, byId);
+              var waitingOn = it.needs
+                .filter(function (id) {
+                  return byId[id] && !isDone(byId[id]);
+                })
+                .map(function (id) {
+                  var dep = byId[id];
+                  return esc(dep.title) + (dep.branch !== br.id ? ' (' + esc(branchName(dep.branch)) + ')' : '');
+                });
+              var shown = waitingOn.slice(0, 2).join('; ');
+              var extra = waitingOn.length - 2;
+              var label = status === 'done' ? 'Done' : status === 'ready' ? 'Ready now' :
+                'Waiting on: ' + shown + (extra > 0 ? ' and ' + extra + ' more' : '');
+              return (
+                '<li class="node" data-state="' + status + '" style="--depth:' + Math.min(d(it), 3) + '">' +
+                '<button type="button" class="node__head" aria-expanded="false" aria-controls="node-' + it.id + '">' +
+                '<span class="node-dot node-dot--' + status + '" aria-hidden="true"></span>' +
+                '<span class="node__text"><span class="node__title">' + esc(it.title) + '</span>' +
+                '<span class="node__meta">' + label + '</span></span></button>' +
+                '<div class="node__body" id="node-' + it.id + '" hidden>' +
+                '<p>' + esc(it.why) + '</p>' +
+                '<label class="check"><input type="checkbox" data-node="' + it.id + '"' + (status === 'done' ? ' checked' : '') + ' />' +
+                '<span>Mark this task done</span></label>' +
+                '<button type="button" class="button button--secondary button--small" data-focus="' + it.id + '">Open its ' + it.steps.length + ' steps</button>' +
+                '</div></li>'
+              );
+            })
+            .join('') +
+          '</ol></section>'
+        );
+      })
+      .join('');
+
+    $all('.branch__toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-branch');
+        mapOpen[id] = btn.getAttribute('aria-expanded') !== 'true';
+        btn.setAttribute('aria-expanded', String(mapOpen[id]));
+        $('#branch-' + id).hidden = !mapOpen[id];
+      });
+    });
+    $all('.node__head').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var open = btn.getAttribute('aria-expanded') !== 'true';
+        btn.setAttribute('aria-expanded', String(open));
+        document.getElementById(btn.getAttribute('aria-controls')).hidden = !open;
+      });
+    });
+    var rerender = function (keepId) {
+      var y = window.scrollY;
+      enterMap();
+      window.scrollTo(0, y);
+      if (keepId) {
+        var head = $('[aria-controls="node-' + keepId + '"]');
+        if (head) {
+          head.click();
+          var box = $('[data-node="' + keepId + '"]');
+          if (box) box.focus({ preventScroll: true });
+        }
+      }
+    };
+    $all('[data-node]').forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        var id = cb.getAttribute('data-node');
+        setTaskDone(byId[id], cb.checked);
+        saveProject();
+        rerender(id);
+      });
+    });
+    bindTaskRows('#ready-list', function () {
+      rerender('');
+    });
+    $all('#branches [data-focus]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        openFocus(btn.getAttribute('data-focus'));
+      });
+    });
+  }
+
+  function branchName(id) {
+    var b = DATA.branches.filter(function (x) {
+      return x.id === id;
+    })[0];
+    return b ? b.title : '';
+  }
+
+  // ---------- Focus: one task at a time ----------
 
   var focusItems = [];
 
@@ -1330,11 +1595,26 @@
     return -1;
   }
 
-  function showFocus(idx, direction) {
+  function updateFocusProgress() {
     var total = focusItems.length;
     var doneCount = focusItems.filter(isDone).length;
     $('#focus-meter').style.width = (total ? (doneCount / total) * 100 : 0) + '%';
     $('#focus-done').textContent = doneCount + ' done';
+  }
+
+  function updateFocusButtons(it) {
+    var done = isDone(it);
+    $('#focus-complete').querySelector('span').textContent = done ? 'Next' : 'Done, next';
+    $('#focus-skip').textContent = done ? 'Mark not done' : 'Skip for now';
+    $('#focus-steps-count').textContent = stepsDoneIn(it) + ' of ' + it.steps.length;
+    var flag = $('#focus-level');
+    flag.textContent = done ? 'Done' : LEVELS[it.severity];
+    flag.className = 'card__flag' + (done ? ' card__flag--done' : it.severity === 'blocker' ? ' card__flag--must' : '');
+  }
+
+  function showFocus(idx, direction) {
+    var total = focusItems.length;
+    updateFocusProgress();
     var cleared = idx < 0;
     $('#focus-cleared').hidden = !cleared;
     $('#focus-card').hidden = cleared;
@@ -1345,17 +1625,28 @@
     }
     state.focusIndex = idx;
     var it = focusItems[idx];
-    var done = isDone(it);
-    $('#focus-count').textContent = 'Step ' + (idx + 1) + ' of ' + total;
-    $('#focus-level').outerHTML = chip(it, done).replace('<span class="chip', '<span id="focus-level" class="chip');
+    $('#focus-count').textContent = 'Task ' + (idx + 1) + ' of ' + total;
     $('#focus-phase').textContent = it.phaseTitle || '';
     $('#focus-title').textContent = it.title;
     $('#focus-why').textContent = it.why;
+    var ticks = stepTicks(it);
+    var all = isDone(it);
     $('#focus-steps').innerHTML = it.steps
-      .map(function (st) {
-        return '<li>' + st + '</li>';
+      .map(function (st, i) {
+        return (
+          '<li><label class="step"><input type="checkbox" data-step="' + i + '"' + (all || ticks[i] ? ' checked' : '') + ' />' +
+          '<span class="step__text">' + st + '</span></label></li>'
+        );
       })
       .join('');
+    $all('#focus-steps input').forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        setStepDone(it, +cb.getAttribute('data-step'), cb.checked);
+        saveProject();
+        updateFocusProgress();
+        updateFocusButtons(it);
+      });
+    });
     $('#focus-sources').innerHTML = it.sources
       .map(function (src) {
         return '<li><a href="' + esc(src.url) + '" target="_blank" rel="noopener">' + esc(src.label) + '<span class="sr-only"> (opens in a new tab)</span></a></li>';
@@ -1363,8 +1654,8 @@
       .join('');
     $('.card__sources').open = false;
     $('#focus-prev').disabled = idx === 0;
-    $('#focus-complete').querySelector('span').textContent = done ? 'Next' : 'Done, next';
-    $('#focus-skip').textContent = done ? 'Mark not done' : 'Skip for now';
+    updateFocusButtons(it);
+    $('#focus-stage').scrollTop = 0;
 
     var card = $('#focus-card');
     card.classList.remove('is-leaving-left', 'is-leaving-right', 'is-entering');
@@ -1378,13 +1669,12 @@
     var card = $('#focus-card');
     var finish = function () {
       showFocus(idx, direction);
-      window.scrollTo(0, 0);
       var h = focusHeading();
       if (h) h.focus({ preventScroll: true });
     };
     if (reduceMotion || card.hidden) return finish();
     card.classList.add(direction === 'back' ? 'is-leaving-right' : 'is-leaving-left');
-    setTimeout(finish, 170);
+    setTimeout(finish, 150);
   }
 
   function nextIndex(from) {
@@ -1395,10 +1685,10 @@
   $('#focus-complete').addEventListener('click', function () {
     var it = focusItems[state.focusIndex];
     if (!isDone(it)) {
-      state.done[it.id] = true;
+      setTaskDone(it, true);
       saveProject();
     }
-    // Move on to the next step that isn't done yet, or the cleared screen.
+    // Move on to the next task that isn't done yet, or the cleared screen.
     var n = nextIndex(state.focusIndex);
     if (n > -1 && isDone(focusItems[n])) n = firstUndone(n);
     moveFocus(n, 'next');
@@ -1407,7 +1697,7 @@
   $('#focus-skip').addEventListener('click', function () {
     var it = focusItems[state.focusIndex];
     if (isDone(it)) {
-      state.done[it.id] = false;
+      setTaskDone(it, false);
       saveProject();
       showFocus(state.focusIndex, '');
       return;
@@ -1419,7 +1709,7 @@
     if (state.focusIndex > 0) moveFocus(state.focusIndex - 1, 'back');
   });
 
-  // Swipe: left for the next step, right to go back. Vertical scrolling is untouched.
+  // Swipe: left for the next task, right to go back. Vertical scrolling is untouched.
   (function () {
     var card = $('#focus-card');
     var x0 = null;
@@ -1456,6 +1746,36 @@
     }
   });
 
+  // ---------- The sample app ----------
+
+  function loadExample() {
+    // Reopen the sample if it's already saved, instead of making a copy each time.
+    var existing = loadProjects().filter(function (p) {
+      return p.summary === EXAMPLE_SUMMARY;
+    })[0];
+    if (existing) {
+      location.replace('#results');
+      openProject(existing.id);
+      return;
+    }
+    state.projectId = '';
+    state.done = {};
+    state.steps = {};
+    setMethod('summary');
+    summaryEl.value = EXAMPLE_SUMMARY;
+    state.guessedFrom = '';
+    applyGuess(EXAMPLE_SUMMARY);
+    activeQuestions(state.answers).forEach(function (q) {
+      if (!state.answers[q.id]) state.answers[q.id] = EXAMPLE_FILL[q.id] || 'unsure';
+    });
+    if (!state.answers.product) state.answers.product = 'ios';
+    if (!state.answers.category) state.answers.category = 'finance';
+    // A couple of things ticked, so the map shows all three states.
+    state.done['apple-developer'] = true;
+    state.done['support-email'] = true;
+    go('results', true);
+  }
+
   // ---------- Copy as text ----------
 
   // Plain-text version of the plan, for pasting into notes, a doc or an AI chat.
@@ -1477,10 +1797,12 @@
         lines.push('');
         lines.push(n + '. [' + (isDone(it) ? 'x' : ' ') + '] ' + it.title + ' (' + LEVELS[it.severity] + ')');
         lines.push('   Why: ' + it.why);
+        var ticks = stepTicks(it);
+        var all = isDone(it);
         it.steps.forEach(function (st, i) {
           var tmp = document.createElement('div');
           tmp.innerHTML = st;
-          lines.push('   ' + String.fromCharCode(97 + i) + ') ' + tmp.textContent.replace(/ \(opens in a new tab\)/g, ''));
+          lines.push('   [' + (all || ticks[i] ? 'x' : ' ') + '] ' + tmp.textContent.replace(/ \(opens in a new tab\)/g, ''));
         });
         it.sources.forEach(function (src) {
           lines.push('   Source: ' + src.label + ' ' + src.url);
@@ -1514,6 +1836,7 @@
   });
 
   $('#start-over').addEventListener('click', function () {
+    state.steps = {};
     state.projectId = '';
     state.answers = freshAnswers();
     state.guessed = {};

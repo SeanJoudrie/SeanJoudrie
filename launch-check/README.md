@@ -71,6 +71,27 @@ To move through the steps:
 - **Skip for now** moves on without marking it done.
 - On a phone, swipe left for the next step and right to go back. Arrow keys work on a keyboard.
 
+## Small steps and the map
+
+- **Tasks and steps.** Each task (for example "Write a privacy policy") is made of small steps, and each step can be ticked on its own. A task counts as done when all of its steps are ticked, or when you tick the task itself.
+- **Store submission.** Submitting is broken into concrete tasks for Apple and Google:
+  - who reviews it
+  - where you go
+  - uploading a build (not a zip file or a GitHub link)
+  - the listing
+  - submitting
+  - what happens after
+
+  Prices and review times say "check the official page".
+- **Map.** The Map view is a skill tree:
+  - The goal sits at the top, for example "Released on the App Store".
+  - "You can do these today" lists the tasks that aren't waiting on anything.
+  - Five collapsible branches follow: Accounts and purchases, Security and data, Legal, User experience, Store submission. Each branch shows its progress and flags the one furthest behind.
+  - Tasks that wait on another task in the same branch are indented under it.
+  - Ticking a task in the map also ticks it in the list, and the other way round.
+  - Each task's branch and the tasks it waits on are set in `data.js` (`BRANCH_OF` and `NEEDS`).
+- **Sample plan.** "See an example plan" loads the sample: a budgeting app for students, category Finance.
+
 ## Projects and accounts
 
 Each check is saved as a project in the browser (`localStorage`), with its name, answers and progress. Pasted code is never stored. **My projects** lists them with progress bars.

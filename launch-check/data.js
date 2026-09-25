@@ -149,6 +149,16 @@
     appleAvailability: { label: 'Apple: Manage availability (countries)', url: 'https://developer.apple.com/help/app-store-connect/manage-your-apps-availability/manage-availability-for-your-app-on-the-app-store' },
     appleMedDeviceHelp: { label: 'Apple: Declare regulated medical device status', url: 'https://developer.apple.com/help/app-store-connect/manage-app-information/declare-regulated-medical-device-status' },
     sentry: { label: 'Sentry: Crash reporting for React Native', url: 'https://docs.sentry.io/platforms/react-native/' },
+    appleReviewOverview: { label: 'Apple: App Review', url: 'https://developer.apple.com/distribute/app-review/' },
+    appleSubmit: { label: 'Apple: Submit an app for review', url: 'https://developer.apple.com/help/app-store-connect/manage-submissions-to-app-review/submit-an-app' },
+    appleResolution: { label: 'Apple: Reply to App Review messages', url: 'https://developer.apple.com/help/app-store-connect/manage-submissions-to-app-review/reply-to-app-review-messages' },
+    appleRelease: { label: 'Apple: Choose how your version is released', url: 'https://developer.apple.com/help/app-store-connect/manage-your-apps-availability/select-an-app-store-version-release-option' },
+    ascHome: { label: 'App Store Connect', url: 'https://appstoreconnect.apple.com' },
+    playConsoleHome: { label: 'Google Play Console', url: 'https://play.google.com/console' },
+    playCreateApp: { label: 'Google Play: Create and set up your app', url: 'https://support.google.com/googleplay/android-developer/answer/9859152' },
+    playProdAccess: { label: 'Google Play: Apply for production access', url: 'https://support.google.com/googleplay/android-developer/answer/14151465' },
+    playPublish: { label: 'Google Play: Prepare and roll out a release', url: 'https://support.google.com/googleplay/android-developer/answer/9859348' },
+    playPolicyStatus: { label: 'Google Play: How enforcement and appeals work', url: 'https://support.google.com/googleplay/android-developer/answer/9899234' },
     wcag: { label: 'W3C: WCAG 2.2', url: 'https://www.w3.org/WAI/standards-guidelines/wcag/' },
     androidA11y: { label: 'Android: Accessibility', url: 'https://developer.android.com/guide/topics/ui/accessibility' }
   };
@@ -973,11 +983,11 @@
       phase: 'build',
       when: function (c) { return c.ios; },
       sev: 'blocker',
-      title: 'Make an iPhone build and upload it',
+      title: 'Make an iPhone build',
       why: 'Since April 28, 2026, Apple only accepts builds made with Xcode 26 or later, and since September 2026 they must support iOS 13 or later.',
       steps: [
         'You need either a Mac with the latest Xcode, or a cloud build service. Expo’s EAS Build and Submit work from Windows or Linux if your app uses Expo or React Native.',
-        'With Expo: create a free Expo account, then ask your AI to run <code>eas build</code> for iOS and <code>eas submit</code> to upload it. Check EAS’s free-plan build limits.',
+        'With Expo: create a free Expo account, then ask your AI to run <code>eas build</code> for iOS. Check EAS’s free-plan build limits.',
         'With a Mac: open the project in Xcode, choose Product → Archive, then upload from the Organizer.',
         'Note for later: from April 2027, uploads must use the iOS 27 SDK.'
       ],
@@ -1136,23 +1146,6 @@
 
     // ---------------- 6. Store listing ----------------
     {
-      id: 'apple-listing',
-      phase: 'listing',
-      when: function (c) { return c.ios; },
-      sev: 'blocker',
-      title: 'Fill in your App Store listing',
-      why: 'You can’t submit until the name, description, screenshots and links are filled in, and they must match the app.',
-      steps: [
-        'Write the text: name and subtitle (up to 30 characters each), keywords (100 characters, commas between), description (up to 4,000 characters), and a category.',
-        'Screenshots: 1 to 10 from the real app in use, not just the login or splash screen. iPhone needs the 6.9-inch size (for example 1290 × 2796). If the app runs on iPad, iPad screenshots are required too. Expo apps often have <code>supportsTablet: true</code> in app.json; ask your AI to turn it off if you don’t want to make iPad screenshots.',
-        '<strong>Pricing and Availability:</strong> set the price (Free is fine, and free apps don’t need the Paid Apps Agreement) and choose which countries to release in.',
-        'App icon: 1024 × 1024 pixels, set in your project.',
-        'Support URL (required, and must lead to real contact details) and privacy policy URL.',
-        'Keep it accurate: no prices, competitor names or features that aren’t there (guideline 2.3).'
-      ],
-      sources: [SRC.appleScreens, SRC.appleAppInfo, SRC.appleVersionInfo, SRC.appleIcons, SRC.appleAvailability, SRC.appleGuidelines]
-    },
-    {
       id: 'apple-privacy-labels',
       phase: 'listing',
       when: function (c) { return c.ios; },
@@ -1212,20 +1205,6 @@
       sources: [SRC.appleMedDevice, SRC.appleMedDeviceHelp]
     },
     {
-      id: 'apple-other-forms',
-      phase: 'listing',
-      when: function (c) { return c.ios; },
-      sev: 'before',
-      title: 'Answer the encryption and EU trader questions',
-      why: 'App Store Connect asks both before release, and they’re easy to get stuck on.',
-      steps: [
-        '<strong>Encryption:</strong> if the app only uses HTTPS or Apple’s built-in encryption, answer that it uses exempt encryption. Ask your AI to set <code>ITSAppUsesNonExemptEncryption</code> to NO so you aren’t asked every time (in Expo: <code>ios.config.usesNonExemptEncryption: false</code> in app.json).',
-        '<strong>EU trader status:</strong> go to <strong>Business → Agreements → Compliance</strong>. You must answer even if you don’t sell in the EU.',
-        'If you earn money from the app, you’re probably a trader, and your phone, email and address will be shown to EU users. Only choose “non-trader” if it’s true. If you don’t want your details shown, leave EU countries out under Pricing and Availability.'
-      ],
-      sources: [SRC.appleExport, SRC.appleDsa]
-    },
-    {
       id: 'play-listing',
       phase: 'listing',
       when: function (c) { return c.android; },
@@ -1274,6 +1253,278 @@
     },
 
     // ---------------- 7. Submit ----------------
+    // ---------- Store submission, in small steps ----------
+    {
+      id: 'who-reviews',
+      phase: 'accounts',
+      when: function (c) { return c.store; },
+      sev: 'before',
+      title: 'Know who checks your app before it goes live',
+      why: 'Every app and every update is checked by the store before anyone can download it. Knowing who and where saves a lot of confusion.',
+      steps: function (c) {
+        var list = [];
+        if (c.ios) list.push('<strong>App Store:</strong> Apple’s App Review team checks every app and update. You talk to them only through ' + link('App Store Connect', 'https://appstoreconnect.apple.com') + ', Apple’s website for publishing.');
+        if (c.android) list.push('<strong>Google Play:</strong> Google reviews every app and update. You talk to Google through ' + link('Google Play Console', 'https://play.google.com/console') + ', Google’s website for publishing.');
+        list.push('You don’t send them a zip file, a GitHub link or an email. You upload a finished build through their website or tools, fill in forms there, then press a submit button.');
+        list.push('Skim the store’s review rules once, so nothing later surprises you.');
+        return list;
+      },
+      sources: function (c) {
+        var l = [];
+        if (c.ios) l.push(SRC.appleReviewOverview, SRC.appleGuidelines);
+        if (c.android) l.push(SRC.playPrepare);
+        return l;
+      }
+    },
+    {
+      id: 'asc-sign-in',
+      phase: 'accounts',
+      when: function (c) { return c.ios; },
+      sev: 'before',
+      title: 'Sign in to App Store Connect for the first time',
+      why: 'It’s where everything for your app happens: uploads, forms, review messages and release.',
+      steps: [
+        'Go to ' + link('appstoreconnect.apple.com', 'https://appstoreconnect.apple.com') + ' and sign in with the Apple Account you enrolled with.',
+        'Accept any agreements it shows you. The free-apps agreement is needed even for a free app.',
+        'Look around the <strong>Apps</strong> page. You’ll come back here for almost every step below.'
+      ],
+      sources: [SRC.ascHome, SRC.appleAgreements]
+    },
+    {
+      id: 'upload-build-ios',
+      phase: 'submit',
+      when: function (c) { return c.ios; },
+      sev: 'blocker',
+      title: 'Upload your iPhone build to App Store Connect',
+      why: 'Apple only reviews builds uploaded through its own tools. A zip file or a GitHub link isn’t accepted.',
+      steps: [
+        'Build the release version of the app (see “Make an iPhone build”).',
+        'Upload it with Xcode, Apple’s Transporter app (Mac), or Expo’s <code>eas submit</code> (works from Windows or Linux).',
+        'Wait for Apple’s email saying the build finished processing. It usually takes minutes, sometimes longer (check the official page).',
+        'If processing fails, the email says why. Fix that, bump the build number, and upload again.'
+      ],
+      sources: [SRC.appleUpload, SRC.expoSubmit]
+    },
+    {
+      id: 'listing-text',
+      phase: 'listing',
+      when: function (c) { return c.ios; },
+      sev: 'blocker',
+      title: 'Write your App Store name, subtitle and description',
+      why: 'People decide from this text, and Apple rejects listings that don’t match what the app does.',
+      steps: [
+        'Name: up to 30 characters. Check nobody else uses it.',
+        'Subtitle: up to 30 characters, saying what it does.',
+        'Description: plain words about what the app does, up to 4,000 characters. No prices or features that aren’t there.',
+        'Keywords: up to 100 characters, separated by commas.',
+        'Pick a primary category.'
+      ],
+      sources: [SRC.appleAppInfo, SRC.appleVersionInfo, SRC.appleGuidelines]
+    },
+    {
+      id: 'listing-screenshots',
+      phase: 'listing',
+      when: function (c) { return c.ios; },
+      sev: 'blocker',
+      title: 'Add App Store screenshots',
+      why: 'You can’t submit without them, and they must show the real app in use.',
+      steps: [
+        'Take 1 to 10 screenshots of real screens, not only the login or splash screen.',
+        'Use the size App Store Connect asks for: iPhone 6.9-inch (for example 1290 × 2796). Sizes change, so check the official page.',
+        'If the app runs on iPad, add iPad screenshots too, or ask your AI to turn iPad support off.',
+        'Upload them on the version page in App Store Connect.'
+      ],
+      sources: [SRC.appleScreens, SRC.appleGuidelines]
+    },
+    {
+      id: 'app-icon',
+      phase: 'build',
+      when: function (c) { return c.store; },
+      sev: 'blocker',
+      title: 'Make your app icon',
+      why: 'Both stores require one, and it’s the first thing people see.',
+      steps: function (c) {
+        var l = ['Make a simple, square icon with no text that’s too small to read.'];
+        if (c.ios) l.push('iPhone: 1024 × 1024 pixels, set in your project (Expo: the <code>icon</code> field in app.json).');
+        if (c.android) l.push('Google Play: a 512 × 512 PNG, up to 1 MB, uploaded in Play Console.');
+        return l;
+      },
+      sources: function (c) {
+        var l = [];
+        if (c.ios) l.push(SRC.appleIcons);
+        if (c.android) l.push(SRC.playListing);
+        return l;
+      }
+    },
+    {
+      id: 'listing-links',
+      phase: 'listing',
+      when: function (c) { return c.ios; },
+      sev: 'blocker',
+      title: 'Add your support and privacy policy links',
+      why: 'Apple requires both, and a broken link gets the app sent back.',
+      steps: [
+        'Support URL: a page with a way to contact you. Your support page from earlier works.',
+        'Privacy Policy URL: the public page with your privacy policy.',
+        'Open both links on your phone before you submit, to check they load.'
+      ],
+      sources: [SRC.appleVersionInfo, SRC.appleAppInfo, SRC.appleCommon]
+    },
+    {
+      id: 'pricing-availability',
+      phase: 'listing',
+      when: function (c) { return c.ios; },
+      sev: 'blocker',
+      title: 'Set the price and countries',
+      why: 'The app can’t be released until you choose where it’s sold and for how much.',
+      steps: [
+        'In App Store Connect, open <strong>Pricing and Availability</strong>.',
+        'Choose Free, or a price. Free apps don’t need the Paid Apps Agreement.',
+        'Pick the countries. You can leave some out for now.'
+      ],
+      sources: [SRC.appleAvailability]
+    },
+    {
+      id: 'encryption-question',
+      phase: 'listing',
+      when: function (c) { return c.ios; },
+      sev: 'before',
+      title: 'Answer the encryption question',
+      why: 'Apple asks for every version, and most apps only need one simple answer.',
+      steps: [
+        'If the app only uses HTTPS or Apple’s built-in encryption, answer that it uses exempt encryption.',
+        'Ask your AI to set <code>ITSAppUsesNonExemptEncryption</code> to NO (Expo: <code>ios.config.usesNonExemptEncryption: false</code>) so you’re not asked every time.'
+      ],
+      sources: [SRC.appleExport]
+    },
+    {
+      id: 'eu-trader',
+      phase: 'listing',
+      when: function (c) { return c.ios; },
+      sev: 'blocker',
+      title: 'Declare your EU trader status',
+      why: 'Apple requires an answer even if you don’t sell in the EU, and apps without one are removed there.',
+      steps: [
+        'Go to <strong>Business → Agreements → Compliance → Digital Services Act</strong>.',
+        'If you earn money from the app, you’re probably a trader: your phone, email and address will be shown to EU users.',
+        'Only choose “non-trader” if it’s true. If you don’t want your details shown, leave EU countries out under Pricing and Availability.'
+      ],
+      sources: [SRC.appleDsa]
+    },
+    {
+      id: 'review-notes',
+      phase: 'submit',
+      when: function (c) { return c.store; },
+      sev: 'before',
+      title: 'Write short notes for the reviewer',
+      why: 'A few sentences about anything unusual prevent a lot of back-and-forth.',
+      steps: [
+        'Say in one or two sentences what the app does and where its main features are.',
+        'Mention anything that needs setup, like a microphone, a subscription or location.',
+        'Add a contact name, email and phone number reviewers can reach.'
+      ],
+      sources: [SRC.appleVersionInfo, SRC.playPrepare]
+    },
+    {
+      id: 'submit-ios',
+      phase: 'submit',
+      when: function (c) { return c.ios; },
+      sev: 'blocker',
+      title: 'Send the app to Apple for review',
+      why: 'Nothing is reviewed until you press submit.',
+      steps: [
+        'On the version page, choose the build you uploaded.',
+        'Check every section shows no warnings: listing, privacy, age rating, pricing, review information.',
+        'Choose how to release it: automatically when approved, or when you press a button.',
+        'Press <strong>Add for Review</strong>, then <strong>Submit to App Review</strong>.'
+      ],
+      sources: [SRC.appleSubmit, SRC.appleRelease]
+    },
+    {
+      id: 'after-review-ios',
+      phase: 'submit',
+      when: function (c) { return c.ios; },
+      sev: 'before',
+      title: 'Watch for Apple’s answer',
+      why: 'Most apps get an answer within a day or two, and a first rejection is common and fixable.',
+      steps: [
+        'Apple emails you when the status changes. Apple says 90% of submissions are reviewed within 24 hours (check the official page; it varies).',
+        'If it’s approved, it goes live the way you chose.',
+        'If it’s rejected, open the message in App Store Connect. It names the rule and what to change.',
+        'Fix that one thing, reply if something needs explaining, and submit again.'
+      ],
+      sources: [SRC.appleCommon, SRC.appleResolution]
+    },
+    {
+      id: 'play-create-app',
+      phase: 'accounts',
+      when: function (c) { return c.android; },
+      sev: 'blocker',
+      title: 'Create your app in Google Play Console',
+      why: 'Every upload, form and review happens under this app entry.',
+      steps: [
+        'In ' + link('Google Play Console', 'https://play.google.com/console') + ', press <strong>Create app</strong>.',
+        'Enter the app name, language, and whether it’s free or paid (free can’t change to paid later).',
+        'Accept the declarations it shows.'
+      ],
+      sources: [SRC.playConsoleHome, SRC.playCreateApp]
+    },
+    {
+      id: 'upload-build-android',
+      phase: 'build',
+      when: function (c) { return c.android; },
+      sev: 'blocker',
+      title: 'Upload your Android build to a test track',
+      why: 'Google only accepts builds uploaded in Play Console, as an .aab file. A zip or GitHub link isn’t accepted.',
+      steps: [
+        'In Play Console, go to <strong>Testing → Closed testing</strong> and create a release.',
+        'Upload the .aab file from your Android build.',
+        'Add a short note about what’s in this release, then save and roll it out to testers.'
+      ],
+      sources: [SRC.playTracks, SRC.aab]
+    },
+    {
+      id: 'play-production',
+      phase: 'submit',
+      when: function (c) { return c.android; },
+      sev: 'blocker',
+      title: 'Apply for production access',
+      why: 'New personal accounts must ask Google before releasing to everyone, after the 14-day test.',
+      steps: [
+        'When the 14-day test is done, open the Play Console <strong>Dashboard</strong> and choose to apply for production.',
+        'Answer the questions about your test honestly: who tested, what you changed.',
+        'Google replies by email. It can take several days (check the official page).'
+      ],
+      sources: [SRC.playProdAccess]
+    },
+    {
+      id: 'submit-android',
+      phase: 'submit',
+      when: function (c) { return c.android; },
+      sev: 'blocker',
+      title: 'Send the app to Google for review',
+      why: 'Your release only goes out after Google reviews it.',
+      steps: [
+        'In <strong>Production</strong>, create a release using your tested .aab.',
+        'Check <strong>Publishing overview</strong> has no missing items.',
+        'Send the changes for review. Google says it can take up to 7 days or longer (check the official page).'
+      ],
+      sources: [SRC.playPublish, SRC.playReview]
+    },
+    {
+      id: 'after-review-android',
+      phase: 'submit',
+      when: function (c) { return c.android; },
+      sev: 'before',
+      title: 'Watch for Google’s answer',
+      why: 'A first rejection is common and fixable.',
+      steps: [
+        'Google emails you, and Play Console shows the status.',
+        'If it’s rejected, the email and the <strong>Policy status</strong> page name the policy.',
+        'Fix it and send a new release, or appeal if you think it’s a mistake.'
+      ],
+      sources: [SRC.playPolicyStatus]
+    },
     {
       id: 'demo-account',
       phase: 'submit',
@@ -1289,20 +1540,6 @@
         'Check the login still works the day you submit.'
       ],
       sources: [SRC.appleCommon, SRC.appleVersionInfo, SRC.playPrepare]
-    },
-    {
-      id: 'review-notes',
-      phase: 'submit',
-      when: function (c) { return c.store; },
-      sev: 'before',
-      title: 'Write short notes for the reviewer, then submit',
-      why: 'A few sentences explaining anything unusual prevent a lot of back-and-forth.',
-      steps: [
-        'In the review notes, say what the app does, where to find its main features, and anything that needs setup (like a microphone or a subscription).',
-        'Submit. Apple says 90% of submissions are reviewed in under 24 hours. Google says new apps can take up to 7 days or longer.',
-        'If you’re rejected, read the message in the Resolution Center (Apple) or your email (Google). It names the guideline. Fix that one thing and resubmit, or reply if you think they got it wrong.'
-      ],
-      sources: [SRC.appleCommon, SRC.playReview]
     },
     {
       id: 'web-launch',
@@ -1411,7 +1648,95 @@
     }
   ];
 
+  // Skill tree: which branch each task belongs to, and which tasks it waits on.
+  var BRANCHES = [
+    { id: 'accounts', title: 'Accounts and purchases' },
+    { id: 'security', title: 'Security and data' },
+    { id: 'legal', title: 'Legal' },
+    { id: 'ux', title: 'User experience' },
+    { id: 'store', title: 'Store submission' }
+  ];
+
+  var BRANCH_OF = {
+    'find-out': 'accounts', 'decide-money': 'accounts', 'who-reviews': 'store',
+    'apple-developer': 'accounts', 'play-developer': 'accounts', 'asc-sign-in': 'accounts', 'apple-app-record': 'accounts',
+    'play-create-app': 'accounts', 'regulated-entity': 'accounts', website: 'accounts', 'support-email': 'accounts',
+    'apple-iap': 'accounts', 'play-billing': 'accounts', 'before-charging': 'accounts',
+    'two-factor': 'security', 'find-data': 'security', 'supabase-rls': 'security', 'firebase-rules': 'security',
+    'backend-access': 'security', 'secret-keys': 'security', 'rotate-keys': 'security', 'github-protection': 'security',
+    'private-repo': 'security', backups: 'security', 'supabase-awake': 'security', 'auth-redirects': 'security',
+    'abuse-limits': 'security', https: 'security', 'kids-sdks': 'security', uploads: 'security', 'stay-updated': 'security',
+    'privacy-policy': 'legal', terms: 'legal', 'cookie-consent': 'legal', 'ads-consent': 'legal', coppa: 'legal',
+    'health-consent': 'legal', 'health-breach': 'legal', 'ai-consent': 'legal', 'ai-disclosure-web': 'legal',
+    'health-claims': 'legal', copyright: 'legal', 'audio-rights': 'legal', 'apple-kids': 'legal', 'play-families': 'legal',
+    'keep-in-sync': 'legal', 'tracking-permission': 'legal',
+    'account-deletion': 'ux', 'sign-in-with-apple': 'ux', 'subscription-screen': 'ux', ugc: 'ux', 'crisis-safety': 'ux',
+    healthkit: 'ux', 'app-icon': 'ux', accessibility: 'ux', size: 'ux', 'web-speed': 'ux', completeness: 'ux',
+    'more-than-a-website': 'ux', notifications: 'ux', seo: 'ux'
+  };
+
+  var NEEDS = {
+    'asc-sign-in': ['apple-developer'],
+    'apple-app-record': ['asc-sign-in'],
+    'play-create-app': ['play-developer'],
+    'support-email': ['website'],
+    'privacy-policy': ['find-data', 'website'],
+    terms: ['website'],
+    'apple-iap': ['apple-app-record', 'decide-money'],
+    'subscription-screen': ['apple-iap'],
+    'play-billing': ['play-create-app', 'decide-money'],
+    'rotate-keys': ['secret-keys'],
+    'supabase-rls': ['find-data'],
+    'firebase-rules': ['find-data'],
+    'backend-access': ['find-data'],
+    backups: ['find-data'],
+    'auth-redirects': ['website'],
+    'ai-consent': ['privacy-policy'],
+    'ai-disclosure-web': ['privacy-policy'],
+    'health-consent': ['privacy-policy'],
+    'cookie-consent': ['privacy-policy'],
+    'ads-consent': ['website', 'privacy-policy'],
+    coppa: ['find-out'],
+    'kids-sdks': ['find-out'],
+    'ios-build': ['apple-app-record', 'privacy-manifest'],
+    'upload-build-ios': ['ios-build', 'app-icon'],
+    testflight: ['upload-build-ios'],
+    completeness: ['testflight'],
+    'upload-build-android': ['android-build', 'play-create-app'],
+    'closed-test': ['upload-build-android'],
+    'listing-text': ['apple-app-record'],
+    'listing-screenshots': ['apple-app-record', 'completeness'],
+    'listing-links': ['apple-app-record', 'privacy-policy', 'support-email'],
+    'pricing-availability': ['apple-app-record'],
+    'apple-privacy-labels': ['apple-app-record', 'privacy-policy'],
+    'apple-age-rating': ['apple-app-record'],
+    'medical-device': ['apple-app-record'],
+    'encryption-question': ['upload-build-ios'],
+    'eu-trader': ['asc-sign-in'],
+    'play-listing': ['play-create-app', 'app-icon'],
+    'play-data-safety': ['play-create-app', 'privacy-policy'],
+    'play-app-content': ['play-create-app'],
+    'demo-account': ['completeness'],
+    'review-notes': ['demo-account'],
+    'submit-ios': ['upload-build-ios', 'listing-text', 'listing-screenshots', 'listing-links', 'pricing-availability', 'apple-privacy-labels', 'apple-age-rating', 'eu-trader', 'review-notes', 'account-deletion', 'terms'],
+    'after-review-ios': ['submit-ios'],
+    'play-production': ['closed-test', 'play-listing', 'play-data-safety', 'play-app-content'],
+    'submit-android': ['play-production', 'review-notes'],
+    'after-review-android': ['submit-android'],
+    'web-launch': ['website', 'privacy-policy', 'terms', 'https'],
+    'extension-store': ['privacy-policy'],
+    'keep-in-sync': ['privacy-policy'],
+    notifications: ['privacy-policy'],
+    'before-charging': ['privacy-policy']
+  };
+
+  ITEMS.forEach(function (it) {
+    it.branch = BRANCH_OF[it.id] || 'store';
+    it.needs = NEEDS[it.id] || [];
+  });
+
   window.LC_DATA = {
+    branches: BRANCHES,
     checked: 'September 2026',
     phases: PHASES,
     items: ITEMS
