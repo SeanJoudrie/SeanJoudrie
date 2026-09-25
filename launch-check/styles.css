@@ -23,6 +23,7 @@
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --radius: 10px;
+  --radius-sm: 6px; /* chips, badges and number tiles */
   --container: 760px;
   --wide: 1120px;
   --tap: 48px;
@@ -116,7 +117,7 @@ body {
   color: var(--ink);
   font-family: var(--font);
   font-size: 17px;
-  line-height: 26px;
+  line-height: 28px;
 }
 
 main {
@@ -147,7 +148,7 @@ h2,
 .display {
   font-size: 64px;
   line-height: 64px;
-  font-weight: 900;
+  font-weight: 800;
   font-stretch: 70%;
   text-transform: uppercase;
   letter-spacing: -0.005em;
@@ -275,9 +276,21 @@ code {
 /* ---------- Layout ---------- */
 .container {
   width: 100%;
-  max-width: calc(var(--container) + 2 * var(--s-6));
+  max-width: calc(var(--wide) + 2 * var(--s-6));
   margin: 0 auto;
   padding: 0 var(--s-6);
+}
+
+/* Reading-width column that shares the wide container's left edge, so the
+   logo, headings and content line up on every screen. */
+.container--flow,
+.report__inner,
+.focus__bar-inner,
+.focus__stage,
+.focus__controls-inner {
+  max-width: calc(var(--container) + 2 * var(--s-6));
+  margin-left: max(0px, calc((100% - var(--wide) - 2 * var(--s-6)) / 2));
+  margin-right: auto;
 }
 
 .container--flow {
@@ -295,8 +308,7 @@ code {
   align-items: center;
   justify-content: space-between;
   gap: var(--s-4);
-  min-height: 60px;
-  max-width: calc(var(--wide) + 2 * var(--s-6));
+  min-height: 64px;
 }
 
 .wordmark {
@@ -318,14 +330,14 @@ code {
   justify-content: center;
   width: 28px;
   height: 28px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: var(--signal);
   color: var(--on-signal);
 }
 
 .wordmark__mark svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   fill: none;
   stroke: currentColor;
   stroke-width: 2.6;
@@ -490,7 +502,6 @@ code {
   grid-template-columns: 1.15fr 0.85fr;
   gap: var(--s-12);
   align-items: center;
-  max-width: calc(var(--wide) + 2 * var(--s-6));
   padding-top: var(--s-16);
   padding-bottom: var(--s-16);
 }
@@ -553,7 +564,7 @@ code {
 .status {
   flex: none;
   padding: 2px var(--s-2);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-family: var(--mono);
   font-size: 12px;
   line-height: 20px;
@@ -573,6 +584,7 @@ code {
 }
 
 .band {
+  max-width: var(--container);
   padding: var(--s-12) 0;
   border-top: 1px solid var(--line);
 }
@@ -662,10 +674,10 @@ code {
   content: "";
   position: absolute;
   left: 0;
-  top: 9px;
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
+  top: 10px;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-sm);
   background: var(--signal);
   border: 1px solid var(--ink);
 }
@@ -678,7 +690,7 @@ code {
 }
 
 .list--tight li::before {
-  top: 7px;
+  top: 8px;
 }
 
 /* ---------- Forms ---------- */
@@ -754,7 +766,7 @@ textarea.mono {
   text-transform: none;
   letter-spacing: 0;
   font-size: 14px;
-  line-height: 22px;
+  line-height: 24px;
 }
 
 textarea:disabled {
@@ -900,7 +912,7 @@ input[type="checkbox"] {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: var(--ink);
   color: var(--bg);
   font-family: var(--mono);
@@ -941,7 +953,7 @@ input[type="checkbox"] {
   white-space: pre-wrap;
   font-family: var(--mono);
   font-size: 14px;
-  line-height: 22px;
+  line-height: 20px;
 }
 
 .notice {
@@ -995,7 +1007,7 @@ input[type="checkbox"] {
   padding: var(--s-3) var(--s-4);
   background: var(--surface);
   border: 2px solid var(--line);
-  border-left: 6px solid var(--signal);
+  border-left: 4px solid var(--signal);
   border-radius: var(--radius);
   font-size: 16px;
   line-height: 24px;
@@ -1008,7 +1020,7 @@ input[type="checkbox"] {
   border-left: 4px solid var(--signal);
   border-radius: var(--radius);
   font-size: 15px;
-  line-height: 22px;
+  line-height: 24px;
 }
 
 .question + .question,
@@ -1091,7 +1103,7 @@ fieldset.field {
   height: 20px;
   flex: none;
   border: 2px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
 }
 
 @keyframes spin {
@@ -1135,7 +1147,7 @@ fieldset.field {
   margin-top: var(--s-4);
   font-size: 52px;
   line-height: 52px;
-  font-weight: 900;
+  font-weight: 800;
   font-stretch: 68%;
   text-transform: uppercase;
 }
@@ -1152,7 +1164,7 @@ fieldset.field {
 }
 
 .meter {
-  height: 10px;
+  height: 8px;
   margin-top: var(--s-5);
   background: var(--night-2);
   border: 1px solid var(--night-line);
@@ -1195,7 +1207,7 @@ fieldset.field {
   margin-top: var(--s-4);
   color: var(--night-muted);
   font-size: 15px;
-  line-height: 22px;
+  line-height: 24px;
 }
 
 .report__save a,
@@ -1218,7 +1230,7 @@ fieldset.field {
   padding: var(--s-3) var(--s-4);
   background: var(--surface);
   border: 2px solid var(--line);
-  border-left: 6px solid var(--alert);
+  border-left: 4px solid var(--alert);
   border-radius: var(--radius);
   color: var(--ink);
   text-decoration: none;
@@ -1245,7 +1257,7 @@ fieldset.field {
 .gap__why {
   color: var(--muted);
   font-size: 15px;
-  line-height: 22px;
+  line-height: 24px;
 }
 
 .gap__go {
@@ -1283,7 +1295,7 @@ fieldset.field {
   width: 100%;
   border-collapse: collapse;
   font-size: 16px;
-  line-height: 22px;
+  line-height: 24px;
 }
 
 .cost th,
@@ -1392,7 +1404,7 @@ fieldset.field {
   margin-bottom: var(--s-3);
   color: var(--muted);
   font-size: 15px;
-  line-height: 22px;
+  line-height: 24px;
 }
 
 .tasks {
@@ -1417,8 +1429,8 @@ fieldset.field {
 }
 
 .task > input {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   margin: 0;
   accent-color: var(--go);
 }
@@ -1429,7 +1441,7 @@ fieldset.field {
 
 .task__what {
   font-weight: 600;
-  line-height: 22px;
+  line-height: 24px;
 }
 
 .task__level {
@@ -1469,10 +1481,10 @@ fieldset.field {
   display: inline-flex;
   align-items: center;
   padding: 1px var(--s-2);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-family: var(--mono);
   font-size: 11px;
-  line-height: 18px;
+  line-height: 20px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -1506,7 +1518,7 @@ fieldset.field {
   border: 2px solid var(--line);
   border-radius: var(--radius);
   font-size: 15px;
-  line-height: 22px;
+  line-height: 24px;
 }
 
 .sources {
@@ -1526,7 +1538,7 @@ fieldset.field {
 .focus {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - 64px);
 }
 
 .focus__bar {
@@ -1633,8 +1645,8 @@ fieldset.field {
 .card__title {
   margin-top: var(--s-3);
   font-size: 44px;
-  line-height: 46px;
-  font-weight: 900;
+  line-height: 48px;
+  font-weight: 800;
   font-stretch: 68%;
 }
 
@@ -1642,7 +1654,7 @@ fieldset.field {
   margin-top: var(--s-3);
   color: var(--muted);
   font-size: 18px;
-  line-height: 27px;
+  line-height: 28px;
 }
 
 .card__label {
@@ -1667,7 +1679,7 @@ fieldset.field {
   position: relative;
   padding-left: 44px;
   font-size: 17px;
-  line-height: 26px;
+  line-height: 28px;
   user-select: text;
   -webkit-user-select: text;
 }
@@ -1682,7 +1694,7 @@ fieldset.field {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: var(--signal);
   color: var(--on-signal);
   font-family: var(--mono);
@@ -1695,7 +1707,7 @@ fieldset.field {
   padding-top: var(--s-4);
   border-top: 1px solid var(--line);
   font-size: 15px;
-  line-height: 22px;
+  line-height: 24px;
   user-select: text;
   -webkit-user-select: text;
 }
@@ -1835,7 +1847,7 @@ fieldset.field {
 
 .project__name {
   font-size: 22px;
-  line-height: 26px;
+  line-height: 28px;
   font-weight: 800;
   font-stretch: 80%;
 }
@@ -1893,7 +1905,7 @@ fieldset.field {
 
   .display {
     font-size: 48px;
-    line-height: 46px;
+    line-height: 48px;
   }
 
   h1 {
@@ -1903,7 +1915,7 @@ fieldset.field {
 
   .hero__lead {
     font-size: 17px;
-    line-height: 26px;
+    line-height: 28px;
   }
 
   .hero__action .button {
@@ -1936,7 +1948,7 @@ fieldset.field {
 
   .report__title {
     font-size: 38px;
-    line-height: 38px;
+    line-height: 40px;
   }
 
   .report__actions .button {
@@ -1969,7 +1981,7 @@ fieldset.field {
   .card__steps li {
     font-size: 16px;
     line-height: 24px;
-    padding-left: 38px;
+    padding-left: var(--s-10);
   }
 
   .focus__stage {
