@@ -188,75 +188,150 @@
   }
 
   // ---------- Rocket launch ----------
-  // The one signature moment: drag the rocket up (or press Start) and it launches.
-  // Its trail widens into the next screen's background, so the smoke becomes the
-  // "Describe your app" page. Reduced motion, or no Web Animations: straight to it.
+  // The one signature moment: tap the rocket (or press Check my app) and it
+  // launches, pulling the next screen up behind it like a curtain. The curtain has
+  // a flat top edge rising from the bottom and a pointed tip that stays on the
+  // rocket's tail. Reduced motion, or no clip-path support: straight to the screen.
   var launching = false;
   function launch(rocket, target) {
     if (launching) return;
-    if (reduced() || !rocket || !rocket.animate || !document.body.animate) {
+    var probe = document.createElement('div').style;
+    var canClip = 'clipPath' in probe || 'webkitClipPath' in probe;
+    if (reduced() || !rocket || !canClip || !window.requestAnimationFrame) {
       location.hash = target;
       return;
     }
     launching = true;
+    stopNudge();
     var r = rocket.getBoundingClientRect();
     var W = window.innerWidth;
     var H = window.innerHeight;
     var cx = r.left + r.width / 2;
-    var base = Math.min(H, r.bottom);
+    var tail0 = r.top + r.height * 0.92; // the exhaust, just under the fins
+    var lift = parseFloat(rocket.getAttribute('data-lift') || '0');
+    var travel = r.bottom + 160; // far enough to leave the top of the screen
     var trail = document.createElement('div');
     trail.className = 'launch-trail';
     trail.setAttribute('aria-hidden', 'true');
     document.body.appendChild(trail);
-
-    // The rocket flies above its own trail.
+    // The rocket flies above its own curtain.
     rocket.style.position = 'relative';
     rocket.style.zIndex = '101';
-    var lift = parseFloat(rocket.getAttribute('data-lift') || '0');
-    var fly = rocket.animate(
-      [
-        { transform: 'translateY(' + lift + 'px)' },
-        { transform: 'translateY(' + (lift + 6) + 'px) scale(0.98)', offset: 0.12 },
-        { transform: 'translateY(' + -(r.bottom + 80) + 'px)' }
-      ],
-      { duration: 700, easing: 'cubic-bezier(0.55, 0, 0.9, 0.5)', fill: 'forwards' }
-    );
-    function inset(t, rr, b, l) {
-      return 'inset(' + t + 'px ' + rr + 'px ' + b + 'px ' + l + 'px)';
+
+    var D = 1100;
+    var start = null;
+    function easeIn(t) {
+      return t * t * (0.4 + 0.6 * t);
     }
-    var nar = 7;
-    var wide = Math.max(60, W * 0.12);
-    trail.animate(
-      [
-        { clipPath: inset(base, W - cx - nar, H - base, cx - nar) },
-        { clipPath: inset(base - 40, W - cx - nar, H - base, cx - nar), offset: 0.14 },
-        { clipPath: inset(0, W - cx - wide, 0, cx - wide), offset: 0.62 },
-        { clipPath: inset(0, 0, 0, 0) }
-      ],
-      { duration: 900, easing: 'cubic-bezier(0.4, 0, 0.6, 1)', fill: 'forwards' }
-    ).onfinish = function () {
+    function setClip(v) {
+      trail.style.clipPath = v;
+      trail.style.webkitClipPath = v;
+    }
+    function frame(now) {
+      if (start === null) start = now;
+      var p = Math.min(1, (now - start) / D);
+      // A short wind-up (the rocket settles 6px), then it accelerates away.
+      var dip = p < 0.12 ? Math.sin((p / 0.12) * Math.PI) * 6 : 0;
+      var q = Math.max(0, (p - 0.08) / 0.92);
+      var dy = lift + dip - (travel + lift) * easeIn(q);
+      rocket.style.transform = 'translateY(' + dy.toFixed(1) + 'px)';
+
+      var tail = tail0 + dy;
+      // The rocket pulls the curtain: its flat edge sits a shrinking distance below
+      // the tail, starting at the bottom of the screen and ending off the top.
+      // It starts at or below the bottom of the screen, so the tip rises into view.
+      var edge = tail + Math.max(H - tail0, H * 0.42) * (1 - p);
+      var tip = Math.min(tail, edge); // the point stays on the rocket's tail
+      var reach = Math.max(0, edge - tip);
+      var spread = Math.min(W * 0.28, Math.max(18, reach * 0.42)); // half-width where the tip meets the edge
+      var pts = ['0px ' + H + 'px', '0px ' + edge.toFixed(1) + 'px'];
+      var N = 10;
+      var i, s, x, y;
+      // Left flank, from the edge up to the tip: concave, so it reads as a flame.
+      for (i = 0; i <= N; i++) {
+        s = i / N;
+        x = cx - (spread * (1 - s) * (1 - s) + 3 * s);
+        y = edge - reach * s;
+        pts.push(x.toFixed(1) + 'px ' + y.toFixed(1) + 'px');
+      }
+      for (i = N; i >= 0; i--) {
+        s = i / N;
+        x = cx + (spread * (1 - s) * (1 - s) + 3 * s);
+        y = edge - reach * s;
+        pts.push(x.toFixed(1) + 'px ' + y.toFixed(1) + 'px');
+      }
+      pts.push(W + 'px ' + edge.toFixed(1) + 'px', W + 'px ' + H + 'px');
+      setClip('polygon(' + pts.join(', ') + ')');
+
+      if (p < 1) {
+        requestAnimationFrame(frame);
+        return;
+      }
+      setClip('none');
       location.hash = target;
-      // The new screen renders under the trail, which is already its background;
-      // the trail then fades so the page's content appears.
+      // The new screen renders under the curtain, which is already its background;
+      // the curtain then fades so the page's content appears.
       requestAnimationFrame(function () {
-        var fade = trail.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, easing: 'ease-out', fill: 'forwards' });
-        fade.onfinish = function () {
+        var done = function () {
           trail.remove();
-          fly.cancel();
           rocket.removeAttribute('data-lift');
           rocket.style.transform = '';
           rocket.style.position = '';
           rocket.style.zIndex = '';
           launching = false;
         };
+        if (trail.animate) {
+          trail.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, easing: 'ease-out', fill: 'forwards' }).onfinish = done;
+        } else done();
       });
-    };
+    }
+    requestAnimationFrame(frame);
+  }
+
+  // A small nudge every six seconds says "tap me". It only runs while the rocket is
+  // on screen, stops for good after five nudges or the moment someone interacts, and
+  // never runs under reduced motion.
+  var nudgeTimer = null;
+  function stopNudge() {
+    if (nudgeTimer) clearInterval(nudgeTimer);
+    nudgeTimer = null;
+  }
+  function setupNudge(rocket) {
+    if (reduced() || !rocket.animate) return;
+    var visible = false;
+    var count = 0;
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        visible = entries[0].isIntersecting;
+      }).observe(rocket);
+    } else visible = true;
+    nudgeTimer = setInterval(function () {
+      var landing = document.querySelector('[data-view="landing"]');
+      if (launching || document.hidden || !visible || !landing || landing.hidden) return;
+      if (++count > 5) {
+        stopNudge();
+        return;
+      }
+      rocket.animate(
+        [
+          { transform: 'none' },
+          { transform: 'translateY(-6px) rotate(-3deg)', offset: 0.3 },
+          { transform: 'translateY(-2px) rotate(2deg)', offset: 0.6 },
+          { transform: 'none' }
+        ],
+        { duration: 700, easing: 'ease-in-out' }
+      );
+    }, 6000);
+    ['pointerdown', 'focus', 'keydown'].forEach(function (ev) {
+      rocket.addEventListener(ev, stopNudge);
+    });
   }
 
   function setupRocket() {
     var rocket = document.getElementById('rocket');
     if (!rocket) return;
     var target = rocket.getAttribute('data-target') || '#describe';
+    setupNudge(rocket);
     var startY = null;
     var lastY = 0;
     var lastT = 0;
