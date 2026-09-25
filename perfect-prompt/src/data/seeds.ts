@@ -5,6 +5,8 @@ import type { Entry } from '../lib/library'
 import { builderPrompt } from '../lib/builder'
 import vibeOriginal from '../../prompts/no-vibe-coded-look.md?raw'
 import vibeTailored from '../../prompts/no-vibe-coded-look-algorithm-builder.md?raw'
+import launchBrainstorm from '../../prompts/launch-checklist-brainstorm.md?raw'
+import launchDesign from '../../prompts/launch-checklist-first-design.md?raw'
 
 export const seeds: Omit<Entry, 'seeded'>[] = [
   {
@@ -39,6 +41,26 @@ export const seeds: Omit<Entry, 'seeded'>[] = [
     rating: 'great',
     notes: 'Won Lab test 1: the button sits highest on a phone, the copy stays simple, nothing was invented, and nothing that already worked was broken.',
     lab: 'algorithm-builder-home',
+    created: '2026-09-25',
+    uses: 0,
+  },
+  {
+    id: 'launch-checklist-brainstorm',
+    title: 'Launch checklist app: brainstorm',
+    body: launchBrainstorm.trim(),
+    tags: ['brainstorm', 'launch checklist'],
+    source: 'Built from a voice ramble with the Prompt Builder',
+    notes: 'Run this first. Say “wrap up” at the end and paste the summary under the design prompt.',
+    created: '2026-09-25',
+    uses: 0,
+  },
+  {
+    id: 'launch-checklist-first-design',
+    title: 'Launch checklist app: first design, no vibe-coded look',
+    body: launchDesign.trim(),
+    tags: ['design', 'front end', 'launch checklist'],
+    source: 'The lessons from Lab test 1, applied to a new app with no brand yet',
+    notes: 'Not tested yet. Paste the brainstorm’s wrap-up summary under it before running.',
     created: '2026-09-25',
     uses: 0,
   },
