@@ -62,6 +62,19 @@
                   <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M8.25 5.25L13 10l-4.75 4.75" /></svg></a>
                 <p class="hero__note">Phone apps, websites and web apps. About 2 minutes. <a href="#example" id="see-example">See an example plan</a></p>
               </div>
+              <div class="launchpad">
+                <button class="rocket" id="rocket" type="button" data-target="#describe" aria-label="Launch: check my app">
+                  <svg viewBox="0 0 48 80" aria-hidden="true">
+                    <path class="rocket__fin" d="M13 50 L4 66 L4 72 L15 64 Z" />
+                    <path class="rocket__fin" d="M35 50 L44 66 L44 72 L33 64 Z" />
+                    <path class="rocket__body" d="M24 4 C35 14 37 30 36 64 L12 64 C11 30 13 14 24 4 Z" />
+                    <path class="rocket__nose" d="M24 4 C29.5 9 32.5 15 34 22 L14 22 C15.5 15 18.5 9 24 4 Z" />
+                    <circle class="rocket__window" cx="24" cy="38" r="6" />
+                    <path class="rocket__fin" d="M21 60 L27 60 L27 74 L21 74 Z" />
+                  </svg>
+                </button>
+                <p class="launchpad__hint mono"><span class="launchpad__touch">Swipe the rocket up to start</span><span class="launchpad__mouse">Or launch the rocket</span></p>
+              </div>
             </div>
             <div class="board" aria-hidden="true">
               <p class="board__head mono"><span>Example plan · Budgeting app</span><span>2 of 90 done</span></p>
@@ -387,6 +400,7 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
             </label>
             <h1 id="results-title" class="report__title" tabindex="-1">Your launch plan</h1>
             <p class="report__basis" id="basis"></p>
+            <div class="gauge" id="gauge"></div>
             <div class="meter" aria-hidden="true"><span class="meter__fill" id="meter-fill"></span></div>
             <p class="report__stats mono" id="report-stats"></p>
             <div class="report__actions">
@@ -568,6 +582,7 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
 
     <script src="config.js?v=dev"></script>
     <script src="data.js?v=dev"></script>
+    <script src="motion.js?v=dev"></script>
     <script src="app.js?v=dev"></script>
   </body>
 </html>

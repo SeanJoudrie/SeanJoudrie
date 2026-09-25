@@ -35,6 +35,7 @@ colors:
   night-line: "#2a333e"
   night-ink: "#f2f5f8"
   night-muted: "#a3adb9"
+  night-alert: "#ff6b61"
 typography:
   display-xl:
     fontFamily: Archivo
@@ -289,6 +290,12 @@ One style: a **surface ladder**, no shadows.
   came from; that sentence highlights while the chip is focused or hovered.
 - **Gap row:** must-fix item. 4px alert edge, the MUST FIX stamp, what/why in one line, "Do it".
 - **Task row:** one checklist step on the timeline rail. Tick, title, one-line why, sources on demand.
+- **Rocket and launch pad:** a flat rocket in the site's colours (night-ink body, signal nose, night-muted
+  fins) at the bottom of the landing hero, with "Swipe the rocket up to start" (touch) or "Or launch the
+  rocket" (mouse). Only the rocket takes the swipe (`touch-action: none` on it alone), so the page still
+  scrolls. Dragging lifts it with resistance up to 64px. Letting go past 40px, a fast flick, a tap, Enter,
+  or the Check my app button all launch. It flies above its own trail, and the trail is always the next
+  screen's `--bg`. It plays once per visit, on the way in.
 - **Split-flap tiles:** mono characters on `night-2` half-cards. Used for the landing headline, phase
   names turning to CLEAR, and "COPIED". Nowhere else.
 - **Runway lights:** one per question in the progress row. Off, current, answered, done.
@@ -309,6 +316,7 @@ timeline sits inside `gsap.matchMedia()`; CSS animations have a reduced variant.
 
 | Moment | Animation | Why it exists | Duration | Reduced motion |
 |---|---|---|---|---|
+| Start (signature moment) | Rocket launch: drag the rocket up (or press Check my app); it launches and its trail widens into the next screen's background, so the smoke becomes the "Describe your app" page | The one signature device: starting feels like take-off, and the move reads as one continuous step instead of a page swap | ≈0.9s launch, 220ms reveal | Straight to the next screen |
 | Landing headline | "CLEARED FOR LAUNCH?" settles on split-flap tiles, once | Sets the pre-flight idea in one glance | ≤1.2s total, 12-18 tiles | Static headline |
 | Paste | A signal line sweeps the textarea edge; a mono counter reads "412 CHARACTERS RECEIVED" | Confirms the paste landed and how much | 400ms | Counter only |
 | Guessed answers | The source sentence highlights; the chip travels (Flip) into its answer slot | Shows how each guess was made, so people trust or correct it | 400ms | Static highlight and outline |
@@ -326,8 +334,9 @@ timeline sits inside `gsap.matchMedia()`; CSS animations have a reduced variant.
 | Skill-tree map | Paths from done to ready nodes draw in; ready nodes get a soft signal ring | Shows what just unlocked | 400ms per path, on-screen paths only | Static paths |
 | Copy | Button reads COPIED on flap tiles and turns green | Confirms the copy worked | 1.2s then back | Text swap |
 
-Library: GSAP 3.15 (free for commercial use) core + Flip + ScrambleText + DrawSVG from jsDelivr,
-about 44 KB gzipped, loaded after first paint. Everything else is CSS, IntersectionObserver or the
+Library: step two (rocket, headline, checking, gauge) ships with **no library**, in `motion.js` (Web
+Animations API, CSS and a few lines of maths). If later pieces need it (Flip for list reflows, DrawSVG for
+the map), add GSAP 3.15 (free for commercial use) from jsDelivr, loaded after first paint. Everything else is CSS, IntersectionObserver or the
 View Transitions API. Not used: Lenis/smooth scroll, three.js/Vanta or any WebGL background, React
 Bits code (ideas only; its licence allows private ports, never republishing them).
 
@@ -373,6 +382,18 @@ Use `playwright-cli` (`npm i -g @playwright/cli@latest`) in the build loop:
 - After each screen change, take a `snapshot` to confirm focus moved to the new heading and the live
   region spoke.
 
+## Built so far
+
+- **Step one:** this file.
+- **Step two** (`motion.js`, September 2026):
+  - the rocket launch
+  - the split-flap landing headline
+  - the checking sequence (names scramble in, a runway light replaces the spinner, statuses flip to CHECKED)
+  - the readiness gauge in the results header (yellow = steps done, red = must-fix steps still ahead,
+    written as "N% ready" and "N must-fix tasks left")
+- **Step two limitation:** the checking statuses say CHECKED, not CLEAR or GAP, because the checks don't
+  yet report which area produced a gap. Wire that up before promising CLEAR/GAP.
+
 ## Known gaps (what the current code still does differently)
 
 Found in the September 2026 review; fix them during the overhaul.
@@ -382,8 +403,8 @@ Found in the September 2026 review; fix them during the overhaul.
 - **Type:** about 25 font sizes are in use. Map them onto the eight roles.
 - **Labels:** "Step 1 of 3" eyebrows (`index.html` describe, narrow, details) and chained "·" separators.
 - **Fake preview:** the landing `.board` is a picture of a checklist. Replace it with a working mini-checklist.
-- **Loading:** a circular spinner and a fixed 300ms-per-item timer in `app.js`. Replace them with the
-  skeleton and the real checking sequence.
+- **Loading:** the checking sequence still uses a fixed per-item timer in `app.js`, and there's no
+  results skeleton yet.
 - **Meter:** animates `width`. Use `scaleX`.
 - **Numbers:** there's no `tabular-nums` on the cost table.
 - **Fonts:** render-blocking Google Fonts link with no preload.

@@ -50,6 +50,7 @@
   --night-line: #2a333e;
   --night-ink: #f2f5f8;
   --night-muted: #a3adb9;
+  --night-alert: #ff6b61;
 
   color-scheme: light;
 }
@@ -2468,6 +2469,211 @@ body.is-focus .site-footer {
 
   .account__email .button {
     width: 100%;
+  }
+}
+
+/* ---------- Step two motion pieces (DESIGN.md, Motion) ---------- */
+
+/* Split-flap headline: every letter keeps its final width while it flips. */
+.flap-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+.flap-char {
+  display: inline-block;
+  text-align: center;
+  backface-visibility: hidden;
+}
+
+/* Launch pad and rocket (landing). Only the rocket takes the swipe, so the page
+   still scrolls normally everywhere else. */
+.launchpad {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  margin-top: var(--s-8);
+}
+.rocket {
+  flex: none;
+  width: var(--s-16);
+  height: var(--s-20);
+  padding: var(--s-2);
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.rocket:active {
+  cursor: grabbing;
+}
+.rocket svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.rocket__body {
+  fill: var(--night-ink);
+}
+.rocket__nose {
+  fill: var(--signal);
+}
+.rocket__fin {
+  fill: var(--night-muted);
+}
+.rocket__window {
+  fill: var(--night);
+  stroke: var(--signal);
+  stroke-width: 2;
+}
+.rocket:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+.launchpad__hint {
+  margin: 0;
+  color: var(--night-muted);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.launchpad__mouse {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .launchpad__touch {
+    display: none;
+  }
+  .launchpad__mouse {
+    display: inline;
+  }
+}
+/* The trail: the next screen's background, widening from the rocket's exhaust. */
+.launch-trail {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--bg);
+  pointer-events: none;
+}
+
+/* Checking: a runway light per check instead of a spinner. */
+.light {
+  width: 12px;
+  height: 12px;
+  margin: 4px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--line);
+}
+.light--on {
+  background: var(--signal);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--signal) 30%, transparent);
+}
+.checking__name {
+  flex: 1;
+  font-variant-numeric: tabular-nums;
+}
+.checking .state {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.checking li[data-state="done"] .state {
+  color: var(--go);
+}
+
+/* Readiness gauge (results header). */
+.gauge {
+  display: grid;
+  justify-items: center;
+  width: 240px;
+  margin-top: var(--s-6);
+  color: var(--night-ink);
+}
+.gauge__dial {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.gauge__dial circle {
+  fill: none;
+  stroke-width: 14;
+}
+.gauge__track {
+  stroke: var(--night-2);
+}
+.gauge__fill {
+  stroke: var(--signal);
+}
+.gauge__must {
+  stroke: var(--night-alert);
+}
+.gauge__ticks line {
+  stroke: var(--night-line);
+  stroke-width: 2;
+}
+.gauge__needle {
+  transform-box: view-box;
+  transform-origin: 100px 100px;
+}
+.gauge__needle path {
+  stroke: var(--night-ink);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.gauge__needle circle {
+  fill: var(--night-ink);
+  stroke: none;
+}
+.gauge__read {
+  margin: calc(-1 * var(--s-12)) 0 0;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.gauge__num {
+  font-size: 32px;
+}
+.gauge__word {
+  display: block;
+  color: var(--night-muted);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.gauge__must-label {
+  margin: var(--s-1) 0 0;
+  color: var(--night-alert);
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+@media (min-width: 900px) {
+  .report__inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: var(--s-12);
+  }
+  .report__inner > * {
+    grid-column: 1;
+  }
+  .report__inner > .gauge {
+    grid-column: 2;
+    grid-row: 1 / span 7;
+    align-self: center;
+    margin-top: 0;
   }
 }
 
