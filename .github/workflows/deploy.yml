@@ -6,6 +6,7 @@ on:
     paths:
       - 'portfolio/**'
       - 'algorithm-builder/**'
+      - 'launch-check/**'
       - '.github/workflows/deploy.yml'
   workflow_dispatch:
   # Weekly rebuild so Algorithm Builder's "good channel" videos stay fresh.
@@ -58,6 +59,13 @@ jobs:
           npm test
           npm run build
       - run: cp -r ../algorithm-builder/dist dist/algorithm-builder
+
+      # Launch Check is plain HTML/CSS/JS with no build step; it ships at
+      # /SeanJoudrie/launch-check/.
+      - name: Add Launch Check
+        run: |
+          mkdir -p dist/launch-check
+          cp ../launch-check/index.html ../launch-check/styles.css ../launch-check/app.js ../launch-check/data.js ../launch-check/favicon.svg dist/launch-check/
 
       - uses: actions/upload-pages-artifact@v3
         with:
