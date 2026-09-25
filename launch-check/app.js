@@ -170,6 +170,9 @@
   }
 
   var state = {
+    projectId: '',
+    focusStart: '',
+    focusIndex: 0,
     method: 'summary',
     guessedFrom: '',
     answers: freshAnswers(),
@@ -369,7 +372,7 @@
 
   // ---------- Routing ----------
 
-  var VIEWS = ['landing', 'describe', 'narrow', 'details', 'analyzing', 'results'];
+  var VIEWS = ['landing', 'describe', 'narrow', 'details', 'analyzing', 'results', 'next', 'projects'];
   var firstRender = true;
 
   function currentView() {
@@ -404,7 +407,8 @@
     clearTimeout(analyzeTimer);
 
     // Later screens need earlier answers; send people back to fill them in.
-    if (['narrow', 'details', 'analyzing', 'results'].indexOf(name) > -1 && !describedText()) {
+    var hasDescription = describedText() || state.projectId;
+    if (['narrow', 'details'].indexOf(name) > -1 && !hasDescription) {
       go('describe', true);
       return;
     }
@@ -412,8 +416,8 @@
       go('narrow', true);
       return;
     }
-    if ((name === 'analyzing' || name === 'results') && !answered(state.answers)) {
-      go('details', true);
+    if (['analyzing', 'results', 'next'].indexOf(name) > -1 && !answered(state.answers)) {
+      go(hasDescription ? 'details' : 'describe', true);
       return;
     }
 
@@ -425,6 +429,8 @@
     if (name === 'details') enterDetails();
     if (name === 'analyzing') enterAnalyzing();
     if (name === 'results') enterResults();
+    if (name === 'next') enterFocus();
+    if (name === 'projects') enterProjects();
 
     var titles = {
       landing: 'Launch Check',
@@ -432,14 +438,17 @@
       narrow: 'Narrow it down · Launch Check',
       details: 'A few quick questions · Launch Check',
       analyzing: 'Checking your app · Launch Check',
-      results: 'Your launch plan · Launch Check'
+      results: 'Your launch plan · Launch Check',
+      next: 'Do this now · Launch Check',
+      projects: 'My projects · Launch Check'
     };
     document.title = titles[name];
 
     window.scrollTo(0, 0);
     // Move focus to the new screen's heading so keyboard and screen reader
     // users start at the top of what changed.
-    var heading = document.querySelector('[data-view="' + name + '"] h1');
+    var heading = document.querySelector('[data-view="' + name + '"] h1:not([hidden])');
+    if (name === 'next') heading = focusHeading();
     if (heading && !firstRender) heading.focus({ preventScroll: true });
     firstRender = false;
   }
@@ -906,22 +915,190 @@
     next();
   }
 
+  // ---------- Projects (saved in the browser, synced when signed in) ----------
+
+  var STORE_KEY = 'lc-projects';
+
+  function loadProjects() {
+    try {
+      var list = JSON.parse(localStorage.getItem(STORE_KEY) || '[]');
+      return Array.isArray(list) ? list : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function storeProjects(list) {
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify(list));
+    } catch (e) {}
+  }
+
+  function newId() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (ch) {
+      var r = (Math.random() * 16) | 0;
+      return (ch === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+    });
+  }
+
+  // "Stillwater is a meditation app…" → "Stillwater".
+  function nameFromText(text) {
+    var m = (text || '').match(/^\s*(?:\*\*)?([A-Z][\w'&-]*(?: [A-Z][\w'&-]*){0,3})(?:\*\*)?(?::| is | —| -)/);
+    return m ? m[1] : '';
+  }
+
+  function currentProject() {
+    return loadProjects().filter(function (p) {
+      return p.id === state.projectId;
+    })[0];
+  }
+
+  // Code is never stored: only a summary the person chose to paste.
+  function saveProject(extra) {
+    var list = loadProjects();
+    var now = new Date().toISOString();
+    var p = currentProject();
+    if (!p) {
+      p = {
+        id: newId(),
+        name: nameFromText(state.method === 'summary' ? summaryEl.value : '') || 'My app',
+        created_at: now
+      };
+      list.unshift(p);
+      state.projectId = p.id;
+    }
+    p.summary = state.method === 'summary' ? summaryEl.value.trim() : p.summary || '';
+    p.answers = JSON.parse(JSON.stringify(state.answers));
+    p.done = JSON.parse(JSON.stringify(state.done));
+    p.updated_at = now;
+    if (extra) Object.keys(extra).forEach(function (k) {
+      p[k] = extra[k];
+    });
+    list = list.map(function (x) {
+      return x.id === p.id ? p : x;
+    });
+    storeProjects(list);
+    sync.push(p);
+    return p;
+  }
+
+  function openProject(id) {
+    var p = loadProjects().filter(function (x) {
+      return x.id === id;
+    })[0];
+    if (!p) return;
+    state.projectId = p.id;
+    state.answers = Object.assign(freshAnswers(), p.answers || {});
+    state.answers.have = state.answers.have || {};
+    state.done = p.done || {};
+    state.guessed = {};
+    setMethod('summary');
+    summaryEl.value = p.summary || '';
+    state.guessedFrom = summaryEl.value.trim();
+    go('results');
+  }
+
+  function progressOf(p) {
+    var saved = { answers: state.answers, done: state.done, projectId: state.projectId };
+    state.answers = Object.assign(freshAnswers(), p.answers || {});
+    state.done = p.done || {};
+    var plan = buildPlan();
+    var total = plan.items.length;
+    var done = plan.items.filter(function (it) {
+      return isDone(it);
+    }).length;
+    var must = plan.items.filter(function (it) {
+      return it.severity === 'blocker' && !isDone(it);
+    }).length;
+    state.answers = saved.answers;
+    state.done = saved.done;
+    return { total: total, done: done, must: must, context: plan.context };
+  }
+
+  function enterProjects() {
+    var list = loadProjects();
+    $('#projects-lead').textContent = sync.user
+      ? 'Saved to your account and synced across devices.'
+      : 'Saved in this browser.' + (sync.enabled ? ' Sign in to keep them on every device.' : '');
+    renderAccount();
+    $('#projects-empty').hidden = list.length > 0;
+    $('#project-list').innerHTML = list
+      .map(function (p) {
+        var pr = progressOf(p);
+        var pct = pr.total ? Math.round((pr.done / pr.total) * 100) : 0;
+        var when = p.updated_at ? new Date(p.updated_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '';
+        return (
+          '<li class="project">' +
+          '<div class="project__top"><h2 class="project__name">' + esc(p.name || 'My app') + '</h2>' +
+          '<span class="mono project__meta">' + esc(when) + '</span></div>' +
+          '<p class="mono project__meta">' + esc(PRODUCT_NAMES[pr.context.a.product] || '') + ' · ' + pr.done + ' of ' + pr.total + ' done · ' +
+          pr.must + ' must-fix left</p>' +
+          '<div class="meter" aria-hidden="true"><span class="meter__fill" style="width:' + pct + '%"></span></div>' +
+          '<div class="project__actions">' +
+          '<button type="button" class="button button--signal button--small" data-project-open="' + p.id + '">Continue</button>' +
+          '<button type="button" class="button button--secondary button--small" data-project-delete="' + p.id + '">Delete<span class="sr-only"> ' + esc(p.name) + '</span></button>' +
+          '</div></li>'
+        );
+      })
+      .join('');
+    $all('[data-project-open]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        openProject(b.getAttribute('data-project-open'));
+      });
+    });
+    $all('[data-project-delete]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var id = b.getAttribute('data-project-delete');
+        // Two-step delete, built into the page.
+        if (b.getAttribute('data-confirm') !== 'yes') {
+          b.setAttribute('data-confirm', 'yes');
+          b.firstChild.textContent = 'Tap again to delete';
+          return;
+        }
+        storeProjects(loadProjects().filter(function (p) {
+          return p.id !== id;
+        }));
+        sync.remove(id);
+        if (state.projectId === id) state.projectId = '';
+        enterProjects();
+      });
+    });
+  }
+
   // ---------- Results ----------
 
   var GAP_LIMIT = 5;
 
+  function isDone(it) {
+    return state.done[it.id] !== undefined ? state.done[it.id] : it._done;
+  }
+
+  function orderedItems(plan) {
+    var list = [];
+    phasesFor(plan).forEach(function (phase) {
+      phase.items.forEach(function (it) {
+        it.phaseTitle = phase.title;
+        list.push(it);
+      });
+    });
+    return list;
+  }
+
   function enterResults() {
+    var project = saveProject();
     var plan = buildPlan();
     var c = plan.context;
     var catName = categoryEl.querySelector('option[value="' + c.a.category + '"]');
 
+    $('#project-name').value = project.name;
     $('#basis').innerHTML =
-      'Based on your answers, not your code. <a href="#details">Edit answers</a>';
-    $('#basis').title = 'For ' + PRODUCT_NAMES[c.a.product] + ' about ' + (catName ? catName.textContent.toLowerCase() : 'your topic');
+      esc(PRODUCT_NAMES[c.a.product].replace(/^an? /, '')) + ' about ' + esc(catName ? catName.textContent.toLowerCase() : 'your topic') +
+      '. Based on your answers, not your code. <a href="#details">Edit answers</a>';
 
     var n = plan.gaps.length;
     $('#results-title').textContent =
-      n === 0 ? 'Nothing blocking launch that we can see' : n === 1 ? '1 thing to fix before launch' : n + ' things to fix before launch';
+      n === 0 ? 'Nothing blocking launch' : n === 1 ? '1 thing to fix before launch' : n + ' things to fix before launch';
 
     var shown = plan.gaps.slice(0, GAP_LIMIT);
     $('#gaps').innerHTML = shown.length
@@ -929,10 +1106,10 @@
         shown
           .map(function (g) {
             return (
-              '<li><a class="gap" href="#step-' + g.id + '" data-open="' + g.id + '">' +
+              '<li><a class="gap" href="#next" data-open="' + g.id + '">' +
               '<span class="gap__text"><span class="gap__title">' + esc(g.gap.title) + '</span>' +
               '<span class="gap__why">' + esc(g.gap.why) + '</span></span>' +
-              '<span class="gap__go"><span class="gap__go-label">What to do</span>' + ARROW + '</span></a></li>'
+              '<span class="gap__go"><span class="gap__go-label">Do it</span>' + ARROW + '</span></a></li>'
             );
           })
           .join('') +
@@ -941,7 +1118,7 @@
 
     var more = plan.gaps.length - shown.length;
     $('#gaps-more').hidden = more <= 0;
-    $('#gaps-more').textContent = more > 0 ? 'Plus ' + more + ' more marked “Must fix” in your checklist below.' : '';
+    $('#gaps-more').textContent = more > 0 ? 'Plus ' + more + ' more marked “Must fix” in the checklist below.' : '';
     renderCost(c);
 
     $all('[data-checked-date]').forEach(function (el) {
@@ -949,16 +1126,56 @@
     });
 
     renderChecklist(plan);
+    renderReport(plan);
 
     $all('[data-open]').forEach(function (a) {
       a.addEventListener('click', function (e) {
         e.preventDefault();
-        openStep(a.getAttribute('data-open'));
+        openFocus(a.getAttribute('data-open'));
       });
     });
   }
 
-  var LEVELS = { blocker: 'Must fix', required: 'Required step', before: 'Before launch', recommended: 'Recommended', after: 'After launch' };
+  function renderReport(plan) {
+    var items = plan.items;
+    var done = items.filter(isDone).length;
+    var must = items.filter(function (it) {
+      return it.severity === 'blocker' && !isDone(it);
+    }).length;
+    $('#meter-fill').style.width = (items.length ? (done / items.length) * 100 : 0) + '%';
+    $('#report-stats').innerHTML = '<strong>' + done + '</strong> of ' + items.length + ' steps done · <strong>' + must + '</strong> must-fix left';
+    var next = $('#start-next');
+    next.firstChild.textContent = done === 0 ? 'Start with step 1 ' : done === items.length ? 'Review your steps ' : 'Do the next step ';
+    var note = sync.user
+      ? 'Saved to your account (' + esc(sync.user.email || 'signed in') + ').'
+      : 'Saved in this browser. <a href="#projects">' + (sync.enabled ? 'Sign in to keep it on every device' : 'See my projects') + '</a>';
+    $('#save-note').innerHTML = note;
+  }
+
+  $('#project-name').addEventListener('change', function () {
+    var name = $('#project-name').value.trim() || 'My app';
+    $('#project-name').value = name;
+    saveProject({ name: name });
+  });
+
+  $('#see-all').addEventListener('click', function (e) {
+    e.preventDefault();
+    var h = $('#checklist-title');
+    h.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
+    h.focus({ preventScroll: true });
+  });
+
+  $('#start-next').addEventListener('click', function (e) {
+    e.preventDefault();
+    openFocus('');
+  });
+
+  var LEVELS = { blocker: 'Must fix', required: 'Required', before: 'Before launch', recommended: 'Recommended', after: 'After launch' };
+
+  function chip(it, done) {
+    if (done) return '<span class="chip chip--done">Done</span>';
+    return '<span class="chip chip--' + it.severity + '">' + LEVELS[it.severity] + '</span>';
+  }
 
   function phasesFor(plan) {
     var c = plan.context;
@@ -979,7 +1196,6 @@
   }
 
   function renderChecklist(plan) {
-    var n = 0;
     var phases = phasesFor(plan);
     $('#phase-nav').innerHTML = phases
       .map(function (phase, i) {
@@ -988,46 +1204,29 @@
       .join('');
     var html = phases
       .map(function (phase, i) {
-        var items = phase.items;
+        var left = phase.items.filter(function (it) {
+          return !isDone(it);
+        }).length;
         return (
           '<section class="phase" aria-labelledby="phase-' + phase.id + '">' +
-          '<h3 id="phase-' + phase.id + '" tabindex="-1">' + (i + 1) + '. ' + esc(phase.title) + '</h3>' +
+          '<h3 id="phase-' + phase.id + '" tabindex="-1"><span>' + (i + 1) + '. ' + esc(phase.title) + '</span>' +
+          '<span class="mono">' + (left ? left + ' left' : 'All done') + '</span></h3>' +
           (phase.intro ? '<p class="phase__intro">' + esc(phase.intro) + '</p>' : '') +
           '<ol class="tasks">' +
-          items
+          phase.items
             .map(function (it) {
-              n++;
               var cb = 'task-' + it.id;
-              var checked = state.done[it.id] !== undefined ? state.done[it.id] : it._done;
+              var done = isDone(it);
               return (
-                '<li class="task" id="step-' + it.id + '" data-severity="' + it.severity + '" tabindex="-1">' +
-                '<input type="checkbox" id="' + cb + '" data-task="' + it.id + '"' + (checked ? ' checked' : '') + ' />' +
-                '<span class="task__num" aria-hidden="true">' + n + '.</span>' +
+                '<li class="task" id="step-' + it.id + '" data-severity="' + it.severity + '">' +
+                '<input type="checkbox" id="' + cb + '" data-task="' + it.id + '"' + (done ? ' checked' : '') + ' />' +
                 '<div class="task__body">' +
-                '<label class="task__what" for="' + cb + '">' + esc(it.title) + '</label>' +
-                '<p class="task__level">' + LEVELS[it.severity] + (it._done ? ' · You said this is done' : '') + '</p>' +
-                '<p class="task__why">' + esc(it.why) + '</p>' +
-                '<button type="button" class="task__toggle" aria-expanded="false" aria-controls="how-' + it.id + '">' +
-                '<span>What to do</span>' + CHEVRON + '</button>' +
-                '<div class="task__how" id="how-' + it.id + '" hidden>' +
-                '<ol class="how">' +
-                it.steps
-                  .map(function (s) {
-                    return '<li>' + s + '</li>';
-                  })
-                  .join('') +
-                '</ol>' +
-                '<p class="sources__label">Sources</p><ul class="sources">' +
-                it.sources
-                  .map(function (s) {
-                    return (
-                      '<li><a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.label) +
-                      '<span class="sr-only"> (opens in a new tab)</span></a></li>'
-                    );
-                  })
-                  .join('') +
-                '</ul></div>' +
-                '</div></li>'
+                '<label class="task__what" for="' + cb + '">' + esc(it.title) + '</label><br />' +
+                '<span class="task__level">' + chip(it, false) + '</span>' +
+                '</div>' +
+                '<button type="button" class="task__open" data-focus="' + it.id + '">Open' + ARROW +
+                '<span class="sr-only">: ' + esc(it.title) + '</span></button>' +
+                '</li>'
               );
             })
             .join('') +
@@ -1045,16 +1244,17 @@
         h.focus({ preventScroll: true });
       });
     });
-
     $all('#checklist input[type="checkbox"]').forEach(function (cb) {
       cb.addEventListener('change', function () {
         state.done[cb.getAttribute('data-task')] = cb.checked;
+        saveProject();
         updateCount();
+        renderReport(buildPlan());
       });
     });
-    $all('.task__toggle').forEach(function (btn) {
+    $all('[data-focus]').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        setOpen(btn, btn.getAttribute('aria-expanded') !== 'true');
+        openFocus(btn.getAttribute('data-focus'));
       });
     });
     updateCount();
@@ -1072,7 +1272,7 @@
 
   $('#must-only').addEventListener('change', applyFilter);
 
-  // Rough money and time, from the sources in data.js. Shown as ranges.
+  // Rough money and time, from the sources in data.js.
   function renderCost(c) {
     var rows = [];
     if (c.ios) rows.push(['Apple Developer Program', '$99 a year', 'Usually a day or two to approve; longer for a company']);
@@ -1090,21 +1290,6 @@
     $('#cost-section').hidden = !rows.length;
   }
 
-  function setOpen(btn, open) {
-    btn.setAttribute('aria-expanded', String(open));
-    btn.querySelector('span').textContent = open ? 'Hide steps' : 'What to do';
-    document.getElementById(btn.getAttribute('aria-controls')).hidden = !open;
-  }
-
-  function openStep(id) {
-    var li = document.getElementById('step-' + id);
-    if (!li) return;
-    var btn = li.querySelector('.task__toggle');
-    setOpen(btn, true);
-    li.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
-    btn.focus({ preventScroll: true });
-  }
-
   function updateCount() {
     var boxes = $all('#checklist input[type="checkbox"]');
     var done = boxes.filter(function (b) {
@@ -1113,12 +1298,172 @@
     $('#checklist-count').textContent = done + ' of ' + boxes.length + ' done';
   }
 
+  // ---------- Focus: one step at a time ----------
+
+  var focusItems = [];
+
+  function openFocus(id) {
+    state.focusStart = id || '';
+    go('next');
+  }
+
+  function focusHeading() {
+    return $('#focus-cleared').hidden ? $('#focus-title') : $('#focus-cleared h1');
+  }
+
+  function enterFocus() {
+    focusItems = orderedItems(buildPlan());
+    var idx = -1;
+    if (state.focusStart) {
+      idx = focusItems.map(function (it) {
+        return it.id;
+      }).indexOf(state.focusStart);
+    }
+    if (idx < 0) idx = firstUndone(0);
+    state.focusStart = '';
+    showFocus(idx, '');
+  }
+
+  function firstUndone(from) {
+    for (var i = from; i < focusItems.length; i++) if (!isDone(focusItems[i])) return i;
+    for (var j = 0; j < from; j++) if (!isDone(focusItems[j])) return j;
+    return -1;
+  }
+
+  function showFocus(idx, direction) {
+    var total = focusItems.length;
+    var doneCount = focusItems.filter(isDone).length;
+    $('#focus-meter').style.width = (total ? (doneCount / total) * 100 : 0) + '%';
+    $('#focus-done').textContent = doneCount + ' done';
+    var cleared = idx < 0;
+    $('#focus-cleared').hidden = !cleared;
+    $('#focus-card').hidden = cleared;
+    $('.focus__controls').hidden = cleared;
+    if (cleared) {
+      $('#focus-count').textContent = total + ' of ' + total;
+      return;
+    }
+    state.focusIndex = idx;
+    var it = focusItems[idx];
+    var done = isDone(it);
+    $('#focus-count').textContent = 'Step ' + (idx + 1) + ' of ' + total;
+    $('#focus-level').outerHTML = chip(it, done).replace('<span class="chip', '<span id="focus-level" class="chip');
+    $('#focus-phase').textContent = it.phaseTitle || '';
+    $('#focus-title').textContent = it.title;
+    $('#focus-why').textContent = it.why;
+    $('#focus-steps').innerHTML = it.steps
+      .map(function (st) {
+        return '<li>' + st + '</li>';
+      })
+      .join('');
+    $('#focus-sources').innerHTML = it.sources
+      .map(function (src) {
+        return '<li><a href="' + esc(src.url) + '" target="_blank" rel="noopener">' + esc(src.label) + '<span class="sr-only"> (opens in a new tab)</span></a></li>';
+      })
+      .join('');
+    $('.card__sources').open = false;
+    $('#focus-prev').disabled = idx === 0;
+    $('#focus-complete').querySelector('span').textContent = done ? 'Next' : 'Done, next';
+    $('#focus-skip').textContent = done ? 'Mark not done' : 'Skip for now';
+
+    var card = $('#focus-card');
+    card.classList.remove('is-leaving-left', 'is-leaving-right', 'is-entering');
+    if (direction && !reduceMotion) {
+      void card.offsetWidth;
+      card.classList.add('is-entering');
+    }
+  }
+
+  function moveFocus(idx, direction) {
+    var card = $('#focus-card');
+    var finish = function () {
+      showFocus(idx, direction);
+      window.scrollTo(0, 0);
+      var h = focusHeading();
+      if (h) h.focus({ preventScroll: true });
+    };
+    if (reduceMotion || card.hidden) return finish();
+    card.classList.add(direction === 'back' ? 'is-leaving-right' : 'is-leaving-left');
+    setTimeout(finish, 170);
+  }
+
+  function nextIndex(from) {
+    if (from + 1 < focusItems.length) return from + 1;
+    return firstUndone(0);
+  }
+
+  $('#focus-complete').addEventListener('click', function () {
+    var it = focusItems[state.focusIndex];
+    if (!isDone(it)) {
+      state.done[it.id] = true;
+      saveProject();
+    }
+    // Move on to the next step that isn't done yet, or the cleared screen.
+    var n = nextIndex(state.focusIndex);
+    if (n > -1 && isDone(focusItems[n])) n = firstUndone(n);
+    moveFocus(n, 'next');
+  });
+
+  $('#focus-skip').addEventListener('click', function () {
+    var it = focusItems[state.focusIndex];
+    if (isDone(it)) {
+      state.done[it.id] = false;
+      saveProject();
+      showFocus(state.focusIndex, '');
+      return;
+    }
+    moveFocus(nextIndex(state.focusIndex), 'next');
+  });
+
+  $('#focus-prev').addEventListener('click', function () {
+    if (state.focusIndex > 0) moveFocus(state.focusIndex - 1, 'back');
+  });
+
+  // Swipe: left for the next step, right to go back. Vertical scrolling is untouched.
+  (function () {
+    var card = $('#focus-card');
+    var x0 = null;
+    var y0 = null;
+    card.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse') return;
+      x0 = e.clientX;
+      y0 = e.clientY;
+    });
+    card.addEventListener('pointerup', function (e) {
+      if (x0 === null) return;
+      var dx = e.clientX - x0;
+      var dy = e.clientY - y0;
+      x0 = null;
+      if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
+      if (dx < 0) moveFocus(nextIndex(state.focusIndex), 'next');
+      else if (state.focusIndex > 0) moveFocus(state.focusIndex - 1, 'back');
+    });
+    card.addEventListener('pointercancel', function () {
+      x0 = null;
+    });
+  })();
+
+  document.addEventListener('keydown', function (e) {
+    if (currentView() !== 'next' || $('#focus-card').hidden) return;
+    var tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.altKey || e.metaKey || e.ctrlKey) return;
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      moveFocus(nextIndex(state.focusIndex), 'next');
+    } else if (e.key === 'ArrowLeft' && state.focusIndex > 0) {
+      e.preventDefault();
+      moveFocus(state.focusIndex - 1, 'back');
+    }
+  });
+
+  // ---------- Copy as text ----------
+
   // Plain-text version of the plan, for pasting into notes, a doc or an AI chat.
   function planAsText() {
     var plan = buildPlan();
-    var lines = [$('#results-title').textContent, 'From Launch Check (prototype). Checked ' + DATA.checked + '. Not legal advice.', ''];
+    var lines = [$('#project-name').value + ': ' + $('#results-title').textContent, 'From Launch Check. Checked ' + DATA.checked + '. Not legal advice.', ''];
     if (plan.gaps.length) {
-      lines.push('BIGGEST GAPS');
+      lines.push('MUST FIX FIRST');
       plan.gaps.forEach(function (g) {
         lines.push('- ' + g.gap.title + ': ' + g.gap.why);
       });
@@ -1126,13 +1471,11 @@
     }
     var n = 0;
     phasesFor(plan).forEach(function (phase, pi) {
-      var items = phase.items;
       lines.push((pi + 1) + '. ' + phase.title.toUpperCase());
-      items.forEach(function (it) {
+      phase.items.forEach(function (it) {
         n++;
-        var done = state.done[it.id] !== undefined ? state.done[it.id] : it._done;
         lines.push('');
-        lines.push(n + '. [' + (done ? 'x' : ' ') + '] ' + it.title + ' (' + LEVELS[it.severity] + ')');
+        lines.push(n + '. [' + (isDone(it) ? 'x' : ' ') + '] ' + it.title + ' (' + LEVELS[it.severity] + ')');
         lines.push('   Why: ' + it.why);
         it.steps.forEach(function (st, i) {
           var tmp = document.createElement('div');
@@ -1159,7 +1502,6 @@
         label.textContent = 'Copy checklist as text';
       }, 3000);
     };
-    // Call the clipboard inside the click so browsers and embedded viewers allow it.
     var p = navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(text) : Promise.reject();
     p.then(
       function () {
@@ -1172,6 +1514,7 @@
   });
 
   $('#start-over').addEventListener('click', function () {
+    state.projectId = '';
     state.answers = freshAnswers();
     state.guessed = {};
     state.guessedFrom = '';
@@ -1182,6 +1525,174 @@
     codeEl.disabled = true;
     setMethod('summary');
   });
+
+  // ---------- Accounts (Supabase: Google sign-in or an email link) ----------
+
+  var CFG = window.LC_CONFIG || {};
+  var sync = {
+    enabled: !!(CFG.supabaseUrl && CFG.supabaseKey),
+    client: null,
+    user: null,
+    push: function () {},
+    remove: function () {}
+  };
+
+  function renderAccount() {
+    var box = $('#account-box');
+    if (!sync.enabled) {
+      box.innerHTML = '';
+      return;
+    }
+    if (sync.user) {
+      box.innerHTML =
+        '<div class="account__row"><p>Signed in as <strong>' + esc(sync.user.email || 'you') + '</strong>.</p>' +
+        '<button type="button" class="button button--secondary button--small" id="sign-out">Sign out</button></div>';
+      $('#sign-out').addEventListener('click', function () {
+        sync.client.auth.signOut();
+      });
+      return;
+    }
+    box.innerHTML =
+      '<div class="account__row"><p><strong>Keep your projects on every device.</strong> Sign in and they sync automatically.</p>' +
+      '<button type="button" class="button button--primary button--small" id="google-sign-in">Sign in with Google</button></div>' +
+      '<form class="account__email" id="email-sign-in" novalidate><label class="field-label" for="sign-in-email">Or get a sign-in link by email</label>' +
+      '<div class="account__row"><input type="email" id="sign-in-email" autocomplete="email" placeholder="you@example.com" />' +
+      '<button type="submit" class="button button--secondary button--small">Email me a link</button></div>' +
+      '<p class="hint" id="email-status" role="status"></p></form>';
+    $('#google-sign-in').addEventListener('click', signInGoogle);
+    $('#email-sign-in').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = $('#sign-in-email').value.trim();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        $('#email-status').textContent = 'Enter an email address like you@example.com.';
+        return;
+      }
+      $('#email-status').textContent = 'Sending…';
+      sync.client.auth.signInWithOtp({ email: email, options: { emailRedirectTo: returnUrl() } }).then(function (res) {
+        $('#email-status').textContent = res.error ? 'Couldn’t send it: ' + res.error.message : 'Check your inbox for a sign-in link from Launch Check.';
+      });
+    });
+  }
+
+  function returnUrl() {
+    return location.origin + location.pathname + '#projects';
+  }
+
+  function signInGoogle() {
+    sync.client.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: returnUrl() } }).then(function (res) {
+      if (res.error) alertInPage('Google sign-in isn’t available yet: ' + res.error.message);
+    });
+  }
+
+  function alertInPage(msg) {
+    var box = $('#account-box');
+    var p = document.createElement('p');
+    p.className = 'error';
+    p.setAttribute('role', 'alert');
+    p.textContent = msg;
+    box.appendChild(p);
+  }
+
+  function toRow(p) {
+    return {
+      id: p.id,
+      name: p.name,
+      summary: p.summary || '',
+      answers: p.answers || {},
+      done: p.done || {},
+      created_at: p.created_at,
+      updated_at: p.updated_at
+    };
+  }
+
+  // Merge by id; the newer copy wins. Then push anything the server lacks.
+  function pullAndMerge() {
+    return sync.client
+      .from('launch_check_projects')
+      .select('id,name,summary,answers,done,created_at,updated_at')
+      .then(function (res) {
+        if (res.error) return;
+        var local = loadProjects();
+        var byId = {};
+        local.forEach(function (p) {
+          byId[p.id] = p;
+        });
+        var toPush = [];
+        res.data.forEach(function (r) {
+          var l = byId[r.id];
+          if (!l || new Date(r.updated_at) > new Date(l.updated_at)) byId[r.id] = r;
+          else if (new Date(l.updated_at) > new Date(r.updated_at)) toPush.push(l);
+        });
+        var remoteIds = res.data.map(function (r) {
+          return r.id;
+        });
+        local.forEach(function (l) {
+          if (remoteIds.indexOf(l.id) < 0) toPush.push(l);
+        });
+        var merged = Object.keys(byId)
+          .map(function (k) {
+            return byId[k];
+          })
+          .sort(function (a, b) {
+            return new Date(b.updated_at) - new Date(a.updated_at);
+          });
+        storeProjects(merged);
+        if (toPush.length) sync.client.from('launch_check_projects').upsert(toPush.map(toRow)).then(function () {});
+      });
+  }
+
+  function updateAuthUi() {
+    var btn = $('#auth-button');
+    btn.hidden = !sync.enabled;
+    btn.textContent = sync.user ? 'Signed in' : 'Sign in';
+    $('#footer-note').textContent = sync.user
+      ? 'Launch Check prototype. Your projects sync to your account.'
+      : 'Launch Check prototype. Projects are saved in this browser unless you sign in.';
+    var view = currentView();
+    if (view === 'projects') enterProjects();
+    if (view === 'results' && answered(state.answers)) renderReport(buildPlan());
+  }
+
+  function initAccounts() {
+    if (!sync.enabled) return;
+    $('#auth-button').addEventListener('click', function () {
+      go('projects');
+    });
+    var s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js';
+    s.onload = function () {
+      sync.client = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey);
+      var timer = null;
+      var pending = {};
+      sync.push = function (p) {
+        if (!sync.user) return;
+        pending[p.id] = toRow(p);
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          var rows = Object.keys(pending).map(function (k) {
+            return pending[k];
+          });
+          pending = {};
+          sync.client.from('launch_check_projects').upsert(rows).then(function () {});
+        }, 800);
+      };
+      sync.remove = function (id) {
+        if (sync.user) sync.client.from('launch_check_projects').delete().eq('id', id).then(function () {});
+      };
+      sync.client.auth.onAuthStateChange(function (event, session) {
+        var was = sync.user && sync.user.id;
+        sync.user = session ? session.user : null;
+        if (sync.user && sync.user.id !== was) pullAndMerge().then(updateAuthUi);
+        else updateAuthUi();
+      });
+    };
+    s.onerror = function () {
+      sync.enabled = false;
+      updateAuthUi();
+    };
+    document.head.appendChild(s);
+    updateAuthUi();
+  }
 
   // ---------- Theme ----------
 
@@ -1201,5 +1712,6 @@
 
   // ---------- Start ----------
   setMethod('summary');
+  initAccounts();
   render();
 })();
