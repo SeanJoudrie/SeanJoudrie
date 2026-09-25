@@ -581,7 +581,8 @@
     var text = $('#prompt-text').textContent;
     copyText(text).then(
       function () {
-        copyLabel.textContent = 'Copied';
+        if (window.LCMotion) window.LCMotion.flipTo(copyLabel, 'Copied');
+        else copyLabel.textContent = 'Copied';
         $('#copy-status').textContent = 'Prompt copied. Paste it into your AI chat.';
       },
       function () {
@@ -1226,10 +1227,10 @@
     $('#gaps').innerHTML = shown.length
       ? '<ol class="gaps">' +
         shown
-          .map(function (g) {
+          .map(function (g, idx) {
             return (
-              '<li><a class="gap" href="#next" data-open="' + g.id + '">' +
-              '<span class="gap__text"><span class="gap__title">' + esc(g.gap.title) + '</span>' +
+              '<li style="--i:' + idx + '"><a class="gap" href="#next" data-open="' + g.id + '">' +
+              '<span class="gap__text"><span class="stamp">Must fix</span><span class="gap__title">' + esc(g.gap.title) + '</span>' +
               '<span class="gap__why">' + esc(g.gap.why) + '</span></span>' +
               '<span class="gap__go"><span class="gap__go-label">Do it</span>' + ARROW + '</span></a></li>'
             );
@@ -1238,6 +1239,11 @@
         '</ol>'
       : '<p class="lead">Your answers don’t show anything that would stop a release. Work through the checklist anyway: it covers what reviewers look at.</p>';
 
+    // Must-fix rows arrive one by one, each with its stamp (DESIGN.md, Motion).
+    var gapsEl = $('#gaps');
+    gapsEl.classList.remove('is-entering');
+    void gapsEl.offsetWidth;
+    gapsEl.classList.add('is-entering');
     var more = plan.gaps.length - shown.length;
     $('#gaps-more').hidden = more <= 0;
     $('#gaps-more').textContent = more > 0 ? 'Plus ' + more + ' more marked “Must fix” in the checklist below.' : '';
@@ -1347,9 +1353,16 @@
     });
     $all(root + ' input[data-task]').forEach(function (cb) {
       cb.addEventListener('change', function () {
-        setTaskDone(byId[cb.getAttribute('data-task')], cb.checked);
+        var id = cb.getAttribute('data-task');
+        setTaskDone(byId[id], cb.checked);
         saveProject();
         rerender();
+        // Reward the tick: the row that was just finished flashes done.
+        if (cb.checked) {
+          var fresh = document.querySelector(root + ' input[data-task="' + id + '"]');
+          var row = fresh && fresh.closest('li');
+          if (row) row.classList.add('just-done');
+        }
       });
     });
     $all(root + ' [data-focus]').forEach(function (btn) {

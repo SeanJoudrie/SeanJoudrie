@@ -345,10 +345,51 @@
     } else go();
   }
 
+  // The landing example is a real checklist: ticking a row flips its status and
+  // the count, the same way the real plan behaves.
+  function setupBoard() {
+    var boxes = Array.prototype.slice.call(document.querySelectorAll('.board__check'));
+    var count = document.getElementById('board-count');
+    if (!boxes.length || !count) return;
+    boxes.forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        var status = cb.parentNode.querySelector('[data-board-status]');
+        status.className = 'status ' + (cb.checked ? 'status--go' : 'status--alert');
+        flipTo(status, cb.checked ? 'Done' : 'Missing');
+        var n = boxes.filter(function (b) {
+          return b.checked;
+        }).length;
+        flipTo(count, n + ' of ' + boxes.length + ' done');
+      });
+    });
+  }
+
+  // Paste: the box confirms it received the text, and how much.
+  function setupPaste() {
+    var box = document.getElementById('summary');
+    var out = document.getElementById('summary-received');
+    if (!box || !out) return;
+    function report() {
+      var n = box.value.trim().length;
+      out.textContent = n ? n.toLocaleString() + (n === 1 ? ' character received' : ' characters received') : '';
+    }
+    box.addEventListener('paste', function () {
+      setTimeout(function () {
+        report();
+        box.classList.remove('is-received');
+        void box.offsetWidth;
+        box.classList.add('is-received');
+      }, 0);
+    });
+    box.addEventListener('input', report);
+  }
+
   window.LCMotion = { splitFlap: splitFlap, scramble: scramble, flipTo: flipTo, gauge: gauge, launch: launch, reduced: reduced };
 
   document.addEventListener('DOMContentLoaded', function () {
     setupRocket();
     setupHeadline();
+    setupBoard();
+    setupPaste();
   });
 })();

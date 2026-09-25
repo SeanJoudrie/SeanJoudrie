@@ -326,7 +326,7 @@ timeline sits inside `gsap.matchMedia()`; CSS animations have a reduced variant.
 | Results reveal | The app summary card becomes the report header (view transition, shared element) | Connects "what you told us" to "what to do" | 400ms | Cut |
 | Readiness gauge | Needle swings to the score and settles; the must-fix arc draws in | One number for "how close am I" | 700ms, settle ease | Final position |
 | Must-fix rows | Enter one by one; the MUST FIX stamp lands with one small shake (±2px, twice) | Severity you can feel, once | 60ms stagger, 200ms stamp | Static stamp |
-| Cost and time | Totals roll like an odometer when they scroll into view | Draws the eye to the money and hours | 600ms | Final numbers |
+| Cost and time | (Not built: the costs are words like "$99 a year", so there is no total to roll. Revisit if the table gets a numeric total.) | | | |
 | Tick a step | The tick draws, the row gets its green edge, counts roll, the meter grows (`scaleX`) | Reward and progress in one motion | 150ms tick, 200ms rest | Instant state |
 | Phase complete | The phase name flips to CLEAR on split-flap tiles | A milestone worth marking | 600ms | Text swap |
 | Filter "Must fix only" | Rows reflow with Flip instead of jumping | Keeps your place in the list | 400ms | Instant |
@@ -391,6 +391,14 @@ Use `playwright-cli` (`npm i -g @playwright/cli@latest`) in the build loop:
   - the checking sequence (names scramble in, a runway light replaces the spinner, statuses flip to CHECKED)
   - the readiness gauge in the results header (yellow = steps done, red = must-fix steps still ahead,
     written as "N% ready" and "N must-fix tasks left")
+- **Step three:**
+  - The landing example is a real checklist: tick a row and its status and the count flip.
+  - Runway lights replace "Step 1 of 3" (the step number stays for screen readers).
+  - Must-fix rows arrive one by one with a MUST FIX stamp, only when the results open.
+  - A ticked task's row flashes done, and the gauge moves.
+  - Copy prompt flips to Copied.
+  - Pasting confirms "N characters received".
+  - Changing numbers use tabular figures.
 - **Step two limitation:** the checking statuses say CHECKED, not CLEAR or GAP, because the checks don't
   yet report which area produced a gap. Wire that up before promising CLEAR/GAP.
 
@@ -401,12 +409,10 @@ Found in the September 2026 review; fix them during the overhaul.
 - **Radius:** README said 10px; `styles.css` uses 8px. 8px is correct.
 - **Borders:** 1, 2 and 3px borders are mixed. Move to the three roles above; 3px goes.
 - **Type:** about 25 font sizes are in use. Map them onto the eight roles.
-- **Labels:** "Step 1 of 3" eyebrows (`index.html` describe, narrow, details) and chained "·" separators.
-- **Fake preview:** the landing `.board` is a picture of a checklist. Replace it with a working mini-checklist.
+- **Labels:** chained "·" separators remain in some meta lines.
 - **Loading:** the checking sequence still uses a fixed per-item timer in `app.js`, and there's no
   results skeleton yet.
 - **Meter:** animates `width`. Use `scaleX`.
-- **Numbers:** there's no `tabular-nums` on the cost table.
 - **Fonts:** render-blocking Google Fonts link with no preload.
 - **Depth:** results nest bordered boxes (gaps, tasks, sources).
 - **Reduced motion:** one global kill switch instead of designed fallbacks.

@@ -76,13 +76,16 @@
                 <p class="launchpad__hint mono"><span class="launchpad__touch">Swipe the rocket up to start</span><span class="launchpad__mouse">Or launch the rocket</span></p>
               </div>
             </div>
-            <div class="board" aria-hidden="true">
-              <p class="board__head mono"><span>Example plan · Budgeting app</span><span>2 of 90 done</span></p>
-              <p class="board__row"><span class="board__item">Privacy policy</span><span class="status status--alert">Missing</span></p>
-              <p class="board__row"><span class="board__item">Database locked</span><span class="status status--alert">Check</span></p>
-              <p class="board__row"><span class="board__item">Apple developer account</span><span class="status status--alert">Missing</span></p>
-              <p class="board__row"><span class="board__item">App icon</span><span class="status status--go">Done</span></p>
-              <p class="board__row"><span class="board__item">Support email</span><span class="status status--go">Done</span></p>
+            <div class="board" role="group" aria-labelledby="board-title">
+              <p class="board__head mono"><span id="board-title">Example plan · Budgeting app</span><span id="board-count" aria-live="polite">2 of 5 done</span></p>
+              <ul class="board__list">
+                <li><label class="board__row"><input type="checkbox" class="board__check" /><span class="board__item">Privacy policy</span><span class="status status--alert" data-board-status>Missing</span></label></li>
+                <li><label class="board__row"><input type="checkbox" class="board__check" /><span class="board__item">Database locked</span><span class="status status--alert" data-board-status>Missing</span></label></li>
+                <li><label class="board__row"><input type="checkbox" class="board__check" /><span class="board__item">Apple developer account</span><span class="status status--alert" data-board-status>Missing</span></label></li>
+                <li><label class="board__row"><input type="checkbox" class="board__check" checked /><span class="board__item">App icon</span><span class="status status--go" data-board-status>Done</span></label></li>
+                <li><label class="board__row"><input type="checkbox" class="board__check" checked /><span class="board__item">Support email</span><span class="status status--go" data-board-status>Done</span></label></li>
+              </ul>
+              <p class="board__foot">Try it: tick one off.</p>
             </div>
           </div>
         </div>
@@ -148,7 +151,7 @@
       <!-- ============ Step 1: Describe ============ -->
       <section class="view" data-view="describe" aria-labelledby="describe-title" hidden>
         <div class="container container--flow">
-          <p class="eyebrow">Step 1 of 3</p>
+          <p class="runway"><span class="sr-only">Step 1 of 3</span><span class="runway__light is-on" aria-hidden="true"></span><span class="runway__light" aria-hidden="true"></span><span class="runway__light" aria-hidden="true"></span></p>
           <h1 id="describe-title" tabindex="-1">Describe your app</h1>
           <p class="lead lead--small">A plain description of what your app does and the data it handles. Your AI can write it.</p>
 
@@ -212,6 +215,7 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
                 <li>
                   <label class="flow-steps__title" for="summary">Paste the reply here</label>
                   <textarea id="summary" name="summary" rows="8" aria-describedby="summary-hint summary-error"></textarea>
+                  <p class="received mono" id="summary-received" aria-live="polite"></p>
                   <p class="hint" id="summary-hint">No AI chat handy? <button type="button" class="text-button" id="use-example">Use the example summary</button> for a meditation app.</p>
                   <p class="error" id="summary-error" hidden></p>
                 </li>
@@ -262,7 +266,7 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
       <!-- ============ Step 2: Narrow ============ -->
       <section class="view" data-view="narrow" aria-labelledby="narrow-title" hidden>
         <div class="container container--flow">
-          <p class="eyebrow">Step 2 of 3</p>
+          <p class="runway"><span class="sr-only">Step 2 of 3</span><span class="runway__light is-done" aria-hidden="true"></span><span class="runway__light is-on" aria-hidden="true"></span><span class="runway__light" aria-hidden="true"></span></p>
           <h1 id="narrow-title" tabindex="-1">Narrow it down</h1>
           <p class="lead">Some kinds of apps have extra rules. A finance app has more to check than a nature app, so these answers decide what we look for.</p>
 
@@ -335,7 +339,7 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
       <!-- ============ Step 3: Details ============ -->
       <section class="view" data-view="details" aria-labelledby="details-title" hidden>
         <div class="container container--flow">
-          <p class="eyebrow">Step 3 of 3</p>
+          <p class="runway"><span class="sr-only">Step 3 of 3</span><span class="runway__light is-done" aria-hidden="true"></span><span class="runway__light is-done" aria-hidden="true"></span><span class="runway__light is-on" aria-hidden="true"></span></p>
           <h1 id="details-title" tabindex="-1">A few quick questions</h1>
           <p class="lead">These decide which rules apply to your app or site. "Not sure" is a fine answer: you'll get a step telling you how to find out.</p>
 

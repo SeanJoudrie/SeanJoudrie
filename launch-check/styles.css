@@ -2677,6 +2677,138 @@ body.is-focus .site-footer {
   }
 }
 
+/* Landing example: a real, tickable checklist (not a picture of one). */
+.board__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.board__row {
+  cursor: pointer;
+}
+.board__check {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--signal);
+}
+.board__item {
+  flex: 1;
+}
+.board__head span:last-child {
+  font-variant-numeric: tabular-nums;
+}
+.board__foot {
+  margin: 0;
+  padding: var(--s-2) var(--s-5) var(--s-2);
+  color: var(--night-muted);
+  font-size: 15px;
+}
+.status {
+  display: inline-block;
+}
+
+/* Progress: runway lights instead of "Step 1 of 3". */
+.runway {
+  display: flex;
+  gap: var(--s-2);
+  margin: 0 0 var(--s-3);
+}
+.runway__light {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--line);
+}
+.runway__light.is-done {
+  background: var(--signal);
+}
+.runway__light.is-on {
+  background: var(--signal);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--signal) 30%, transparent);
+  animation: lc-light-on 400ms var(--lc-ease, cubic-bezier(0.2, 0.7, 0.2, 1)) both;
+}
+@keyframes lc-light-on {
+  from { transform: scale(0.4); opacity: 0.3; }
+  to { transform: none; opacity: 1; }
+}
+
+/* Must-fix rows: one by one, each stamped. Only on arrival, not on every re-render. */
+.stamp {
+  display: inline-block;
+  align-self: flex-start;
+  margin-bottom: var(--s-1);
+  margin-right: var(--s-2);
+  padding: 0 var(--s-2);
+  border-radius: var(--radius);
+  background: var(--alert-bg);
+  color: var(--alert);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 2px;
+}
+.is-entering .gaps > li {
+  animation: lc-rise 200ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+.is-entering .gaps .stamp {
+  animation: lc-stamp 320ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 60ms + 160ms);
+}
+@keyframes lc-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes lc-stamp {
+  0% { opacity: 0; transform: scale(1.35); }
+  45% { opacity: 1; transform: scale(1); }
+  60% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+  90% { transform: translateX(-1px); }
+  100% { transform: none; }
+}
+
+/* Ticking a task off: the row flashes done. */
+.just-done {
+  animation: lc-done 700ms ease-out;
+}
+@keyframes lc-done {
+  0% { background-color: var(--go-bg); }
+  100% { background-color: transparent; }
+}
+
+/* Paste: the box confirms it received the text. */
+#summary.is-received {
+  animation: lc-received 600ms ease-out;
+}
+@keyframes lc-received {
+  0% { border-color: var(--signal); }
+  100% { border-color: var(--line); }
+}
+.received {
+  min-height: 20px;
+  margin: var(--s-1) 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Numbers that change line up. */
+.cost td,
+.report__stats,
+#checklist-count,
+.gauge__read {
+  font-variant-numeric: tabular-nums;
+}
+
 /* ---------- Motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   *,
