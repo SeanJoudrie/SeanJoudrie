@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Launch Check</title>
+    <meta name="description" content="Describe the app you built with AI and get a short, ordered list of what's still missing before release, like a privacy policy or secure storage for user data." />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Launch Check: what's left before your app can launch" />
+    <meta property="og:description" content="A short, ordered list of what's still missing before release. Design prototype." />
+    <meta name="theme-color" content="#faf8f4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#151513" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <script>
+      // Apply a saved theme before first paint so the page doesn't flash.
+      try {
+        var t = localStorage.getItem('lc-theme');
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a class="wordmark" href="#start" aria-label="Launch Check, home">
+          <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><rect x="2.75" y="2.75" width="14.5" height="14.5" rx="3" /><path d="M6.5 10.25l2.5 2.5 4.5-5" /></svg>
+          <span>Launch Check</span>
+        </a>
+        <span class="tag">Prototype</span>
+      </div>
+    </header>
+
+    <main id="main" tabindex="-1">
+      <!-- ============ Landing ============ -->
+      <section class="view" data-view="landing" aria-labelledby="landing-title">
+        <div class="container">
+          <div class="hero">
+            <h1 id="landing-title" class="display" tabindex="-1">See what's left to do before your app can launch.</h1>
+            <p class="lead">Describe the app you built with AI. You'll get a short, ordered list of what's still missing, like a privacy policy or secure storage for your users' data.</p>
+            <div class="hero__action">
+              <a class="button button--primary" href="#describe">Check my app</a>
+              <p class="muted">For phone apps, websites and web apps. About 2 minutes, no account.</p>
+            </div>
+          </div>
+
+          <section class="band" aria-labelledby="why-title">
+            <h2 id="why-title">About 1 in 4 App Store submissions get sent back</h2>
+            <p>In 2025 Apple turned away 2,093,244 of the 9.1 million app submissions it reviewed. The most common problems aren't hard to fix: Apple says over 40% of unresolved review issues come from incomplete apps, meaning crashes, placeholder content and missing login details for reviewers. Privacy problems added another 443,000 rejections.</p>
+            <p class="muted source-line">Sources: <a href="https://www.apple.com/legal/app-store/transparency/2025/" target="_blank" rel="noopener">Apple App Store Transparency Report 2025<span class="sr-only"> (opens in a new tab)</span></a> · <a href="https://developer.apple.com/distribute/app-review/" target="_blank" rel="noopener">Apple: Avoiding common issues<span class="sr-only"> (opens in a new tab)</span></a> · <a href="https://www.apple.com/newsroom/2026/05/the-app-store-stopped-over-2-point-2-billion-usd-in-fraudulent-transactions-in-2025/" target="_blank" rel="noopener">Apple Newsroom, May 2026<span class="sr-only"> (opens in a new tab)</span></a></p>
+          </section>
+
+          <section class="band" aria-labelledby="how-title">
+            <h2 id="how-title">How it works</h2>
+            <ol class="steps">
+              <li>
+                <span class="steps__num" aria-hidden="true">1</span>
+                <div>
+                  <h3>Describe your app</h3>
+                  <p>We give you a short prompt. Your AI chat writes a summary of your app, and you paste it here.</p>
+                </div>
+              </li>
+              <li>
+                <span class="steps__num" aria-hidden="true">2</span>
+                <div>
+                  <h3>Answer a few quick questions</h3>
+                  <p>What you built, what it's about, and how it handles sign-ups, payments and data. "Not sure" is a fine answer.</p>
+                </div>
+              </li>
+              <li>
+                <span class="steps__num" aria-hidden="true">3</span>
+                <div>
+                  <h3>Get your gaps and checklist</h3>
+                  <p>The biggest problems first, then every step in order: what to do, why, and a link to the rule it comes from.</p>
+                </div>
+              </li>
+            </ol>
+          </section>
+
+          <section class="band" aria-labelledby="looks-title">
+            <h2 id="looks-title">What it looks for</h2>
+            <ul class="list">
+              <li>The accounts you need first, like an Apple or Google developer account and a simple website</li>
+              <li>Whether strangers could read your database, and whether secret keys are sitting in your app</li>
+              <li>The legal pages app stores ask for, like a privacy policy and terms of service</li>
+              <li>Store requirements that often catch first-timers, like account deletion, in-app purchase and a login for reviewers</li>
+              <li>Extra rules for sensitive categories such as health, finance and apps for kids</li>
+            </ul>
+          </section>
+
+          <section class="band" aria-labelledby="not-title">
+            <h2 id="not-title">What it doesn't do</h2>
+            <p>Launch Check tells you what to do, why, and where each rule comes from. It doesn't write your code or judge your design, and it isn't a lawyer: it tells you which legal pages you need and how people usually make them, not what yours should say.</p>
+          </section>
+
+          <section class="band band--action" aria-label="Start">
+            <a class="button button--primary" href="#describe">Check my app</a>
+          </section>
+        </div>
+      </section>
+
+      <!-- ============ Step 1: Describe ============ -->
+      <section class="view" data-view="describe" aria-labelledby="describe-title" hidden>
+        <div class="container container--flow">
+          <p class="eyebrow">Step 1 of 3</p>
+          <h1 id="describe-title" tabindex="-1">Describe your app</h1>
+          <p class="lead">We need a plain description of what your app does and what data it handles. The quickest way is to let your AI write it.</p>
+
+          <form id="describe-form" novalidate>
+            <fieldset class="choice">
+              <legend class="field-label">How do you want to describe it?</legend>
+              <label class="choice__option">
+                <input type="radio" name="method" value="summary" checked />
+                <span class="choice__text">
+                  <span class="choice__title">Paste a summary <span class="muted">(recommended)</span></span>
+                  <span class="choice__hint">Your AI writes it from what it already knows about your app.</span>
+                </span>
+              </label>
+              <label class="choice__option">
+                <input type="radio" name="method" value="code" />
+                <span class="choice__text">
+                  <span class="choice__title">Paste your code</span>
+                  <span class="choice__hint">Not recommended. Someone else would have a copy of your code.</span>
+                </span>
+              </label>
+            </fieldset>
+
+            <!-- Summary path -->
+            <div id="panel-summary" class="panel">
+              <ol class="flow-steps">
+                <li>
+                  <p class="flow-steps__title">Copy this prompt</p>
+                  <div class="prompt">
+                    <div class="prompt__bar">
+                      <span class="muted" id="prompt-label">For your AI chat</span>
+                      <button type="button" class="button button--secondary button--small" id="copy-prompt" aria-describedby="prompt-label">
+                        <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><rect x="6.75" y="6.75" width="10.5" height="10.5" rx="2" /><path d="M13.25 4.75v-.5a1.5 1.5 0 0 0-1.5-1.5h-7.5a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h.5" /></svg>
+                        <span data-copy-label>Copy prompt</span>
+                      </button>
+                    </div>
+                    <div class="prompt__text" id="prompt-text">Write a short summary of the app we built together, for a launch readiness check. Use plain language. Don't include any code, API keys or passwords.
+
+Cover:
+- What the app does and who it's for
+- Where it will be released (App Store, Google Play, web)
+- How people sign up or log in, if they do
+- What data it collects or stores (for example names, emails, locations, payments, health details)
+- Where that data is stored, and whether it's encrypted
+- Outside services it uses (for example payments, analytics, login, AI)
+- Whether it charges money or has subscriptions
+- Whether it shows ads or uses analytics
+- Whether it sends what users type or upload to an AI service
+- Whether people can see things other users post
+- What's already set up: developer accounts, a website, a privacy policy, terms of service
+
+If you're not sure about something, say so. Keep it under 200 words.</div>
+                  </div>
+                  <p class="sr-only" role="status" aria-live="polite" id="copy-status"></p>
+                </li>
+                <li>
+                  <p class="flow-steps__title">Paste it into the AI chat you built the app with, and send it.</p>
+                </li>
+                <li>
+                  <label class="flow-steps__title" for="summary">Paste the reply here</label>
+                  <textarea id="summary" name="summary" rows="8" aria-describedby="summary-hint summary-error"></textarea>
+                  <p class="hint" id="summary-hint">No AI chat handy? <button type="button" class="text-button" id="use-example">Use the example summary</button> for a meditation app.</p>
+                  <p class="error" id="summary-error" hidden></p>
+                </li>
+              </ol>
+            </div>
+
+            <!-- Code path -->
+            <div id="panel-code" class="panel" hidden>
+              <div class="notice" role="note" aria-labelledby="code-notice-title">
+                <h2 id="code-notice-title" class="notice__title">
+                  <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><rect x="4.75" y="8.75" width="10.5" height="8.5" rx="2" /><path d="M7.25 8.75v-2.5a2.75 2.75 0 0 1 5.5 0v2.5" /></svg>
+                  Before you paste code
+                </h2>
+                <p>In the real product, checking code means sending it to Launch Check's servers. Then someone other than you has a copy, and no website can promise it will never be breached. A summary gets you the same checklist without that risk.</p>
+                <p class="notice__subhead">If you still want to paste code:</p>
+                <ul class="list list--tight">
+                  <li><strong>Keep private code private.</strong> If your project is private on GitHub, Replit or anywhere else, use a summary instead.</li>
+                  <li><strong>Leave out passwords and keys.</strong> They usually sit in a file called <code>.env</code>, or in your builder's Secrets settings (in Replit: Tools → Secrets). Never paste those.</li>
+                  <li><strong>Leave out real people's data,</strong> like names, emails or scores in sample files.</li>
+                  <li><strong>If a key was ever in your code or a chat, make a new one.</strong> In that service's dashboard, create a new key, use it, then delete the old one. Deleting it from a file doesn't remove it from your project's history. <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository" target="_blank" rel="noopener">GitHub explains why<span class="sr-only"> (opens in a new tab)</span></a>.</li>
+                </ul>
+                <label class="check">
+                  <input type="checkbox" id="code-consent" aria-describedby="code-error" />
+                  <span>I understand someone else would have a copy of this code, and I've left out passwords, keys and real people's data.</span>
+                </label>
+                <p class="error" id="code-error" hidden></p>
+              </div>
+              <label class="field-label" for="code">Your code</label>
+              <p class="hint hint--above" id="code-lock">Locked until you tick the box above.</p>
+              <textarea id="code" name="code" rows="10" class="mono" disabled aria-describedby="code-lock code-hint"></textarea>
+              <p class="hint" id="code-hint">This prototype doesn't send anything: what you paste stays in your browser and isn't read, only scanned for keywords. <button type="button" class="text-button" id="switch-to-summary">Use a summary instead</button></p>
+            </div>
+
+            <div class="nav-row">
+              <a class="button button--secondary" href="#start">
+                <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M11.75 5.25L7 10l4.75 4.75" /></svg>
+                Back
+              </a>
+              <button type="submit" class="button button--primary">
+                Next
+                <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M8.25 5.25L13 10l-4.75 4.75" /></svg>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ============ Step 2: Narrow ============ -->
+      <section class="view" data-view="narrow" aria-labelledby="narrow-title" hidden>
+        <div class="container container--flow">
+          <p class="eyebrow">Step 2 of 3</p>
+          <h1 id="narrow-title" tabindex="-1">Narrow it down</h1>
+          <p class="lead">Some kinds of apps have extra rules. A finance app has more to check than a nature app, so these answers decide what we look for.</p>
+
+          <p class="callout" id="prefill-note" hidden>We filled these in from the example summary. Change anything that's wrong.</p>
+
+          <form id="narrow-form" novalidate>
+            <div class="field">
+              <label class="field-label" for="product">What did you build?</label>
+              <div class="select">
+                <select id="product" name="product" aria-describedby="product-error">
+                  <option value="">Choose one</option>
+                  <option value="ios">An iPhone or iPad app</option>
+                  <option value="android">An Android app</option>
+                  <option value="both">An app for iPhone and Android</option>
+                  <option value="web">A website or web app</option>
+                  <option value="extension">A browser extension</option>
+                </select>
+                <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M5.25 8.25L10 13l4.75-4.75" /></svg>
+              </div>
+              <p class="error" id="product-error" hidden></p>
+            </div>
+
+            <div class="field">
+              <label class="field-label" for="category">What's it mainly about?</label>
+              <div class="select">
+                <select id="category" name="category" aria-describedby="category-error">
+                  <option value="">Choose one</option>
+                  <option value="finance">Money and finance</option>
+                  <option value="health">Health and wellness</option>
+                  <option value="kids">Kids and family</option>
+                  <option value="social">Social and messaging</option>
+                  <option value="education">Education</option>
+                  <option value="food">Food and cooking</option>
+                  <option value="community">Community and hobbies</option>
+                  <option value="shopping">Shopping</option>
+                  <option value="productivity">Productivity and tools</option>
+                  <option value="games">Games</option>
+                  <option value="nature">Nature and outdoors</option>
+                  <option value="other">Something else</option>
+                </select>
+                <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M5.25 8.25L10 13l4.75-4.75" /></svg>
+              </div>
+              <p class="error" id="category-error" hidden></p>
+            </div>
+
+            <div class="field" id="detail-field" hidden>
+              <label class="field-label" for="detail" id="detail-label">More detail</label>
+              <p class="hint hint--above" id="detail-hint"></p>
+              <div class="select">
+                <select id="detail" name="detail" aria-describedby="detail-hint detail-error"></select>
+                <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M5.25 8.25L10 13l4.75-4.75" /></svg>
+              </div>
+              <p class="error" id="detail-error" hidden></p>
+            </div>
+
+            <div class="nav-row">
+              <a class="button button--secondary" href="#describe">
+                <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M11.75 5.25L7 10l4.75 4.75" /></svg>
+                Back
+              </a>
+              <button type="submit" class="button button--primary">
+                Next
+                <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M8.25 5.25L13 10l-4.75 4.75" /></svg>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ============ Step 3: Details ============ -->
+      <section class="view" data-view="details" aria-labelledby="details-title" hidden>
+        <div class="container container--flow">
+          <p class="eyebrow">Step 3 of 3</p>
+          <h1 id="details-title" tabindex="-1">A few quick questions</h1>
+          <p class="lead">These decide which rules apply to your app or site. "Not sure" is a fine answer: you'll get a step telling you how to find out.</p>
+
+          <p class="callout" id="guess-note" hidden>We guessed some answers from your description. Check each one.</p>
+
+          <form id="details-form" novalidate>
+            <div id="questions"></div>
+
+            <fieldset class="field have">
+              <legend class="field-label">What do you already have?</legend>
+              <p class="hint hint--above">Tick only what's finished. Everything else goes on your checklist.</p>
+              <div id="have-list" class="have__list"></div>
+            </fieldset>
+
+            <div class="nav-row">
+              <a class="button button--secondary" href="#narrow">
+                <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M11.75 5.25L7 10l4.75 4.75" /></svg>
+                Back
+              </a>
+              <button type="submit" class="button button--primary">
+                Make my checklist
+                <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M8.25 5.25L13 10l-4.75 4.75" /></svg>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ============ Analyzing ============ -->
+      <section class="view" data-view="analyzing" aria-labelledby="analyzing-title" hidden>
+        <div class="container container--flow">
+          <h1 id="analyzing-title" tabindex="-1">Checking your app</h1>
+          <p class="lead" id="analyzing-lead">Working out which extra steps apply.</p>
+
+          <ol class="checking" id="checking-list"></ol>
+          <p class="sr-only" role="status" aria-live="polite" id="checking-status"></p>
+
+          <p class="callout">Prototype: your checklist is built from your answers, using a fixed set of sourced rules. Nothing is sent anywhere, and your code isn't read.</p>
+
+          <div class="nav-row">
+            <a class="button button--secondary" href="#details">
+              <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M11.75 5.25L7 10l4.75 4.75" /></svg>
+              Back
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Results ============ -->
+      <section class="view" data-view="results" aria-labelledby="results-title" hidden>
+        <div class="container container--flow">
+          <h1 id="results-title" tabindex="-1">Your launch plan</h1>
+          <p class="basis" id="basis"></p>
+
+          <div id="gaps"></div>
+          <p class="gaps-more" id="gaps-more" hidden></p>
+
+          <div class="legal" role="note">
+            <p><strong>This isn't legal advice.</strong> Every step links to the rule or guide it comes from, checked in <span data-checked-date></span>. Store rules change, and no checklist covers every app, so read the linked rules before you submit and have a lawyer look over your privacy policy and terms.</p>
+          </div>
+
+          <section class="cost-section" id="cost-section" aria-labelledby="cost-title">
+            <h2 id="cost-title">What it will cost and how long it takes</h2>
+            <div class="table-wrap">
+              <table class="cost">
+                <thead><tr><th scope="col">What</th><th scope="col">Cost</th><th scope="col">Time</th></tr></thead>
+                <tbody id="cost"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="checklist-section" aria-labelledby="checklist-title">
+            <div class="checklist-head">
+              <h2 id="checklist-title">Your launch checklist</h2>
+              <p class="muted" id="checklist-count" aria-live="polite">0 of 0 done</p>
+            </div>
+            <p>Roughly in the order to do them. Open any step to see what to do and where the rule comes from.</p>
+            <nav class="phase-nav" aria-label="Checklist sections">
+              <ol id="phase-nav"></ol>
+            </nav>
+            <label class="check check--filter">
+              <input type="checkbox" id="must-only" />
+              <span>Show only “Must fix” steps</span>
+            </label>
+            <div id="checklist"></div>
+          </section>
+
+          <p class="sr-only" role="status" aria-live="polite" id="copy-plan-status"></p>
+          <div class="nav-row nav-row--end">
+            <a class="button button--secondary" href="#describe" id="start-over">Check another app</a>
+            <button type="button" class="button button--primary" id="copy-plan"><span>Copy checklist as text</span></button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container site-footer__inner">
+        <p class="muted">Launch Check is a design prototype. Nothing you enter leaves your browser.</p>
+        <div class="theme-field">
+          <label for="theme" class="muted">Appearance</label>
+          <div class="select select--compact">
+            <select id="theme">
+              <option value="system">Match system</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+            <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M5.25 8.25L10 13l4.75-4.75" /></svg>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
