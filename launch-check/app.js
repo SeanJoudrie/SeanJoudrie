@@ -744,7 +744,7 @@
         '<fieldset class="field question" id="field-' + q.id + '">' +
         '<legend class="field-label">' + q.label + '</legend>' +
         (q.hint ? '<p class="hint hint--above">' + q.hint + '</p>' : '') +
-        (showGuess ? '<p class="guess"><strong>Guessed from your description:</strong> “' + esc(src) + '”</p>' : '') +
+        (showGuess ? '<p class="guess"><strong>Guessed from your description:</strong> “<mark class="guess__quote">' + esc(src) + '</mark>”</p>' : '') +
         '<div class="options">' +
         q.options
           .map(function (o) {
@@ -1387,7 +1387,7 @@
         return (
           '<section class="phase" aria-labelledby="phase-' + phase.id + '">' +
           '<h3 id="phase-' + phase.id + '" tabindex="-1"><span>' + (i + 1) + '. ' + esc(phase.title) + '</span>' +
-          '<span class="phase__count">' + (left ? left + ' left' : 'All done') + '</span></h3>' +
+          '<span class="phase__count' + (left ? '' : ' is-clear') + '" data-phase-count="' + phase.id + '">' + (left ? left + ' left' : 'Clear') + '</span></h3>' +
           '<ol class="tasks">' + phase.items.map(taskRow).join('') + '</ol></section>'
         );
       })
@@ -1404,9 +1404,17 @@
     bindTaskRows('#checklist', function () {
       var y = window.scrollY;
       var p = buildPlan();
+      var wasClear = {};
+      $all('[data-phase-count].is-clear').forEach(function (el) {
+        wasClear[el.getAttribute('data-phase-count')] = true;
+      });
       renderChecklist(p);
       renderReport(p);
       window.scrollTo(0, y);
+      // A phase that just finished flips to Clear on split-flap letters.
+      $all('[data-phase-count].is-clear').forEach(function (el) {
+        if (!wasClear[el.getAttribute('data-phase-count')] && window.LCMotion) window.LCMotion.splitFlap(el, { flips: 3, flip: 60, stagger: 40 });
+      });
     });
     updateCount();
   }
@@ -1795,22 +1803,51 @@
     var card = $('#focus-card');
     var x0 = null;
     var y0 = null;
+    var dragging = false;
+    // The card follows the finger sideways (DESIGN.md, Motion: step-by-step deck).
+    function settle(dx) {
+      card.style.transform = '';
+      card.style.opacity = '';
+      if (!reduceMotion && dx && card.animate) {
+        card.animate([{ transform: 'translateX(' + dx + 'px)' }, { transform: 'none' }], { duration: 200, easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)' });
+      }
+    }
     card.addEventListener('pointerdown', function (e) {
       if (e.pointerType === 'mouse') return;
       x0 = e.clientX;
       y0 = e.clientY;
+      dragging = false;
+    });
+    card.addEventListener('pointermove', function (e) {
+      if (x0 === null || reduceMotion) return;
+      var dx = e.clientX - x0;
+      var dy = e.clientY - y0;
+      if (!dragging && Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) dragging = true;
+      if (!dragging) return;
+      card.style.transform = 'translateX(' + dx.toFixed(1) + 'px)';
+      card.style.opacity = String(Math.max(0.5, 1 - Math.abs(dx) / 600));
     });
     card.addEventListener('pointerup', function (e) {
       if (x0 === null) return;
       var dx = e.clientX - x0;
       var dy = e.clientY - y0;
       x0 = null;
-      if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
+      dragging = false;
+      var go = Math.abs(dx) >= 60 && Math.abs(dy) <= Math.abs(dx);
+      var back = dx > 0 && state.focusIndex === 0;
+      if (!go || back) {
+        settle(Math.abs(dy) > Math.abs(dx) ? 0 : dx);
+        return;
+      }
+      card.style.transform = '';
+      card.style.opacity = '';
       if (dx < 0) moveFocus(nextIndex(state.focusIndex), 'next');
-      else if (state.focusIndex > 0) moveFocus(state.focusIndex - 1, 'back');
+      else moveFocus(state.focusIndex - 1, 'back');
     });
     card.addEventListener('pointercancel', function () {
       x0 = null;
+      dragging = false;
+      settle(0);
     });
   })();
 

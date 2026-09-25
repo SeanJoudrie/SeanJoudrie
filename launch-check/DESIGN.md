@@ -331,7 +331,7 @@ timeline sits inside `gsap.matchMedia()`; CSS animations have a reduced variant.
 | Phase complete | The phase name flips to CLEAR on split-flap tiles | A milestone worth marking | 600ms | Text swap |
 | Filter "Must fix only" | Rows reflow with Flip instead of jumping | Keeps your place in the list | 400ms | Instant |
 | Step-by-step deck | Next card comes from the right, back from the left; "Done, next" leaves with a green edge | Direction matches order | 200ms / 150ms | Crossfade |
-| Skill-tree map | Paths from done to ready nodes draw in; ready nodes get a soft signal ring | Shows what just unlocked | 400ms per path, on-screen paths only | Static paths |
+| Map | Branch and goal bars fill in when the map opens (the map is a list of branches, not a drawn tree, so there are no paths to draw) | Shows how far along each branch is | 600ms | Filled bars |
 | Copy | Button reads COPIED on flap tiles and turns green | Confirms the copy worked | 1.2s then back | Text swap |
 
 Library: step two (rocket, headline, checking, gauge) ships with **no library**, in `motion.js` (Web
@@ -399,6 +399,14 @@ Use `playwright-cli` (`npm i -g @playwright/cli@latest`) in the build loop:
   - Copy prompt flips to Copied.
   - Pasting confirms "N characters received".
   - Changing numbers use tabular figures.
+- **Step four:**
+  - The launch curtain is one smooth curve: it leaves the rocket's tail almost vertically and flares
+    down to both screen edges, with no corners.
+  - Guessed answers highlight the sentence they came from as the question appears.
+  - The step-by-step card follows your finger sideways, and snaps back if you don't swipe far enough.
+  - A phase that's just been finished flips to CLEAR on split-flap letters.
+  - Progress bars on the map and projects screens fill in when you open them.
+  - Long checklists only render what's near the screen, and full-height screens use `100dvh`.
 - **Step two limitation:** the checking statuses say CHECKED, not CLEAR or GAP, because the checks don't
   yet report which area produced a gap. Wire that up before promising CLEAR/GAP.
 

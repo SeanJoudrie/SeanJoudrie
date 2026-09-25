@@ -242,25 +242,23 @@
       // It starts at or below the bottom of the screen, so the tip rises into view.
       var edge = tail + Math.max(H - tail0, H * 0.42) * (1 - p);
       var tip = Math.min(tail, edge); // the point stays on the rocket's tail
+      // One smooth curve across the whole width, no corners: it leaves the tip
+      // almost vertically and flares out as it runs down to both screen edges,
+      // like cloth pulled up from one point.
       var reach = Math.max(0, edge - tip);
-      var spread = Math.min(W * 0.28, Math.max(18, reach * 0.42)); // half-width where the tip meets the edge
-      var pts = ['0px ' + H + 'px', '0px ' + edge.toFixed(1) + 'px'];
-      var N = 10;
-      var i, s, x, y;
-      // Left flank, from the edge up to the tip: concave, so it reads as a flame.
-      for (i = 0; i <= N; i++) {
-        s = i / N;
-        x = cx - (spread * (1 - s) * (1 - s) + 3 * s);
-        y = edge - reach * s;
+      var span = Math.max(cx, W - cx) || 1;
+      var pts = ['-2px ' + (H + 2) + 'px'];
+      var N = 48;
+      for (var i = 0; i <= N; i++) {
+        var x = (W * i) / N;
+        var d = Math.min(1, Math.abs(x - cx) / span);
+        var y = tip + reach * Math.pow(d, 0.42);
         pts.push(x.toFixed(1) + 'px ' + y.toFixed(1) + 'px');
+        // Put a point exactly under the rocket so the tip stays sharp.
+        var nx = (W * (i + 1)) / N;
+        if (x < cx && nx > cx) pts.push(cx.toFixed(1) + 'px ' + tip.toFixed(1) + 'px');
       }
-      for (i = N; i >= 0; i--) {
-        s = i / N;
-        x = cx + (spread * (1 - s) * (1 - s) + 3 * s);
-        y = edge - reach * s;
-        pts.push(x.toFixed(1) + 'px ' + y.toFixed(1) + 'px');
-      }
-      pts.push(W + 'px ' + edge.toFixed(1) + 'px', W + 'px ' + H + 'px');
+      pts.push(W + 2 + 'px ' + (H + 2) + 'px');
       setClip('polygon(' + pts.join(', ') + ')');
 
       if (p < 1) {
