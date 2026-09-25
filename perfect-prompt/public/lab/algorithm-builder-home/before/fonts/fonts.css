@@ -1,0 +1,15 @@
+/* Self-hosted copies of the Google Fonts the live app loads (latin subset). */
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-style: normal;
+  font-weight: 600 700;
+  font-display: swap;
+  src: url(bricolage-grotesque.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Public Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(public-sans.woff2) format('woff2');
+}

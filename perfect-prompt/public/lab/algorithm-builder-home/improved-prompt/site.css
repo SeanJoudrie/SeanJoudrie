@@ -1,0 +1,313 @@
+/*
+  Algorithm Builder front page: hand-written design layer.
+  Loaded after style.css (compiled Tailwind). No build step.
+
+  Spacing scale (4px grid): 4 8 12 16 24 32 48 64 96
+  Type ramp (1rem = 16px):
+    small   16/24  Public Sans 400
+    body    18/28  Public Sans 400
+    lead    20/28  Public Sans 400
+    h3      20/28  Public Sans 600
+    h2      24/32 -> 32/40 (>=768px)  Bricolage Grotesque 700
+    h1      36/44 -> 48/56 (>=768px)  Bricolage Grotesque 700
+  Colors: paper / ink / safety orange, tints and shades only.
+  One radius (12px), one shadow, one container (960px content).
+*/
+
+:root {
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px; --sp-6: 24px;
+  --sp-8: 32px; --sp-12: 48px; --sp-16: 64px; --sp-24: 96px;
+
+  --fs-small: 1rem;     --lh-small: 1.5rem;
+  --fs-body: 1.125rem;  --lh-body: 1.75rem;
+  --fs-lead: 1.25rem;   --lh-lead: 1.75rem;
+  --fs-h2: 1.5rem;      --lh-h2: 2rem;
+  --fs-h1: 2.25rem;     --lh-h1: 2.75rem;
+
+  --radius: 12px;
+  --shadow: 0 1px 2px rgb(29 33 38 / 0.06), 0 4px 12px rgb(29 33 38 / 0.06);
+
+  --btn-label: #1d2126;       /* asphalt on orange: 5.3:1 light, 6.9:1 dark */
+  --accent-hover: #f5823c;    /* lighter tint keeps label contrast above 5.3:1 */
+  --focus: var(--ink);        /* orange ring is only 2.8:1 on paper; ink is 15:1 */
+
+  --wrap: 960px;
+  --gutter: var(--sp-4);
+  --ease-ui: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur-ui: 200ms;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 12px rgb(0 0 0 / 0.25);
+    --accent-hover: #ffa05f;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #15171a; --paper-2: #1c1f23; --card: #202428;
+  --ink: #f3efe6; --ink-2: #cfc9bd; --line: #33373d;
+  --accent: #ff8a3d; --accent-ink: #ffa46b; --accent-soft: #3a2616;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 12px rgb(0 0 0 / 0.25);
+  --accent-hover: #ffa05f;
+}
+
+@media (min-width: 640px)  { :root { --gutter: var(--sp-6); } }
+@media (min-width: 1024px) { :root { --gutter: var(--sp-8); } }
+
+/* ---------- Base ---------- */
+html { font-size: 100%; }
+body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: 400;
+  color: var(--ink);
+  background: var(--paper);
+  overflow-x: hidden;
+}
+h1, h2, h3, p { margin: 0; }
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: var(--radius);
+}
+main:focus, h1[tabindex="-1"]:focus { outline: none; }
+
+.page { min-height: 100dvh; display: flex; flex-direction: column; }
+.wrap {
+  width: 100%;
+  max-width: calc(var(--wrap) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* ---------- Skip link ---------- */
+.skip-link {
+  position: absolute;
+  left: var(--sp-4);
+  top: var(--sp-4);
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: var(--shadow);
+  transform: translateY(-200%);
+}
+.skip-link:focus { transform: none; }
+
+/* ---------- Header ---------- */
+.site-header { border-bottom: 1px solid var(--line); }
+.nav { display: flex; align-items: center; min-height: 72px; }
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: 48px;
+  padding-inline: 0 var(--sp-2);
+  border-radius: var(--radius);
+  cursor: pointer;
+  color: var(--ink);
+}
+.brand-gus { width: 40px; height: 40px; flex-shrink: 0; }
+.brand-name {
+  font-family: var(--font-display);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  font-weight: 700;
+}
+
+/* ---------- Main ---------- */
+.site-main { flex: 1; }
+
+/* Hero */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "text gus";
+  align-items: start;
+  column-gap: var(--sp-4);
+  padding-block: var(--sp-8) var(--sp-12);
+}
+.hero-text { grid-area: text; display: flex; flex-direction: column; align-items: flex-start; }
+.hero-gus  { grid-area: gus; }
+.gus { width: 72px; height: 72px; }
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  max-width: 16ch;
+}
+.hero-lead {
+  margin-top: var(--sp-4);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--ink-2);
+  max-width: 34ch;
+}
+.hero-text .btn-primary { margin-top: var(--sp-6); }
+.hero-note {
+  margin-top: var(--sp-3);
+  font-size: var(--fs-small);
+  line-height: var(--lh-small);
+  color: var(--ink-2);
+}
+
+/* On a narrow phone, Gus sits beside the heading at a small size so the
+   heading, sentence and button all stay above the fold. */
+@media (max-width: 767px) {
+  .hero-text { grid-column: 1 / -1; grid-row: 1; }
+  .hero-gus  { grid-column: 2; grid-row: 1; }
+  .hero-title { padding-right: calc(72px + var(--sp-4)); max-width: none; }
+  .btn-primary { width: 100%; }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --fs-h1: 3rem;   --lh-h1: 3.5rem;
+    --fs-h2: 2rem;   --lh-h2: 2.5rem;
+  }
+  .hero {
+    grid-template-columns: 7fr 5fr;
+    align-items: center;
+    column-gap: var(--sp-12);
+    padding-block: var(--sp-16) var(--sp-24);
+  }
+  .hero-gus { justify-self: center; }
+  .gus { width: 240px; height: 240px; }
+}
+
+/* Button: one call to action */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  min-width: 48px;
+  padding: var(--sp-3) var(--sp-8);
+  border: 2px solid var(--btn-label);
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--btn-label);
+  font-family: var(--font-sans);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  font-weight: 700;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: background-color var(--dur-ui) var(--ease-ui);
+}
+@media (hover: hover) {
+  .btn-primary:hover { background: var(--accent-hover); }
+}
+
+/* Card: shared by every boxed component */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--sp-6);
+}
+
+/* Why this happens */
+.why { padding-bottom: var(--sp-16); }
+.section-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.steps {
+  list-style: none;
+  margin: var(--sp-6) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--sp-4);
+}
+@media (min-width: 768px) {
+  .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-6); }
+}
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-family: var(--font-display);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  font-weight: 700;
+}
+.step-title {
+  margin-top: var(--sp-4);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  font-weight: 600;
+}
+.step-text { margin-top: var(--sp-2); color: var(--ink-2); }
+
+.repeat-cta {
+  margin-top: var(--sp-12);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-4) var(--sp-6);
+}
+.repeat-text { color: var(--ink-2); }
+
+/* ---------- Footer ---------- */
+.site-footer {
+  border-top: 1px solid var(--line);
+  background: var(--paper-2);
+  padding-block: var(--sp-8);
+  font-size: var(--fs-small);
+  line-height: var(--lh-small);
+  color: var(--ink-2);
+}
+.footer-lead { max-width: 60ch; }
+.footer-row {
+  margin-top: var(--sp-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2) var(--sp-6);
+}
+.footer-links { display: flex; flex-wrap: wrap; gap: 0 var(--sp-6); }
+.footer-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  min-width: 48px;
+  color: var(--ink-2);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color var(--dur-ui) var(--ease-ui);
+}
+@media (hover: hover) {
+  .footer-links a:hover { color: var(--ink); }
+}
+
+/* ---------- Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

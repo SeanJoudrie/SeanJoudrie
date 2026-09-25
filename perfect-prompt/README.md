@@ -1,30 +1,44 @@
 # Perfect Prompt
 
-One prompt that builds the right prompt for any project.
+**Live:** https://seanjoudrie.github.io/SeanJoudrie/perfect-prompt/ (after the next deploy from `main`)
 
-A single "mega prompt" can't be perfect for a poop tracker, a 3D model and a geography game at the same time, because what makes a prompt good is the project-specific context. So this project doesn't try to write that one prompt. It builds the thing that writes it: a **prompt builder** that interviews you, fills a proven structure, and checks the result for weak spots.
+One place to build the right prompt for any project, check any prompt for gaps, keep the ones that worked, and test prompts against real pages.
 
-## Use it
+No single mega prompt can be right for a poop tracker, a 3D model and a geography game at once, because most of what makes a prompt good is context about that one project. So this doesn't try to write one perfect prompt. It builds the thing that writes it, and it measures whether the result is actually better.
 
-1. Open [`PROMPT_BUILDER.md`](PROMPT_BUILDER.md) and copy the block between the lines.
-2. Paste it into a new chat and describe what you're making, however messily.
-3. Answer its questions (or reply "defaults"), and it hands back a finished prompt plus the three ways it could still go wrong.
+## The four tabs
 
-## Why it works
-
-Most of the gap between a weak prompt and a strong one comes down to a few things:
-
-| Weak prompt | Strong prompt |
+| Tab | What it does |
 | --- | --- |
-| "Make me a workout app" | Says who it's for, what exists already, and what done looks like |
-| Rules with no reasons | Each rule has a "because", so the model handles cases you didn't list |
-| "Make it good" | A concrete bar: "a new user logs a workout in 3 taps" |
-| Unclear output | Says exactly what to hand back and what to do when unsure |
+| **Build** | Describe what you're making, however messily. Either copy the [Prompt Builder](PROMPT_BUILDER.md) with your description attached and paste it into Claude, or fill in the six sections yourself (role and goal, context, task, constraints with reasons, what good looks like, output) and watch the prompt assemble. |
+| **Check** | Paste any prompt. It flags what's missing: no goal, no context, no definition of done, rules without reasons, everything marked "must", shouting, vague words like "premium", mostly "don't", no plan for when the model is unsure, leftover placeholders. Rules in `src/lib/check.ts`. |
+| **Library** | Saved prompts, with prompts rated "Worked great" at the top. Rate a prompt after you use it. The starter prompts live in `/prompts` and `src/data/seeds.ts`. Your own prompts are saved in this browser; use Export and Import to back them up or move them. |
+| **Lab** | Side-by-side tests of prompts on frozen copies of real pages, with measurements. The live apps are never touched. |
 
-The builder forces every prompt through those checks, so you don't have to remember them.
+## Lab test 1: the "No vibe-coded look" prompt
 
-## Where this goes next
+The prompt from Aftermark AI's vibe-coded websites report was tested on a frozen copy of Algorithm Builder's front page. The same prompt was also run through the Prompt Builder with the app's brand and audience, and tested the same way. Each version was made by a separate run that saw only its own prompt and the page.
 
-- **Test set.** Save 5 to 10 real requests from past projects, run each through the builder, and compare output quality before and after every change to `PROMPT_BUILDER.md`. That's how "improving the prompt" becomes measurable instead of vibes.
-- **Project files.** Anything you return to more than once should become a `CLAUDE.md` (or project instructions) so the context loads every time.
-- **App.** A small page in this repo: paste your ramble, answer the questions in a form, copy the finished prompt, and keep a library of the ones that worked.
+Both versions came out cleaner than the original page. The tailored prompt did better on what this app needs:
+- **Button on a phone:** "Fix my feed" ended at 389px down the screen, compared with 624px for the original prompt.
+- **Copy:** stayed simple. The original prompt's hero reads at grade 6.1 and is twice as long.
+- **Brand:** Gus's blink stayed.
+- **Honesty:** it added nothing untrue. The original prompt added a fake loading spinner.
+
+The full write-up is in the Lab tab. The files are in `public/lab/algorithm-builder-home/`.
+
+**Run a new test:**
+1. Put a frozen copy of the page in `public/lab/<slug>/before/`.
+2. Have a separate run apply each prompt to a copy in `public/lab/<slug>/<version>/`.
+3. Run `npm run shoot -- <slug>` for the screenshots and `npm run audit -- <slug>` for the measurements.
+4. Add the write-up to `src/data/lab.ts`.
+
+The audit's page checks (the "Fix my feed" button, the hero text) are written for Algorithm Builder. Change them in `scripts/audit.mjs` for a different page.
+
+## Run it
+
+```bash
+npm install
+npm run dev        # http://localhost:5173
+npm test           # checker and builder tests
+```

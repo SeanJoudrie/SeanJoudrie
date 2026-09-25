@@ -6,6 +6,7 @@ on:
     paths:
       - 'portfolio/**'
       - 'algorithm-builder/**'
+      - 'perfect-prompt/**'
       - '.github/workflows/deploy.yml'
   workflow_dispatch:
   # Weekly rebuild so Algorithm Builder's "good channel" videos stay fresh.
@@ -38,6 +39,7 @@ jobs:
           cache-dependency-path: |
             portfolio/package-lock.json
             algorithm-builder/package-lock.json
+            perfect-prompt/package-lock.json
 
       - run: npm ci
       - run: npm run build
@@ -58,6 +60,15 @@ jobs:
           npm test
           npm run build
       - run: cp -r ../algorithm-builder/dist dist/algorithm-builder
+
+      # Perfect Prompt ships at /SeanJoudrie/perfect-prompt/ (relative base).
+      - name: Build Perfect Prompt
+        working-directory: perfect-prompt
+        run: |
+          npm ci
+          npm test
+          npm run build
+      - run: cp -r ../perfect-prompt/dist dist/perfect-prompt
 
       - uses: actions/upload-pages-artifact@v3
         with:

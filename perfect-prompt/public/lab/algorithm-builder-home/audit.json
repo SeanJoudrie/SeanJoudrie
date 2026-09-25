@@ -1,0 +1,59 @@
+{
+  "before": {
+    "ctaAboveFold": true,
+    "ctaBottom": 491,
+    "ctaCount": 1,
+    "ctaHref": null,
+    "minFontPx": 18,
+    "minTargetPx": 48,
+    "radii": [
+      "13.5px"
+    ],
+    "pillShapes": true,
+    "offGridSpacing": [],
+    "horizontalScrollAt320": false,
+    "heroText": "We’ll show you what to tap to fix it. Free. No sign-in. We never touch your account.",
+    "heroGrade": -0.7,
+    "mainWords": 68,
+    "blinkKept": true,
+    "headUnchanged": true
+  },
+  "improved-prompt": {
+    "ctaAboveFold": true,
+    "ctaBottom": 389,
+    "ctaCount": 2,
+    "ctaHref": null,
+    "minFontPx": 16,
+    "minTargetPx": 48,
+    "radii": [
+      "12px"
+    ],
+    "pillShapes": false,
+    "offGridSpacing": [],
+    "horizontalScrollAt320": false,
+    "heroText": "Answer three quick questions. Gus will show you what to tap to fix it. Free. No sign-in. We never touch your account.",
+    "heroGrade": 0.1,
+    "mainWords": 83,
+    "blinkKept": true,
+    "headUnchanged": true
+  },
+  "original-prompt": {
+    "ctaAboveFold": true,
+    "ctaBottom": 624,
+    "ctaCount": 1,
+    "ctaHref": "https://seanjoudrie.github.io/SeanJoudrie/algorithm-builder/",
+    "minFontPx": 16.002,
+    "minTargetPx": 46,
+    "radii": [
+      "12px"
+    ],
+    "pillShapes": false,
+    "offGridSpacing": [],
+    "horizontalScrollAt320": false,
+    "heroText": "Tell us what took over your YouTube, Instagram, TikTok or X feed and what you’d rather see. You get the exact settings to change, step by step, plus a playlist matched to your new mix.",
+    "heroGrade": 6.1,
+    "mainWords": 105,
+    "blinkKept": false,
+    "headUnchanged": false
+  }
+}
