@@ -60,11 +60,11 @@
               <div class="hero__action">
                 <a class="button button--signal button--large" href="#describe">Check my app
                   <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M8.25 5.25L13 10l-4.75 4.75" /></svg></a>
-                <p class="hero__note">Phone apps, websites and web apps. About 2 minutes.</p>
+                <p class="hero__note">Phone apps, websites and web apps. About 2 minutes. <a href="#example" id="see-example">See an example plan</a></p>
               </div>
             </div>
             <div class="board" aria-hidden="true">
-              <p class="board__head mono"><span>Example plan · Meditation app</span><span>2 of 43 done</span></p>
+              <p class="board__head mono"><span>Example plan · Budgeting app</span><span>2 of 90 done</span></p>
               <p class="board__row"><span class="board__item">Privacy policy</span><span class="status status--alert">Missing</span></p>
               <p class="board__row"><span class="board__item">Database locked</span><span class="status status--alert">Check</span></p>
               <p class="board__row"><span class="board__item">Apple developer account</span><span class="status status--alert">Missing</span></p>
@@ -137,7 +137,7 @@
         <div class="container container--flow">
           <p class="eyebrow">Step 1 of 3</p>
           <h1 id="describe-title" tabindex="-1">Describe your app</h1>
-          <p class="lead">We need a plain description of what your app does and what data it handles. The quickest way is to let your AI write it.</p>
+          <p class="lead lead--small">A plain description of what your app does and the data it handles. Your AI can write it.</p>
 
           <form id="describe-form" novalidate>
             <fieldset class="choice">
@@ -166,12 +166,14 @@
                   <div class="prompt">
                     <div class="prompt__bar">
                       <span class="muted" id="prompt-label">For your AI chat</span>
-                      <button type="button" class="button button--secondary button--small" id="copy-prompt" aria-describedby="prompt-label">
+                      <button type="button" class="button button--signal button--small" id="copy-prompt" aria-describedby="prompt-label">
                         <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><rect x="6.75" y="6.75" width="10.5" height="10.5" rx="2" /><path d="M13.25 4.75v-.5a1.5 1.5 0 0 0-1.5-1.5h-7.5a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h.5" /></svg>
                         <span data-copy-label>Copy prompt</span>
                       </button>
                     </div>
-                    <div class="prompt__text" id="prompt-text">Write a short summary of the app we built together, for a launch readiness check. Use plain language. Don't include any code, API keys or passwords.
+                    <details class="prompt__details">
+                      <summary>Show the prompt</summary>
+                      <div class="prompt__text" id="prompt-text">Write a short summary of the app we built together, for a launch readiness check. Use plain language. Don't include any code, API keys or passwords.
 
 Cover:
 - What the app does and who it's for
@@ -187,6 +189,7 @@ Cover:
 - What's already set up: developer accounts, a website, a privacy policy, terms of service
 
 If you're not sure about something, say so. Keep it under 200 words.</div>
+                    </details>
                   </div>
                   <p class="sr-only" role="status" aria-live="polite" id="copy-status"></p>
                 </li>
@@ -383,7 +386,7 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
             <div class="report__actions">
               <a class="button button--signal button--large" href="#next" id="start-next">Do the next step
                 <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M8.25 5.25L13 10l-4.75 4.75" /></svg></a>
-              <a class="button button--ghost-dark" href="#checklist-title" id="see-all">See the full checklist</a>
+              <a class="button button--ghost-dark" href="#map" id="see-map">See the map</a>
             </div>
             <p class="report__save" id="save-note"></p>
           </div>
@@ -402,6 +405,7 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
                 <tbody id="cost"></tbody>
               </table>
             </div>
+            <p class="hint">Prices and times change. Check each official page before you rely on them.</p>
           </section>
 
           <section class="checklist-section" aria-labelledby="checklist-title">
@@ -409,6 +413,10 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
               <h2 id="checklist-title" class="section-title" tabindex="-1">Full checklist</h2>
               <p class="muted mono" id="checklist-count" aria-live="polite">0 of 0 done</p>
             </div>
+            <nav class="view-switch" aria-label="Checklist view">
+              <a href="#results" aria-current="page">List</a>
+              <a href="#map">Map</a>
+            </nav>
             <div class="checklist-tools">
               <nav class="phase-nav" aria-label="Checklist sections">
                 <ol id="phase-nav"></ol>
@@ -452,7 +460,7 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
             <p class="card__meta"><span class="chip" id="focus-level"></span><span class="mono card__phase" id="focus-phase"></span></p>
             <h1 class="card__title" id="focus-title" tabindex="-1"></h1>
             <p class="card__why" id="focus-why"></p>
-            <h2 class="card__label mono">Do this now</h2>
+            <h2 class="card__label mono"><span>Do this now</span><span id="focus-steps-count"></span></h2>
             <ol class="card__steps" id="focus-steps"></ol>
             <details class="card__sources">
               <summary>Where this rule comes from</summary>
@@ -480,7 +488,42 @@ If you're not sure about something, say so. Keep it under 200 words.</div>
               <span>Done, next</span>
             </button>
           </div>
-          <p class="focus__hint muted">Swipe left for the next step, right to go back. Arrow keys work too.</p>
+          <p class="focus__hint muted">Swipe or use the arrow keys to move between tasks.</p>
+        </div>
+      </section>
+
+      <!-- ============ Map: the skill tree ============ -->
+      <section class="view" data-view="map" aria-labelledby="map-title" hidden>
+        <div class="container container--flow">
+          <a class="back-link" href="#results">
+            <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M11.75 5.25L7 10l4.75 4.75" /></svg>
+            Your plan
+          </a>
+          <nav class="view-switch" aria-label="Checklist view">
+            <a href="#results">List</a>
+            <a href="#map" aria-current="page">Map</a>
+          </nav>
+
+          <div class="goal">
+            <p class="mono goal__label">Goal</p>
+            <h1 id="map-title" class="goal__title" tabindex="-1"></h1>
+            <p class="goal__stats mono" id="goal-stats"></p>
+            <div class="meter meter--light" aria-hidden="true"><span class="meter__fill" id="goal-meter"></span></div>
+          </div>
+
+          <section class="ready" aria-labelledby="ready-title">
+            <h2 id="ready-title" class="section-title">You can do these today</h2>
+            <p class="muted">Nothing is blocking them. Everything else waits on something below.</p>
+            <ul class="ready__list" id="ready-list"></ul>
+          </section>
+
+          <section aria-labelledby="branches-title">
+            <h2 id="branches-title" class="section-title">Branches</h2>
+            <p class="muted legend"><span class="node-dot node-dot--done" aria-hidden="true"></span> Done
+              <span class="node-dot node-dot--ready" aria-hidden="true"></span> Ready now
+              <span class="node-dot node-dot--wait" aria-hidden="true"></span> Waiting on another task</p>
+            <div class="branches" id="branches"></div>
+          </section>
         </div>
       </section>
 

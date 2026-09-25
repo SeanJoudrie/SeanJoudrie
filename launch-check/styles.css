@@ -22,8 +22,7 @@
   --font: "Archivo", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  --radius: 10px;
-  --radius-sm: 6px; /* chips, badges and number tiles */
+  --radius: 8px; /* the only corner radius; the spinner is the one circle */
   --container: 760px;
   --wide: 1120px;
   --tap: 48px;
@@ -102,6 +101,18 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+}
+
+/* Stops double-tap zoom on controls (the jump when tapping Next quickly)
+   without disabling pinch-zoom. */
+a,
+button,
+input,
+label,
+select,
+summary,
+textarea {
+  touch-action: manipulation;
 }
 
 [hidden] {
@@ -212,6 +223,13 @@ code {
   color: var(--muted);
   font-size: 18px;
   line-height: 28px;
+}
+
+.lead--small {
+  margin-top: var(--s-2);
+  font-size: 15px;
+  line-height: 20px;
+  max-width: 34em;
 }
 
 .eyebrow {
@@ -330,7 +348,7 @@ code {
   justify-content: center;
   width: 28px;
   height: 28px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius);
   background: var(--signal);
   color: var(--on-signal);
 }
@@ -564,7 +582,7 @@ code {
 .status {
   flex: none;
   padding: 2px var(--s-2);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius);
   font-family: var(--mono);
   font-size: 12px;
   line-height: 20px;
@@ -677,7 +695,7 @@ code {
   top: 10px;
   width: 8px;
   height: 8px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius);
   background: var(--signal);
   border: 1px solid var(--ink);
 }
@@ -765,7 +783,7 @@ textarea.mono {
   font-family: var(--mono);
   text-transform: none;
   letter-spacing: 0;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 24px;
 }
 
@@ -912,7 +930,7 @@ input[type="checkbox"] {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius);
   background: var(--ink);
   color: var(--bg);
   font-family: var(--mono);
@@ -945,6 +963,19 @@ input[type="checkbox"] {
   justify-content: space-between;
   gap: var(--s-3);
   padding: var(--s-2) var(--s-2) var(--s-2) var(--s-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.prompt__details summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 var(--s-4);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.prompt__details[open] summary {
   border-bottom: 1px solid var(--line);
 }
 
@@ -1103,7 +1134,7 @@ fieldset.field {
   height: 20px;
   flex: none;
   border: 2px solid var(--line);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius);
 }
 
 @keyframes spin {
@@ -1230,7 +1261,6 @@ fieldset.field {
   padding: var(--s-3) var(--s-4);
   background: var(--surface);
   border: 2px solid var(--line);
-  border-left: 4px solid var(--alert);
   border-radius: var(--radius);
   color: var(--ink);
   text-decoration: none;
@@ -1239,7 +1269,6 @@ fieldset.field {
 
 .gap:hover {
   border-color: var(--control);
-  border-left-color: var(--alert);
 }
 
 .gap__text {
@@ -1392,12 +1421,6 @@ fieldset.field {
   line-height: 24px;
   font-weight: 800;
   font-stretch: 80%;
-  text-transform: uppercase;
-}
-
-.phase h3 .mono {
-  color: var(--muted);
-  font-weight: 500;
 }
 
 .phase__intro {
@@ -1421,11 +1444,10 @@ fieldset.field {
 
 .task {
   display: grid;
-  grid-template-columns: 24px 1fr auto;
+  grid-template-columns: 24px 1fr;
   gap: var(--s-3);
   align-items: center;
-  padding: var(--s-2) var(--s-2) var(--s-2) var(--s-4);
-  min-height: 56px;
+  padding-left: var(--s-4);
 }
 
 .task > input {
@@ -1435,8 +1457,37 @@ fieldset.field {
   accent-color: var(--go);
 }
 
-.task__body {
-  min-width: 0;
+.task__main {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  min-height: 56px;
+  padding: var(--s-2) var(--s-10) var(--s-2) 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+}
+
+.task__main::after {
+  content: "";
+  position: absolute;
+  right: var(--s-4);
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--muted);
+  border-top: 2px solid var(--muted);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.task__main:hover .task__what {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 .task__what {
@@ -1444,71 +1495,30 @@ fieldset.field {
   line-height: 24px;
 }
 
-.task__level {
-  display: inline-block;
-  margin-top: 2px;
+.task__meta {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 20px;
 }
 
-.task:has(> input:checked) .task__what {
+.task[data-done="true"] .task__what {
+  color: var(--muted);
   text-decoration: line-through;
   text-decoration-thickness: 1px;
-  color: var(--muted);
 }
 
-.task__open {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--s-1);
-  min-width: 44px;
-  min-height: 44px;
-  padding: 0 var(--s-3);
-  border: 0;
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--ink);
-  font: inherit;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.task__open:hover {
-  background: var(--raised);
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 1px var(--s-2);
-  border-radius: var(--radius-sm);
-  font-family: var(--mono);
-  font-size: 11px;
-  line-height: 20px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  background: var(--raised);
-  color: var(--muted);
-  border: 1px solid var(--line);
-}
-
-.chip--blocker {
-  background: var(--alert-bg);
+.flag {
   color: var(--alert);
-  border-color: var(--alert);
+  font-weight: 700;
 }
 
-.chip--required {
-  background: var(--raised);
-  color: var(--ink);
-  border-color: var(--control);
-}
-
-.chip--done {
-  background: var(--go-bg);
-  color: var(--go);
-  border-color: var(--go);
+.phase__count {
+  color: var(--muted);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  font-stretch: 100%;
+  text-transform: none;
 }
 
 .legal {
@@ -1535,10 +1545,22 @@ fieldset.field {
 }
 
 /* ---------- Focus: one step at a time ---------- */
+/* The step-by-step view is a fixed-height screen: the top bar and the
+   Back/Next row never move, and only the task in the middle scrolls. */
+body.is-focus .site-header,
+body.is-focus .site-footer {
+  display: none;
+}
+
 .focus {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 64px);
+  height: 100vh;
+  height: 100dvh;
+}
+
+.focus:not([hidden]) {
+  display: flex;
 }
 
 .focus__bar {
@@ -1584,8 +1606,11 @@ fieldset.field {
 
 .focus__stage {
   flex: 1;
-  padding-top: var(--s-6);
-  padding-bottom: var(--s-6);
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-top: var(--s-4);
+  padding-bottom: var(--s-4);
 }
 
 .card {
@@ -1633,13 +1658,43 @@ fieldset.field {
 
 .card__meta {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: var(--s-2) var(--s-3);
+  gap: var(--s-2);
+  min-width: 0;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 20px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.card__flag {
+  flex: none;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.card__flag--must {
+  color: var(--alert);
+}
+
+.card__flag--done {
+  color: var(--go);
+}
+
+.card__flag::after {
+  content: " ·";
+  color: var(--muted);
+  font-weight: 500;
 }
 
 .card__phase {
-  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: inherit;
+  letter-spacing: inherit;
 }
 
 .card__title {
@@ -1658,6 +1713,9 @@ fieldset.field {
 }
 
 .card__label {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-3);
   margin-top: var(--s-6);
   padding-top: var(--s-5);
   border-top: 2px solid var(--line);
@@ -1668,38 +1726,34 @@ fieldset.field {
 
 .card__steps {
   list-style: none;
-  counter-reset: step;
   display: grid;
-  gap: var(--s-4);
-  margin-top: var(--s-3);
+  gap: var(--s-1);
+  margin-top: var(--s-2);
 }
 
-.card__steps li {
-  counter-increment: step;
-  position: relative;
-  padding-left: 44px;
+.step {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: var(--s-3);
+  padding: var(--s-2) 0;
   font-size: 17px;
   line-height: 28px;
+  cursor: pointer;
   user-select: text;
   -webkit-user-select: text;
 }
 
-.card__steps li::before {
-  content: counter(step);
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-sm);
-  background: var(--signal);
-  color: var(--on-signal);
-  font-family: var(--mono);
-  font-size: 13px;
-  font-weight: 700;
+.step input {
+  width: 24px;
+  height: 24px;
+  margin: 2px 0 0;
+  accent-color: var(--go);
+}
+
+.step:has(input:checked) .step__text {
+  color: var(--muted);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
 }
 
 .card__sources {
@@ -1721,8 +1775,7 @@ fieldset.field {
 }
 
 .focus__controls {
-  position: sticky;
-  bottom: 0;
+  flex: none;
   background: var(--bg);
   border-top: 1px solid var(--line);
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -1775,6 +1828,306 @@ fieldset.field {
   margin: var(--s-3) auto var(--s-6);
   max-width: 30em;
   color: var(--muted);
+}
+
+/* ---------- Map: the skill tree ---------- */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  min-height: 44px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.view-switch {
+  display: inline-flex;
+  margin-top: var(--s-3);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.view-switch a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 var(--s-5);
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+}
+
+.view-switch a + a {
+  border-left: 2px solid var(--line);
+}
+
+.view-switch a[aria-current="page"] {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.goal {
+  margin-top: var(--s-5);
+  padding: var(--s-5);
+  background: var(--night);
+  color: var(--night-ink);
+  border-radius: var(--radius);
+}
+
+.goal__label {
+  color: var(--signal);
+}
+
+.goal__title {
+  margin-top: var(--s-1);
+  font-size: 36px;
+  line-height: 40px;
+  font-weight: 800;
+  font-stretch: 70%;
+  text-transform: uppercase;
+}
+
+.goal__stats {
+  margin-top: var(--s-3);
+  color: var(--night-muted);
+}
+
+.goal__stats strong {
+  color: var(--night-ink);
+}
+
+.goal .meter {
+  margin-top: var(--s-2);
+}
+
+.meter--light {
+  height: 8px;
+  margin-top: var(--s-2);
+  background: var(--raised);
+  border: 1px solid var(--line);
+}
+
+.goal .meter--light {
+  background: var(--night-2);
+  border-color: var(--night-line);
+}
+
+.ready {
+  margin-top: var(--s-8);
+}
+
+.ready .muted {
+  margin-top: var(--s-1);
+}
+
+.ready__list {
+  list-style: none;
+  margin-top: var(--s-3);
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.ready__list > li + li {
+  border-top: 1px solid var(--line);
+}
+
+.ready__empty {
+  padding: var(--s-4);
+  color: var(--muted);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-2);
+  margin-top: var(--s-1);
+}
+
+.legend .node-dot {
+  margin-left: var(--s-2);
+}
+
+.legend .node-dot:first-child {
+  margin-left: 0;
+}
+
+.branches {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+  align-items: start;
+}
+
+.branch {
+  padding: var(--s-2) var(--s-4) var(--s-4);
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.branch--weakest {
+  border-color: var(--ink);
+}
+
+.branch__toggle {
+  display: grid;
+  grid-template-columns: 1fr auto 20px;
+  align-items: center;
+  gap: var(--s-3);
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.branch__title {
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 800;
+  font-stretch: 80%;
+}
+
+.branch__count {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.branch__toggle[aria-expanded="true"] .icon {
+  transform: rotate(180deg);
+}
+
+.branch__note {
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--alert);
+}
+
+/* The tree: a vertical line with each task hanging off it. Tasks that wait
+   on another task in the same branch sit one step further in. */
+.tree {
+  list-style: none;
+  margin-top: var(--s-3);
+  padding-left: var(--s-2);
+  border-left: 2px solid var(--line);
+}
+
+.node {
+  position: relative;
+  margin-left: calc(var(--depth, 0) * var(--s-4));
+}
+
+.node::before {
+  content: "";
+  position: absolute;
+  left: calc(-1 * var(--s-2) - var(--depth, 0) * var(--s-4));
+  top: 22px;
+  width: calc(var(--s-2) + var(--depth, 0) * var(--s-4));
+  border-top: 2px solid var(--line);
+}
+
+.node__head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--s-2) 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.node__text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.node__title {
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.node__meta {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--muted);
+}
+
+.node[data-state="ready"] .node__meta {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.node[data-state="done"] .node__title {
+  color: var(--muted);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.node[data-state="wait"] .node__title {
+  color: var(--muted);
+}
+
+.node-dot {
+  flex: none;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-top: 4px;
+  border-radius: var(--radius);
+  border: 2px solid var(--control);
+  background: var(--surface);
+}
+
+.node-dot--done {
+  border-color: var(--go);
+  background: var(--go);
+}
+
+.node-dot--ready {
+  border-color: var(--ink);
+  background: var(--signal);
+}
+
+.node-dot--wait {
+  border-style: dashed;
+}
+
+.node__body {
+  margin: 0 0 var(--s-3) var(--s-6);
+  padding: var(--s-3);
+  background: var(--raised);
+  border-radius: var(--radius);
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.node__body .check {
+  margin-top: var(--s-1);
+}
+
+.node__body .button {
+  margin-top: var(--s-1);
 }
 
 /* ---------- Projects ---------- */
@@ -1969,8 +2322,17 @@ fieldset.field {
   }
 
   .card__title {
-    font-size: 34px;
+    font-size: 32px;
     line-height: 36px;
+  }
+
+  .goal__title {
+    font-size: 30px;
+    line-height: 32px;
+  }
+
+  .branches {
+    grid-template-columns: 1fr;
   }
 
   .card__why {
@@ -1978,15 +2340,22 @@ fieldset.field {
     line-height: 24px;
   }
 
-  .card__steps li {
+  .step {
     font-size: 16px;
     line-height: 24px;
-    padding-left: var(--s-10);
+  }
+
+  .step input {
+    margin-top: 0;
   }
 
   .focus__stage {
-    padding-top: var(--s-4);
-    padding-bottom: var(--s-4);
+    padding-top: var(--s-3);
+    padding-bottom: var(--s-3);
+  }
+
+  .focus__hint {
+    display: none;
   }
 
   .focus__controls-inner {
@@ -2018,9 +2387,54 @@ fieldset.field {
     width: 100%;
   }
 
+  /* The cost table becomes stacked rows: what and cost, then time underneath. */
+  .cost thead {
+    display: none;
+  }
+
+  .cost tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0 var(--s-3);
+    padding: var(--s-3) var(--s-4);
+    border-top: 1px solid var(--line);
+  }
+
+  .cost tbody tr:first-child {
+    border-top: 0;
+  }
+
   .cost th,
   .cost td {
-    padding: var(--s-2) var(--s-3);
+    padding: 0;
+    border: 0;
+  }
+
+  .cost td:last-child {
+    grid-column: 1 / -1;
+    margin-top: var(--s-1);
+    font-size: 15px;
+  }
+
+  .cost td:last-child:empty {
+    display: none;
+  }
+
+  /* Section links scroll sideways instead of stacking. */
+  .phase-nav {
+    width: calc(100% + 2 * var(--s-4));
+    margin: 0 calc(-1 * var(--s-4));
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .phase-nav ol {
+    flex-wrap: nowrap;
+    padding: 0 var(--s-4);
+  }
+
+  .phase-nav a {
+    white-space: nowrap;
   }
 
   .notice {
