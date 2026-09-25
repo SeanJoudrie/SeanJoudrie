@@ -1646,8 +1646,8 @@
     btn.hidden = !sync.enabled;
     btn.textContent = sync.user ? 'Signed in' : 'Sign in';
     $('#footer-note').textContent = sync.user
-      ? 'Launch Check prototype. Your projects sync to your account.'
-      : 'Launch Check prototype. Projects are saved in this browser unless you sign in.';
+      ? 'Launch Check prototype. Your projects sync to your account. Not legal advice.'
+      : 'Launch Check prototype. Your projects are saved in this browser. Not legal advice.';
     var view = currentView();
     if (view === 'projects') enterProjects();
     if (view === 'results' && answered(state.answers)) renderReport(buildPlan());

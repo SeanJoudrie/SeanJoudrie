@@ -65,7 +65,7 @@ jobs:
       - name: Add Launch Check
         run: |
           mkdir -p dist/launch-check
-          cp ../launch-check/index.html ../launch-check/styles.css ../launch-check/app.js ../launch-check/data.js ../launch-check/config.js ../launch-check/favicon.svg dist/launch-check/
+          cp ../launch-check/index.html ../launch-check/styles.css ../launch-check/app.js ../launch-check/data.js ../launch-check/config.js ../launch-check/favicon.svg ../launch-check/og.png dist/launch-check/
 
       - uses: actions/upload-pages-artifact@v3
         with:
