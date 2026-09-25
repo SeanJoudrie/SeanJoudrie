@@ -894,6 +894,7 @@
           needs: it.needs || [],
           title: val(it.title, c),
           why: val(it.why, c),
+          risk: val(it.risk, c) || '',
           steps: val(it.steps, c),
           sources: val(it.sources, c),
           gap: gap,
@@ -1314,7 +1315,7 @@
       '<input type="checkbox" data-task="' + it.id + '"' + (done ? ' checked' : '') + ' aria-label="Mark done: ' + esc(it.title) + '" />' +
       '<button type="button" class="task__main" data-focus="' + it.id + '">' +
       '<span class="task__what">' + esc(it.title) + '</span>' +
-      '<span class="task__meta">' + (done ? 'Done' : levelText(it)) + ' · ' + stepsDoneIn(it) + ' of ' + n + (n === 1 ? ' step' : ' steps') + '</span>' +
+      '<span class="task__meta">' + (done ? 'Done' : levelText(it)) + (it.risk && !done ? ' · Legal risk' : '') + ' · ' + stepsDoneIn(it) + ' of ' + n + (n === 1 ? ' step' : ' steps') + '</span>' +
       '</button>' +
       '</li>'
     );
@@ -1543,6 +1544,7 @@
                 '<span class="node__meta">' + label + '</span></span></button>' +
                 '<div class="node__body" id="node-' + it.id + '" hidden>' +
                 '<p>' + esc(it.why) + '</p>' +
+                (it.risk ? '<p class="node__risk"><strong>Legal risk:</strong> ' + esc(it.risk) + '</p>' : '') +
                 '<label class="check"><input type="checkbox" data-node="' + it.id + '"' + (status === 'done' ? ' checked' : '') + ' />' +
                 '<span>Mark this task done</span></label>' +
                 '<button type="button" class="button button--secondary button--small" data-focus="' + it.id + '">Open its ' + it.steps.length + ' steps</button>' +
@@ -1674,6 +1676,8 @@
     $('#focus-phase').textContent = it.phaseTitle || '';
     $('#focus-title').textContent = it.title;
     $('#focus-why').textContent = it.why;
+    $('#focus-risk').hidden = !it.risk;
+    $('#focus-risk-text').textContent = it.risk;
     var ticks = stepTicks(it);
     var all = isDone(it);
     $('#focus-steps').innerHTML = it.steps
@@ -1842,6 +1846,7 @@
         lines.push('');
         lines.push(n + '. [' + (isDone(it) ? 'x' : ' ') + '] ' + it.title + ' (' + LEVELS[it.severity] + ')');
         lines.push('   Why: ' + it.why);
+        if (it.risk) lines.push('   Legal risk: ' + it.risk);
         var ticks = stepTicks(it);
         var all = isDone(it);
         it.steps.forEach(function (st, i) {

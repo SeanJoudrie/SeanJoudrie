@@ -159,6 +159,33 @@
     playProdAccess: { label: 'Google Play: Apply for production access', url: 'https://support.google.com/googleplay/android-developer/answer/14151465' },
     playPublish: { label: 'Google Play: Prepare and roll out a release', url: 'https://support.google.com/googleplay/android-developer/answer/9859348' },
     playPolicyStatus: { label: 'Google Play: How enforcement and appeals work', url: 'https://support.google.com/googleplay/android-developer/answer/9899234' },
+    tcpa: { label: 'US law: Telephone Consumer Protection Act, 47 U.S.C. §227', url: 'https://www.law.cornell.edu/uscode/text/47/227' },
+    tcpaRule: { label: 'FCC rule: consent, opt-out and calling hours, 47 CFR §64.1200', url: 'https://www.law.cornell.edu/cfr/text/47/64.1200' },
+    fccGuide: { label: 'FCC: Small entity compliance guide (texts and Do-Not-Call)', url: 'https://docs.fcc.gov/public/attachments/DA-24-910A1_Rcd.pdf' },
+    canSpam: { label: 'FTC: CAN-SPAM Act compliance guide', url: 'https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business' },
+    ftcPenalties: { label: 'FTC: 2025 civil penalty amounts ($53,088)', url: 'https://www.ftc.gov/news-events/news/press-releases/2025/02/ftc-publishes-inflation-adjusted-civil-penalty-amounts-2025' },
+    omb2026: { label: 'OMB: no 2026 penalty inflation adjustment (2025 amounts still apply)', url: 'https://www.whitehouse.gov/wp-content/uploads/2026/04/M-26-11-Cancellation-of-Penalty-Inflation-Adjustments-for-2026-Regarding-the-Federal-Civil-Penalties-Inflation-Adjustment-Act-Improvements-Act-of-2015.pdf' },
+    dmcaSafeHarbor: { label: 'US law: DMCA safe harbor, 17 U.S.C. §512', url: 'https://www.law.cornell.edu/uscode/text/17/512' },
+    copyrightDamages: { label: 'US law: Copyright statutory damages, 17 U.S.C. §504', url: 'https://www.law.cornell.edu/uscode/text/17/504' },
+    ccpaPenalties: { label: 'California Privacy Protection Agency: 2025 penalty amounts', url: 'https://cppa.ca.gov/regulations/cpi_adjustment.html' },
+    ccpaBreach: { label: 'California law: breach lawsuits over unencrypted data, §1798.150', url: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1798.150' },
+    caBreachNotice: { label: 'California law: breach notice within 30 days, §1798.82', url: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1798.82' },
+    naagBreach: { label: 'NAAG: all 50 states have breach laws', url: 'https://www.naag.org/issues/consumer-protection/consumer-protection-101/privacy/data-breaches/' },
+    euAiAct50: { label: 'EU AI Act, Article 50: tell people they’re talking to an AI', url: 'https://artificialintelligenceact.eu/article/50/' },
+    appleFaceId: { label: 'Apple: Face ID never shares face data with apps', url: 'https://support.apple.com/en-us/102381' },
+    bipaCothron: { label: 'Illinois Supreme Court on BIPA damages (Cothron v. White Castle)', url: 'https://ilcourtsaudio.blob.core.windows.net/antilles-resources/resources/e304b011-82d9-4832-9cae-d8205749a2ec/Cothron%20v.%20White%20Castle%20System,%20Inc.,%202023%20IL%20128004.pdf' },
+    texasCubi: { label: 'Texas law: biometric identifiers, §503.001', url: 'https://tcss.legis.texas.gov/resources/BC/htm/BC.503.htm' },
+    cipa: { label: 'California law: CIPA damages, Penal Code §637.2', url: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=PEN&sectionNum=637.2' },
+    vppa: { label: 'US law: Video Privacy Protection Act, 18 U.S.C. §2710', url: 'https://www.law.cornell.edu/uscode/text/18/2710' },
+    unruh: { label: 'California law: at least $4,000 per violation, Civil Code §52', url: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=52' },
+    adaWeb: { label: 'US Justice Department: the ADA applies to websites', url: 'https://www.ada.gov/resources/web-guidance/' },
+    seyfarth: { label: 'Seyfarth: 3,117 website accessibility lawsuits in 2025', url: 'https://www.adatitleiii.com/2026/03/federal-court-website-accessibility-lawsuit-filings-bounce-back-in-2025/' },
+    ftcAgeStatement: { label: 'FTC: 2026 policy statement on age checks', url: 'https://www.ftc.gov/news-events/news/press-releases/2026/02/ftc-issues-coppa-policy-statement-incentivize-use-age-verification-technologies-protect-children' },
+    ftcAccessibe: { label: 'FTC: accessiBe pays $1 million over AI claims', url: 'https://www.ftc.gov/news-events/news/press-releases/2025/04/ftc-approves-final-order-requiring-accessibe-pay-1-million' },
+    ftcDoNotPay: { label: 'FTC: DoNotPay order over “AI lawyer” claims', url: 'https://www.ftc.gov/news-events/news/press-releases/2025/02/ftc-finalizes-order-donotpay-prohibits-deceptive-ai-lawyer-claims-imposes-monetary-relief-requires' },
+    ftcWorkado: { label: 'FTC: Workado order over AI accuracy claims', url: 'https://www.ftc.gov/news-events/news/press-releases/2025/08/ftc-approves-final-order-against-workado-llc-which-misrepresented-accuracy-its-artificial' },
+    rosca: { label: 'US law: ROSCA subscription rules, 15 U.S.C. §8403', url: 'https://www.law.cornell.edu/uscode/text/15/8403' },
+    caArl: { label: 'California Automatic Renewal Law, §17602 (click to cancel)', url: 'https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=17602' },
     wcag: { label: 'W3C: WCAG 2.2', url: 'https://www.w3.org/WAI/standards-guidelines/wcag/' },
     androidA11y: { label: 'Android: Accessibility', url: 'https://developer.android.com/guide/topics/ui/accessibility' }
   };
@@ -366,6 +393,7 @@
       when: function (c) { return c.kids; },
       sev: 'blocker',
       gap: { rank: 1, title: 'Follow the rules for children’s data', why: 'US law says you need a parent’s verified permission before collecting personal information from a child under 13.' },
+      risk: 'Up to $53,088 per violation (FTC, 2025 amount, still current in 2026). Check the official page.',
       title: 'Collect as little as possible from children, or get a parent’s permission',
       why: 'The US children’s privacy law (COPPA) covers apps made for, or used by, children under 13. The FTC enforces it and tightened it in 2025.',
       steps: [
@@ -737,6 +765,7 @@
       phase: 'legal',
       when: function (c) { return c.health && c.cloud; },
       sev: 'before',
+      risk: 'Up to $53,088 per violation (FTC). Check the official page.',
       title: 'Know the FTC’s health data breach rule',
       why: 'Since 2024, health and wellness apps not covered by HIPAA must tell users and the FTC after a breach, including sharing health data with advertisers without permission.',
       steps: [
@@ -905,7 +934,9 @@
       id: 'copyright',
       phase: 'inapp',
       when: function (c) { return c.ugc; },
-      sev: 'before',
+      sev: 'blocker',
+      gap: { rank: 6, title: 'Register a copyright agent ($6)', why: 'Without one, you lose legal protection when users post things they don’t own.' },
+      risk: 'Without a registered agent you lose the DMCA safe harbor; copyright owners can then claim $750–$30,000 per work, up to $150,000 if willful. Check the official page.',
       title: 'Set up a way to handle copyright complaints',
       why: 'When people post photos or text they don’t own, a US registered agent and a takedown process protect you from being liable for it.',
       steps: [
@@ -914,7 +945,7 @@
         'Remove content when you get a valid complaint, and ban people who repeatedly post others’ work.',
         'For users in the EU, give a reason when you remove someone’s content and let them respond.'
       ],
-      sources: [SRC.dmca, SRC.dsa]
+      sources: [SRC.dmca, SRC.dmcaSafeHarbor, SRC.copyrightDamages, SRC.dsa]
     },
     {
       id: 'crisis-safety',
@@ -1133,15 +1164,18 @@
       id: 'accessibility',
       phase: 'build',
       when: always,
-      sev: 'recommended',
-      title: 'Check basic accessibility',
-      why: 'About 15% of people have a disability, and some EU rules now require it for consumer services.',
+      sev: function (c) { return c.site ? 'before' : 'recommended'; },
+      title: 'Make it usable with a screen reader, starting with alt text',
+      why: 'Website accessibility lawsuits are common in the US, and missing image descriptions are the easiest thing to fix.',
+      risk: '3,117 federal website accessibility lawsuits were filed in 2025; in California, at least $4,000 per violation (Unruh Act). Check the official page.',
       steps: [
-        'Make sure text is readable and has enough contrast.',
-        'Give every button and image a label that a screen reader can read.',
-        'Try your app with VoiceOver (iPhone), TalkBack (Android) or Lighthouse (web).'
+        'Give every meaningful image a short text description (alt text). Mark decorative images as decorative.',
+        'Make sure every button and field has a label a screen reader can read.',
+        'Check that everything works with a keyboard alone, and text has enough contrast.',
+        'Test once with VoiceOver (iPhone), TalkBack (Android) or Lighthouse (web). Aim for WCAG 2.1 AA.',
+        'Don’t rely on an “accessibility overlay” widget. The FTC fined one maker $1 million for claiming it made sites compliant.'
       ],
-      sources: [SRC.wcag, SRC.androidA11y]
+      sources: [SRC.adaWeb, SRC.seyfarth, SRC.unruh, SRC.wcag, SRC.ftcAccessibe]
     },
 
     // ---------------- 6. Store listing ----------------
@@ -1253,6 +1287,160 @@
     },
 
     // ---------------- 7. Submit ----------------
+    // ---------- Legal risks small apps get sued or fined over ----------
+    {
+      id: 'text-consent',
+      phase: 'legal',
+      when: function (c) { return c.does.texts; },
+      sev: 'blocker',
+      gap: { rank: 3, title: 'Get written consent before marketing texts', why: 'People can sue for $500 per unwanted marketing text, or $1,500 if it was willful.' },
+      title: 'Get written consent before sending marketing texts',
+      why: 'Under the US Telephone Consumer Protection Act, texts count as calls, and each unwanted marketing text can cost $500.',
+      risk: 'People can sue for $500 per text, up to $1,500 if it was willful (TCPA). This amount is written into the law.',
+      steps: [
+        'Before sending any promotional text, get written permission: an unticked checkbox or e-signature that clearly says they agree to marketing texts at that number.',
+        'Save a record of when and how each person agreed.',
+        'Let people reply STOP (or opt out any reasonable way), and stop within 10 business days at most.',
+        'Only send between 8am and 9pm in the person’s own time zone.',
+        'Don’t text numbers on the National Do-Not-Call Registry unless they’ve agreed.'
+      ],
+      sources: [SRC.tcpa, SRC.tcpaRule, SRC.fccGuide]
+    },
+    {
+      id: 'email-rules',
+      phase: 'legal',
+      when: function (c) { return c.does.emails; },
+      sev: 'blocker',
+      gap: { rank: 3, title: 'Add an unsubscribe link and address to marketing emails', why: 'The FTC can fine up to $53,088 for each email that breaks the CAN-SPAM rules.' },
+      title: 'Follow the email marketing rules (CAN-SPAM)',
+      why: 'You don’t need opt-in for email in the US, but every marketing email must follow a few rules, and each one that doesn’t can be fined.',
+      risk: 'Up to $53,088 per email (FTC, 2025 amount, still current in 2026). Check the official page.',
+      steps: [
+        'Put a working unsubscribe link in every marketing email.',
+        'Remove people within 10 business days of unsubscribing. Most email tools do this automatically; check it’s on.',
+        'Include a real postal address (a PO box you registered is fine).',
+        'Use an honest sender name and subject line, and make clear it’s an ad.',
+        'If a tool or agency sends emails for you, you’re still responsible for them.'
+      ],
+      sources: [SRC.canSpam, SRC.ftcPenalties, SRC.omb2026]
+    },
+    {
+      id: 'encryption-breach',
+      phase: 'secure',
+      when: function (c) { return c.cloud; },
+      sev: 'before',
+      title: 'Encrypt people’s data and write a one-page breach plan',
+      why: 'Every US state requires you to tell people after a data breach, and most go easier on data that was encrypted.',
+      risk: 'In California, a breach of unencrypted data can mean $107–$799 per person in lawsuits (CCPA, for larger businesses), and notice is due within 30 days. Check the official page.',
+      steps: [
+        'Make sure every connection uses HTTPS.',
+        'Check your database encrypts stored data. Supabase and Firebase do this by default; say so in your privacy policy.',
+        'Never store passwords yourself. Let your login provider (Supabase Auth, Firebase Auth) handle them.',
+        'Only collect data you actually use.',
+        'Write down in one page: how you’d notice a breach, who you’d tell, and by when.'
+      ],
+      sources: [SRC.naagBreach, SRC.caBreachNotice, SRC.ccpaBreach, SRC.ccpaPenalties, SRC.supaSecurity]
+    },
+    {
+      id: 'ai-label',
+      phase: 'legal',
+      when: function (c) { return c.ai; },
+      sev: 'before',
+      title: 'Tell people when they’re talking to an AI',
+      why: 'The EU requires it from August 2, 2026, and it builds trust everywhere else.',
+      risk: 'EU AI Act fines reach millions of euros, capped at the lower amount for small businesses. Check the official page.',
+      steps: [
+        'Label AI replies clearly, for example “Written by AI”.',
+        'If the app makes images, audio or video with AI, mark them as AI-made.',
+        'Say in your privacy policy which AI company receives people’s data.',
+        'Don’t let AI alone decide things like loans, housing, jobs or insurance without a lawyer’s review.'
+      ],
+      sources: [SRC.euAiAct50, SRC.appleGuidelines]
+    },
+    {
+      id: 'biometrics',
+      phase: 'legal',
+      when: function (c) { return c.does.faces; },
+      sev: 'blocker',
+      gap: { rank: 3, title: 'Get written permission before scanning faces or voices', why: 'In Illinois, people can sue for $1,000 per violation, or $5,000 if it was reckless.' },
+      title: 'Get written permission before scanning faces, fingerprints or voices',
+      why: 'Illinois and Texas have strict biometric laws, and Illinois lets people sue directly.',
+      risk: '$1,000 per violation, $5,000 if intentional or reckless (Illinois BIPA); up to $25,000 per violation (Texas, enforced by the state). Check the official page.',
+      steps: [
+        'If you only unlock the app with Face ID or Touch ID through Apple’s or Google’s system, you’re fine: the app never receives the face data.',
+        'If the app scans faces, selfies, fingerprints or voices itself, show a notice first: what you collect, why, and how long you keep it.',
+        'Get a written release, like an unticked “I agree” checkbox, before any scan.',
+        'Publish when you delete the data, and actually delete it.',
+        'Never sell or share it. If a vendor does ID checks for you, confirm they handle consent.'
+      ],
+      sources: [SRC.appleFaceId, SRC.bipaCothron, SRC.texasCubi]
+    },
+    {
+      id: 'pixel-consent',
+      phase: 'legal',
+      when: function (c) { return c.does.pixel; },
+      sev: 'blocker',
+      gap: { rank: 4, title: 'Don’t load ad pixels before people agree', why: 'California lawsuits claim $5,000 per violation for pixels that send visitor activity to ad companies.' },
+      title: 'Load ad pixels only after people agree',
+      why: 'Pixels from Meta, TikTok and others send what visitors do to ad companies, and that’s the basis of a wave of California lawsuits.',
+      risk: '$5,000 per violation under California’s wiretap law (CIPA); courts are split on pixels, but suits keep coming. $2,500 per person for sites with video (VPPA). Check the official page.',
+      steps: [
+        'Use a consent banner that actually blocks the pixel until someone taps Accept.',
+        'List every pixel and the company it sends data to in your privacy policy.',
+        'Never put pixels on login, checkout, health or money pages.',
+        'If you show videos, don’t send video titles together with who watched them to ad platforms.'
+      ],
+      sources: [SRC.cipa, SRC.vppa, SRC.icoCookies]
+    },
+    {
+      id: 'age-screen',
+      phase: 'legal',
+      when: function (c) { return c.accounts && !c.kids; },
+      sev: 'recommended',
+      title: 'Add a neutral age question at sign-up',
+      why: 'An app not made for kids is only covered by children’s privacy law if you know a child signed up, and a simple age question helps you handle that.',
+      risk: 'If you knowingly collect from children under 13 without a parent’s consent: up to $53,088 per violation (FTC). Check the official page.',
+      steps: [
+        'Ask for a birth date at sign-up, without hinting at the “right” answer.',
+        'If someone is under 13, don’t create the account (or ask for a parent’s consent).',
+        'If you learn a user is under 13, delete their data.',
+        'The FTC said in 2026 it won’t penalize collecting age only to check age, if you delete it promptly and use it for nothing else.'
+      ],
+      sources: [SRC.coppa, SRC.ftcAgeStatement]
+    },
+    {
+      id: 'ai-claims',
+      phase: 'legal',
+      when: function (c) { return c.does.aiclaims; },
+      sev: 'blocker',
+      gap: { rank: 5, title: 'Only claim what your AI can prove', why: 'The FTC made accessiBe pay $1 million and DoNotPay $193,000 over AI claims they couldn’t back up.' },
+      title: 'Only make claims about your AI that you’ve tested',
+      why: 'The FTC’s “Operation AI Comply” goes after apps that overstate what AI does.',
+      risk: 'No fixed amount: accessiBe paid $1,000,000 and DoNotPay $193,000 in FTC cases. Check the official page.',
+      steps: [
+        'Read every claim on your site, store listing and ads, like “99% accurate”, “replaces a lawyer” or “fully compliant”.',
+        'Keep only claims you’ve tested, and save the test results.',
+        'Drop words like “guaranteed”, “fully compliant” or “as good as a doctor”.',
+        'Never use AI-written fake reviews or testimonials.'
+      ],
+      sources: [SRC.ftcAccessibe, SRC.ftcDoNotPay, SRC.ftcWorkado]
+    },
+    {
+      id: 'cancel-easily',
+      phase: 'inapp',
+      when: function (c) { return c.digital || c.a.money === 'physical'; },
+      sev: 'before',
+      title: 'Make subscriptions easy to understand and easy to cancel',
+      why: 'US law requires clear terms and a simple way to cancel, and California requires a “click to cancel” link online.',
+      risk: 'Enforced by the FTC and state attorneys general; no fixed amount. Check the official page.',
+      steps: [
+        'Show the price, renewal and how to cancel before asking for payment details.',
+        'Get a clear “Subscribe” tap, not a pre-ticked box.',
+        'If you sell through Apple or Google in-app purchase, their screens handle cancelling. If you sell on the web (for example Stripe), add a cancel button people can use online.',
+        'California: send a reminder before yearly renewals, and 7–30 days’ notice before a price change.'
+      ],
+      sources: [SRC.rosca, SRC.caArl, SRC.appleSubs]
+    },
     // ---------- Store submission, in small steps ----------
     {
       id: 'who-reviews',
@@ -1670,6 +1858,8 @@
     'health-consent': 'legal', 'health-breach': 'legal', 'ai-consent': 'legal', 'ai-disclosure-web': 'legal',
     'health-claims': 'legal', copyright: 'legal', 'audio-rights': 'legal', 'apple-kids': 'legal', 'play-families': 'legal',
     'keep-in-sync': 'legal', 'tracking-permission': 'legal',
+    'text-consent': 'legal', 'email-rules': 'legal', 'ai-label': 'legal', biometrics: 'legal', 'pixel-consent': 'legal',
+    'age-screen': 'legal', 'ai-claims': 'legal', 'encryption-breach': 'security', 'cancel-easily': 'ux',
     'account-deletion': 'ux', 'sign-in-with-apple': 'ux', 'subscription-screen': 'ux', ugc: 'ux', 'crisis-safety': 'ux',
     healthkit: 'ux', 'app-icon': 'ux', accessibility: 'ux', size: 'ux', 'web-speed': 'ux', completeness: 'ux',
     'more-than-a-website': 'ux', notifications: 'ux', seo: 'ux'
@@ -1727,7 +1917,12 @@
     'extension-store': ['privacy-policy'],
     'keep-in-sync': ['privacy-policy'],
     notifications: ['privacy-policy'],
-    'before-charging': ['privacy-policy']
+    'before-charging': ['privacy-policy'],
+    'pixel-consent': ['privacy-policy'],
+    'biometrics': ['privacy-policy'],
+    'ai-label': ['privacy-policy'],
+    'encryption-breach': ['find-data'],
+    'cancel-easily': ['terms']
   };
 
   ITEMS.forEach(function (it) {

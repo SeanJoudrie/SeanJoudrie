@@ -1712,6 +1712,27 @@ body.is-focus .site-footer {
   line-height: 28px;
 }
 
+.card__risk,
+.node__risk {
+  margin-top: var(--s-3);
+  padding: var(--s-3);
+  border: 2px solid var(--alert);
+  border-radius: var(--radius);
+  background: var(--alert-bg);
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.card__risk strong,
+.node__risk strong {
+  color: var(--alert);
+}
+
+.node__risk {
+  margin: var(--s-2) 0;
+  padding: var(--s-2) var(--s-3);
+}
+
 .card__label {
   display: flex;
   justify-content: space-between;
