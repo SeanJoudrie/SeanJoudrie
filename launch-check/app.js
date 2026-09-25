@@ -581,7 +581,8 @@
     var text = $('#prompt-text').textContent;
     copyText(text).then(
       function () {
-        copyLabel.textContent = 'Copied';
+        if (window.LCMotion) window.LCMotion.flipTo(copyLabel, 'Copied');
+        else copyLabel.textContent = 'Copied';
         $('#copy-status').textContent = 'Prompt copied. Paste it into your AI chat.';
       },
       function () {
@@ -945,7 +946,7 @@
     var listEl = $('#checking-list');
     listEl.innerHTML = checks
       .map(function (label) {
-        return '<li data-state="pending"><span class="pending-dot" aria-hidden="true"></span><span>' + label + '</span><span class="state">Waiting</span></li>';
+        return '<li data-state="pending"><span class="light" aria-hidden="true"></span><span class="checking__name">' + label + '</span><span class="state">Waiting</span></li>';
       })
       .join('');
 
@@ -956,16 +957,22 @@
     // read what was checked. The whole run stays around two seconds.
     var step = Math.min(350, Math.round(2000 / checks.length));
 
-    function mark(li, s) {
+    // Each check reads in (its name scrambles into place), then its status flips
+    // to Checked. See DESIGN.md, Motion: "Checking".
+    var M = window.LCMotion;
+    function mark(li, s, text) {
       li.setAttribute('data-state', s);
       var marker = li.firstElementChild;
       var label = li.lastElementChild;
       if (s === 'active') {
-        marker.outerHTML = '<span class="spinner" aria-hidden="true"></span>';
-        label.textContent = 'Checking';
+        marker.className = 'light light--on';
+        if (M) M.scramble(li.querySelector('.checking__name'), text, Math.min(360, step));
+        if (M) M.flipTo(label, 'Checking…');
+        else label.textContent = 'Checking…';
       } else if (s === 'done') {
         marker.outerHTML = CHECK_ICON;
-        label.textContent = 'Done';
+        if (M) M.flipTo(label, 'Checked');
+        else label.textContent = 'Checked';
       }
     }
 
@@ -978,7 +985,7 @@
         }, reduceMotion ? 0 : 300);
         return;
       }
-      mark(items[i], 'active');
+      mark(items[i], 'active', checks[i]);
       status.textContent = 'Checking ' + (i + 1) + ' of ' + items.length + ': ' + checks[i];
       i++;
       analyzeTimer = setTimeout(next, step);
@@ -1220,10 +1227,10 @@
     $('#gaps').innerHTML = shown.length
       ? '<ol class="gaps">' +
         shown
-          .map(function (g) {
+          .map(function (g, idx) {
             return (
-              '<li><a class="gap" href="#next" data-open="' + g.id + '">' +
-              '<span class="gap__text"><span class="gap__title">' + esc(g.gap.title) + '</span>' +
+              '<li style="--i:' + idx + '"><a class="gap" href="#next" data-open="' + g.id + '">' +
+              '<span class="gap__text"><span class="stamp">Must fix</span><span class="gap__title">' + esc(g.gap.title) + '</span>' +
               '<span class="gap__why">' + esc(g.gap.why) + '</span></span>' +
               '<span class="gap__go"><span class="gap__go-label">Do it</span>' + ARROW + '</span></a></li>'
             );
@@ -1232,6 +1239,11 @@
         '</ol>'
       : '<p class="lead">Your answers don’t show anything that would stop a release. Work through the checklist anyway: it covers what reviewers look at.</p>';
 
+    // Must-fix rows arrive one by one, each with its stamp (DESIGN.md, Motion).
+    var gapsEl = $('#gaps');
+    gapsEl.classList.remove('is-entering');
+    void gapsEl.offsetWidth;
+    gapsEl.classList.add('is-entering');
     var more = plan.gaps.length - shown.length;
     $('#gaps-more').hidden = more <= 0;
     $('#gaps-more').textContent = more > 0 ? 'Plus ' + more + ' more marked “Must fix” in the checklist below.' : '';
@@ -1260,6 +1272,19 @@
       return it.severity === 'blocker' && !isDone(it);
     }).length;
     $('#meter-fill').style.width = (st.total ? (st.done / st.total) * 100 : 0) + '%';
+    // Readiness gauge: yellow = steps done, red = must-fix steps still ahead.
+    if (window.LCMotion) {
+      var mustItems = items.filter(function (it) {
+        return it.severity === 'blocker' && !isDone(it);
+      });
+      var mustSteps = stepTotals(mustItems);
+      window.LCMotion.gauge(
+        $('#gauge'),
+        st.total ? st.done / st.total : 0,
+        st.total ? (mustSteps.total - mustSteps.done) / st.total : 0,
+        mustItems.length
+      );
+    }
     $('#report-stats').innerHTML =
       '<strong>' + done + '</strong> of ' + items.length + ' tasks · <strong>' + st.done + '</strong> of ' + st.total +
       ' small steps · <strong>' + must + '</strong> must-fix left';
@@ -1328,9 +1353,16 @@
     });
     $all(root + ' input[data-task]').forEach(function (cb) {
       cb.addEventListener('change', function () {
-        setTaskDone(byId[cb.getAttribute('data-task')], cb.checked);
+        var id = cb.getAttribute('data-task');
+        setTaskDone(byId[id], cb.checked);
         saveProject();
         rerender();
+        // Reward the tick: the row that was just finished flashes done.
+        if (cb.checked) {
+          var fresh = document.querySelector(root + ' input[data-task="' + id + '"]');
+          var row = fresh && fresh.closest('li');
+          if (row) row.classList.add('just-done');
+        }
       });
     });
     $all(root + ' [data-focus]').forEach(function (btn) {

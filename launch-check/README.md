@@ -48,6 +48,8 @@ Each item in `data.js` has `when(c)`, which decides whether it applies. Its `tit
 
 ## Design system
 
+**`DESIGN.md` is the source of truth** for tokens, type, components and motion (every animation, its reason and its reduced-motion fallback). This section is a summary.
+
 The direction is **pre-flight check**: ink and cool white, runway yellow for the one thing to do next, green for done and red for must-fix. Headlines are condensed and uppercase, so they take less room and read like a checklist.
 
 - **Type:**
@@ -57,7 +59,7 @@ The direction is **pre-flight check**: ink and cool white, runway yellow for the
   - Yellow `#ffc700` with ink text for the main action.
   - Red `#c2302a` (dark mode `#ff6b61`) for must-fix, green `#0f7a45` (dark mode `#3dd68c`) for done.
   - The header, hero, results report and step-by-step bar stay dark in both themes.
-- **Shape and spacing:** a 10px radius, 2px borders, no shadows, and a 4px spacing scale.
+- **Shape and spacing:** one 8px radius, 2px borders on controls and 1px dividers, no shadows, and a 4px spacing scale.
 - **Contrast:** checked for both themes. Text is at least 4.6:1, and borders and the focus ring are at least 3:1.
 
 ## Do this now: one step at a time

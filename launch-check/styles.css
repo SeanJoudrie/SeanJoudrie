@@ -50,6 +50,7 @@
   --night-line: #2a333e;
   --night-ink: #f2f5f8;
   --night-muted: #a3adb9;
+  --night-alert: #ff6b61;
 
   color-scheme: light;
 }
@@ -2469,6 +2470,343 @@ body.is-focus .site-footer {
   .account__email .button {
     width: 100%;
   }
+}
+
+/* ---------- Step two motion pieces (DESIGN.md, Motion) ---------- */
+
+/* Split-flap headline: every letter keeps its final width while it flips. */
+.flap-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+.flap-char {
+  display: inline-block;
+  text-align: center;
+  backface-visibility: hidden;
+}
+
+/* Launch pad and rocket (landing). Only the rocket takes the swipe, so the page
+   still scrolls normally everywhere else. */
+.launchpad {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  margin-top: var(--s-8);
+}
+.rocket {
+  flex: none;
+  width: var(--s-16);
+  height: var(--s-20);
+  padding: var(--s-2);
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.rocket:active {
+  cursor: grabbing;
+}
+.rocket svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.rocket__body {
+  fill: var(--night-ink);
+}
+.rocket__nose {
+  fill: var(--signal);
+}
+.rocket__fin {
+  fill: var(--night-muted);
+}
+.rocket__window {
+  fill: var(--night);
+  stroke: var(--signal);
+  stroke-width: 2;
+}
+.rocket:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+.launchpad__hint {
+  margin: 0;
+  color: var(--night-muted);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.launchpad__mouse {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .launchpad__touch {
+    display: none;
+  }
+  .launchpad__mouse {
+    display: inline;
+  }
+}
+/* The trail: the next screen's background, widening from the rocket's exhaust. */
+.launch-trail {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--bg);
+  pointer-events: none;
+}
+
+/* Checking: a runway light per check instead of a spinner. */
+.light {
+  width: 12px;
+  height: 12px;
+  margin: 4px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--line);
+}
+.light--on {
+  background: var(--signal);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--signal) 30%, transparent);
+}
+.checking__name {
+  flex: 1;
+  font-variant-numeric: tabular-nums;
+}
+.checking .state {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.checking li[data-state="done"] .state {
+  color: var(--go);
+}
+
+/* Readiness gauge (results header). */
+.gauge {
+  display: grid;
+  justify-items: center;
+  width: 240px;
+  margin-top: var(--s-6);
+  color: var(--night-ink);
+}
+.gauge__dial {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.gauge__dial circle {
+  fill: none;
+  stroke-width: 14;
+}
+.gauge__track {
+  stroke: var(--night-2);
+}
+.gauge__fill {
+  stroke: var(--signal);
+}
+.gauge__must {
+  stroke: var(--night-alert);
+}
+.gauge__ticks line {
+  stroke: var(--night-line);
+  stroke-width: 2;
+}
+.gauge__needle {
+  transform-box: view-box;
+  transform-origin: 100px 100px;
+}
+.gauge__needle path {
+  stroke: var(--night-ink);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.gauge__needle circle {
+  fill: var(--night-ink);
+  stroke: none;
+}
+.gauge__read {
+  margin: calc(-1 * var(--s-12)) 0 0;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.gauge__num {
+  font-size: 32px;
+}
+.gauge__word {
+  display: block;
+  color: var(--night-muted);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.gauge__must-label {
+  margin: var(--s-1) 0 0;
+  color: var(--night-alert);
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+@media (min-width: 900px) {
+  .report__inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: var(--s-12);
+  }
+  .report__inner > * {
+    grid-column: 1;
+  }
+  .report__inner > .gauge {
+    grid-column: 2;
+    grid-row: 1 / span 7;
+    align-self: center;
+    margin-top: 0;
+  }
+}
+
+/* Landing example: a real, tickable checklist (not a picture of one). */
+.board__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.board__row {
+  cursor: pointer;
+}
+.board__check {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--signal);
+}
+.board__item {
+  flex: 1;
+}
+.board__head span:last-child {
+  font-variant-numeric: tabular-nums;
+}
+.board__foot {
+  margin: 0;
+  padding: var(--s-2) var(--s-5) var(--s-2);
+  color: var(--night-muted);
+  font-size: 15px;
+}
+.status {
+  display: inline-block;
+}
+
+/* Progress: runway lights instead of "Step 1 of 3". */
+.runway {
+  display: flex;
+  gap: var(--s-2);
+  margin: 0 0 var(--s-3);
+}
+.runway__light {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--line);
+}
+.runway__light.is-done {
+  background: var(--signal);
+}
+.runway__light.is-on {
+  background: var(--signal);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--signal) 30%, transparent);
+  animation: lc-light-on 400ms var(--lc-ease, cubic-bezier(0.2, 0.7, 0.2, 1)) both;
+}
+@keyframes lc-light-on {
+  from { transform: scale(0.4); opacity: 0.3; }
+  to { transform: none; opacity: 1; }
+}
+
+/* Must-fix rows: one by one, each stamped. Only on arrival, not on every re-render. */
+.stamp {
+  display: inline-block;
+  justify-self: start;
+  margin-bottom: var(--s-1);
+  margin-right: var(--s-2);
+  padding: 0 var(--s-2);
+  border-radius: var(--radius);
+  background: var(--alert-bg);
+  color: var(--alert);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 2px;
+}
+.is-entering .gaps > li {
+  animation: lc-rise 200ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+.is-entering .gaps .stamp {
+  animation: lc-stamp 320ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 60ms + 160ms);
+}
+@keyframes lc-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes lc-stamp {
+  0% { opacity: 0; transform: scale(1.35); }
+  45% { opacity: 1; transform: scale(1); }
+  60% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+  90% { transform: translateX(-1px); }
+  100% { transform: none; }
+}
+
+/* Ticking a task off: the row flashes done. */
+.just-done {
+  animation: lc-done 700ms ease-out;
+}
+@keyframes lc-done {
+  0% { background-color: var(--go-bg); }
+  100% { background-color: transparent; }
+}
+
+/* Paste: the box confirms it received the text. */
+#summary.is-received {
+  animation: lc-received 600ms ease-out;
+}
+@keyframes lc-received {
+  0% { border-color: var(--signal); }
+  100% { border-color: var(--line); }
+}
+.received {
+  min-height: 20px;
+  margin: var(--s-1) 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Numbers that change line up. */
+.cost td,
+.report__stats,
+#checklist-count,
+.gauge__read {
+  font-variant-numeric: tabular-nums;
 }
 
 /* ---------- Motion ---------- */
