@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sources · Launch Check</title>
+    <meta name="description" content="Every rule, law and guide Launch Check's checklist is built on, grouped by who published it, with the tasks that use each one." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Launch Check" />
+    <meta property="og:title" content="Launch Check sources" />
+    <meta property="og:description" content="Every rule, law and guide behind the Launch Check checklist, with the tasks that use it." />
+    <meta property="og:url" content="https://seanjoudrie.github.io/SeanJoudrie/launch-check/sources.html" />
+    <meta property="og:image" content="https://seanjoudrie.github.io/SeanJoudrie/launch-check/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://seanjoudrie.github.io/SeanJoudrie/launch-check/sources.html" />
+    <meta name="theme-color" content="#0b0e12" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=dev" />
+    <script>
+      try {
+        var t = localStorage.getItem('lc-theme');
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    </script>
+    <style>
+      /* Sources page: uses the tokens and components from styles.css. */
+      .codex__lead {
+        margin-top: var(--s-3);
+        max-width: 38em;
+        color: var(--muted);
+      }
+
+      .codex__stats {
+        margin-top: var(--s-3);
+        color: var(--muted);
+      }
+
+      .codex__filter {
+        margin-top: var(--s-6);
+        max-width: 480px;
+      }
+
+      .codex__filter input {
+        font-size: 17px;
+      }
+
+      .codex__empty {
+        margin-top: var(--s-6);
+        color: var(--muted);
+      }
+
+      .codex__nav ol {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--s-2);
+        margin-top: var(--s-4);
+      }
+
+      .codex__nav a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 36px;
+        padding: 0 var(--s-3);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface);
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      .codex__nav a .muted {
+        margin-left: var(--s-2);
+        font-family: var(--mono);
+        font-size: 13px;
+        line-height: 20px;
+      }
+
+      .codex__nav a:hover {
+        border-color: var(--control);
+      }
+
+      .publisher {
+        margin-top: var(--s-8);
+      }
+
+      .publisher h2 {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: var(--s-3);
+        font-size: 24px;
+        line-height: 28px;
+      }
+
+      .publisher h2 span {
+        font-family: var(--mono);
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--muted);
+      }
+
+      .entries {
+        list-style: none;
+        margin-top: var(--s-3);
+        background: var(--surface);
+        border: 2px solid var(--line);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+
+      .entries > li {
+        padding: var(--s-3) var(--s-4);
+      }
+
+      .entries > li + li {
+        border-top: 1px solid var(--line);
+      }
+
+      .entry__link {
+        font-weight: 700;
+        overflow-wrap: anywhere;
+      }
+
+      .entry__host {
+        display: block;
+        margin-top: 2px;
+        font-family: var(--mono);
+        font-size: 13px;
+        line-height: 20px;
+        color: var(--muted);
+        overflow-wrap: anywhere;
+      }
+
+      .entry__used {
+        margin-top: var(--s-1);
+        font-size: 15px;
+        line-height: 24px;
+        color: var(--muted);
+      }
+
+      @media (max-width: 599px) {
+        .codex__nav {
+          width: calc(100% + 2 * var(--s-4));
+          margin: 0 calc(-1 * var(--s-4));
+          overflow-x: auto;
+          scrollbar-width: none;
+        }
+
+        .codex__nav ol {
+          flex-wrap: nowrap;
+          padding: 0 var(--s-4);
+        }
+
+        .codex__nav a {
+          white-space: nowrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a class="wordmark" href="index.html" aria-label="Launch Check, home">
+          <span class="wordmark__mark" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5.5 10.5l3 3 6-7" /></svg></span>
+          <span>Launch Check</span>
+        </a>
+        <nav class="site-nav" aria-label="Site">
+          <a class="site-nav__link" href="index.html#describe">Check my app</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" tabindex="-1">
+      <div class="container container--flow">
+        <a class="back-link" href="index.html">
+          <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M11.75 5.25L7 10l4.75 4.75" /></svg>
+          Launch Check
+        </a>
+        <p class="eyebrow">Sources</p>
+        <h1>Where every rule comes from</h1>
+        <p class="codex__lead">Every task in Launch Check links to the law, store rule or official guide it's based on. They're all listed here, grouped by kind, with the tasks that use each one. This isn't legal advice, and rules change, so check the page itself before relying on it.</p>
+        <p class="codex__stats mono" id="stats"></p>
+
+        <div class="codex__filter">
+          <label class="field-label" for="filter">Filter sources</label>
+          <input type="text" id="filter" autocomplete="off" placeholder="For example: privacy, Apple, COPPA" aria-describedby="result-count" />
+          <p class="hint" id="result-count" role="status"></p>
+        </div>
+
+        <nav class="codex__nav" aria-label="Publishers">
+          <ol id="publisher-nav"></ol>
+        </nav>
+
+        <div id="codex"></div>
+        <p class="codex__empty" id="empty" hidden>No sources match that. Try a shorter word.</p>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container site-footer__inner">
+        <p class="muted">Launch Check prototype. Sources checked in <span id="checked"></span>. Not legal advice.</p>
+      </div>
+    </footer>
+
+    <script src="data.js?v=dev"></script>
+    <script>
+      (function () {
+        'use strict';
+        var DATA = window.LC_DATA;
+        var SRC = DATA.sources;
+
+        // Research behind the landing page's numbers (see RESEARCH.md).
+        var RESEARCH = [
+          { label: 'Apple Newsroom: 2025 App Store review and rejection figures', url: 'https://www.apple.com/newsroom/2026/05/the-app-store-stopped-over-2-point-2-billion-usd-in-fraudulent-transactions-in-2025/' },
+          { label: 'Apple: App Store Transparency Report 2024 (PDF)', url: 'https://www.apple.com/legal/more-resources/docs/2024-App-Store-Transparency-Report.pdf' },
+          { label: 'Google: Keeping Google Play safe in 2025', url: 'https://blog.google/security/keeping-google-play-android-app-ecosystem-safe-2025/' },
+          { label: 'TechCrunch: App releases up 60% as AI tools spread (Appfigures data)', url: 'https://techcrunch.com/2026/04/18/the-app-store-is-booming-again-and-ai-may-be-why/' },
+          { label: 'MacRumors: Apple holds updates to vibe-coding apps', url: 'https://www.macrumors.com/2026/03/18/apple-blocks-updates-for-vibe-coding-apps/' },
+          { label: 'Veracode: 2025 GenAI code security report', url: 'https://www.veracode.com/blog/genai-code-security-report/' }
+        ];
+
+        function esc(t) {
+          return String(t).replace(/[&<>"]/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+          });
+        }
+
+        function host(url) {
+          try {
+            return new URL(url).hostname.replace(/^www\./, '');
+          } catch (e) {
+            return url;
+          }
+        }
+
+        // Publisher = the part of the label before ": ", or the site name.
+        var HOSTS = {
+          'appstoreconnect.apple.com': 'Apple',
+          'play.google.com': 'Google Play',
+          'law.cornell.edu': 'US law',
+          'leginfo.legislature.ca.gov': 'California law',
+          'pagespeed.web.dev': 'web.dev'
+        };
+        function publisher(src) {
+          var i = src.label.indexOf(': ');
+          if (i > 0) return src.label.slice(0, i).replace(/ \(.*\)$/, '');
+          return HOSTS[host(src.url)] || src.label;
+        }
+        function shortLabel(src) {
+          var i = src.label.indexOf(': ');
+          return i > 0 ? src.label.slice(i + 2) : src.label;
+        }
+        // Broad groups, so people can find a source by the kind of rule it is.
+        var GROUPS = [
+          ['Apple', ['Apple', 'Apple Newsroom']],
+          ['Google and Android', ['Google Play', 'Google', 'Android', 'AdSense', 'Google Cloud', 'Google Search Central', 'Gmail', 'Chrome', 'Chrome Web Store']],
+          ['US federal law and regulators', ['US law', 'FTC', 'FCC', 'FCC rule', 'OMB', 'US Copyright Office', 'US Justice Department']],
+          ['US state law', ['California law', 'California AG', 'California Privacy Protection Agency', 'Texas law', 'Court decisions', 'Illinois Supreme Court on BIPA damages (Cothron v. White Castle)', 'NAAG']],
+          ['EU and UK', ['EU AI Act, Article 50', 'European Commission', 'GDPR Article 9', 'GDPR.eu', 'UK ICO', 'Your Europe']],
+          ['Databases, hosting and domains', ['Supabase', 'Firebase', 'Netlify', 'Vercel', 'GitHub Pages', 'Cloudflare Registrar', 'Replit', 'Lovable']],
+          ['Developer tools and web standards', ['GitHub', 'Expo', 'Vite', 'Next.js', 'Sentry', 'web.dev', 'W3C']],
+          ['Legal page generators', ['Termly', 'iubenda']]
+        ];
+        function groupOf(pub) {
+          for (var i = 0; i < GROUPS.length; i++) if (GROUPS[i][1].indexOf(pub) > -1) return GROUPS[i][0];
+          return 'Research, news and help';
+        }
+        var ORDER = GROUPS.map(function (g) {
+          return g[0];
+        }).concat(['Research, news and help']);
+
+        // Sources can depend on answers, so ask each task with a spread of
+        // answers and collect everything it can cite.
+        var CONTEXTS = [];
+        ['ios', 'android', 'both', 'web', 'extension'].forEach(function (product) {
+          ['lovable', 'replit', 'bolt', 'vercel', 'none'].forEach(function (hostName) {
+            ['supabase', 'firebase', 'other', 'device'].forEach(function (dataStore) {
+              var ios = product === 'ios' || product === 'both';
+              var android = product === 'android' || product === 'both';
+              CONTEXTS.push({
+                a: { product: product, host: hostName, data: dataStore, money: 'digital', category: 'health' },
+                ios: ios,
+                android: android,
+                web: product === 'web',
+                extension: product === 'extension',
+                store: ios || android,
+                site: product === 'web' || product === 'extension',
+                builderHost: ['lovable', 'bolt', 'replit'].indexOf(hostName) > -1,
+                accounts: true,
+                digital: true,
+                cloud: dataStore !== 'device',
+                tracking: true,
+                ads: true,
+                ai: true,
+                ugc: true,
+                unsure: [],
+                health: true,
+                kids: true,
+                have: {},
+                does: {}
+              });
+            });
+          });
+        });
+
+        function titleOf(it) {
+          if (typeof it.title !== 'function') return it.title;
+          try {
+            return it.title(CONTEXTS[0]);
+          } catch (e) {
+            return it.id;
+          }
+        }
+
+        var byUrl = {};
+        function add(src, task) {
+          if (!src || !src.url) return;
+          var e = byUrl[src.url];
+          if (!e) e = byUrl[src.url] = { src: src, tasks: [] };
+          if (task && e.tasks.indexOf(task) < 0) e.tasks.push(task);
+        }
+        Object.keys(SRC).forEach(function (k) {
+          add(SRC[k], null);
+        });
+        DATA.items.forEach(function (it) {
+          var t = titleOf(it);
+          if (typeof it.sources === 'function') {
+            CONTEXTS.forEach(function (c) {
+              try {
+                (it.sources(c) || []).forEach(function (s) {
+                  add(s, t);
+                });
+              } catch (e) {}
+            });
+          } else {
+            (it.sources || []).forEach(function (s) {
+              add(s, t);
+            });
+          }
+        });
+        RESEARCH.forEach(function (s) {
+          add(s, 'Landing page statistics');
+        });
+
+        var groups = {};
+        Object.keys(byUrl).forEach(function (url) {
+          var e = byUrl[url];
+          var g = groupOf(publisher(e.src));
+          (groups[g] = groups[g] || []).push(e);
+        });
+        var names = ORDER.filter(function (n) {
+          return groups[n];
+        });
+        names.forEach(function (n) {
+          groups[n].sort(function (a, b) {
+            return a.src.label.localeCompare(b.src.label);
+          });
+        });
+
+        var total = Object.keys(byUrl).length;
+        document.getElementById('stats').textContent = total + ' sources · ' + DATA.items.length + ' tasks';
+        document.getElementById('checked').textContent = DATA.checked;
+
+        function slug(n) {
+          return 'pub-' + n.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        }
+
+        document.getElementById('publisher-nav').innerHTML = names
+          .map(function (n) {
+            return '<li><a href="#' + slug(n) + '">' + esc(n) + ' <span class="muted">' + groups[n].length + '</span></a></li>';
+          })
+          .join('');
+
+        document.getElementById('codex').innerHTML = names
+          .map(function (n) {
+            return (
+              '<section class="publisher" id="' + slug(n) + '" aria-labelledby="' + slug(n) + '-h">' +
+              '<h2 id="' + slug(n) + '-h">' + esc(n) + ' <span>' + groups[n].length + '</span></h2>' +
+              '<ul class="entries">' +
+              groups[n]
+                .map(function (e) {
+                  var tasks = e.tasks;
+                  var used = tasks.length
+                    ? 'Used in: ' + tasks.slice(0, 4).map(esc).join('; ') + (tasks.length > 4 ? ' and ' + (tasks.length - 4) + ' more' : '')
+                    : 'Reference';
+                  var text = (n + ' ' + e.src.label + ' ' + e.src.url + ' ' + tasks.join(' ')).toLowerCase();
+                  return (
+                    '<li data-text="' + esc(text) + '">' +
+                    '<a class="entry__link" href="' + esc(e.src.url) + '" target="_blank" rel="noopener">' + esc(e.src.label) +
+                    '<span class="sr-only"> (opens in a new tab)</span></a>' +
+                    '<span class="entry__host">' + esc(host(e.src.url)) + '</span>' +
+                    '<p class="entry__used">' + used + '</p>' +
+                    '</li>'
+                  );
+                })
+                .join('') +
+              '</ul></section>'
+            );
+          })
+          .join('');
+
+        var filter = document.getElementById('filter');
+        function applyFilter() {
+          var q = filter.value.trim().toLowerCase();
+          var shown = 0;
+          Array.prototype.forEach.call(document.querySelectorAll('.entries > li'), function (li) {
+            var hit = !q || li.getAttribute('data-text').indexOf(q) > -1;
+            li.hidden = !hit;
+            if (hit) shown++;
+          });
+          Array.prototype.forEach.call(document.querySelectorAll('.publisher'), function (sec) {
+            sec.hidden = !sec.querySelector('.entries > li:not([hidden])');
+          });
+          document.getElementById('empty').hidden = shown > 0;
+          document.getElementById('result-count').textContent = q ? shown + ' of ' + total + ' sources match' : '';
+        }
+        filter.addEventListener('input', applyFilter);
+      })();
+    </script>
+  </body>
+</html>
