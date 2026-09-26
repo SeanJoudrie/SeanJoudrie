@@ -1,5 +1,5 @@
 // Song Guess
-// Connect Spotify → pick one or more playlists → every song is loaded,
+// Reserves (saved playlists) → pick one or several → their songs are
 // de-duplicated and shuffled → guess each one from a clip that grows
 // 1s, 2s, 4s, 7s, 11s, 16s with every wrong guess or skip.
 
@@ -7,7 +7,7 @@ const STAGES = [1, 2, 4, 7, 11, 16];
 const MAX = STAGES[STAGES.length - 1];
 
 const $ = (id) => document.getElementById(id);
-const SCREENS = ['s-connect', 's-pick', 's-loading', 's-game', 's-reveal', 's-done'];
+const SCREENS = ['s-home', 's-library', 's-game', 's-reveal', 's-done'];
 
 function show(id) {
   for (const s of SCREENS) $(s).hidden = s !== id;
@@ -29,31 +29,175 @@ function shuffle(a) {
   return a;
 }
 
-// ---------- Pick playlists ----------
-
-let me = null;
-let playlists = []; // Spotify's library order: most recently created or saved first
-const picked = new Set();
-
 const NOTE_SVG = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.5" fill="currentColor"/><circle cx="16.5" cy="16" r="2.5" fill="currentColor"/></svg>';
 const CHECK_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-async function openPicker() {
+function coverEl(url) {
+  let el;
+  if (url) {
+    el = document.createElement('img');
+    el.src = url;
+    el.alt = '';
+    el.loading = 'lazy';
+    el.width = el.height = 48;
+  } else {
+    el = document.createElement('span');
+    el.innerHTML = NOTE_SVG;
+  }
+  el.className = 'pl__cover';
+  return el;
+}
+
+function span(cls, text) {
+  const el = document.createElement('span');
+  el.className = cls;
+  el.textContent = text;
+  return el;
+}
+
+// Shown under a reserve that only has part of its songs.
+const PARTIAL_HELP = 'Spotify only shows the first 100 songs to people who don’t own a playlist. To play them all: in Spotify, tap ⋯ on the playlist, then Add to other playlist, then New playlist. Then add that copy from your library.';
+
+function songCount(r) {
+  return r.full ? plural(r.songs.length, 'song', 'songs') : r.songs.length + ' of ' + r.total + ' songs';
+}
+
+// ---------- Reserves (home) ----------
+
+let me = null; // Spotify profile, when signed in
+const busy = new Map(); // reserve or playlist id → progress text while loading
+
+function renderHome() {
+  const list = Reserves.all();
+  $('reserves-count').textContent = list.length ? plural(list.length, 'reserve', 'reserves') : 'Reserves';
+  $('reserves-empty').hidden = list.length > 0;
+  $('storage-note').hidden = !Reserves.memoryOnly;
+  $('select-all-btn').hidden = list.length < 2;
+  const allOn = list.length && list.every((r) => Reserves.isSelected(r.id));
+  $('select-all-btn').textContent = allOn ? 'Clear' : 'Select all';
+
+  const frag = document.createDocumentFragment();
+  for (const r of list) {
+    const li = document.createElement('li');
+    li.className = 'reserve';
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'pl';
+    b.setAttribute('aria-pressed', String(Reserves.isSelected(r.id)));
+    const tick = span('pl__tick', '');
+    tick.innerHTML = CHECK_SVG;
+    b.append(coverEl(r.image), span('pl__name', r.name),
+      span('pl__meta', busy.get(r.id) || songCount(r) + (r.owner ? ' · by ' + r.owner : '')), tick);
+    b.addEventListener('click', () => { Reserves.toggle(r.id); renderHome(); });
+
+    const actions = document.createElement('div');
+    actions.className = 'reserve__actions';
+    const refresh = document.createElement('button');
+    refresh.type = 'button';
+    refresh.className = 'link-btn';
+    refresh.textContent = 'Update songs';
+    refresh.disabled = busy.has(r.id);
+    refresh.addEventListener('click', () => refreshReserve(r));
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'link-btn';
+    remove.textContent = 'Remove';
+    remove.addEventListener('click', () => { Reserves.remove(r.id); renderHome(); });
+    actions.append(refresh, remove);
+
+    li.append(b);
+    if (!r.full) {
+      const d = document.createElement('details');
+      d.className = 'reserve__note';
+      const s = document.createElement('summary');
+      s.textContent = 'How to get all ' + r.total + ' songs';
+      d.append(s, span('', PARTIAL_HELP));
+      li.append(d);
+    }
+    li.append(actions);
+    frag.append(li);
+  }
+  $('reserves').replaceChildren(frag);
+  updateHomeBar();
+}
+
+function updateHomeBar() {
+  const sel = Reserves.selectedList();
+  const songs = dedupe(sel.flatMap((r) => r.songs)).length;
+  $('home-summary').textContent = sel.length
+    ? plural(sel.length, 'playlist', 'playlists') + ' · ' + plural(songs, 'song', 'songs')
+    : Reserves.all().length ? 'Tap reserves to pick what to play' : 'Add a playlist to start';
+  $('play-btn').disabled = !songs;
+}
+
+async function refreshReserve(r) {
   showError('');
-  show('s-pick');
-  if (playlists.length) { renderPlaylists(); return; }
+  busy.set(r.id, 'Updating…');
+  renderHome();
+  try {
+    if (Spotify.isLoggedIn() && !me) me = await Spotify.me();
+    const fresh = await Reserves.refresh(r, me, (n, total) => { busy.set(r.id, 'Updating… ' + n + ' of ' + total); renderHome(); });
+    fresh.addedAt = r.addedAt;
+    Reserves.put(fresh);
+  } catch (e) {
+    showError(e.status ? Spotify.explain(e) : e.message);
+  } finally {
+    busy.delete(r.id);
+    renderHome();
+  }
+}
+
+// Paste a link
+
+async function addLink(text) {
+  showError('');
+  const value = String(text || '').trim();
+  if (!value) { $('link-status').textContent = 'Paste a Spotify playlist link first.'; return; }
+  $('add-btn').disabled = true;
+  $('add-btn').textContent = 'Adding…';
+  $('link-status').textContent = 'Reading the playlist…';
+  try {
+    if (Spotify.isLoggedIn() && !me) me = await Spotify.me().catch(() => null);
+    const r = await Reserves.fromLink(value, me, (n, total) => {
+      $('link-status').textContent = 'Reading the playlist… ' + n + ' of ' + total;
+    });
+    const again = Reserves.has(r.id);
+    Reserves.put(r);
+    $('link').value = '';
+    $('link-status').textContent = (again ? 'Updated ' : 'Added ') + '“' + r.name + '”: ' + songCount(r) + '.';
+    renderHome();
+  } catch (e) {
+    $('link-status').textContent = '';
+    showError(e.status ? Spotify.explain(e) : e.message);
+  } finally {
+    $('add-btn').disabled = false;
+    $('add-btn').textContent = 'Add';
+  }
+}
+
+// ---------- Your Spotify library ----------
+
+let playlists = []; // Spotify's library order: most recently created or saved first
+
+async function openLibrary() {
+  showError('');
+  if (!Spotify.isLoggedIn()) {
+    try { sessionStorage.setItem('sg-after-login', 'library'); } catch {}
+    await Spotify.login();
+    return;
+  }
+  show('s-library');
+  if (playlists.length) { renderLibrary(); return; }
   $('pick-status').textContent = 'Loading your playlists…';
-  me = await Spotify.me();
-  $('who').textContent = 'Connected as ' + (me.display_name || me.id) + '. Tap as many playlists as you like.';
+  if (!me) me = await Spotify.me();
+  $('who').textContent = 'Connected as ' + (me.display_name || me.id) + '. Tap a playlist to add it to your reserves; tap again to take it out.';
   playlists = await Spotify.playlists((n, total) => {
     $('pick-status').textContent = 'Loading your playlists… ' + n + ' of ' + total;
   });
-  renderPlaylists();
+  renderLibrary();
 }
 
-const readable = (pl) => (pl.owner && me && pl.owner.id === me.id) || pl.collaborative;
-
-function renderPlaylists() {
+function renderLibrary() {
   const q = $('search').value.trim().toLowerCase();
   const sort = $('sort').value;
   let list = playlists.filter((pl) => !q || (pl.name || '').toLowerCase().includes(q));
@@ -69,65 +213,49 @@ function renderPlaylists() {
 
   const frag = document.createDocumentFragment();
   for (const pl of list) {
-    const ok = readable(pl);
+    const mine = (pl.owner && me && pl.owner.id === me.id) || pl.collaborative;
+    const total = Spotify.totalOf(pl);
     const li = document.createElement('li');
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'pl';
-    b.disabled = !ok;
-    b.setAttribute('aria-pressed', String(picked.has(pl.id)));
-    const url = Spotify.imageUrl(pl.images, 48);
-    let cover;
-    if (url) {
-      cover = document.createElement('img');
-      cover.src = url;
-      cover.alt = '';
-      cover.loading = 'lazy';
-      cover.width = cover.height = 48;
-    } else {
-      cover = document.createElement('span');
-      cover.innerHTML = NOTE_SVG;
+    b.disabled = busy.has(pl.id);
+    b.setAttribute('aria-pressed', String(Reserves.has(pl.id)));
+    let meta = busy.get(pl.id);
+    if (!meta) {
+      meta = plural(total, 'song', 'songs') + ' · by ' + (pl.owner.display_name || pl.owner.id);
+      if (!mine && total > 100) meta += ' · first 100 only';
+      if (Reserves.has(pl.id)) meta = 'In reserves · ' + meta;
     }
-    cover.className = 'pl__cover';
-    const name = document.createElement('span');
-    name.className = 'pl__name';
-    name.textContent = pl.name;
-    const meta = document.createElement('span');
-    meta.className = 'pl__meta';
-    meta.textContent = plural(Spotify.totalOf(pl), 'song', 'songs') + ' · by ' + (pl.owner.display_name || pl.owner.id) +
-      (ok ? '' : ' · only the owner can load it');
-    const tick = document.createElement('span');
-    tick.className = 'pl__tick';
+    const tick = span('pl__tick', '');
     tick.innerHTML = CHECK_SVG;
-    b.append(cover, name, meta, tick);
-    b.addEventListener('click', () => {
-      if (picked.has(pl.id)) picked.delete(pl.id); else picked.add(pl.id);
-      b.setAttribute('aria-pressed', String(picked.has(pl.id)));
-      updatePickBar();
-    });
+    b.append(coverEl(Spotify.imageUrl(pl.images, 48)), span('pl__name', pl.name), span('pl__meta', meta), tick);
+    b.addEventListener('click', () => toggleFromLibrary(pl));
     li.append(b);
     frag.append(li);
   }
   $('playlists').replaceChildren(frag);
-  updatePickBar();
 }
 
-function pickedPlaylists() {
-  return playlists.filter((pl) => picked.has(pl.id));
+async function toggleFromLibrary(pl) {
+  showError('');
+  if (Reserves.has(pl.id)) { Reserves.remove(pl.id); renderLibrary(); return; }
+  busy.set(pl.id, 'Adding…');
+  renderLibrary();
+  try {
+    const r = await Reserves.fromSpotify(pl, me, (n, total) => { busy.set(pl.id, 'Adding… ' + n + ' of ' + total); renderLibrary(); });
+    Reserves.put(r);
+  } catch (e) {
+    showError(e.status ? Spotify.explain(e) : e.message);
+  } finally {
+    busy.delete(pl.id);
+    renderLibrary();
+  }
 }
 
-function updatePickBar() {
-  const sel = pickedPlaylists();
-  const songs = sel.reduce((n, pl) => n + Spotify.totalOf(pl), 0);
-  $('pick-summary').textContent = sel.length
-    ? plural(sel.length, 'playlist', 'playlists') + ' · ' + plural(songs, 'song', 'songs')
-    : 'Tap playlists to add them';
-  $('play-btn').disabled = !sel.length;
-}
+// ---------- Start a game ----------
 
-// ---------- Load songs ----------
-
-let pool = []; // every unique song from the picked playlists (also the guess list)
+let pool = []; // every unique song in the picked reserves (also the guess list)
 let queue = []; // shuffled songs still to play
 let loadNote = '';
 
@@ -142,27 +270,11 @@ function dedupe(songs) {
   return [...byKey.values()];
 }
 
-async function loadSongs() {
-  showError('');
-  show('s-loading');
-  const sel = pickedPlaylists();
-  const all = [];
-  let skipped = 0;
-  for (let i = 0; i < sel.length; i++) {
-    const label = sel.length > 1 ? 'Playlist ' + (i + 1) + ' of ' + sel.length + ': ' : '';
-    $('loading-text').textContent = label + '0 / ' + Spotify.totalOf(sel[i]);
-    const res = await Spotify.songs(sel[i], (n, total) => {
-      $('loading-text').textContent = label + n + ' / ' + total;
-    });
-    all.push(...res.songs);
-    skipped += res.skipped;
-  }
+function playSelected() {
+  const all = Reserves.selectedList().flatMap((r) => r.songs);
   pool = dedupe(all);
   const dupes = all.length - pool.length;
-  loadNote = [
-    dupes ? plural(dupes, 'repeat', 'repeats') + ' removed' : '',
-    skipped ? plural(skipped, 'local file or unavailable item', 'local files or unavailable items') + ' left out' : '',
-  ].filter(Boolean).join(' · ');
+  loadNote = dupes ? plural(dupes, 'repeat', 'repeats') + ' removed' : '';
   startGame();
 }
 
@@ -422,9 +534,11 @@ function reveal(won) {
   $('reveal-result').className = 'verdict ' + (won ? 'verdict--pass' : 'verdict--fail');
   $('reveal-title').textContent = Text.clean(s.title);
   $('reveal-artist').textContent = s.artists.join(', ');
-  $('reveal-cover').hidden = !s.cover;
-  if (s.cover) $('reveal-cover').src = s.cover;
-  $('reveal-spotify').href = s.url;
+  // Songs read from a public link have no cover; Deezer's album art stands in.
+  const cover = s.cover || game.clip.cover;
+  $('reveal-cover').hidden = !cover;
+  if (cover) $('reveal-cover').src = cover;
+  $('reveal-spotify').href = s.url || 'https://open.spotify.com/track/' + s.id;
   $('reveal-deezer').href = game.clip.link;
   // Say so when the clip is another recording, like a live version.
   const other = Text.norm(game.clip.title) !== Text.norm(Text.clean(s.title)) &&
@@ -464,42 +578,57 @@ function finish() {
 // ---------- Wiring ----------
 
 function fail(e) {
-  showError(Spotify.explain(e));
-  if (e.status === 401) { Spotify.logout(); show('s-connect'); }
+  showError(e.status ? Spotify.explain(e) : e.message);
+  if (e.status === 401) { Spotify.logout(); me = null; playlists = []; backHome(); }
 }
 
-$('connect-btn').addEventListener('click', () => {
-  $('connect-btn').disabled = true;
-  $('connect-btn').textContent = 'Opening Spotify…';
-  Spotify.login().catch((e) => {
-    $('connect-btn').disabled = false;
-    $('connect-btn').textContent = 'Connect Spotify';
-    showError(e.message);
-  });
+function backHome() {
+  stopAudio();
+  game.song = null;
+  show('s-home');
+  renderHome();
+}
+
+$('link-form').addEventListener('submit', (e) => { e.preventDefault(); addLink($('link').value); });
+$('paste-btn').addEventListener('click', async () => {
+  try {
+    const text = await navigator.clipboard.readText();
+    $('link').value = text;
+    addLink(text);
+  } catch {
+    // No clipboard access (or it was refused): paste into the box instead.
+    $('link').focus();
+    $('link-status').textContent = 'Couldn’t read the clipboard. Long-press the box and tap Paste.';
+  }
 });
+$('library-btn').addEventListener('click', () => openLibrary().catch(fail));
+$('select-all-btn').addEventListener('click', () => {
+  const list = Reserves.all();
+  Reserves.selectAll(!list.every((r) => Reserves.isSelected(r.id)));
+  renderHome();
+});
+$('play-btn').addEventListener('click', playSelected);
+$('done-btn').addEventListener('click', backHome);
 $('logout-btn').addEventListener('click', () => {
   Spotify.logout();
+  me = null;
   playlists = [];
-  picked.clear();
-  $('connect-btn').disabled = false;
-  $('connect-btn').textContent = 'Connect Spotify';
-  show('s-connect');
+  backHome();
 });
-$('search').addEventListener('input', renderPlaylists);
-$('sort').addEventListener('change', renderPlaylists);
-$('play-btn').addEventListener('click', () => loadSongs().catch((e) => { show('s-pick'); fail(e); }));
-for (const id of ['change-btn', 'done-change-btn']) {
-  $(id).addEventListener('click', () => { stopAudio(); openPicker().catch(fail); });
-}
+$('search').addEventListener('input', renderLibrary);
+$('sort').addEventListener('change', renderLibrary);
+for (const id of ['change-btn', 'done-change-btn']) $(id).addEventListener('click', backHome);
 $('again-btn').addEventListener('click', startGame);
 
 (async function start() {
+  let after = null;
+  try { after = sessionStorage.getItem('sg-after-login'); sessionStorage.removeItem('sg-after-login'); } catch {}
   try {
-    await Spotify.handleRedirect();
-    if (Spotify.isLoggedIn()) await openPicker();
-    else show('s-connect');
+    const justLoggedIn = await Spotify.handleRedirect();
+    if (justLoggedIn && after === 'library') await openLibrary();
+    else backHome();
   } catch (e) {
-    show('s-connect');
+    backHome();
     fail(e);
   }
 })();

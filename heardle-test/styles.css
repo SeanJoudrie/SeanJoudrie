@@ -80,7 +80,7 @@ main { padding-top: var(--s-8); }
 
 .screen { display: grid; gap: var(--s-4); }
 /* Room for the fixed Play bar on the playlist screen, so the footer isn't under it. */
-body:has(#s-pick:not([hidden])) { padding-bottom: var(--s-24); }
+body:has(#s-home:not([hidden])) { padding-bottom: var(--s-24); }
 
 h1, h2, p { margin: 0; }
 h1 { font-size: var(--t-h1); line-height: 1.2; }
@@ -197,6 +197,26 @@ h2 { font-size: var(--t-h2); line-height: 1.3; }
   color: transparent;
 }
 .pl[aria-pressed="true"] .pl__tick { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+
+.reserve { display: grid; gap: var(--s-1); }
+.reserve__note { font-size: var(--t-sm); color: var(--muted); padding: 0 var(--s-3); }
+.reserve__note summary { min-height: var(--s-8); display: flex; align-items: center; cursor: pointer; font-weight: 600; }
+.reserve__note summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.reserve__actions { display: flex; gap: var(--s-4); padding: 0 var(--s-3); }
+.link-btn {
+  min-height: var(--s-8);
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font: 600 var(--t-sm) / 1 var(--font);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.link-btn:hover:not(:disabled) { color: var(--ink); }
+.link-btn:disabled { opacity: 0.6; cursor: default; }
+.link-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
 /* Fixed bar with the Play button */
 .bar {
