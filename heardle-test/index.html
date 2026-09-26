@@ -40,6 +40,22 @@
           <button id="logout-btn" class="btn btn--quiet" type="button">Disconnect</button>
         </div>
         <p id="who" class="muted"></p>
+        <div class="controls">
+          <label class="field">
+            <span class="field__label">Search</span>
+            <input id="search" type="search" placeholder="Playlist name" autocomplete="off" enterkeyhint="search" />
+          </label>
+          <label class="field">
+            <span class="field__label">Sort</span>
+            <select id="sort">
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="az">A to Z</option>
+              <option value="most">Most songs</option>
+              <option value="fewest">Fewest songs</option>
+            </select>
+          </label>
+        </div>
         <p id="pick-status" class="status" role="status"></p>
         <ul id="playlists" class="list"></ul>
       </section>
