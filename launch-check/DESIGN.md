@@ -407,7 +407,17 @@ Use `playwright-cli` (`npm i -g @playwright/cli@latest`) in the build loop:
   - A phase that's just been finished flips to CLEAR on split-flap letters.
   - Progress bars on the map and projects screens fill in when you open them.
   - Long checklists only render what's near the screen, and full-height screens use `100dvh`.
-- **Step two limitation:** the checking statuses say CHECKED, not CLEAR or GAP, because the checks don't
+- **Step five:**
+  - The checking screen says what it found: each check covers a set of checklist tasks and ends
+    CLEAR (none of its must-fix tasks are open) or "N gaps" in red.
+  - Design pass:
+    - one border family (the 3px borders are now 2px)
+    - text sizes moved onto the ramp: 12→13, 14→15, 16→15 for small print and 17 for reading text, and
+      18/19/22→20
+    - the header never wraps on small phones
+  - A separate results skeleton was **not** built. Checking takes about two seconds and the check list
+    itself is the loading state, so a second placeholder would only repeat it.
+- **Step two limitation (fixed in step five):** the checking statuses say CHECKED, not CLEAR or GAP, because the checks don't
   yet report which area produced a gap. Wire that up before promising CLEAR/GAP.
 
 ## Known gaps (what the current code still does differently)
@@ -415,8 +425,8 @@ Use `playwright-cli` (`npm i -g @playwright/cli@latest`) in the build loop:
 Found in the September 2026 review; fix them during the overhaul.
 
 - **Radius:** README said 10px; `styles.css` uses 8px. 8px is correct.
-- **Borders:** 1, 2 and 3px borders are mixed. Move to the three roles above; 3px goes.
-- **Type:** about 25 font sizes are in use. Map them onto the eight roles.
+- **Type:** body and small text are on the ramp; display headings still use a few responsive sizes
+  (28-96px) that should be folded into display-xl/display-lg.
 - **Labels:** chained "·" separators remain in some meta lines.
 - **Loading:** the checking sequence still uses a fixed per-item timer in `app.js`, and there's no
   results skeleton yet.

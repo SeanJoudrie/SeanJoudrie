@@ -178,7 +178,7 @@ h2 {
 }
 
 h3 {
-  font-size: 18px;
+  font-size: 20px;
   line-height: 24px;
   font-weight: 700;
 }
@@ -216,14 +216,14 @@ code {
 
 .muted {
   color: var(--muted);
-  font-size: 16px;
+  font-size: 15px;
   line-height: 24px;
 }
 
 .lead {
   margin-top: var(--s-3);
   color: var(--muted);
-  font-size: 18px;
+  font-size: 20px;
   line-height: 28px;
 }
 
@@ -338,7 +338,7 @@ code {
   min-height: var(--tap);
   font-weight: 800;
   font-stretch: 80%;
-  font-size: 19px;
+  font-size: 20px;
   letter-spacing: 0.01em;
   text-transform: uppercase;
   text-decoration: none;
@@ -377,7 +377,7 @@ code {
   min-height: 44px;
   padding: 0 var(--s-3);
   font-weight: 600;
-  font-size: 16px;
+  font-size: 15px;
   text-decoration: none;
   border-radius: var(--radius);
 }
@@ -472,13 +472,13 @@ code {
 .button--large {
   min-height: 56px;
   padding: 0 var(--s-6);
-  font-size: 19px;
+  font-size: 20px;
 }
 
 .button--small {
   min-height: 44px;
   padding: 0 var(--s-4);
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .button[disabled] {
@@ -535,7 +535,7 @@ code {
   margin-top: var(--s-5);
   max-width: 34em;
   color: var(--night-muted);
-  font-size: 19px;
+  font-size: 20px;
   line-height: 28px;
 }
 
@@ -549,7 +549,7 @@ code {
 
 .hero__note {
   color: var(--night-muted);
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .board {
@@ -586,7 +586,7 @@ code {
   padding: 2px var(--s-2);
   border-radius: var(--radius);
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 20px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -705,7 +705,7 @@ code {
 .list--tight {
   margin-top: var(--s-2);
   gap: var(--s-2);
-  font-size: 16px;
+  font-size: 17px;
   line-height: 24px;
 }
 
@@ -731,7 +731,7 @@ form {
 .hint {
   margin-top: var(--s-2);
   color: var(--muted);
-  font-size: 16px;
+  font-size: 15px;
   line-height: 24px;
 }
 
@@ -743,7 +743,7 @@ form {
 .error {
   margin-top: var(--s-2);
   color: var(--alert);
-  font-size: 16px;
+  font-size: 15px;
   line-height: 24px;
   font-weight: 700;
 }
@@ -785,7 +785,7 @@ textarea.mono {
   font-family: var(--mono);
   text-transform: none;
   letter-spacing: 0;
-  font-size: 16px;
+  font-size: 17px;
   line-height: 24px;
 }
 
@@ -824,7 +824,7 @@ textarea:disabled {
   min-height: 44px;
   padding-top: var(--s-2);
   padding-bottom: var(--s-2);
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .choice {
@@ -878,7 +878,7 @@ textarea:disabled {
 
 .choice__hint {
   color: var(--muted);
-  font-size: 16px;
+  font-size: 15px;
   line-height: 24px;
 }
 
@@ -887,7 +887,7 @@ input[type="checkbox"] {
   flex: none;
   width: 20px;
   height: 20px;
-  margin: 3px 0 0;
+  margin: 4px 0 0;
   accent-color: var(--ink);
   cursor: pointer;
 }
@@ -937,7 +937,7 @@ input[type="checkbox"] {
   color: var(--bg);
   font-family: var(--mono);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .flow-steps__title {
@@ -985,7 +985,7 @@ input[type="checkbox"] {
   padding: var(--s-4);
   white-space: pre-wrap;
   font-family: var(--mono);
-  font-size: 14px;
+  font-size: 15px;
   line-height: 20px;
 }
 
@@ -1006,7 +1006,7 @@ input[type="checkbox"] {
   display: flex;
   align-items: center;
   gap: var(--s-2);
-  font-size: 22px;
+  font-size: 20px;
   line-height: 28px;
 }
 
@@ -1042,7 +1042,7 @@ input[type="checkbox"] {
   border: 2px solid var(--line);
   border-left: 4px solid var(--signal);
   border-radius: var(--radius);
-  font-size: 16px;
+  font-size: 15px;
   line-height: 24px;
 }
 
@@ -1114,7 +1114,7 @@ fieldset.field {
 .checking .state {
   margin-left: auto;
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--muted);
@@ -1125,7 +1125,7 @@ fieldset.field {
   width: 20px;
   height: 20px;
   flex: none;
-  border: 3px solid var(--line);
+  border: 2px solid var(--line);
   border-top-color: var(--signal);
   border-radius: 50%;
   animation: spin 700ms linear infinite;
@@ -1188,7 +1188,7 @@ fieldset.field {
 .report__basis {
   margin-top: var(--s-2);
   color: var(--night-muted);
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .report__basis a {
@@ -1280,7 +1280,7 @@ fieldset.field {
 }
 
 .gap__title {
-  font-size: 18px;
+  font-size: 20px;
   line-height: 24px;
   font-weight: 700;
 }
@@ -1303,7 +1303,7 @@ fieldset.field {
 .gaps-more {
   margin-top: var(--s-3);
   color: var(--muted);
-  font-size: 16px;
+  font-size: 15px;
 }
 
 /* ---------- Cost ---------- */
@@ -1325,7 +1325,7 @@ fieldset.field {
 .cost {
   width: 100%;
   border-collapse: collapse;
-  font-size: 16px;
+  font-size: 17px;
   line-height: 24px;
 }
 
@@ -1340,7 +1340,7 @@ fieldset.field {
 .cost thead th {
   border-top: 0;
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--muted);
@@ -1396,7 +1396,7 @@ fieldset.field {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   text-decoration: none;
 }
@@ -1499,7 +1499,7 @@ fieldset.field {
 
 .task__meta {
   color: var(--muted);
-  font-size: 14px;
+  font-size: 15px;
   line-height: 20px;
 }
 
@@ -1517,7 +1517,7 @@ fieldset.field {
 .phase__count {
   color: var(--muted);
   font-family: var(--font);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   font-stretch: 100%;
   text-transform: none;
@@ -1710,7 +1710,7 @@ body.is-focus .site-footer {
 .card__why {
   margin-top: var(--s-3);
   color: var(--muted);
-  font-size: 18px;
+  font-size: 20px;
   line-height: 28px;
 }
 
@@ -1834,10 +1834,10 @@ body.is-focus .site-footer {
 .cleared__stamp {
   display: inline-block;
   padding: var(--s-1) var(--s-4);
-  border: 3px solid var(--go);
+  border: 2px solid var(--go);
   border-radius: var(--radius);
   color: var(--go);
-  font-size: 22px;
+  font-size: 20px;
   line-height: 32px;
   font-weight: 700;
   transform: rotate(-4deg);
@@ -2033,7 +2033,7 @@ body.is-focus .site-footer {
 
 .branch__note {
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 16px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -2091,7 +2091,7 @@ body.is-focus .site-footer {
 }
 
 .node__meta {
-  font-size: 14px;
+  font-size: 15px;
   line-height: 20px;
   color: var(--muted);
 }
@@ -2175,7 +2175,7 @@ body.is-focus .site-footer {
 }
 
 .account__row p {
-  font-size: 16px;
+  font-size: 15px;
   line-height: 24px;
 }
 
@@ -2222,7 +2222,7 @@ body.is-focus .site-footer {
 }
 
 .project__name {
-  font-size: 22px;
+  font-size: 20px;
   line-height: 28px;
   font-weight: 800;
   font-stretch: 80%;
@@ -2266,7 +2266,7 @@ body.is-focus .site-footer {
 
 @media (max-width: 599px) {
   body {
-    font-size: 16px;
+    font-size: 15px;
     line-height: 24px;
   }
 
@@ -2359,12 +2359,12 @@ body.is-focus .site-footer {
   }
 
   .card__why {
-    font-size: 16px;
+    font-size: 15px;
     line-height: 24px;
   }
 
   .step {
-    font-size: 16px;
+    font-size: 15px;
     line-height: 24px;
   }
 
@@ -2592,6 +2592,10 @@ body.is-focus .site-footer {
 .checking li[data-state="done"] .state {
   color: var(--go);
 }
+.checking li[data-result="gap"] .state,
+.checking li[data-result="gap"] .icon {
+  color: var(--alert);
+}
 
 /* Readiness gauge (results header). */
 .gauge {
@@ -2748,7 +2752,7 @@ body.is-focus .site-footer {
   background: var(--alert-bg);
   color: var(--alert);
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 20px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -2852,6 +2856,12 @@ body.is-focus .site-footer {
 .phase {
   content-visibility: auto;
   contain-intrinsic-size: auto 640px;
+}
+
+/* The header never wraps, even on a 320px phone. */
+.site-header a,
+.site-nav__link {
+  white-space: nowrap;
 }
 
 /* ---------- Motion ---------- */

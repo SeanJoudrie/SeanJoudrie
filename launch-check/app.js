@@ -217,6 +217,7 @@
   }
 
   var CHECK_ICON = icon('<path d="M4.75 10.5l3.5 3.5 7-8" />');
+  var GAP_ICON = icon('<path d="M10 4.5v7" /><path d="M10 15.25v.25" />');
   var CHEVRON = icon('<path d="M5.25 8.25L10 13l4.75-4.75" />');
   var ARROW = icon('<path d="M8.25 5.25L13 10l-4.75 4.75" />');
   var EXTERNAL = icon('<path d="M8.75 4.75h-4v10.5h10.5v-4M11.25 4.75h4v4M15 5l-6 6" />');
@@ -935,6 +936,30 @@
     return list;
   }
 
+  // Which checklist tasks each check covers, so a check can say GAP (a must-fix
+  // task in that area is still open) or CLEAR (none are). Matched on task ids and phases.
+  var CHECK_AREAS = {
+    'App Store requirements': /^(apple-|asc-|ios-|testflight|privacy-manifest|upload-build-ios|sign-in-with-apple|tracking-permission)/,
+    'Google Play requirements': /^(play-|android-|closed-test)/,
+    'What every public site needs': /^(website|https|web-speed|accessibility|cookie-consent|ai-disclosure-web|support-email)$/,
+    'Where your data lives and who can read it': 'phase:secure',
+    'Privacy policy and terms': /^(privacy-policy|terms)$/,
+    'Sign-up, login and account deletion': /^(account-deletion|sign-in-with-apple|two-factor|auth-redirects)$/,
+    'Payments and subscriptions': /^(apple-iap|play-billing|before-charging|subscription-screen|cancel-easily|decide-money)$/,
+    'Sending data to AI services': /^(ai-consent|ai-disclosure-web|ai-label|ai-claims)$/,
+    'Extra rules for health and wellness apps': /^(health-|healthkit|medical-device|crisis-safety)/,
+    'Extra rules for finance apps': /^(regulated-entity|encryption-breach)$/,
+    'Extra rules for apps used by children': 'phase:kids'
+  };
+  function gapsIn(label, plan) {
+    var area = CHECK_AREAS[label];
+    if (!area) return 0;
+    return plan.gaps.filter(function (g) {
+      if (isDone(g)) return false;
+      return typeof area === 'string' ? 'phase:' + g.phase === area : area.test(g.id);
+    }).length;
+  }
+
   function enterAnalyzing() {
     var c = context();
     var catName = categoryEl.querySelector('option[value="' + c.a.category + '"]');
@@ -943,6 +968,7 @@
       (catName ? catName.textContent.toLowerCase() : 'your topic') + '.';
 
     var checks = checksFor(c);
+    var planNow = buildPlan();
     var listEl = $('#checking-list');
     listEl.innerHTML = checks
       .map(function (label) {
@@ -970,14 +996,17 @@
         if (M) M.flipTo(label, 'Checking…');
         else label.textContent = 'Checking…';
       } else if (s === 'done') {
-        marker.outerHTML = CHECK_ICON;
-        if (M) M.flipTo(label, 'Checked');
-        else label.textContent = 'Checked';
+        var n = gapsIn(text, planNow);
+        li.setAttribute('data-result', n ? 'gap' : 'clear');
+        marker.outerHTML = n ? GAP_ICON : CHECK_ICON;
+        var word = n ? (n === 1 ? '1 gap' : n + ' gaps') : 'Clear';
+        if (M) M.flipTo(label, word);
+        else label.textContent = word;
       }
     }
 
     function next() {
-      if (i > 0) mark(items[i - 1], 'done');
+      if (i > 0) mark(items[i - 1], 'done', checks[i - 1]);
       if (i >= items.length) {
         status.textContent = 'All checks done. Showing your plan.';
         analyzeTimer = setTimeout(function () {
