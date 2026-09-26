@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Song Guess</title>
-    <meta name="description" content="Guess songs from your own Spotify playlists, one second at a time. Combine playlists, shuffle, and name the song from a 1-second clip." />
+    <meta name="description" content="Guess songs from Spotify playlists, yours or anyone’s public ones, one second at a time. Save playlists, mix them, and name each song from a 1-second clip." />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Song Guess" />
-    <meta property="og:title" content="Name the song from your own playlists" />
-    <meta property="og:description" content="Combine your Spotify playlists, shuffle, and guess each song from a 1-second clip." />
+    <meta property="og:title" content="Name the song from your playlists" />
+    <meta property="og:description" content="Save Spotify playlists, mix them, and guess each song from a 1-second clip." />
     <meta property="og:url" content="https://seanjoudrie.github.io/SeanJoudrie/heardle-test/" />
     <meta property="og:image" content="https://seanjoudrie.github.io/SeanJoudrie/heardle-test/og.png" />
     <meta property="og:image:width" content="1200" />
@@ -22,22 +22,50 @@
   </head>
   <body>
     <main id="main" class="container">
-      <!-- Connect -->
-      <section id="s-connect" class="screen" hidden>
-        <p class="eyebrow">Early test version</p>
-        <h1>Name the song from your own playlists</h1>
-        <p class="lede">Pick one or more of your Spotify playlists, shuffle, and guess each song from a 1-second clip. Every wrong guess or skip plays a little more.</p>
+      <!-- Reserves: the playlists saved to play with -->
+      <section id="s-home" class="screen" hidden>
+        <p class="eyebrow">Song Guess · early test</p>
+        <h1>Your reserves</h1>
+        <p class="lede">Save playlists here, yours or anyone’s public ones, then play one or mix several. Each song starts as a 1-second clip.</p>
+
         <div class="card">
-          <button id="connect-btn" class="btn btn--primary btn--block" type="button">Connect Spotify</button>
-          <p class="muted">Spotify will ask you to agree. We only read your playlists; nothing is changed or saved.</p>
+          <h2>Add a playlist</h2>
+          <form id="link-form" class="stack" autocomplete="off" novalidate>
+            <label class="field">
+              <span class="field__label">Spotify playlist link</span>
+              <input id="link" type="url" inputmode="url" placeholder="https://open.spotify.com/playlist/…" enterkeyhint="go" autocapitalize="off" spellcheck="false" />
+            </label>
+            <div class="guess__actions">
+              <button id="paste-btn" class="btn btn--quiet btn--grow" type="button">Paste link</button>
+              <button id="add-btn" class="btn btn--primary btn--grow" type="submit">Add</button>
+            </div>
+          </form>
+          <p class="muted">In Spotify: tap ⋯ on any public playlist, then Share, then Copy link.</p>
+          <p id="link-status" class="status" role="status"></p>
+          <button id="library-btn" class="btn btn--quiet btn--block" type="button">Add from your Spotify library</button>
+        </div>
+
+        <div class="row">
+          <h2 id="reserves-count">Reserves</h2>
+          <button id="select-all-btn" class="btn btn--quiet" type="button">Select all</button>
+        </div>
+        <p id="reserves-empty" class="muted">No reserves yet. Paste a playlist link or add from your Spotify library.</p>
+        <p id="storage-note" class="muted" hidden>This browser won’t let the page save, so your reserves last until you close this tab.</p>
+        <ul id="reserves" class="list"></ul>
+
+        <div class="bar">
+          <div class="container bar__inner">
+            <p id="home-summary" class="bar__text">Tap reserves to pick what to play</p>
+            <button id="play-btn" class="btn btn--primary" type="button" disabled>Play</button>
+          </div>
         </div>
       </section>
 
-      <!-- Pick playlists -->
-      <section id="s-pick" class="screen" hidden>
+      <!-- Your Spotify library -->
+      <section id="s-library" class="screen" hidden>
         <div class="row">
-          <h1 class="h1--small">Pick playlists</h1>
-          <button id="logout-btn" class="btn btn--quiet" type="button">Disconnect</button>
+          <h1 class="h1--small">Your Spotify library</h1>
+          <button id="done-btn" class="btn btn--primary" type="button">Done</button>
         </div>
         <p id="who" class="muted"></p>
         <div class="controls">
@@ -58,26 +86,14 @@
         </div>
         <p id="pick-status" class="status" role="status"></p>
         <ul id="playlists" class="list"></ul>
-        <div class="bar">
-          <div class="container bar__inner">
-            <p id="pick-summary" class="bar__text">Tap playlists to add them</p>
-            <button id="play-btn" class="btn btn--primary" type="button" disabled>Play</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Loading songs -->
-      <section id="s-loading" class="screen" hidden>
-        <h1 class="h1--small">Getting your songs</h1>
-        <p id="loading-text" class="count count--small" role="status" aria-live="polite"></p>
-        <p class="muted">Every song in every playlist you picked, not just the first 100.</p>
+        <button id="logout-btn" class="btn btn--quiet" type="button">Disconnect Spotify</button>
       </section>
 
       <!-- Guessing -->
       <section id="s-game" class="screen" hidden>
         <div class="row">
           <p id="game-meta" class="muted"></p>
-          <button id="change-btn" class="btn btn--quiet" type="button">Change playlists</button>
+          <button id="change-btn" class="btn btn--quiet" type="button">Reserves</button>
         </div>
 
         <div class="card">
@@ -131,7 +147,7 @@
         <p id="done-detail" class="muted"></p>
         <div class="stack">
           <button id="again-btn" class="btn btn--primary btn--block" type="button">Shuffle and play again</button>
-          <button id="done-change-btn" class="btn btn--quiet btn--block" type="button">Change playlists</button>
+          <button id="done-change-btn" class="btn btn--quiet btn--block" type="button">Back to reserves</button>
         </div>
       </section>
 
@@ -144,6 +160,7 @@
 
     <script src="spotify.js?v=dev"></script>
     <script src="clips.js?v=dev"></script>
+    <script src="reserves.js?v=dev"></script>
     <script src="app.js?v=dev"></script>
   </body>
 </html>

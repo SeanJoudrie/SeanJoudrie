@@ -100,7 +100,7 @@ const Clips = (() => {
     };
     ok.sort((a, b) => score(a) - score(b));
     const r = ok[0];
-    return { preview: r.preview, link: r.link, title: r.title };
+    return { preview: r.preview, link: r.link, title: r.title, cover: (r.album && (r.album.cover_medium || r.album.cover)) || null };
   }
 
   // Deezer's clip links expire after about 15 minutes, so a found clip is
