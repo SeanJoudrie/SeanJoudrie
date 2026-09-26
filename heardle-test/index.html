@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Playlist Load Test</title>
+    <meta name="description" content="Test page for a song-guessing game: connect Spotify, pick one of your playlists and check that every song loads, not just the first 100." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Playlist Load Test" />
+    <meta property="og:title" content="Does the whole playlist load?" />
+    <meta property="og:description" content="Connect Spotify, pick a playlist, and see every song counted." />
+    <meta property="og:url" content="https://seanjoudrie.github.io/SeanJoudrie/heardle-test/" />
+    <meta property="og:image" content="https://seanjoudrie.github.io/SeanJoudrie/heardle-test/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Playlist Load Test: 155 of 155 songs loaded." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#0b0e12" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css?v=dev" />
+  </head>
+  <body>
+    <main id="main" class="container">
+      <p class="eyebrow">Test page</p>
+      <h1>Does the whole playlist load?</h1>
+      <p class="lede">Before we build the song-guessing game, this checks that every song in your playlist comes through, not just the first 100.</p>
+
+      <!-- Step 1: not connected -->
+      <section id="connect" class="card" hidden>
+        <h2>1. Connect Spotify</h2>
+        <p>Spotify will ask you to agree. We only read your playlists; nothing is changed or saved.</p>
+        <button id="connect-btn" class="btn btn--primary" type="button">Connect Spotify</button>
+      </section>
+
+      <!-- Step 2: pick a playlist -->
+      <section id="pick" class="card" hidden>
+        <div class="row">
+          <h2>2. Tap a playlist</h2>
+          <button id="logout-btn" class="btn btn--quiet" type="button">Disconnect</button>
+        </div>
+        <p id="who" class="muted"></p>
+        <p id="pick-status" class="status" role="status"></p>
+        <ul id="playlists" class="list"></ul>
+      </section>
+
+      <!-- Step 3: result -->
+      <section id="result" class="card" hidden>
+        <button id="back-btn" class="btn btn--quiet" type="button">Back to playlists</button>
+        <h2 id="result-name"></h2>
+        <p id="result-count" class="count" role="status" aria-live="polite"></p>
+        <p id="result-verdict" class="verdict"></p>
+        <p id="result-breakdown" class="muted"></p>
+        <ol id="songs" class="songs"></ol>
+      </section>
+
+      <p id="error" class="error" role="alert" hidden></p>
+    </main>
+
+    <footer class="container footer">
+      <p>A test for a song-guessing game by Sean Joudrie. Uses the Spotify Web API; not made or endorsed by Spotify.</p>
+    </footer>
+
+    <script src="app.js?v=dev"></script>
+  </body>
+</html>
