@@ -4,39 +4,73 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Song Guess</title>
-    <meta name="description" content="Guess songs from Spotify playlists, yours or anyone’s public ones, one second at a time. Save playlists, mix them, and name each song from a 1-second clip." />
+    <meta name="description" content="Name the song from one second of it. Save Spotify playlists, yours or anyone’s public ones, mix them, and guess each song as the clip grows from 1 to 16 seconds." />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Song Guess" />
-    <meta property="og:title" content="Name the song from your playlists" />
-    <meta property="og:description" content="Save Spotify playlists, mix them, and guess each song from a 1-second clip." />
+    <meta property="og:title" content="Song Guess: name the song from one second" />
+    <meta property="og:description" content="Save Spotify playlists, mix them, and guess each song as the clip grows from 1 to 16 seconds." />
     <meta property="og:url" content="https://seanjoudrie.github.io/SeanJoudrie/heardle-test/" />
     <meta property="og:image" content="https://seanjoudrie.github.io/SeanJoudrie/heardle-test/og.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Song Guess: name the song from your own playlists. Clip lengths 1s, 2s, 4s, 7s, 11s, 16s." />
+    <meta property="og:image:alt" content="Song Guess wordmark with six amber bars rising at 1, 2, 4, 7, 11 and 16 seconds on warm paper." />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="robots" content="noindex" />
-    <meta name="theme-color" content="#0b0e12" />
+    <meta name="theme-color" content="#f5f4f0" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e0f12" media="(prefers-color-scheme: dark)" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Fonts load without blocking the first paint; system fonts show until they arrive. -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;600&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet" /></noscript>
     <link rel="stylesheet" href="styles.css?v=dev" />
   </head>
   <body>
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a class="wordmark" href="./" aria-label="Song Guess, home">
+          <!-- The mark: six bars at the six clip lengths, 1 2 4 7 11 16. -->
+          <svg class="wordmark__mark" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+            <rect width="24" height="24" rx="5" fill="var(--ink)" />
+            <g fill="var(--accent)">
+              <rect x="3.5" y="17.5" width="2" height="1.5" />
+              <rect x="6.5" y="16.75" width="2" height="2.25" />
+              <rect x="9.5" y="15.25" width="2" height="3.75" />
+              <rect x="12.5" y="13" width="2" height="6" />
+              <rect x="15.5" y="10" width="2" height="9" />
+              <rect x="18.5" y="5" width="2" height="14" />
+            </g>
+          </svg>
+          <span class="wordmark__text">Song Guess</span>
+        </a>
+        <button id="sound-btn" class="icon-btn" type="button" aria-pressed="true">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path class="icon__on" d="M15.54 8.46a5 5 0 0 1 0 7.07" /><path class="icon__on" d="M19.07 4.93a10 10 0 0 1 0 14.14" /><path class="icon__off" d="M22 9l-6 6M16 9l6 6" /></svg>
+          <span id="sound-label">Sound on</span>
+        </button>
+      </div>
+    </header>
+
     <main id="main" class="container">
       <!-- Reserves: the playlists saved to play with -->
       <section id="s-home" class="screen" hidden>
-        <p class="eyebrow">Song Guess · early test</p>
-        <h1>Your reserves</h1>
-        <p class="lede">Save playlists here, yours or anyone’s public ones, then play one or mix several. Each song starts as a 1-second clip.</p>
+        <p class="eyebrow">Early test</p>
+        <h1>Name the song from one second of it</h1>
+        <p class="lede">Save playlists, yours or anyone’s public ones, then play one or mix several. Every wrong guess or skip plays a little more: 1, 2, 4, 7, 11, then 16 seconds.</p>
 
-        <div class="card">
+        <div class="card stack">
           <h2>Add a playlist</h2>
           <form id="link-form" class="stack" autocomplete="off" novalidate>
             <label class="field">
               <span class="field__label">Spotify playlist link</span>
               <input id="link" type="url" inputmode="url" placeholder="https://open.spotify.com/playlist/…" enterkeyhint="go" autocapitalize="off" spellcheck="false" />
             </label>
-            <div class="guess__actions">
-              <button id="paste-btn" class="btn btn--quiet btn--grow" type="button">Paste link</button>
+            <div class="actions">
+              <button id="paste-btn" class="btn btn--quiet btn--grow" type="button">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" /><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /></svg>
+                Paste
+              </button>
               <button id="add-btn" class="btn btn--primary btn--grow" type="submit">Add</button>
             </div>
           </form>
@@ -46,8 +80,8 @@
         </div>
 
         <div class="row">
-          <h2 id="reserves-count">Reserves</h2>
-          <button id="select-all-btn" class="btn btn--quiet" type="button">Select all</button>
+          <h2 id="reserves-count" class="label">Reserves</h2>
+          <button id="select-all-btn" class="btn btn--quiet btn--small" type="button">Select all</button>
         </div>
         <p id="reserves-empty" class="muted">No reserves yet. Paste a playlist link or add from your Spotify library.</p>
         <p id="storage-note" class="muted" hidden>This browser won’t let the page save, so your reserves last until you close this tab.</p>
@@ -86,25 +120,35 @@
         </div>
         <p id="pick-status" class="status" role="status"></p>
         <ul id="playlists" class="list"></ul>
-        <button id="logout-btn" class="btn btn--quiet" type="button">Disconnect Spotify</button>
+        <button id="logout-btn" class="btn btn--quiet btn--small" type="button">Disconnect Spotify</button>
       </section>
 
       <!-- Guessing -->
       <section id="s-game" class="screen" hidden>
         <div class="row">
-          <p id="game-meta" class="muted"></p>
-          <button id="change-btn" class="btn btn--quiet" type="button">Reserves</button>
+          <p id="game-meta" class="label"></p>
+          <p class="score label">Score <span id="score" class="score__value">0</span></p>
         </div>
 
-        <div class="card">
-          <div id="meter" class="meter" aria-hidden="true">
-            <div id="meter-fill" class="meter__fill"></div>
+        <div class="card player">
+          <div class="meter">
+            <canvas id="meter" class="meter__canvas" aria-hidden="true"></canvas>
+            <ol id="stages" class="stages" aria-label="Clip lengths"></ol>
           </div>
-          <div class="meter-labels" aria-hidden="true">
-            <span>0s</span><span>16s</span>
+          <div class="play">
+            <button id="clip-btn" class="play__btn" type="button" aria-describedby="clip-label">
+              <svg viewBox="0 0 48 48" width="64" height="64" aria-hidden="true">
+                <circle class="play__track" cx="24" cy="24" r="22" />
+                <circle class="play__ring" cx="24" cy="24" r="22" />
+                <g transform="translate(12 12)"><path class="play__icon" d="M9 6.5L18.5 12L18.5 12L9 17.5Z" /></g>
+              </svg>
+              <span class="sr-only">Play</span>
+            </button>
+            <div class="play__text">
+              <p id="clip-label" class="play__label">Play 1 second</p>
+              <p id="clip-status" class="status" role="status"></p>
+            </div>
           </div>
-          <button id="clip-btn" class="btn btn--primary btn--block btn--big" type="button">Play 1 second</button>
-          <p id="clip-status" class="status" role="status"></p>
         </div>
 
         <ol id="attempts" class="attempts" aria-label="Your guesses"></ol>
@@ -115,23 +159,38 @@
             <input id="guess" type="text" placeholder="Start typing a song or artist" enterkeyhint="done" autocapitalize="off" spellcheck="false" />
           </label>
           <ul id="suggest" class="suggest" role="listbox" aria-label="Songs matching your guess"></ul>
-          <div class="guess__actions">
+          <div class="actions">
             <button id="skip-btn" class="btn btn--quiet btn--grow" type="button">Skip (+1s)</button>
             <button id="submit-btn" class="btn btn--primary btn--grow" type="submit">Guess</button>
           </div>
         </form>
+        <button id="change-btn" class="btn btn--quiet btn--small" type="button">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7" /><path d="M19 12H5" /></svg>
+          Reserves
+        </button>
       </section>
 
       <!-- Reveal -->
       <section id="s-reveal" class="screen" hidden>
-        <p id="reveal-result" class="verdict" role="status"></p>
+        <div class="row">
+          <p id="reveal-meta" class="label"></p>
+          <p class="score label">Score <span id="reveal-score" class="score__value">0</span></p>
+        </div>
         <div class="card reveal">
-          <img id="reveal-cover" class="reveal__cover" alt="" width="160" height="160" />
+          <div class="cover">
+            <img id="reveal-cover" class="cover__img" alt="" width="96" height="96" crossorigin="anonymous" />
+            <canvas id="reveal-halftone" class="cover__halftone" aria-hidden="true" hidden></canvas>
+          </div>
           <div class="reveal__text">
-            <h2 id="reveal-title"></h2>
+            <h2 id="reveal-title" class="reveal__title"></h2>
             <p id="reveal-artist" class="muted"></p>
           </div>
-          <button id="reveal-play" class="btn btn--quiet" type="button">Play clip</button>
+          <p id="reveal-result" class="verdict" role="status"></p>
+          <ol id="reveal-strip" class="strip" aria-label="How this song went"></ol>
+          <button id="reveal-play" class="btn btn--quiet" type="button">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3" /></svg>
+            <span id="reveal-play-label">Play clip</span>
+          </button>
           <div class="reveal__links">
             <a id="reveal-spotify" class="link" target="_blank" rel="noopener">Open in Spotify</a>
             <a id="reveal-deezer" class="link" target="_blank" rel="noopener">Clip from Deezer</a>
@@ -142,6 +201,7 @@
 
       <!-- Out of songs -->
       <section id="s-done" class="screen" hidden>
+        <p class="eyebrow">Round over</p>
         <h1 class="h1--small">That’s every song</h1>
         <p id="done-score" class="count"></p>
         <p id="done-detail" class="muted"></p>
@@ -155,12 +215,13 @@
     </main>
 
     <footer class="container footer">
-      <p>Song Guess, an early test by Sean Joudrie. Playlists come from Spotify and clips from Deezer; not made or endorsed by either.</p>
+      <p>Song Guess, an early test by Sean Joudrie. Playlists come from Spotify and clips from Deezer; not made or endorsed by either. Icons from Lucide (ISC).</p>
     </footer>
 
     <script src="spotify.js?v=dev"></script>
     <script src="clips.js?v=dev"></script>
     <script src="reserves.js?v=dev"></script>
+    <script src="ui.js?v=dev"></script>
     <script src="app.js?v=dev"></script>
   </body>
 </html>
