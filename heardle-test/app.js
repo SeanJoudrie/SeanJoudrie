@@ -128,6 +128,17 @@ function explain(err) {
 const totalOf = (pl) => (pl.items && pl.items.total) ?? (pl.tracks && pl.tracks.total) ?? 0;
 
 let me = null;
+let playlists = []; // in Spotify's library order: most recently created or saved first
+
+// The smallest cover Spotify offers that's still sharp at 48px (96px on retina).
+function coverUrl(pl) {
+  const imgs = (pl.images || []).filter(Boolean);
+  if (!imgs.length) return null;
+  const fit = imgs.filter((i) => !i.width || i.width >= 96).sort((x, y) => (x.width || 999) - (y.width || 999));
+  return (fit[0] || imgs[0]).url;
+}
+
+const NOTE_SVG = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.5" fill="currentColor"/><circle cx="16.5" cy="16" r="2.5" fill="currentColor"/></svg>';
 
 async function loadPlaylists() {
   show('pick');
@@ -144,9 +155,26 @@ async function loadPlaylists() {
     $('pick-status').textContent = 'Loading your playlists… ' + all.length + ' of ' + page.total;
     next = page.next;
   }
-  $('pick-status').textContent = all.length ? '' : 'No playlists found on this account.';
+  playlists = all;
+  renderPlaylists();
+}
 
-  for (const pl of all) {
+function renderPlaylists() {
+  const q = $('search').value.trim().toLowerCase();
+  const sort = $('sort').value;
+  let list = playlists.filter((pl) => !q || (pl.name || '').toLowerCase().includes(q));
+  if (sort === 'oldest') list = list.slice().reverse();
+  else if (sort === 'az') list = list.slice().sort((x, y) => x.name.localeCompare(y.name, undefined, { sensitivity: 'base', numeric: true }));
+  else if (sort === 'most') list = list.slice().sort((x, y) => totalOf(y) - totalOf(x));
+  else if (sort === 'fewest') list = list.slice().sort((x, y) => totalOf(x) - totalOf(y));
+
+  if (!playlists.length) $('pick-status').textContent = 'No playlists found on this account.';
+  else if (!list.length) $('pick-status').textContent = 'No playlists match “' + $('search').value.trim() + '”.';
+  else if (q) $('pick-status').textContent = list.length + ' of ' + playlists.length + ' playlists';
+  else $('pick-status').textContent = playlists.length + ' playlists';
+
+  const frag = document.createDocumentFragment();
+  for (const pl of list) {
     const mine = pl.owner && pl.owner.id === me.id;
     const readable = mine || pl.collaborative;
     const li = document.createElement('li');
@@ -154,6 +182,19 @@ async function loadPlaylists() {
     b.type = 'button';
     b.className = 'pl';
     b.disabled = !readable;
+    const url = coverUrl(pl);
+    let cover;
+    if (url) {
+      cover = document.createElement('img');
+      cover.src = url;
+      cover.alt = '';
+      cover.loading = 'lazy';
+      cover.width = cover.height = 48;
+    } else {
+      cover = document.createElement('span');
+      cover.innerHTML = NOTE_SVG;
+    }
+    cover.className = 'pl__cover';
     const name = document.createElement('span');
     name.className = 'pl__name';
     name.textContent = pl.name;
@@ -161,11 +202,12 @@ async function loadPlaylists() {
     meta.className = 'pl__meta';
     meta.textContent = totalOf(pl) + ' songs · by ' + (pl.owner.display_name || pl.owner.id) +
       (readable ? '' : ' · can’t load: only the owner can');
-    b.append(name, meta);
+    b.append(cover, name, meta);
     b.addEventListener('click', () => loadSongs(pl).catch((e) => showError(explain(e))));
     li.append(b);
-    $('playlists').append(li);
+    frag.append(li);
   }
+  $('playlists').replaceChildren(frag);
 }
 
 async function loadSongs(pl) {
@@ -220,6 +262,8 @@ async function loadSongs(pl) {
 
 $('connect-btn').addEventListener('click', () => login().catch((e) => showError(e.message)));
 $('logout-btn').addEventListener('click', logout);
+$('search').addEventListener('input', renderPlaylists);
+$('sort').addEventListener('change', renderPlaylists);
 $('back-btn').addEventListener('click', () => { showError(''); show('pick'); });
 
 (async function start() {

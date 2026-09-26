@@ -55,8 +55,8 @@ jobs:
           npm ci
           # Latest uploads from its good channels (public feeds, no key).
           # Never fails the build: a channel that can't be read keeps its
-          # last saved videos.
-          node scripts/feeds.mjs || echo "Feed refresh skipped; using saved videos."
+          # last saved videos. The whole refresh is capped at 3 minutes.
+          timeout 180 node scripts/feeds.mjs || echo "Feed refresh skipped; using saved videos."
           npm test
           npm run build
       - run: cp -r ../algorithm-builder/dist dist/algorithm-builder
