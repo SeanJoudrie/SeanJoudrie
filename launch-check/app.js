@@ -1143,9 +1143,9 @@
           '<li class="project">' +
           '<div class="project__top"><h2 class="project__name">' + esc(p.name || 'My app') + '</h2>' +
           '<span class="mono project__meta">' + esc(when) + '</span></div>' +
-          '<p class="mono project__meta">' + esc(PRODUCT_NAMES[pr.context.a.product] || '') + ' · ' + pr.done + ' of ' + pr.total + ' done · ' +
-          pr.must + ' must-fix left</p>' +
-          '<div class="meter" aria-hidden="true"><span class="meter__fill" style="width:' + pct + '%"></span></div>' +
+          '<p class="mono project__meta">' + esc(PRODUCT_NAMES[pr.context.a.product] || '') + '</p>' +
+          '<p class="mono project__meta">' + pr.done + ' of ' + pr.total + ' done · ' + pr.must + ' must-fix left</p>' +
+          '<div class="meter" aria-hidden="true"><span class="meter__fill" style="transform:scaleX(' + pct / 100 + ')"></span></div>' +
           '<div class="project__actions">' +
           '<button type="button" class="button button--signal button--small" data-project-open="' + p.id + '">Continue</button>' +
           '<button type="button" class="button button--secondary button--small" data-project-delete="' + p.id + '">Delete<span class="sr-only"> ' + esc(p.name) + '</span></button>' +
@@ -1300,7 +1300,7 @@
     var must = items.filter(function (it) {
       return it.severity === 'blocker' && !isDone(it);
     }).length;
-    $('#meter-fill').style.width = (st.total ? (st.done / st.total) * 100 : 0) + '%';
+    $('#meter-fill').style.transform = 'scaleX(' + (st.total ? (st.done / st.total) * 100 : 0) / 100 + ')';
     // Readiness gauge: yellow = steps done, red = must-fix steps still ahead.
     if (window.LCMotion) {
       var mustItems = items.filter(function (it) {
@@ -1315,7 +1315,7 @@
       );
     }
     $('#report-stats').innerHTML =
-      '<strong>' + done + '</strong> of ' + items.length + ' tasks · <strong>' + st.done + '</strong> of ' + st.total +
+      '<strong>' + done + '</strong> of ' + items.length + ' tasks, <strong>' + st.done + '</strong> of ' + st.total +
       ' small steps · <strong>' + must + '</strong> must-fix left';
     var next = $('#start-next');
     next.firstChild.textContent = st.done === 0 ? 'Start with task 1 ' : done === items.length ? 'Review your tasks ' : 'Do the next task ';
@@ -1369,7 +1369,7 @@
       '<input type="checkbox" data-task="' + it.id + '"' + (done ? ' checked' : '') + ' aria-label="Mark done: ' + esc(it.title) + '" />' +
       '<button type="button" class="task__main" data-focus="' + it.id + '">' +
       '<span class="task__what">' + esc(it.title) + '</span>' +
-      '<span class="task__meta">' + (done ? 'Done' : levelText(it)) + (it.risk && !done ? ' · Legal risk' : '') + ' · ' + stepsDoneIn(it) + ' of ' + n + (n === 1 ? ' step' : ' steps') + '</span>' +
+      '<span class="task__meta">' + (done ? 'Done' : levelText(it)) + (it.risk && !done ? ', legal risk' : '') + ' · ' + stepsDoneIn(it) + ' of ' + n + (n === 1 ? ' step' : ' steps') + '</span>' +
       '</button>' +
       '</li>'
     );
@@ -1521,7 +1521,7 @@
     var st = stepTotals(items);
     $('#map-title').textContent = goalFor(c);
     $('#goal-stats').innerHTML = '<strong>' + done + '</strong> of ' + items.length + ' tasks · <strong>' + st.done + '</strong> of ' + st.total + ' small steps';
-    $('#goal-meter').style.width = (st.total ? (st.done / st.total) * 100 : 0) + '%';
+    $('#goal-meter').style.transform = 'scaleX(' + (st.total ? (st.done / st.total) * 100 : 0) / 100 + ')';
 
     // Today: everything that isn't waiting on anything, must-fix first.
     var ready = items
@@ -1588,7 +1588,7 @@
           '<span class="branch__count">' + br.done + ' of ' + br.items.length + '</span>' +
           CHEVRON + '</button></h3>' +
           (br.id === weakest ? '<p class="branch__note">Furthest behind</p>' : '') +
-          '<div class="meter meter--light" aria-hidden="true"><span class="meter__fill" style="width:' + br.pct * 100 + '%"></span></div>' +
+          '<div class="meter meter--light" aria-hidden="true"><span class="meter__fill" style="transform:scaleX(' + br.pct + ')"></span></div>' +
           '<ol class="tree" id="branch-' + br.id + '"' + (isOpen ? '' : ' hidden') + '>' +
           nodes
             .map(function (it) {
@@ -1714,7 +1714,7 @@
   function updateFocusProgress() {
     var total = focusItems.length;
     var doneCount = focusItems.filter(isDone).length;
-    $('#focus-meter').style.width = (total ? (doneCount / total) * 100 : 0) + '%';
+    $('#focus-meter').style.transform = 'scaleX(' + (total ? (doneCount / total) * 100 : 0) / 100 + ')';
     $('#focus-done').textContent = doneCount + ' done';
   }
 
