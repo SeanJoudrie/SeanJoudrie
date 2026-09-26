@@ -1931,6 +1931,7 @@
   });
 
   window.LC_DATA = {
+    sources: SRC,
     branches: BRANCHES,
     checked: 'September 2026',
     phases: PHASES,
