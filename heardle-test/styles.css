@@ -1,5 +1,6 @@
-/* Playlist Load Test
-   One system font, a 4px spacing scale, one radius, one accent. */
+/* Song Guess
+   One system font pair (sans + mono for numbers), a 4px spacing scale,
+   one radius, one accent (green = go / right), red only for wrong. */
 
 :root {
   --s-1: 4px;
@@ -9,6 +10,8 @@
   --s-6: 24px;
   --s-8: 32px;
   --s-12: 48px;
+  --s-16: 64px;
+  --s-24: 96px;
 
   --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -17,6 +20,7 @@
   --t-sm: 14px;
   --t-body: 17px;
   --t-h2: 20px;
+  --t-h1-small: 24px;
   --t-h1: 32px;
   --t-count: 40px;
 
@@ -31,6 +35,7 @@
   --line: #d6dce3;
   --accent: #0f7a45;
   --accent-hover: #0c6639;
+  --accent-bg: #daf3e5;
   --on-accent: #ffffff;
   --alert: #c2302a;
   --alert-bg: #fde6e4;
@@ -47,6 +52,7 @@
     --line: #28313b;
     --accent: #3dd68c;
     --accent-hover: #5fe0a2;
+    --accent-bg: #0f2b1d;
     --on-accent: #0b0e12;
     --alert: #ff6b61;
     --alert-bg: #3a1714;
@@ -70,32 +76,38 @@ body {
   padding: 0 var(--s-4);
 }
 
-main { padding-top: var(--s-12); }
+main { padding-top: var(--s-8); }
+
+.screen { display: grid; gap: var(--s-4); }
+/* Room for the fixed Play bar on the playlist screen, so the footer isn't under it. */
+body:has(#s-pick:not([hidden])) { padding-bottom: var(--s-24); }
 
 h1, h2, p { margin: 0; }
-h1 { font-size: var(--t-h1); line-height: 1.2; margin-bottom: var(--s-3); }
+h1 { font-size: var(--t-h1); line-height: 1.2; }
+.h1--small { font-size: var(--t-h1-small); }
 h2 { font-size: var(--t-h2); line-height: 1.3; }
 
 .eyebrow {
   font: 600 var(--t-sm) / 1.4 var(--mono);
   color: var(--muted);
   text-transform: uppercase;
-  margin-bottom: var(--s-2);
 }
-.lede { color: var(--muted); margin-bottom: var(--s-8); }
+.lede { color: var(--muted); }
 .muted { color: var(--muted); font-size: var(--t-sm); }
 
 .card {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: var(--s-6) var(--s-4);
+  padding: var(--s-4);
   display: grid;
   gap: var(--s-4);
 }
 
 .row { display: flex; justify-content: space-between; align-items: center; gap: var(--s-4); }
+.stack { display: grid; gap: var(--s-3); }
 
+/* Buttons */
 .btn {
   min-height: var(--tap);
   padding: 0 var(--s-6);
@@ -103,16 +115,25 @@ h2 { font-size: var(--t-h2); line-height: 1.3; }
   border: 1px solid transparent;
   font: 600 var(--t-body) / 1 var(--font);
   cursor: pointer;
+  flex-shrink: 0;
 }
 .btn--primary { background: var(--accent); color: var(--on-accent); }
-.btn--primary:hover { background: var(--accent-hover); }
-.btn--quiet { background: transparent; color: var(--ink); border-color: var(--line); padding: 0 var(--s-4); font-size: var(--t-sm); justify-self: start; }
-.btn--quiet:hover { border-color: var(--muted); }
-.btn:disabled { opacity: 0.6; cursor: progress; }
-.btn:focus-visible, .pl:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.btn--primary:hover:not(:disabled) { background: var(--accent-hover); }
+.btn--quiet { background: var(--surface); color: var(--ink); border-color: var(--line); padding: 0 var(--s-4); font-size: var(--t-sm); }
+.btn--quiet:hover:not(:disabled) { border-color: var(--muted); }
+.btn--block { width: 100%; }
+.btn--big { min-height: var(--s-16); font-size: var(--t-h2); }
+.btn--grow { flex: 1; }
+.btn:disabled { opacity: 0.6; cursor: default; }
+.btn:focus-visible, .pl:focus-visible, .suggest__item:focus-visible, .link:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
 
-.list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
+.link { color: var(--ink); font-size: var(--t-sm); text-underline-offset: 3px; }
+.link:hover { color: var(--accent); }
 
+/* Fields */
 .controls { display: grid; grid-template-columns: 1fr auto; gap: var(--s-3); }
 .field { display: grid; gap: var(--s-1); min-width: 0; }
 .field__label { font-size: var(--t-sm); font-weight: 600; color: var(--muted); }
@@ -128,17 +149,20 @@ h2 { font-size: var(--t-h2); line-height: 1.3; }
 }
 .field input:focus-visible, .field select:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
+/* Playlist list */
+.list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
+
 .pl {
   width: 100%;
   min-height: var(--tap);
   display: grid;
-  grid-template-columns: var(--s-12) 1fr;
+  grid-template-columns: var(--s-12) 1fr var(--s-6);
   align-items: center;
   column-gap: var(--s-3);
   row-gap: var(--s-1);
   text-align: left;
   padding: var(--s-2) var(--s-3);
-  background: transparent;
+  background: var(--surface);
   color: var(--ink);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -146,7 +170,8 @@ h2 { font-size: var(--t-h2); line-height: 1.3; }
   cursor: pointer;
 }
 .pl:hover:not(:disabled) { border-color: var(--accent); }
-.pl:disabled { cursor: not-allowed; }
+.pl:disabled { cursor: not-allowed; opacity: 0.6; }
+.pl[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-bg); }
 .pl__cover {
   grid-row: span 2;
   width: var(--s-12);
@@ -159,25 +184,106 @@ h2 { font-size: var(--t-h2); line-height: 1.3; }
   color: var(--muted);
 }
 .pl__name { font-weight: 600; overflow-wrap: anywhere; }
-.pl__meta { color: var(--muted); font-size: var(--t-sm); }
+.pl__meta { color: var(--muted); font-size: var(--t-sm); grid-column: 2; }
+.pl__tick {
+  grid-row: 1 / span 2;
+  grid-column: 3;
+  width: var(--s-6);
+  height: var(--s-6);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  color: transparent;
+}
+.pl[aria-pressed="true"] .pl__tick { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+
+/* Fixed bar with the Play button */
+.bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  padding: var(--s-3) 0 calc(var(--s-3) + env(safe-area-inset-bottom));
+}
+.bar__inner { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); }
+.bar__text { font-size: var(--t-sm); font-weight: 600; }
 
 .status { font-size: var(--t-sm); color: var(--muted); }
 .status:empty { display: none; }
 
 .count { font: 700 var(--t-count) / 1.1 var(--mono); }
-.verdict { font-weight: 600; }
+.count--small { font-size: var(--t-h1); }
+.verdict { font-weight: 600; font-size: var(--t-h2); }
 .verdict--pass { color: var(--accent); }
 .verdict--fail { color: var(--alert); }
 
-.songs {
-  margin: 0;
-  padding-left: var(--s-8);
-  font-size: var(--t-sm);
-  display: grid;
-  gap: var(--s-1);
+/* Clip meter: the lighter band is how much you've unlocked, the fill is
+   what's playing now. Both are scaled, not resized. */
+.meter {
+  --unlocked: 0.0625;
+  position: relative;
+  height: var(--s-3);
+  border-radius: var(--radius);
+  background: var(--bg);
+  overflow: hidden;
 }
-.songs li { overflow-wrap: anywhere; }
-.songs .off { color: var(--muted); }
+.meter::before, .meter__fill {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+}
+.meter::before { background: var(--accent-bg); transform: scaleX(var(--unlocked)); }
+.meter__fill { background: var(--accent); transform: scaleX(0); }
+.meter-labels { display: flex; justify-content: space-between; font: var(--t-sm) / 1 var(--mono); color: var(--muted); margin-top: calc(-1 * var(--s-2)); }
+
+/* Guesses so far */
+.attempts { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
+.attempt {
+  min-height: var(--s-8);
+  padding: var(--s-1) var(--s-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: var(--t-sm);
+  display: flex;
+  align-items: center;
+  overflow-wrap: anywhere;
+}
+.attempt--now { border-color: var(--accent); color: var(--muted); }
+.attempt--wrong { color: var(--alert); background: var(--alert-bg); border-color: transparent; }
+.attempt--skip { color: var(--muted); background: var(--surface); }
+
+/* Guess box and suggestions */
+.guess { display: grid; gap: var(--s-2); }
+.guess__actions { display: flex; gap: var(--s-3); }
+.suggest { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-1); }
+.suggest:empty { display: none; }
+.suggest__item {
+  width: 100%;
+  min-height: var(--tap);
+  display: grid;
+  text-align: left;
+  padding: var(--s-2) var(--s-3);
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font: inherit;
+  cursor: pointer;
+}
+.suggest__item:hover { border-color: var(--accent); }
+.suggest__title { font-weight: 600; overflow-wrap: anywhere; }
+.suggest__artist { font-size: var(--t-sm); color: var(--muted); }
+
+/* Reveal */
+.reveal { grid-template-columns: auto 1fr; align-items: center; column-gap: var(--s-4); }
+.reveal__cover { width: var(--s-24); height: var(--s-24); border-radius: var(--radius); object-fit: cover; background: var(--bg); }
+.reveal__text { display: grid; gap: var(--s-1); min-width: 0; overflow-wrap: anywhere; }
+.reveal .btn { grid-column: 1 / -1; }
+.reveal__links { grid-column: 1 / -1; display: flex; gap: var(--s-6); flex-wrap: wrap; }
 
 .error {
   margin-top: var(--s-4);
