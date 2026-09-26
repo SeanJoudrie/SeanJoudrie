@@ -20,6 +20,7 @@ Live at https://seanjoudrie.github.io/SeanJoudrie/heardle-test/. It stays at thi
 | `clips.js` | Title clean-up and matching (`Text`), and 30-second clips from Deezer's public search API (`Clips`) |
 | `reserves.js` | Saved playlists and their songs; adding from the library or a link |
 | `../supabase/functions/song-guess-playlist/` | Reads a public playlist's embed page for playlists you don't own (Supabase project `Globalio`, no secrets, answers only this site) |
+| `ui.js` | Look, motion and sound: the listening meter, play control, right/wrong/skip sounds, iris reveal, decrypting title, halftone cover, "+N" |
 | `app.js` | Screens: reserves, your Spotify library, guessing, reveal, end |
 
 - **Clips come from Deezer, not Spotify.** Spotify's API stopped giving out preview clips in 2024. Each song is looked up on Deezer by title and artist when it comes up (and one song ahead). Deezer doesn't allow cross-site `fetch()`, so this uses its JSONP API.
@@ -34,3 +35,16 @@ Live at https://seanjoudrie.github.io/SeanJoudrie/heardle-test/. It stays at thi
 ## Run locally
 
 Serve the folder (`python3 -m http.server 8000`) and add `http://127.0.0.1:8000/` as a redirect URI in the Spotify app. Spotify doesn't accept `localhost`.
+
+## Style
+
+The style comes from `research/song-guess-style-prompt.md` (built from the Codex research in `research/codex-ui-motion.md`):
+- **Palette:** paper, ink and one amber accent, solved for WCAG AA in light and dark.
+- **Type:** IBM Plex Mono and IBM Plex Sans.
+- **Shape:** a 4px spacing scale, one radius, borders instead of shadows.
+
+Motion runs only on a tap or while a clip the player started is playing, and none of it runs under `prefers-reduced-motion`.
+
+- **The meter listens.** The `<audio>` element has `crossOrigin = "anonymous"`, since Deezer's clip CDN allows CORS. It is routed through a single `AudioContext` and `AnalyserNode`, created on the first tap. The meter draws the energy of the seconds you've actually heard, smoothed the way cava does it.
+- **No libraries.** All motion is CSS, the Web Animations API, or small canvas routines in `ui.js`. Icons are inline Lucide SVGs (ISC).
+- **Not built:** the optional Chladni sand field and the melting cover from the prompt. Both need testing on a real phone first.

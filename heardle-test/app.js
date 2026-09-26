@@ -65,6 +65,7 @@ function songCount(r) {
 // ---------- Reserves (home) ----------
 
 let me = null; // Spotify profile, when signed in
+let justAdded = null; // a reserve that was just added gets one enter animation
 const busy = new Map(); // reserve or playlist id → progress text while loading
 
 function renderHome() {
@@ -79,7 +80,7 @@ function renderHome() {
   const frag = document.createDocumentFragment();
   for (const r of list) {
     const li = document.createElement('li');
-    li.className = 'reserve';
+    li.className = 'reserve' + (r.id === justAdded ? ' is-new' : '');
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'pl';
@@ -118,6 +119,7 @@ function renderHome() {
     frag.append(li);
   }
   $('reserves').replaceChildren(frag);
+  justAdded = null;
   updateHomeBar();
 }
 
@@ -163,6 +165,7 @@ async function addLink(text) {
     });
     const again = Reserves.has(r.id);
     Reserves.put(r);
+    if (!again) justAdded = r.id;
     $('link').value = '';
     $('link-status').textContent = (again ? 'Updated ' : 'Added ') + '“' + r.name + '”: ' + songCount(r) + '.';
     renderHome();
@@ -245,6 +248,7 @@ async function toggleFromLibrary(pl) {
   try {
     const r = await Reserves.fromSpotify(pl, me, (n, total) => { busy.set(pl.id, 'Adding… ' + n + ' of ' + total); renderLibrary(); });
     Reserves.put(r);
+    justAdded = r.id;
   } catch (e) {
     showError(e.status ? Spotify.explain(e) : e.message);
   } finally {
@@ -281,25 +285,37 @@ function playSelected() {
 // ---------- Game ----------
 
 const audio = new Audio();
+// Deezer's clip CDN allows CORS; with this set before any src, the meter can
+// read the clip's real audio (UI.listen).
+audio.crossOrigin = 'anonymous';
 audio.preload = 'auto';
 let stopAt = 0;
 let raf = 0;
+
+// Points for a right guess, by how many seconds it took.
+const POINTS = [100, 80, 60, 40, 25, 10];
 
 const game = {
   song: null,
   clip: null,
   stage: 0, // index into STAGES
-  attempts: [], // { kind: 'wrong' | 'skip', text }
+  attempts: [], // { kind: 'wrong' | 'skip' | 'right', text }
   played: 0,
   correct: 0,
+  points: 0,
   noClip: 0,
   pickedId: null, // song chosen from the suggestions
 };
+
+// Where the player last tapped, so the reveal can open from that point.
+let lastTap = { x: innerWidth / 2, y: innerHeight / 2 };
+addEventListener('pointerdown', (e) => { lastTap = { x: e.clientX, y: e.clientY }; }, { passive: true });
 
 function startGame() {
   queue = shuffle(pool.slice());
   game.played = 0;
   game.correct = 0;
+  game.points = 0;
   game.noClip = 0;
   nextSong();
 }
@@ -312,7 +328,7 @@ async function nextSong() {
   show('s-game');
   resetRound();
   $('clip-btn').disabled = true;
-  $('clip-btn').textContent = 'Finding a song…';
+  $('clip-label').textContent = 'Finding a song…';
   while (queue.length) {
     const song = queue.shift();
     const clip = await Clips.find(song);
@@ -339,18 +355,38 @@ function resetRound() {
   $('guess').value = '';
   $('suggest').replaceChildren();
   $('clip-status').textContent = '';
-  setMeter(0);
+  UI.meterReset();
+  UI.setRing($('clip-btn'), 0);
+  renderStages();
+}
+
+function renderStages() {
+  const frag = document.createDocumentFragment();
+  STAGES.forEach((s, i) => {
+    const li = document.createElement('li');
+    li.textContent = s + 's';
+    li.style.left = (s / MAX) * 100 + '%';
+    if (i <= game.stage) li.className = i === game.stage ? 'is-open is-now' : 'is-open';
+    frag.append(li);
+  });
+  $('stages').replaceChildren(frag);
+}
+
+function renderScore() {
+  $('score').textContent = game.points;
+  $('reveal-score').textContent = game.points;
 }
 
 function renderRound() {
   const secs = STAGES[game.stage];
-  $('game-meta').textContent = 'Song ' + (game.played + 1) + ' of ' + (game.played + 1 + queue.length) +
-    ' · ' + game.correct + ' right';
+  $('game-meta').textContent = 'Song ' + (game.played + 1) + ' of ' + (game.played + 1 + queue.length);
+  renderScore();
   $('clip-btn').disabled = false;
-  $('clip-btn').textContent = 'Play ' + plural(secs, 'second', 'seconds');
+  $('clip-label').textContent = 'Play ' + plural(secs, 'second', 'seconds');
   const nextSecs = STAGES[game.stage + 1];
   $('skip-btn').textContent = nextSecs ? 'Skip (+' + (nextSecs - secs) + 's)' : 'Give up';
-  $('meter').style.setProperty('--unlocked', String(secs / MAX));
+  UI.meterUnlock(secs);
+  renderStages();
 
   const frag = document.createDocumentFragment();
   for (let i = 0; i < STAGES.length; i++) {
@@ -358,7 +394,16 @@ function renderRound() {
     const a = game.attempts[i];
     if (a) {
       li.className = 'attempt attempt--' + a.kind;
-      li.textContent = a.kind === 'skip' ? 'Skipped' : a.text;
+      const tag = document.createElement('span');
+      tag.className = 'attempt__tag';
+      tag.textContent = a.kind === 'skip' ? 'Skipped' : 'Wrong';
+      li.append(tag);
+      if (a.kind === 'wrong') {
+        const t = document.createElement('span');
+        t.className = 'attempt__text';
+        t.textContent = a.text;
+        li.append(t);
+      }
     } else {
       li.className = 'attempt' + (i === game.stage ? ' attempt--now' : '');
       li.textContent = i === game.stage ? 'Guess ' + (i + 1) + ' of ' + STAGES.length : '';
@@ -370,22 +415,25 @@ function renderRound() {
 
 // ---------- Audio ----------
 
-function setMeter(seconds) {
-  $('meter-fill').style.transform = 'scaleX(' + Math.min(seconds / MAX, 1) + ')';
-}
+const onGame = () => !$('s-game').hidden;
 
 function stopAudio() {
   audio.pause();
   cancelAnimationFrame(raf);
-  $('reveal-play').textContent = 'Play clip';
+  UI.meterPlayhead(-1);
+  UI.setRing($('clip-btn'), 0);
+  UI.setIcon($('clip-btn'), false);
+  $('reveal-play-label').textContent = 'Play clip';
 }
 
 function tick() {
   const t = audio.currentTime;
-  if (!$('s-game').hidden) setMeter(t);
+  if (onGame()) {
+    UI.meterPlayhead(t);
+    UI.setRing($('clip-btn'), t / stopAt);
+  }
   if (t >= stopAt) {
     stopAudio();
-    if (!$('s-game').hidden) setMeter(0);
     return;
   }
   raf = requestAnimationFrame(tick);
@@ -394,11 +442,13 @@ function tick() {
 async function playFor(seconds) {
   stopAudio();
   stopAt = seconds;
+  UI.listen(audio);
   try {
     audio.currentTime = 0;
   } catch {}
   try {
     await audio.play();
+    if (onGame()) UI.setIcon($('clip-btn'), true);
     raf = requestAnimationFrame(tick);
     return true;
   } catch {
@@ -406,7 +456,10 @@ async function playFor(seconds) {
   }
 }
 
-audio.addEventListener('waiting', () => { if (!$('s-game').hidden) $('clip-status').textContent = 'Loading the clip…'; });
+// Waits for a right/wrong/skip sound to finish, so it never plays over the clip.
+const after = (ms) => new Promise((r) => setTimeout(r, ms));
+
+audio.addEventListener('waiting', () => { if (onGame()) $('clip-status').textContent = 'Loading the clip…'; });
 audio.addEventListener('playing', () => { $('clip-status').textContent = ''; });
 // A clip link can expire while someone thinks; fetch a fresh one once, and
 // skip the song if that doesn't play either.
@@ -425,13 +478,15 @@ audio.addEventListener('error', async () => {
       return;
     }
   }
-  if (game.song !== song || $('s-game').hidden) return;
+  if (game.song !== song || !onGame()) return;
   $('clip-status').textContent = 'This clip wouldn’t play, so it was skipped.';
   game.noClip++;
   setTimeout(nextSong, 1200);
 });
 
+// Tapping the play control plays the unlocked seconds, or stops them.
 $('clip-btn').addEventListener('click', async () => {
+  if (!audio.paused) { stopAudio(); return; }
   const ok = await playFor(STAGES[game.stage]);
   if (!ok) $('clip-status').textContent = 'Couldn’t start the clip. Tap Play again.';
 });
@@ -495,16 +550,20 @@ function isRight(text) {
   return Text.norm(Text.clean(typed)) === Text.norm(Text.clean(song.title));
 }
 
-function advance(kind, text) {
+async function advance(kind, text) {
   game.attempts.push({ kind, text });
+  const wait = UI.sound(kind);
   if (game.stage >= STAGES.length - 1) { reveal(false); return; }
   game.stage++;
   $('guess').value = '';
   game.pickedId = null;
   $('suggest').replaceChildren();
+  stopAudio();
   renderRound();
-  // Wrong guesses and skips were tapped, so the longer clip can play now.
-  playFor(STAGES[game.stage]);
+  // Wrong guesses and skips were tapped, so the longer clip can play now,
+  // right after the short sound.
+  await after(wait);
+  if (onGame()) playFor(STAGES[game.stage]);
 }
 
 $('guess-form').addEventListener('submit', (e) => {
@@ -523,21 +582,67 @@ $('skip-btn').addEventListener('click', () => {
 
 // ---------- Reveal and end ----------
 
+// The six stages of this song, like a shareable row. A right answer is
+// coloured by speed: full accent at 1 second, fading toward the line colour.
+function renderStrip(won) {
+  const frag = document.createDocumentFragment();
+  STAGES.forEach((s, i) => {
+    const li = document.createElement('li');
+    const a = game.attempts[i];
+    li.textContent = s + 's';
+    if (a && a.kind === 'wrong') { li.className = 'is-wrong'; li.setAttribute('aria-label', s + ' seconds: wrong'); }
+    else if (a && a.kind === 'skip') { li.className = 'is-skip'; li.setAttribute('aria-label', s + ' seconds: skipped'); }
+    else if (won && i === game.stage) {
+      const pct = Math.round(100 - (i / (STAGES.length - 1)) * 70);
+      li.className = 'is-right';
+      li.style.background = 'color-mix(in srgb, var(--accent) ' + pct + '%, var(--line))';
+      li.style.color = pct >= 50 ? 'var(--on-accent)' : 'var(--ink)';
+      li.setAttribute('aria-label', s + ' seconds: right');
+    } else li.setAttribute('aria-label', s + ' seconds: not needed');
+    frag.append(li);
+  });
+  $('reveal-strip').replaceChildren(frag);
+}
+
 function reveal(won) {
   game.played++;
-  if (won) game.correct++;
   const s = game.song;
   const secs = STAGES[game.stage];
-  $('reveal-result').textContent = won
-    ? 'Got it in ' + plural(secs, 'second', 'seconds') + (game.stage === 0 ? '. First try.' : '.')
-    : 'Not this time.';
-  $('reveal-result').className = 'verdict ' + (won ? 'verdict--pass' : 'verdict--fail');
-  $('reveal-title').textContent = Text.clean(s.title);
+  const wait = UI.sound(won ? 'right' : 'wrong');
+  stopAudio();
+  if (won) {
+    game.correct++;
+    game.points += POINTS[game.stage];
+    game.attempts[game.stage] = { kind: 'right', text: '' };
+  }
+
+  const result = $('reveal-result');
+  result.className = 'verdict ' + (won ? 'verdict--pass' : 'verdict--fail');
+  if (won) {
+    result.textContent = 'Got it in ';
+    const n = document.createElement('span');
+    n.className = 'score__value';
+    result.append(n, document.createTextNode(' ' + (secs === 1 ? 'second' : 'seconds') + (game.stage === 0 ? '. First try.' : '.')));
+    UI.countUp(n, secs);
+  } else {
+    result.textContent = 'Not this time.';
+  }
+  renderStrip(won);
+  $('reveal-meta').textContent = 'Song ' + game.played + ' of ' + (game.played + queue.length);
+  UI.decrypt($('reveal-title'), Text.clean(s.title));
   $('reveal-artist').textContent = s.artists.join(', ');
+
   // Songs read from a public link have no cover; Deezer's album art stands in.
   const cover = s.cover || game.clip.cover;
-  $('reveal-cover').hidden = !cover;
-  if (cover) $('reveal-cover').src = cover;
+  const img = $('reveal-cover');
+  $('reveal-halftone').hidden = true;
+  img.hidden = !cover;
+  if (cover) {
+    img.classList.add('is-dithered');
+    img.onload = () => UI.halftone(img, $('reveal-halftone'));
+    img.onerror = () => img.classList.remove('is-dithered');
+    img.src = cover;
+  }
   $('reveal-spotify').href = s.url || 'https://open.spotify.com/track/' + s.id;
   $('reveal-deezer').href = game.clip.link;
   // Say so when the clip is another recording, like a live version.
@@ -545,19 +650,29 @@ function reveal(won) {
     Text.norm(Text.clean(game.clip.title)) !== Text.norm(game.clip.title);
   $('reveal-deezer').textContent = other ? 'Clip from Deezer: ' + game.clip.title : 'Clip from Deezer';
   $('next-btn').textContent = queue.length ? 'Next song' : 'See your score';
+
+  const from = lastTap;
   show('s-reveal');
-  // Play the full clip as the answer; this follows the tap on Guess or Skip.
-  playFor(30).then((ok) => { if (ok) $('reveal-play').textContent = 'Pause'; });
+  renderScore();
+  UI.iris($('s-reveal'), from.x, from.y);
+  if (won) UI.floatPoints($('reveal-score').parentElement, POINTS[game.stage]);
+  // Play the full clip as the answer, after the short sound; this follows
+  // the tap on Guess or Skip.
+  after(wait).then(() => {
+    if ($('s-reveal').hidden) return;
+    playFor(30).then((ok) => { if (ok) $('reveal-play-label').textContent = 'Pause'; });
+  });
 }
 
 $('reveal-play').addEventListener('click', async () => {
   if (!audio.paused) { stopAudio(); return; }
   stopAt = 30;
+  UI.listen(audio);
   try {
     if (audio.currentTime >= 29.5) audio.currentTime = 0;
     await audio.play();
     raf = requestAnimationFrame(tick);
-    $('reveal-play').textContent = 'Pause';
+    $('reveal-play-label').textContent = 'Pause';
   } catch {}
 });
 
@@ -567,9 +682,9 @@ function finish() {
   stopAudio();
   game.song = null;
   show('s-done');
-  $('done-score').textContent = game.correct + ' / ' + game.played;
+  $('done-score').textContent = game.points + ' pts';
   $('done-detail').textContent = [
-    plural(game.played, 'song', 'songs') + ' played',
+    game.correct + ' of ' + plural(game.played, 'song', 'songs') + ' right',
     game.noClip ? plural(game.noClip, 'song', 'songs') + ' skipped because Deezer has no clip' : '',
     loadNote,
   ].filter(Boolean).join(' · ');
@@ -619,6 +734,15 @@ $('search').addEventListener('input', renderLibrary);
 $('sort').addEventListener('change', renderLibrary);
 for (const id of ['change-btn', 'done-change-btn']) $(id).addEventListener('click', backHome);
 $('again-btn').addEventListener('click', startGame);
+
+function renderSoundBtn() {
+  const on = !UI.isMuted();
+  $('sound-btn').setAttribute('aria-pressed', String(on));
+  $('sound-label').textContent = on ? 'Sound on' : 'Sound off';
+}
+$('sound-btn').addEventListener('click', () => { UI.setMuted(!UI.isMuted()); renderSoundBtn(); });
+renderSoundBtn();
+UI.meterInit($('meter'));
 
 (async function start() {
   let after = null;
