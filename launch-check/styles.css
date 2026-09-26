@@ -159,8 +159,8 @@ h2,
 }
 
 .display {
-  font-size: 64px;
-  line-height: 64px;
+  font-size: 72px;
+  line-height: 68px;
   font-weight: 800;
   font-stretch: 70%;
   text-transform: uppercase;
@@ -246,8 +246,8 @@ code {
 }
 
 .section-title {
-  font-size: 24px;
-  line-height: 28px;
+  font-size: 28px;
+  line-height: 32px;
 }
 
 .sr-only {
@@ -633,8 +633,8 @@ code {
 }
 
 .stat__number {
-  font-size: 96px;
-  line-height: 88px;
+  font-size: 72px;
+  line-height: 68px;
   font-weight: 900;
   font-stretch: 62%;
   color: var(--alert);
@@ -1178,8 +1178,8 @@ fieldset.field {
 
 .report__title {
   margin-top: var(--s-4);
-  font-size: 52px;
-  line-height: 52px;
+  font-size: 48px;
+  line-height: 48px;
   font-weight: 800;
   font-stretch: 68%;
   text-transform: uppercase;
@@ -1208,9 +1208,11 @@ fieldset.field {
 .meter__fill {
   display: block;
   height: 100%;
-  width: 0;
+  width: 100%;
   background: var(--signal);
-  transition: width 240ms ease;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 240ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 .meter--thin {
@@ -1701,7 +1703,7 @@ body.is-focus .site-footer {
 
 .card__title {
   margin-top: var(--s-3);
-  font-size: 44px;
+  font-size: 48px;
   line-height: 48px;
   font-weight: 800;
   font-stretch: 68%;
@@ -1905,8 +1907,8 @@ body.is-focus .site-footer {
 
 .goal__title {
   margin-top: var(--s-1);
-  font-size: 36px;
-  line-height: 40px;
+  font-size: 48px;
+  line-height: 48px;
   font-weight: 800;
   font-stretch: 70%;
   text-transform: uppercase;
@@ -2280,8 +2282,8 @@ body.is-focus .site-footer {
   }
 
   .display {
-    font-size: 48px;
-    line-height: 48px;
+    font-size: 44px;
+    line-height: 42px;
   }
 
   h1 {
@@ -2308,8 +2310,8 @@ body.is-focus .site-footer {
   }
 
   .stat__number {
-    font-size: 72px;
-    line-height: 68px;
+    font-size: 44px;
+    line-height: 44px;
   }
 
   .site-nav__link {
@@ -2323,8 +2325,8 @@ body.is-focus .site-footer {
   }
 
   .report__title {
-    font-size: 38px;
-    line-height: 40px;
+    font-size: 34px;
+    line-height: 36px;
   }
 
   .report__actions .button {
@@ -2345,13 +2347,13 @@ body.is-focus .site-footer {
   }
 
   .card__title {
-    font-size: 32px;
+    font-size: 34px;
     line-height: 36px;
   }
 
   .goal__title {
-    font-size: 30px;
-    line-height: 32px;
+    font-size: 34px;
+    line-height: 36px;
   }
 
   .branches {
@@ -2649,7 +2651,7 @@ body.is-focus .site-footer {
   text-align: center;
 }
 .gauge__num {
-  font-size: 32px;
+  font-size: 28px;
 }
 .gauge__word {
   display: block;
@@ -2844,12 +2846,10 @@ body.is-focus .site-footer {
 /* Progress bars fill in when a screen opens. */
 [data-view="map"] .meter__fill,
 [data-view="projects"] .meter__fill {
-  transform-origin: left center;
   animation: lc-grow 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 @keyframes lc-grow {
   from { transform: scaleX(0); }
-  to { transform: none; }
 }
 
 /* Long checklists only render what's near the screen. */

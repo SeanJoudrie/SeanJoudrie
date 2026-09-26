@@ -61,6 +61,16 @@ typography:
     fontWeight: 800
     lineHeight: 1.0
     fontVariation: "'wdth' 70"
+  headline:
+    fontFamily: Archivo
+    fontSize: 40px
+    fontWeight: 800
+    lineHeight: 1.1
+  headline-phone:
+    fontFamily: Archivo
+    fontSize: 34px
+    fontWeight: 800
+    lineHeight: 1.06
   title:
     fontFamily: Archivo
     fontSize: 28px
@@ -417,6 +427,15 @@ Use `playwright-cli` (`npm i -g @playwright/cli@latest`) in the build loop:
     - the header never wraps on small phones
   - A separate results skeleton was **not** built. Checking takes about two seconds and the check list
     itself is the loading state, so a second placeholder would only repeat it.
+- **Step six:**
+  - Every heading is on the ramp:
+    - display-xl for the hero and the big statistic
+    - display-lg for the report, step card and goal titles
+    - a new **headline** role (40px, or 34px on phones) for ordinary page titles like "Describe your app"
+    - title for section titles and the gauge number
+  - At most one "·" per line.
+  - Progress bars grow with `scaleX` instead of `width`.
+  - Fonts no longer block the first paint.
 - **Step two limitation (fixed in step five):** the checking statuses say CHECKED, not CLEAR or GAP, because the checks don't
   yet report which area produced a gap. Wire that up before promising CLEAR/GAP.
 
@@ -425,12 +444,8 @@ Use `playwright-cli` (`npm i -g @playwright/cli@latest`) in the build loop:
 Found in the September 2026 review; fix them during the overhaul.
 
 - **Radius:** README said 10px; `styles.css` uses 8px. 8px is correct.
-- **Type:** body and small text are on the ramp; display headings still use a few responsive sizes
-  (28-96px) that should be folded into display-xl/display-lg.
-- **Labels:** chained "·" separators remain in some meta lines.
-- **Loading:** the checking sequence still uses a fixed per-item timer in `app.js`, and there's no
-  results skeleton yet.
-- **Meter:** animates `width`. Use `scaleX`.
-- **Fonts:** render-blocking Google Fonts link with no preload.
+- **Loading:** the checking sequence paces itself with a fixed per-item timer so people can read each
+  check (the rules themselves run instantly). A results skeleton was decided against (see step five).
 - **Depth:** results nest bordered boxes (gaps, tasks, sources).
-- **Reduced motion:** one global kill switch instead of designed fallbacks.
+- **Reduced motion:** every JS animation has a designed fallback (the final state at once); the global
+  CSS kill switch stays as a safety net for anything new.
