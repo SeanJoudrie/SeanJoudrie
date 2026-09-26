@@ -3,17 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Playlist Load Test</title>
-    <meta name="description" content="Test page for a song-guessing game: connect Spotify, pick one of your playlists and check that every song loads, not just the first 100." />
+    <title>Song Guess</title>
+    <meta name="description" content="Guess songs from your own Spotify playlists, one second at a time. Combine playlists, shuffle, and name the song from a 1-second clip." />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Playlist Load Test" />
-    <meta property="og:title" content="Does the whole playlist load?" />
-    <meta property="og:description" content="Connect Spotify, pick a playlist, and see every song counted." />
+    <meta property="og:site_name" content="Song Guess" />
+    <meta property="og:title" content="Name the song from your own playlists" />
+    <meta property="og:description" content="Combine your Spotify playlists, shuffle, and guess each song from a 1-second clip." />
     <meta property="og:url" content="https://seanjoudrie.github.io/SeanJoudrie/heardle-test/" />
     <meta property="og:image" content="https://seanjoudrie.github.io/SeanJoudrie/heardle-test/og.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Playlist Load Test: 155 of 155 songs loaded." />
+    <meta property="og:image:alt" content="Song Guess: name the song from your own playlists. Clip lengths 1s, 2s, 4s, 7s, 11s, 16s." />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="robots" content="noindex" />
     <meta name="theme-color" content="#0b0e12" />
@@ -22,21 +22,21 @@
   </head>
   <body>
     <main id="main" class="container">
-      <p class="eyebrow">Test page</p>
-      <h1>Does the whole playlist load?</h1>
-      <p class="lede">Before we build the song-guessing game, this checks that every song in your playlist comes through, not just the first 100.</p>
-
-      <!-- Step 1: not connected -->
-      <section id="connect" class="card" hidden>
-        <h2>1. Connect Spotify</h2>
-        <p>Spotify will ask you to agree. We only read your playlists; nothing is changed or saved.</p>
-        <button id="connect-btn" class="btn btn--primary" type="button">Connect Spotify</button>
+      <!-- Connect -->
+      <section id="s-connect" class="screen" hidden>
+        <p class="eyebrow">Early test version</p>
+        <h1>Name the song from your own playlists</h1>
+        <p class="lede">Pick one or more of your Spotify playlists, shuffle, and guess each song from a 1-second clip. Every wrong guess or skip plays a little more.</p>
+        <div class="card">
+          <button id="connect-btn" class="btn btn--primary btn--block" type="button">Connect Spotify</button>
+          <p class="muted">Spotify will ask you to agree. We only read your playlists; nothing is changed or saved.</p>
+        </div>
       </section>
 
-      <!-- Step 2: pick a playlist -->
-      <section id="pick" class="card" hidden>
+      <!-- Pick playlists -->
+      <section id="s-pick" class="screen" hidden>
         <div class="row">
-          <h2>2. Tap a playlist</h2>
+          <h1 class="h1--small">Pick playlists</h1>
           <button id="logout-btn" class="btn btn--quiet" type="button">Disconnect</button>
         </div>
         <p id="who" class="muted"></p>
@@ -58,25 +58,92 @@
         </div>
         <p id="pick-status" class="status" role="status"></p>
         <ul id="playlists" class="list"></ul>
+        <div class="bar">
+          <div class="container bar__inner">
+            <p id="pick-summary" class="bar__text">Tap playlists to add them</p>
+            <button id="play-btn" class="btn btn--primary" type="button" disabled>Play</button>
+          </div>
+        </div>
       </section>
 
-      <!-- Step 3: result -->
-      <section id="result" class="card" hidden>
-        <button id="back-btn" class="btn btn--quiet" type="button">Back to playlists</button>
-        <h2 id="result-name"></h2>
-        <p id="result-count" class="count" role="status" aria-live="polite"></p>
-        <p id="result-verdict" class="verdict"></p>
-        <p id="result-breakdown" class="muted"></p>
-        <ol id="songs" class="songs"></ol>
+      <!-- Loading songs -->
+      <section id="s-loading" class="screen" hidden>
+        <h1 class="h1--small">Getting your songs</h1>
+        <p id="loading-text" class="count count--small" role="status" aria-live="polite"></p>
+        <p class="muted">Every song in every playlist you picked, not just the first 100.</p>
+      </section>
+
+      <!-- Guessing -->
+      <section id="s-game" class="screen" hidden>
+        <div class="row">
+          <p id="game-meta" class="muted"></p>
+          <button id="change-btn" class="btn btn--quiet" type="button">Change playlists</button>
+        </div>
+
+        <div class="card">
+          <div id="meter" class="meter" aria-hidden="true">
+            <div id="meter-fill" class="meter__fill"></div>
+          </div>
+          <div class="meter-labels" aria-hidden="true">
+            <span>0s</span><span>16s</span>
+          </div>
+          <button id="clip-btn" class="btn btn--primary btn--block btn--big" type="button">Play 1 second</button>
+          <p id="clip-status" class="status" role="status"></p>
+        </div>
+
+        <ol id="attempts" class="attempts" aria-label="Your guesses"></ol>
+
+        <form id="guess-form" class="guess" autocomplete="off">
+          <label class="field">
+            <span class="field__label">Your guess</span>
+            <input id="guess" type="text" placeholder="Start typing a song or artist" enterkeyhint="done" autocapitalize="off" spellcheck="false" />
+          </label>
+          <ul id="suggest" class="suggest" role="listbox" aria-label="Songs matching your guess"></ul>
+          <div class="guess__actions">
+            <button id="skip-btn" class="btn btn--quiet btn--grow" type="button">Skip (+1s)</button>
+            <button id="submit-btn" class="btn btn--primary btn--grow" type="submit">Guess</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Reveal -->
+      <section id="s-reveal" class="screen" hidden>
+        <p id="reveal-result" class="verdict" role="status"></p>
+        <div class="card reveal">
+          <img id="reveal-cover" class="reveal__cover" alt="" width="160" height="160" />
+          <div class="reveal__text">
+            <h2 id="reveal-title"></h2>
+            <p id="reveal-artist" class="muted"></p>
+          </div>
+          <button id="reveal-play" class="btn btn--quiet" type="button">Play clip</button>
+          <div class="reveal__links">
+            <a id="reveal-spotify" class="link" target="_blank" rel="noopener">Open in Spotify</a>
+            <a id="reveal-deezer" class="link" target="_blank" rel="noopener">Clip from Deezer</a>
+          </div>
+        </div>
+        <button id="next-btn" class="btn btn--primary btn--block btn--big" type="button">Next song</button>
+      </section>
+
+      <!-- Out of songs -->
+      <section id="s-done" class="screen" hidden>
+        <h1 class="h1--small">That’s every song</h1>
+        <p id="done-score" class="count"></p>
+        <p id="done-detail" class="muted"></p>
+        <div class="stack">
+          <button id="again-btn" class="btn btn--primary btn--block" type="button">Shuffle and play again</button>
+          <button id="done-change-btn" class="btn btn--quiet btn--block" type="button">Change playlists</button>
+        </div>
       </section>
 
       <p id="error" class="error" role="alert" hidden></p>
     </main>
 
     <footer class="container footer">
-      <p>A test for a song-guessing game by Sean Joudrie. Uses the Spotify Web API; not made or endorsed by Spotify.</p>
+      <p>Song Guess, an early test by Sean Joudrie. Playlists come from Spotify and clips from Deezer; not made or endorsed by either.</p>
     </footer>
 
+    <script src="spotify.js?v=dev"></script>
+    <script src="clips.js?v=dev"></script>
     <script src="app.js?v=dev"></script>
   </body>
 </html>
