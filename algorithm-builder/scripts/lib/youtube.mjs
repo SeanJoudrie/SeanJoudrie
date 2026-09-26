@@ -83,7 +83,10 @@ export async function fetchFeed(id) {
   for (let i = 0; i < 3; i++) {
     try {
       // A real channel's feed can answer 404 now and then: retry it like any failure.
-      const r = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${id}`)
+      // A feed that stalls gives up after 10s, so one slow channel can't hold up the deploy.
+      const r = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${id}`, {
+        signal: AbortSignal.timeout(10000),
+      })
       if (r.ok) return await r.text()
     } catch {
       /* retry */
